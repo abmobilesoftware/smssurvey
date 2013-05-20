@@ -18,7 +18,7 @@ namespace smsSurvery.Surveryer.Controllers
 
         public ActionResult Index()
         {
-            var surveyresultset = db.SurveyResultSet.Include(s => s.Customer).Include(s => s.SurveyPlan);
+            var surveyresultset = db.SurveyResultSet.Include(s => s.Customer).Include(s => s.SurveyPlan).Include(s=> s.Result);
             return View(surveyresultset.ToList());
         }
 

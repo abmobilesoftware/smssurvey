@@ -30,7 +30,23 @@
         @Html.DisplayFor(model => model.SurveyPlan.Description)
     </div>
 </fieldset>
+
+<h2>Answers</h2>
+<table>
+@foreach (var item in Model.Result) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Question.Text)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Answer)
+        </td>
+        
+    </tr>
+}
+</table>
 <p>
+
     @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
     @Html.ActionLink("Back to List", "Index")
 </p>

@@ -124,7 +124,7 @@ namespace smsSurvery.Surveryer.Controllers
            return RedirectToAction("Index");
         }
 
-        [HttpPost]
+        [HttpGet]
         public ActionResult AnswerReceived(string from, string to, string text)
         {
            /**So we got an answer -> see if there is an on-going survey with that particular customer 
@@ -216,7 +216,12 @@ namespace smsSurvery.Surveryer.Controllers
              db.CustomerSet.Add(customer);
              db.SaveChanges();
          }
-          //make sure that the previous survey is marked as completed, even if not fully answered            
+          //make sure that the previous survey is marked as completed, even if not fully answered
+          if (customer.SurveyResult.Count != 0)
+          {
+             var latestSurveyResult = customer.SurveyResult.OrderByDescending(x => x.DateRan).First();
+             latestSurveyResult.Complete = true;
+          }
           var surveyToRun = db.SurveyPlanSet.Find(3);
           SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyPlan = surveyToRun, Complete = false };
           db.SurveyResultSet.Add(newSurvey);

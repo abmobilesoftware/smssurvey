@@ -186,6 +186,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AnswerController.cs" />
+    <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\QuestionController.cs" />
     <Compile Include="Controllers\SurveyPlanController.cs" />
@@ -199,6 +200,7 @@
     <Compile Include="SmsIntegration\SmsInterface.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\images\logo.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -330,6 +332,11 @@
     <Content Include="Views\SurveyResult\Create.cshtml" />
     <Content Include="Views\SurveyResult\Edit.cshtml" />
     <Content Include="Views\SurveyResult\Delete.cshtml" />
+    <Content Include="Views\Customer\Index.cshtml" />
+    <Content Include="Views\Customer\Details.cshtml" />
+    <Content Include="Views\Customer\Create.cshtml" />
+    <Content Include="Views\Customer\Edit.cshtml" />
+    <Content Include="Views\Customer\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
