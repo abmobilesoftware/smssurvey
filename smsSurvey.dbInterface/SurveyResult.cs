@@ -23,6 +23,7 @@ namespace smsSurvey.dbInterface
         public System.DateTime DateRan { get; set; }
         public string CustomerPhoneNumber { get; set; }
         public int SurveyPlanId { get; set; }
+        public bool Complete { get; set; }
     
         public virtual Customer Customer { get; set; }
         public virtual SurveyPlan SurveyPlan { get; set; }

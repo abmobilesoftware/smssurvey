@@ -99,6 +99,7 @@
           <Property Name="DateRan" Type="datetime" Nullable="false" />
           <Property Name="CustomerPhoneNumber" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="SurveyPlanId" Type="int" Nullable="false" />
+          <Property Name="Complete" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="UserProfile">
           <Key>
@@ -300,7 +301,7 @@
           <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="Questions" Relationship="smsSurveyModel.SurveyPlanQuestion" FromRole="SurveyPlan" ToRole="Question" />
           <NavigationProperty Name="SurveyResult" Relationship="smsSurveyModel.SurveyPlanSurveyResult" FromRole="SurveyPlan" ToRole="SurveyResult" />
-          <Property Type="String" Name="Description" Nullable="false" MaxLength="100" />
+          <Property Type="String" Name="Description" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
         </EntityType>
         <Association Name="SurveyPlanQuestion">
           <End Type="smsSurveyModel.SurveyPlan" Role="SurveyPlan" Multiplicity="*" />
@@ -326,6 +327,7 @@
           <NavigationProperty Name="SurveyPlan" Relationship="smsSurveyModel.SurveyPlanSurveyResult" FromRole="SurveyResult" ToRole="SurveyPlan" />
           <Property Type="Int32" Name="SurveyPlanId" Nullable="false" />
           <NavigationProperty Name="Result" Relationship="smsSurveyModel.SurveyResultResult" FromRole="SurveyResult" ToRole="Result" />
+          <Property Type="Boolean" Name="Complete" Nullable="false" />
         </EntityType>
         <Association Name="CustomerSurveyResult">
           <End Type="smsSurveyModel.Customer" Role="Customer" Multiplicity="1" />
@@ -467,7 +469,8 @@
     <EntitySetMapping Name="SurveyResultSet">
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.SurveyResult)">
         <MappingFragment StoreEntitySet="SurveyResultSet">
-          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Complete" ColumnName="Complete" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="DateRan" ColumnName="DateRan" />
           <ScalarProperty Name="CustomerPhoneNumber" ColumnName="CustomerPhoneNumber" />
           <ScalarProperty Name="SurveyPlanId" ColumnName="SurveyPlanId" />

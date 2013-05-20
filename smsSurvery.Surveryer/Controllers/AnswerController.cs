@@ -6,20 +6,21 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using smsSurvey.dbInterface;
+using smsSurvery.Surveryer.SmsIntegration;
 
 namespace smsSurvery.Surveryer.Controllers
 {
     public class AnswerController : Controller
     {
-        private smsSurveyEntities db = new smsSurveyEntities();
-
+       private smsSurveyEntities db = new smsSurveyEntities();
+       private SmsInterface smsHandler = new SmsInterface();
         //
         // GET: /Answer/
 
         public ActionResult Index()
         {
-            var resultset = db.ResultSet.Include(r => r.Question).Include(r => r.SurveyResult);
-            return View(resultset.ToList());
+           var resultset = db.ResultSet.Include(r => r.Question).Include(r => r.SurveyResult);
+           return View(resultset.ToList());
         }
 
         //
@@ -27,12 +28,12 @@ namespace smsSurvery.Surveryer.Controllers
 
         public ActionResult Details(int id = 0)
         {
-            Result result = db.ResultSet.Find(id);
-            if (result == null)
-            {
-                return HttpNotFound();
-            }
-            return View(result);
+           Result result = db.ResultSet.Find(id);
+           if (result == null)
+           {
+              return HttpNotFound();
+           }
+           return View(result);
         }
 
         //
@@ -40,9 +41,9 @@ namespace smsSurvery.Surveryer.Controllers
 
         public ActionResult Create()
         {
-            ViewBag.QuestionId = new SelectList(db.QuestionSet, "Id", "Text");
-            ViewBag.SurveyResultId = new SelectList(db.SurveyResultSet, "Id", "CustomerPhoneNumber");
-            return View();
+           ViewBag.QuestionId = new SelectList(db.QuestionSet, "Id", "Text");
+           ViewBag.SurveyResultId = new SelectList(db.SurveyResultSet, "Id", "CustomerPhoneNumber");
+           return View();
         }
 
         //
@@ -52,16 +53,16 @@ namespace smsSurvery.Surveryer.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create(Result result)
         {
-            if (ModelState.IsValid)
-            {
-                db.ResultSet.Add(result);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+           if (ModelState.IsValid)
+           {
+              db.ResultSet.Add(result);
+              db.SaveChanges();
+              return RedirectToAction("Index");
+           }
 
-            ViewBag.QuestionId = new SelectList(db.QuestionSet, "Id", "Text", result.QuestionId);
-            ViewBag.SurveyResultId = new SelectList(db.SurveyResultSet, "Id", "CustomerPhoneNumber", result.SurveyResultId);
-            return View(result);
+           ViewBag.QuestionId = new SelectList(db.QuestionSet, "Id", "Text", result.QuestionId);
+           ViewBag.SurveyResultId = new SelectList(db.SurveyResultSet, "Id", "CustomerPhoneNumber", result.SurveyResultId);
+           return View(result);
         }
 
         //
@@ -69,14 +70,14 @@ namespace smsSurvery.Surveryer.Controllers
 
         public ActionResult Edit(int id = 0)
         {
-            Result result = db.ResultSet.Find(id);
-            if (result == null)
-            {
-                return HttpNotFound();
-            }
-            ViewBag.QuestionId = new SelectList(db.QuestionSet, "Id", "Text", result.QuestionId);
-            ViewBag.SurveyResultId = new SelectList(db.SurveyResultSet, "Id", "CustomerPhoneNumber", result.SurveyResultId);
-            return View(result);
+           Result result = db.ResultSet.Find(id);
+           if (result == null)
+           {
+              return HttpNotFound();
+           }
+           ViewBag.QuestionId = new SelectList(db.QuestionSet, "Id", "Text", result.QuestionId);
+           ViewBag.SurveyResultId = new SelectList(db.SurveyResultSet, "Id", "CustomerPhoneNumber", result.SurveyResultId);
+           return View(result);
         }
 
         //
@@ -86,15 +87,15 @@ namespace smsSurvery.Surveryer.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Edit(Result result)
         {
-            if (ModelState.IsValid)
-            {
-                db.Entry(result).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
-            ViewBag.QuestionId = new SelectList(db.QuestionSet, "Id", "Text", result.QuestionId);
-            ViewBag.SurveyResultId = new SelectList(db.SurveyResultSet, "Id", "CustomerPhoneNumber", result.SurveyResultId);
-            return View(result);
+           if (ModelState.IsValid)
+           {
+              db.Entry(result).State = EntityState.Modified;
+              db.SaveChanges();
+              return RedirectToAction("Index");
+           }
+           ViewBag.QuestionId = new SelectList(db.QuestionSet, "Id", "Text", result.QuestionId);
+           ViewBag.SurveyResultId = new SelectList(db.SurveyResultSet, "Id", "CustomerPhoneNumber", result.SurveyResultId);
+           return View(result);
         }
 
         //
@@ -102,12 +103,12 @@ namespace smsSurvery.Surveryer.Controllers
 
         public ActionResult Delete(int id = 0)
         {
-            Result result = db.ResultSet.Find(id);
-            if (result == null)
-            {
-                return HttpNotFound();
-            }
-            return View(result);
+           Result result = db.ResultSet.Find(id);
+           if (result == null)
+           {
+              return HttpNotFound();
+           }
+           return View(result);
         }
 
         //
@@ -117,13 +118,13 @@ namespace smsSurvery.Surveryer.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            Result result = db.ResultSet.Find(id);
-            db.ResultSet.Remove(result);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+           Result result = db.ResultSet.Find(id);
+           db.ResultSet.Remove(result);
+           db.SaveChanges();
+           return RedirectToAction("Index");
         }
 
-        [HttpGet]
+        [HttpPost]
         public ActionResult AnswerReceived(string from, string to, string text)
         {
            /**So we got an answer -> see if there is an on-going survey with that particular customer 
@@ -137,18 +138,15 @@ namespace smsSurvery.Surveryer.Controllers
            {
               AddSurveyResult(text, customer, surveyToRun);
            }
-           else 
+           else
            {
               //new customer
-              Customer newCustomer = new Customer() {PhoneNumber=from,Name="bulan",Surname="bulanel"};
+              Customer newCustomer = new Customer() { PhoneNumber = from, Name = "bulan", Surname = "bulanel" };
               db.CustomerSet.Add(newCustomer);
               db.SaveChanges();
               AddSurveyResult(text, newCustomer, surveyToRun);
            }
-
-           //get the current survey that is running
-           
-
+           //get the current survey that is running        
            //db.SurveyResultSet.Add(new SurveyResult(){CustomerPhoneNumber="0040751569435",DateRan=DateTime.UtcNow,SurveyPlanId=3});
            //db.SaveChanges();
            //var res = new Result() { Answer = text, QuestionId = 1, SurveyResultId=1};
@@ -160,6 +158,7 @@ namespace smsSurvery.Surveryer.Controllers
            return null;
         }
 
+        private int numberOfQuestionsInSurvey = 2;
         private void AddSurveyResult(string text, Customer customer, SurveyPlan surveyToRun)
         {
            SurveyResult latestSurveyResult = null;
@@ -167,13 +166,14 @@ namespace smsSurvery.Surveryer.Controllers
            {
               latestSurveyResult = customer.SurveyResult.OrderByDescending(x => x.DateRan).First();
            }
+           Question currentQuestion = null;
            //if not final than add, otherwise start a new one
-           if (latestSurveyResult == null || latestSurveyResult.Result.Count == 2)
+           if (latestSurveyResult == null || latestSurveyResult.Result.Count == numberOfQuestionsInSurvey)
            {
-              SurveyResult currentSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyPlan = surveyToRun };
+              SurveyResult currentSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyPlan = surveyToRun , Complete = false};
               db.SurveyResultSet.Add(currentSurvey);
               db.SaveChanges();
-              var currentQuestion = surveyToRun.Questions.OrderBy(x => x.Order).First();
+              currentQuestion= surveyToRun.Questions.OrderBy(x => x.Order).First();
               var res = new Result() { Answer = text, Question = currentQuestion };
               currentSurvey.Result.Add(res);
               db.SaveChanges();
@@ -182,16 +182,58 @@ namespace smsSurvery.Surveryer.Controllers
            {
               SurveyResult currentSurvey = latestSurveyResult;
               int currentQuestionId = currentSurvey.Result.Count + 1;
-              var currentQuestion = surveyToRun.Questions.Where(x => x.Order == currentQuestionId).First();
+              currentQuestion = surveyToRun.Questions.Where(x => x.Order == currentQuestionId).First();
               var res = new Result() { Answer = text, Question = currentQuestion };
               currentSurvey.Result.Add(res);
               db.SaveChanges();
            }
+           //if we haven't reached the end of the survey then ask the next question
+           if (currentQuestion.Order != numberOfQuestionsInSurvey)
+           {
+              var nextQuestion = surveyToRun.Questions.Where(x => x.Order == currentQuestion.Order + 1).First();
+              //TODO fix logic errors if no next question
+              if (nextQuestion != null)
+              {
+                 SendQuestionToCustomer(customer, nextQuestion);
+              }
+
+           }
+           else
+           {
+              //mark survey as  complete
+              latestSurveyResult.Complete = true;
+              db.SaveChanges();
+           }
+
+        }
+
+       [HttpGet]
+       public void StartSMSQuery(string customerPhoneNumber)
+        {
+           var customer = db.CustomerSet.Find(customerPhoneNumber);
+          if (customer == null) {
+             customer = new Customer() { PhoneNumber = customerPhoneNumber, Name = "bulan", Surname = "bulanel" };
+             db.CustomerSet.Add(customer);
+             db.SaveChanges();
+         }
+          //make sure that the previous survey is marked as completed, even if not fully answered            
+          var surveyToRun = db.SurveyPlanSet.Find(3);
+          SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyPlan = surveyToRun, Complete = false };
+          db.SurveyResultSet.Add(newSurvey);
+          db.SaveChanges();
+          var currentQuestion = surveyToRun.Questions.OrderBy(x => x.Order).First();
+          SendQuestionToCustomer(customer, currentQuestion);
+        }
+
+        private void SendQuestionToCustomer(Customer c, Question q)
+        {
+          // smsHandler.SendMessage("40371700012",c.PhoneNumber, q.Text);
         }
 
         protected override void Dispose(bool disposing)
         {
             db.Dispose();
+            smsHandler = null;
             base.Dispose(disposing);
         }
     }
