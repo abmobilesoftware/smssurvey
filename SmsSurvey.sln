@@ -1,0 +1,32 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "smsSurvey.dbInterface", "smsSurvey.dbInterface\smsSurvey.dbInterface.csproj", "{CE8FF7ED-DFB9-4908-BF2E-A3699A3512FF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "smsSurvery.Surveryer", "smsSurvery.Surveryer\smsSurvery.Surveryer.csproj", "{F1735F5A-6122-4503-9FF9-031F1F6E78DC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "smsSurvery.Surveryer.Tests", "smsSurvery.Surveryer.Tests\smsSurvery.Surveryer.Tests.csproj", "{D68552A7-3C35-4AA8-ABDC-CCBFB18B9FB2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CE8FF7ED-DFB9-4908-BF2E-A3699A3512FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CE8FF7ED-DFB9-4908-BF2E-A3699A3512FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CE8FF7ED-DFB9-4908-BF2E-A3699A3512FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CE8FF7ED-DFB9-4908-BF2E-A3699A3512FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1735F5A-6122-4503-9FF9-031F1F6E78DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1735F5A-6122-4503-9FF9-031F1F6E78DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1735F5A-6122-4503-9FF9-031F1F6E78DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1735F5A-6122-4503-9FF9-031F1F6E78DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D68552A7-3C35-4AA8-ABDC-CCBFB18B9FB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D68552A7-3C35-4AA8-ABDC-CCBFB18B9FB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D68552A7-3C35-4AA8-ABDC-CCBFB18B9FB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D68552A7-3C35-4AA8-ABDC-CCBFB18B9FB2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

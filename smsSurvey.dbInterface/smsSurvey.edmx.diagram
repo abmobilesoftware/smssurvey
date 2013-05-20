@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="e9a2859271bd473b9e049f0d6e9b4a34" Name="Diagram1" ZoomLevel="67">
+        <EntityTypeShape EntityType="smsSurveyModel.Question" Width="1.5" PointX="10.25" PointY="1.875" />
+        <EntityTypeShape EntityType="smsSurveyModel.SurveyPlan" Width="1.5" PointX="7.5" PointY="1.875" />
+        <AssociationConnector Association="smsSurveyModel.SurveyPlanQuestion" />
+        <EntityTypeShape EntityType="smsSurveyModel.Customer" Width="1.5" PointX="5.875" PointY="5" />
+        <EntityTypeShape EntityType="smsSurveyModel.SurveyResult" Width="1.5" PointX="9" PointY="5" />
+        <AssociationConnector Association="smsSurveyModel.CustomerSurveyResult" />
+        <AssociationConnector Association="smsSurveyModel.SurveyPlanSurveyResult" />
+        <EntityTypeShape EntityType="smsSurveyModel.Result" Width="1.5" PointX="12.125" PointY="5" />
+        <AssociationConnector Association="smsSurveyModel.QuestionResult" />
+        <AssociationConnector Association="smsSurveyModel.SurveyResultResult" />
+        <EntityTypeShape EntityType="smsSurveyModel.UserProfile" Width="1.5" PointX="1.25" PointY="2.25" />
+        <EntityTypeShape EntityType="smsSurveyModel.webpages_Membership" Width="1.5" PointX="1" PointY="4.875" />
+        <EntityTypeShape EntityType="smsSurveyModel.webpages_OAuthMembership" Width="1.5" PointX="3.375" PointY="4.75" />
+        <EntityTypeShape EntityType="smsSurveyModel.webpages_Roles" Width="1.5" PointX="3.125" PointY="2.25" />
+        <AssociationConnector Association="smsSurveyModel.webpages_UsersInRoles" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>
