@@ -10,7 +10,7 @@ namespace smsSurvery.Surveryer.Controllers
    {
       public ActionResult Index()
       {
-         ViewBag.Message = "Modify this template to jump-start your ASP.NET MVC application.";
+         ViewBag.Message = "Are you ready for our newest, ground-breaking product?";
 
          return View();
       }
