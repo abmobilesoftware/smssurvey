@@ -1,0 +1,36 @@
+﻿@model smsSurvey.dbInterface.Result
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<fieldset>
+    <legend>Result</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Answer)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Answer)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Question.Text)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Question.Text)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.SurveyResult.CustomerPhoneNumber)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.SurveyResult.CustomerPhoneNumber)
+    </div>
+</fieldset>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

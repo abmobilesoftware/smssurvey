@@ -5,14 +5,14 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="e9a2859271bd473b9e049f0d6e9b4a34" Name="Diagram1" ZoomLevel="67">
-        <EntityTypeShape EntityType="smsSurveyModel.Question" Width="1.5" PointX="10.25" PointY="1.875" />
+        <EntityTypeShape EntityType="smsSurveyModel.Question" Width="1.5" PointX="11.625" PointY="1.75" />
         <EntityTypeShape EntityType="smsSurveyModel.SurveyPlan" Width="1.5" PointX="7.5" PointY="1.875" />
         <AssociationConnector Association="smsSurveyModel.SurveyPlanQuestion" />
         <EntityTypeShape EntityType="smsSurveyModel.Customer" Width="1.5" PointX="5.875" PointY="5" />
         <EntityTypeShape EntityType="smsSurveyModel.SurveyResult" Width="1.5" PointX="9" PointY="5" />
         <AssociationConnector Association="smsSurveyModel.CustomerSurveyResult" />
         <AssociationConnector Association="smsSurveyModel.SurveyPlanSurveyResult" />
-        <EntityTypeShape EntityType="smsSurveyModel.Result" Width="1.5" PointX="12.125" PointY="5" />
+        <EntityTypeShape EntityType="smsSurveyModel.Result" Width="1.5" PointX="14.375" PointY="5" />
         <AssociationConnector Association="smsSurveyModel.QuestionResult" />
         <AssociationConnector Association="smsSurveyModel.SurveyResultResult" />
         <EntityTypeShape EntityType="smsSurveyModel.UserProfile" Width="1.5" PointX="1.25" PointY="2.25" />
