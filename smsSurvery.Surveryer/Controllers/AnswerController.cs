@@ -135,22 +135,17 @@ namespace smsSurvery.Surveryer.Controllers
            var surveyToRun = db.SurveyPlanSet.Find(3);
            if (customer != null)
            {
-              SurveyResult latestSurveyResult = null;
-              if (customer.SurveyResult.Count != 0) {
-                 latestSurveyResult = customer.SurveyResult.OrderByDescending(x => x.DateRan).First();
-              }
-              //if not final than add, otherwise start a new one
-              if (latestSurveyResult == null || latestSurveyResult.Result.Count == 2)
-              {
-                 SurveyResult currentSurvey = new SurveyResult() { Customer =customer, DateRan = DateTime.UtcNow, SurveyPlan=surveyToRun};
-                 db.SurveyResultSet.Add(currentSurvey);
-                 db.SaveChanges();
-                 var currentQuestion = surveyToRun.Questions.OrderBy(x => x.Order).First();
-                 var res = new Result() { Answer = text, Question = currentQuestion };
-                 currentSurvey.Result.Add(res);
-                 db.SaveChanges();                 
-              }
+              AddSurveyResult(text, customer, surveyToRun);
            }
+           else 
+           {
+              //new customer
+              Customer newCustomer = new Customer() {PhoneNumber=from,Name="bulan",Surname="bulanel"};
+              db.CustomerSet.Add(newCustomer);
+              db.SaveChanges();
+              AddSurveyResult(text, newCustomer, surveyToRun);
+           }
+
            //get the current survey that is running
            
 
@@ -163,6 +158,35 @@ namespace smsSurvery.Surveryer.Controllers
            //surveyResult.Result.Add(res);
            //db.SaveChanges();
            return null;
+        }
+
+        private void AddSurveyResult(string text, Customer customer, SurveyPlan surveyToRun)
+        {
+           SurveyResult latestSurveyResult = null;
+           if (customer.SurveyResult.Count != 0)
+           {
+              latestSurveyResult = customer.SurveyResult.OrderByDescending(x => x.DateRan).First();
+           }
+           //if not final than add, otherwise start a new one
+           if (latestSurveyResult == null || latestSurveyResult.Result.Count == 2)
+           {
+              SurveyResult currentSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyPlan = surveyToRun };
+              db.SurveyResultSet.Add(currentSurvey);
+              db.SaveChanges();
+              var currentQuestion = surveyToRun.Questions.OrderBy(x => x.Order).First();
+              var res = new Result() { Answer = text, Question = currentQuestion };
+              currentSurvey.Result.Add(res);
+              db.SaveChanges();
+           }
+           else
+           {
+              SurveyResult currentSurvey = latestSurveyResult;
+              int currentQuestionId = currentSurvey.Result.Count + 1;
+              var currentQuestion = surveyToRun.Questions.Where(x => x.Order == currentQuestionId).First();
+              var res = new Result() { Answer = text, Question = currentQuestion };
+              currentSurvey.Result.Add(res);
+              db.SaveChanges();
+           }
         }
 
         protected override void Dispose(bool disposing)
