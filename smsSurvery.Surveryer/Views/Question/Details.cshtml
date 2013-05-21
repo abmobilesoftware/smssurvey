@@ -5,7 +5,28 @@
 }
 
 <h2>Details</h2>
-
+<script type="text/javascript" src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
+ @Scripts.Render("~/bundles/jquery")
+<script>   
+   $(document).ready(function () {
+      var stuff = $.ajax({
+         data: { surveyId: 3 },
+         url: "/Reports/GetSurveyResults",
+         dataType: "json",
+         async: false,
+         success: function (jsonData) {
+            var options = {
+               backgroundColor: '#F5F8FA',
+               sliceVisibilityThreshold : 0
+            };
+            var chart = new google.visualization.PieChart(document.getElementById('comboChart_div'));
+            data = new google.visualization.DataTable(jsonData);
+            chart.draw(data, options);
+         }
+      })
+   });
+   
+</script>
 <fieldset>
     <legend>Question</legend>
 
@@ -34,3 +55,5 @@
     @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
     @Html.ActionLink("Back to List", "Index")
 </p>
+
+<div id="comboChart_div"></div> 
