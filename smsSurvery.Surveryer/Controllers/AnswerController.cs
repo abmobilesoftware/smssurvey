@@ -12,6 +12,7 @@ namespace smsSurvery.Surveryer.Controllers
 {
     public class AnswerController : Controller
     {
+       private const string cNumberFromWhichToSendSMS = "40371700012";
        private smsSurveyEntities db = new smsSurveyEntities();
        private SmsInterface smsHandler = new SmsInterface();
         //
@@ -124,14 +125,13 @@ namespace smsSurvery.Surveryer.Controllers
            return RedirectToAction("Index");
         }
 
-        [HttpGet]
+        [HttpPost]
         public ActionResult AnswerReceived(string from, string to, string text)
         {
            /**So we got an answer -> see if there is an on-going survey with that particular customer 
             * if yes - continue
             * if not - start the surveyResult and then continue
             */
-
            var customer = db.CustomerSet.Find(from);
            var surveyToRun = db.SurveyPlanSet.Find(3);
            if (customer != null)
@@ -145,16 +145,7 @@ namespace smsSurvery.Surveryer.Controllers
               db.CustomerSet.Add(newCustomer);
               db.SaveChanges();
               AddSurveyResult(text, newCustomer, surveyToRun);
-           }
-           //get the current survey that is running        
-           //db.SurveyResultSet.Add(new SurveyResult(){CustomerPhoneNumber="0040751569435",DateRan=DateTime.UtcNow,SurveyPlanId=3});
-           //db.SaveChanges();
-           //var res = new Result() { Answer = text, QuestionId = 1, SurveyResultId=1};
-           //db.ResultSet.Add(res);
-           //db.SaveChanges();
-           //var surveyResult = db.SurveyResultSet.Find(1);
-           //surveyResult.Result.Add(res);
-           //db.SaveChanges();
+           }                    
            return null;
         }
 
@@ -196,15 +187,15 @@ namespace smsSurvery.Surveryer.Controllers
               {
                  SendQuestionToCustomer(customer, nextQuestion);
               }
-
            }
            else
            {
               //mark survey as  complete
-              latestSurveyResult.Complete = true;
+              latestSurveyResult.Complete = true;              
               db.SaveChanges();
+              //send ThankYouMessage
+              SendThankYouToCustomer(customer, surveyToRun);
            }
-
         }
 
        [HttpGet]
@@ -232,7 +223,11 @@ namespace smsSurvery.Surveryer.Controllers
 
         private void SendQuestionToCustomer(Customer c, Question q)
         {
-          // smsHandler.SendMessage("40371700012",c.PhoneNumber, q.Text);
+           smsHandler.SendMessage(cNumberFromWhichToSendSMS,c.PhoneNumber, q.Text);
+        }
+        private void SendThankYouToCustomer(Customer c, SurveyPlan survey)
+        {
+           smsHandler.SendMessage(cNumberFromWhichToSendSMS, c.PhoneNumber, survey.ThankYouMessage);
         }
 
         protected override void Dispose(bool disposing)

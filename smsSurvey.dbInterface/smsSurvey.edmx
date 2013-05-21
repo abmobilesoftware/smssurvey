@@ -90,6 +90,7 @@
           </Key>
           <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="Description" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="ThankYouMessage" Type="nvarchar" Nullable="false" MaxLength="160" />
         </EntityType>
         <EntityType Name="SurveyResultSet">
           <Key>
@@ -302,6 +303,7 @@
           <NavigationProperty Name="Questions" Relationship="smsSurveyModel.SurveyPlanQuestion" FromRole="SurveyPlan" ToRole="Question" />
           <NavigationProperty Name="SurveyResult" Relationship="smsSurveyModel.SurveyPlanSurveyResult" FromRole="SurveyPlan" ToRole="SurveyResult" />
           <Property Type="String" Name="Description" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
+          <Property Type="String" Name="ThankYouMessage" Nullable="false" MaxLength="160" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="SurveyPlanQuestion">
           <End Type="smsSurveyModel.SurveyPlan" Role="SurveyPlan" Multiplicity="*" />
@@ -452,6 +454,7 @@
     <EntitySetMapping Name="SurveyPlanSet">
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.SurveyPlan)">
         <MappingFragment StoreEntitySet="SurveyPlanSet">
+                <ScalarProperty Name="ThankYouMessage" ColumnName="ThankYouMessage" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
         </MappingFragment>
