@@ -141,7 +141,7 @@ namespace smsSurvery.Surveryer.Controllers
            else
            {
               //new customer
-              Customer newCustomer = new Customer() { PhoneNumber = from, Name = "bulan", Surname = "bulanel" };
+              Customer newCustomer = new Customer() { PhoneNumber = from, Name = "John", Surname = "Doe" };
               db.CustomerSet.Add(newCustomer);
               db.SaveChanges();
               AddSurveyResult(text, newCustomer, surveyToRun);
@@ -201,9 +201,10 @@ namespace smsSurvery.Surveryer.Controllers
        [HttpGet]
        public void StartSMSQuery(string customerPhoneNumber)
         {
+          //the customer info should be coming from the customer's system
            var customer = db.CustomerSet.Find(customerPhoneNumber);
           if (customer == null) {
-             customer = new Customer() { PhoneNumber = customerPhoneNumber, Name = "bulan", Surname = "bulanel" };
+             customer = new Customer() { PhoneNumber = customerPhoneNumber, Name = "John", Surname = "Doe" };
              db.CustomerSet.Add(customer);
              db.SaveChanges();
          }
