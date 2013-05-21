@@ -189,6 +189,7 @@
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\QuestionController.cs" />
+    <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\SurveyPlanController.cs" />
     <Compile Include="Controllers\SurveyResultController.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
