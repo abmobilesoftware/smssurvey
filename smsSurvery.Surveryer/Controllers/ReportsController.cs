@@ -43,9 +43,7 @@ namespace smsSurvery.Surveryer.Controllers
             }
          }
          if (res != null)
-         {
-            var row1 = new RepDataRow(new RepDataRowCell[] { new RepDataRowCell("Incomming SMS", "Incomming"), new RepDataRowCell(13, "blabla") });
-
+         {            
             List<RepDataRow> pieChartContent = new List<RepDataRow>();
             foreach (var rowData in res.AnswersPerValidOption)
             {
@@ -58,7 +56,18 @@ namespace smsSurvery.Surveryer.Controllers
                 new RepDataColumn("17", STRING_COLUMN_TYPE, "Type"),
                 new RepDataColumn("18", STRING_COLUMN_TYPE, "Value") },
                   pieChartContent);
-            return Json(pieChartSource, JsonRequestBehavior.AllowGet);
+            //return Json(pieChartSource, JsonRequestBehavior.AllowGet);
+            List<RepDataRow> tableData = new List<RepDataRow>()
+            {
+               new RepDataRow(new RepDataRowCell[] { new RepDataRowCell(res.TotalNumberOfAnswers, res.TotalNumberOfAnswers.ToString()), new RepDataRowCell(res.TotalNumberOfValidAnswers, res.TotalNumberOfValidAnswers.ToString()) })
+            };
+            RepChartData tableChartSource = new RepChartData(
+               new RepDataColumn[] {
+                new RepDataColumn("17", STRING_COLUMN_TYPE, "Total Answers"),
+                new RepDataColumn("18", STRING_COLUMN_TYPE, "Valid Answers") },
+                  tableData);
+            var dataToSendBack = new {pie= pieChartSource, table = tableChartSource};
+            return Json(dataToSendBack, JsonRequestBehavior.AllowGet);
             
          }
          return null;
