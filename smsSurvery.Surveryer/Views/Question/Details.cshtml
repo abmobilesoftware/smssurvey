@@ -19,9 +19,11 @@
                backgroundColor: '#F5F8FA',
                sliceVisibilityThreshold : 0
             };
-            var chart = new google.visualization.PieChart(document.getElementById('comboChart_div'));
+            var piechart = new google.visualization.PieChart(document.getElementById('pieChart_div'));
             data = new google.visualization.DataTable(jsonData);
-            chart.draw(data, options);
+            piechart.draw(data, options);
+            //var barchart = new google.visualization.ColumnChart(document.getElementById('barChart_div'));
+            //barchart.draw(data, options);
          }
       })
    });
@@ -56,4 +58,5 @@
     @Html.ActionLink("Back to List", "Index")
 </p>
 
-<div id="comboChart_div"></div> 
+<div id="pieChart_div"></div> 
+<div id="barChart_div"></div> 

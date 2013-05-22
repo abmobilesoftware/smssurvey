@@ -17,9 +17,11 @@ namespace smsSurvery.Surveryer.Controllers
       public const string STRING_COLUMN_TYPE = "string";
       public const string NUMBER_COLUMN_TYPE = "number";
 
+      
       [HttpGet]
       public JsonResult GetSurveyResults(int surveyId)
       {
+         string[] optionDef = new string[] {"Easy as pie", "Easy enough", "Average", "Rather hard", "Hard to use" };
          //for each question in the survey, aggregate the results
          SurveyPlan survey = db.SurveyPlanSet.Find(surveyId);
          QuestionSurveyResults res = null;
@@ -43,12 +45,11 @@ namespace smsSurvery.Surveryer.Controllers
          if (res != null)
          {
             var row1 = new RepDataRow(new RepDataRowCell[] { new RepDataRowCell("Incomming SMS", "Incomming"), new RepDataRowCell(13, "blabla") });
-            var row2 = new RepDataRow(new RepDataRowCell[] { new RepDataRowCell("Outgoing SMS", "Outgoing"), new RepDataRowCell(25, "somethings") });
-            var row3 = new RepDataRow(new RepDataRowCell[] { new RepDataRowCell("Outgoing SMS", "Outgoing"), new RepDataRowCell(11, "11") });
+
             List<RepDataRow> pieChartContent = new List<RepDataRow>();
             foreach (var rowData in res.AnswersPerValidOption)
             {
-               var row = new RepDataRow(new RepDataRowCell[] { new RepDataRowCell(rowData.Key, rowData.Key), new RepDataRowCell(rowData.Value, rowData.Value.ToString()) });
+               var row = new RepDataRow(new RepDataRowCell[] { new RepDataRowCell(rowData.Key, optionDef[Int32.Parse(rowData.Key)-1]), new RepDataRowCell(rowData.Value, rowData.Value.ToString()+ " answer(s)") });
                pieChartContent.Add(row);
             }
 
@@ -58,6 +59,7 @@ namespace smsSurvery.Surveryer.Controllers
                 new RepDataColumn("18", STRING_COLUMN_TYPE, "Value") },
                   pieChartContent);
             return Json(pieChartSource, JsonRequestBehavior.AllowGet);
+            
          }
          return null;
       }
