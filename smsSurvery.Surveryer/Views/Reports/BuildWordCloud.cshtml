@@ -1,0 +1,9 @@
+﻿@model smsSurvery.Surveryer.Controllers.ReportsController.TagCloud
+
+@{
+    ViewBag.Title = "BuildWordCloud";
+
+}
+<h2>BuildWordCloud</h2>
+
+     @Html.Raw(Html.TagCloud(Model))

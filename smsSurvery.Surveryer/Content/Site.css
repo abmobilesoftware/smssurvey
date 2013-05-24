@@ -754,3 +754,86 @@ tr.pager td {
             margin: 0;
         }
 }
+
+.tCell
+{
+text-align: center;
+}
+
+#cloud a.tag1 {
+   font-size: 0.7em;
+   font-weight: 100;
+   text-decoration: none;
+      color: #607ec5;
+}
+
+#cloud a.tag2 {
+   font-size: 0.8em;
+   font-weight: 200;
+   text-decoration: none;
+      color: #607ec5;
+}
+
+#cloud a.tag3 {
+   font-size: 0.9em;
+   font-weight: 300;
+   text-decoration: none;
+      color: #607ec5;
+}
+
+#cloud a.tag4 {
+   font-size: 1.0em;
+   font-weight: 400;
+   text-decoration: none;
+      color: #607ec5;
+}
+
+#cloud a.tag5 {
+   font-size: 1.2em;
+   font-weight: 500;
+   text-decoration: none;
+      color: #607ec5;
+}
+
+#cloud a.tag6 {
+   font-size: 1.4em;
+   font-weight: 600;
+   text-decoration: none;
+      color: #4c6db9;
+}
+
+#cloud a.tag7 {
+   font-size: 1.6em;
+   font-weight: 700;
+   text-decoration: none;
+      color: #395cae;
+}
+
+#cloud a.tag8 {
+   font-size: 1.8em;
+   font-weight: 800;
+   text-decoration: none;
+      color: #264ca2;
+}
+
+#cloud a.tag9 {
+   font-size: 2.2em;
+   font-weight: 900;
+   text-decoration: none;
+      color: #133b97;
+}
+
+#cloud a.tag10 {
+   font-size: 2.5em;
+   font-weight: 900;
+   text-decoration: none;
+   color: #002a8b;
+}
+
+#cloud { margin: 0; }
+ #cloud li { display: inline; }
+ #cloud { padding: 2px; line-height: 3em; text-align: center; }
+ #cloud a 
+ {
+     padding: 0px;      
+ }
