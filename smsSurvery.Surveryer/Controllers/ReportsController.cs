@@ -109,7 +109,7 @@ namespace smsSurvery.Surveryer.Controllers
          return outcome;
       }
       private String testString = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vel pellentesque augue. Praesent nec ligula sit amet dolor consequat sollicitudin at quis quam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla facilisi. Donec nec congue justo. Nam vitae ipsum malesuada nunc vulputate molestie vel vel leo. Donec mollis bibendum posuere. Aliquam ultrices, nisl ac sollicitudin elementum, nulla augue venenatis arcu, quis cursus elit purus non dolor. Morbi malesuada vestibulum dignissim. Duis sed metus at tellus malesuada convallis. Suspendisse potenti. Ut blandit eros a sem laoreet eget gravida risus elementum. Integer fringilla, neque vel hendrerit auctor, dui arcu consectetur neque, a egestas nisl eros sed arcu. In venenatis erat et risus tempus faucibus. Vestibulum tincidunt arcu at tortor porttitor fermentum.Vestibulum in dapibus elit. Curabitur eget dui lacus. Nullam leo tellus, dapibus suscipit tempus quis, consectetur vitae leo. Vestibulum in dui nulla. Phasellus convallis libero ut sem semper mollis. Cras bibendum mattis libero at venenatis. In hac habitasse platea dictumst. Sed sollicitudin, nisi sit amet viverra fermentum, quam ante tincidunt nulla, eu convallis lectus eros ac sem. Suspendisse eu neque sit amet purus aliquam scelerisque sed vitae quam. Ut sollicitudin molestie feugiat. Donec id neque sed odio interdum semper. In consectetur lectus at dui congue ac ultricies massa laoreet. Duis nec fermentum metus. Nulla facilisi. Cras feugiat lacinia metus vulputate lacinia.Integer ultricies mollis nulla, eget pharetra mi fringilla in. Aliquam non velit eu nibh aliquam eleifend ac sed metus. Pellentesque fermentum dolor sit amet dui commodo congue. Vivamus vulputate diam eu ligula interdum nec gravida lectus cursus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Duis condimentum ipsum eu nisi blandit ac egestas nisl lacinia. Proin ut ipsum odio. Maecenas mi eros, hendrerit quis suscipit eget, mollis vel justo. Phasellus sollicitudin magna nec est varius dignissim. Vivamus sapien felis, rhoncus nec mollis ac, sagittis ac";
-      private TagCloud GetTagCloud() {         
+      public static  TagCloud GetTagCloud(smsSurveyEntities  db) {         
          List<string> stuff = new List<string>();
          var results = db.QuestionSet.Find(2).Result;
          foreach (var item in results)
@@ -121,7 +121,7 @@ namespace smsSurvery.Surveryer.Controllers
          var weightedWords = new List<IWord>();
          
          //TODO adapt algorithm for non English language
-         Language lg = Language.EnglishTxt;
+         Language lg = Language.RomanianTxt;
          IBlacklist blacklist = ByLanguageFactory.GetBlacklist(lg);
          IWordStemmer stemmer = ByLanguageFactory.GetStemmer(lg);         
          var x = stuff.Filter(blacklist).CountOccurences().GroupByStem(stemmer).SortByOccurences().Take(100).AsEnumerable().Cast<IWord>().ToList();
@@ -147,7 +147,7 @@ namespace smsSurvery.Surveryer.Controllers
          //var x = stuff.Filter(blacklist).CountOccurences().GroupByStem(stemmer).SortByOccurences().AsEnumerable().Cast<IWord>().ToList();
          //TagCloud tg = new TagCloud();
          //tg.MenuTags = x;
-         return View(GetTagCloud());
+         return View(GetTagCloud(db));
 
       }
 
@@ -195,9 +195,9 @@ namespace smsSurvery.Surveryer.Controllers
    }
 }
 
-
-
-public static class HtmlExtensions
+namespace smsSurvery.Surveryer.Extensions
+{
+public static class HtmlHelperExtension
 {
    public static string TagCloud(this HtmlHelper helper, smsSurvery.Surveryer.Controllers.ReportsController.TagCloud tagCloud)
    {
@@ -206,17 +206,16 @@ public static class HtmlExtensions
       output.Append(@"<ul id=""cloud"">");
 
       foreach (smsSurvery.Surveryer.WordCloud.IWord tag in tagCloud.MenuTags)
-         {
-            output.Append("<li>");
-            output.AppendFormat(@"<a href=""http://www.txtfeedback.net"" target=""_blank"" class=""tag{0}"" title=""{1} occurrences""> {2}",
-                                tagCloud.GetRankForTag(tag), tag.Occurrences, tag.Text);            
-            output.Append("</a>");            
-            output.Append("</li>");
-         }
-      
-
+      {
+         output.Append("<li>");
+         output.AppendFormat(@"<a href=""http://www.txtfeedback.net"" target=""_blank"" class=""tag{0}"" title=""{1} occurrences""> {2}",
+                             tagCloud.GetRankForTag(tag), tag.Occurrences, tag.Text);
+         output.Append("</a>");
+         output.Append("</li>");
+      }
       output.Append("</ul>");
 
       return output.ToString();
    }
+}
 }

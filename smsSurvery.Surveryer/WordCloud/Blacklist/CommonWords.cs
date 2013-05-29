@@ -358,4 +358,19 @@
 
         }
     }
+
+    public class RomanianCommonWords : CommonBlacklist
+    {
+       private static readonly string[] s_TopCommonWords =
+            new[] { 
+               "si",
+               "sau"
+            };
+
+       public RomanianCommonWords()
+            : base(s_TopCommonWords)
+        {
+
+        }
+    }
 }

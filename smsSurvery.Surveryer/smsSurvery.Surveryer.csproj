@@ -202,18 +202,20 @@
     <Compile Include="SmsIntegration\SmsInterface.cs" />
     <Compile Include="WordCloud\ByLanguageFactory.cs" />
     <Compile Include="WordCloud\CommonBlacklist.cs" />
-    <Compile Include="WordCloud\CommonWords.cs" />
+    <Compile Include="WordCloud\Blacklist\CommonWords.cs" />
     <Content Include="Content\WordCloud.css" />
     <Content Include="WordCloud\CustomBlacklist.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Compile Include="WordCloud\IBlacklist.cs" />
+    <Compile Include="WordCloud\Blacklist\IBlacklist.cs" />
     <Compile Include="WordCloud\IWord.cs" />
-    <Compile Include="WordCloud\IWordStemmer.cs" />
-    <Compile Include="WordCloud\LowerCaseStemmer.cs" />
+    <Compile Include="WordCloud\Stemmers\IWordStemmer.cs" />
+    <Compile Include="WordCloud\Stemmers\LowerCaseStemmer.cs" />
     <Compile Include="WordCloud\NullBlacklist.cs" />
-    <Compile Include="WordCloud\PorterStem.cs" />
-    <Compile Include="WordCloud\PorterStemmer.cs" />
+    <Compile Include="WordCloud\Stemmers\PorterStem.cs" />
+    <Compile Include="WordCloud\Stemmers\PorterStemmer.cs" />
+    <Compile Include="WordCloud\Stemmers\RomanianStem.cs" />
+    <Compile Include="WordCloud\Stemmers\RomanianStemmer.cs" />
     <Compile Include="WordCloud\Word.cs" />
     <Compile Include="WordCloud\WordExtensions.cs" />
     <Compile Include="WordCloud\WordGroup.cs" />

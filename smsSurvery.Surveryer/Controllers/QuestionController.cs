@@ -31,6 +31,10 @@ namespace smsSurvery.Surveryer.Controllers
             {
                 return HttpNotFound();
             }
+           if(question.Type == "FreeText")
+           {
+            ViewBag.WordCloud = ReportsController.GetTagCloud(db);            
+        }
             return View(question);
         }
 

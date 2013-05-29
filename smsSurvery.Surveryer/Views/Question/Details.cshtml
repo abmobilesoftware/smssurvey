@@ -1,5 +1,5 @@
 ﻿@model smsSurvey.dbInterface.Question
-
+@using smsSurvery.Surveryer.Extensions
 @{
     ViewBag.Title = "Details";
 }
@@ -70,4 +70,8 @@
 </p>
 <div id="tableChart_div"></div> 
 <div id="pieChart_div"></div> 
+@if (ViewBag.WordCloud != null)
+{
+    @Html.Raw(Html.TagCloud((smsSurvery.Surveryer.Controllers.ReportsController.TagCloud) ViewBag.WordCloud))
+}
 

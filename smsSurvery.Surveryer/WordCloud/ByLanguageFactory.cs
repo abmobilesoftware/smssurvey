@@ -7,29 +7,13 @@ namespace smsSurvery.Surveryer.WordCloud
    public enum Language
    {      
       EnglishTxt,
+      RomanianTxt,
       AnyTxt
    }
 
     public static class ByLanguageFactory
     {
-
-        public static Language GetLanguageFromString(string languageName)
-        {
-            switch (languageName)
-            {              
-                case "English *.txt":
-                    return Language.EnglishTxt;
-
-                case "Any *.txt":
-                    return Language.AnyTxt;
-
-                default:
-                    ThrowNotSupportedLanguageException(languageName);
-                    break;
-            }
-            return 0;
-        }
-      
+              
         private const string s_CSharpBlacklistFileName = "CSharpBlacklist.txt";
         private const string s_JavaBlacklistFileName = "JavaBlacklist.txt";
         private const string s_VbNetBlacklistFileName = "VBNetBlacklist.txt";
@@ -41,10 +25,20 @@ namespace smsSurvery.Surveryer.WordCloud
             String[] excludedWords = new String[] { };
             IBlacklist result = new CommonBlacklist(excludedWords);
 
-            if (language==Language.EnglishTxt)
+            switch (language)
             {
-                result.UnionWith(new EnglishCommonWords());
-            }
+               case Language.EnglishTxt:
+                  result.UnionWith(new EnglishCommonWords());
+                  break;
+               case Language.RomanianTxt:
+                  result.UnionWith(new RomanianCommonWords());
+                  break;
+               case Language.AnyTxt:
+                  result.UnionWith(new EnglishCommonWords());
+                  break;
+               default:
+                  break;
+            }            
             return result;
         }
 
@@ -89,13 +83,14 @@ namespace smsSurvery.Surveryer.WordCloud
                 case Language.EnglishTxt:
                     return new PorterStemmer();
 
+               case Language.RomanianTxt:
+                    return new RomanianStemmer();
                 default:
                     ThrowNotSupportedLanguageException(language);
                     break;
             }
             return null;
         }
-
 
         private static void ThrowNotSupportedLanguageException(object language)
         {
