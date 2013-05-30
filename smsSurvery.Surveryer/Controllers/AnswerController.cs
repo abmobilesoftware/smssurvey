@@ -140,6 +140,7 @@ namespace smsSurvery.Surveryer.Controllers
            }
            else
            {
+              //TODO - this is something that should not be encouraged - the user should already be present in the db
               //new customer
               Customer newCustomer = new Customer() { PhoneNumber = from, Name = "John", Surname = "Doe" };
               db.CustomerSet.Add(newCustomer);
@@ -148,53 +149,59 @@ namespace smsSurvery.Surveryer.Controllers
            }                    
            return null;
         }
-
-        private int numberOfQuestionsInSurvey = 2;
+       
         private void AddSurveyResult(string text, Customer customer, SurveyPlan surveyToRun)
         {
-           SurveyResult latestSurveyResult = null;
-           if (customer.SurveyResult.Count != 0)
+           /**DA is there is no running survey -> the user most probably answered after the thank you message has been sent - this is discard for the time being,
+            * in the future we should store this for reference
+            */
+           if (customer.SurveyInProgress)
            {
-              latestSurveyResult = customer.SurveyResult.OrderByDescending(x => x.DateRan).First();
-           }
-           Question currentQuestion = null;
-           //if not final than add, otherwise start a new one
-           if (latestSurveyResult == null || latestSurveyResult.Result.Count == numberOfQuestionsInSurvey)
-           {
-              SurveyResult currentSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyPlan = surveyToRun , Complete = false};
-              db.SurveyResultSet.Add(currentSurvey);
-              db.SaveChanges();
-              currentQuestion= surveyToRun.Questions.OrderBy(x => x.Order).First();
-              var res = new Result() { Answer = text, Question = currentQuestion };
-              currentSurvey.Result.Add(res);
-              db.SaveChanges();
-           }
-           else
-           {
-              SurveyResult currentSurvey = latestSurveyResult;
-              int currentQuestionId = currentSurvey.Result.Count + 1;
-              currentQuestion = surveyToRun.Questions.Where(x => x.Order == currentQuestionId).First();
-              var res = new Result() { Answer = text, Question = currentQuestion };
-              currentSurvey.Result.Add(res);
-              db.SaveChanges();
-           }
-           //if we haven't reached the end of the survey then ask the next question
-           if (currentQuestion.Order != numberOfQuestionsInSurvey)
-           {
-              var nextQuestion = surveyToRun.Questions.Where(x => x.Order == currentQuestion.Order + 1).First();
-              //TODO fix logic errors if no next question
-              if (nextQuestion != null)
+              SurveyResult latestSurveyResult = null;
+              if (customer.SurveyResult.Count != 0)
               {
-                 SendQuestionToCustomer(customer, nextQuestion);
+                 latestSurveyResult = customer.SurveyResult.OrderByDescending(x => x.DateRan).First();
               }
-           }
-           else
-           {
-              //mark survey as  complete
-              latestSurveyResult.Complete = true;              
-              db.SaveChanges();
-              //send ThankYouMessage
-              SendThankYouToCustomer(customer, surveyToRun);
+              Question currentQuestion = null;
+              var numberOfQuestionsInSurvey = surveyToRun.Questions.Count();
+              //if not final than add, otherwise start a new one
+              if (latestSurveyResult == null || latestSurveyResult.Result.Count == numberOfQuestionsInSurvey)
+              {
+                 SurveyResult currentSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyPlan = surveyToRun, Complete = false };
+                 db.SurveyResultSet.Add(currentSurvey);
+                 db.SaveChanges();
+                 currentQuestion = surveyToRun.Questions.OrderBy(x => x.Order).First();
+                 var res = new Result() { Answer = text, Question = currentQuestion };
+                 currentSurvey.Result.Add(res);
+                 db.SaveChanges();
+              }
+              else
+              {
+                 SurveyResult currentSurvey = latestSurveyResult;
+                 int currentQuestionId = currentSurvey.Result.Count + 1;
+                 currentQuestion = surveyToRun.Questions.Where(x => x.Order == currentQuestionId).First();
+                 var res = new Result() { Answer = text, Question = currentQuestion };
+                 currentSurvey.Result.Add(res);
+                 db.SaveChanges();
+              }
+              //if we haven't reached the end of the survey then ask the next question
+              if (currentQuestion.Order != numberOfQuestionsInSurvey)
+              {
+                 var nextQuestion = surveyToRun.Questions.Where(x => x.Order == currentQuestion.Order + 1).First();
+                 //TODO fix logic errors if no next question
+                 if (nextQuestion != null)
+                 {
+                    SendQuestionToCustomer(customer, nextQuestion);
+                 }
+              }
+              else
+              {
+                 //mark survey as  complete
+                 latestSurveyResult.Complete = true;
+                 db.SaveChanges();
+                 //send ThankYouMessage
+                 SendThankYouToCustomer(customer, surveyToRun);
+              }
            }
         }
 
@@ -214,12 +221,18 @@ namespace smsSurvery.Surveryer.Controllers
              var latestSurveyResult = customer.SurveyResult.OrderByDescending(x => x.DateRan).First();
              latestSurveyResult.Complete = true;
           }
-          var surveyToRun = db.SurveyPlanSet.Find(3);
-          SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyPlan = surveyToRun, Complete = false };
-          db.SurveyResultSet.Add(newSurvey);
-          db.SaveChanges();
-          var currentQuestion = surveyToRun.Questions.OrderBy(x => x.Order).First();
-          SendQuestionToCustomer(customer, currentQuestion);
+          //TODO DA sanity check - only one active survey at a time
+          var surveyToRun = db.SurveyPlanSet.Where(s=>s.IsRunning).FirstOrDefault();
+          if (surveyToRun != null)
+          {
+             SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyPlan = surveyToRun, Complete = false };
+             db.SurveyResultSet.Add(newSurvey);
+             //mark that we have started a new survey for the current user
+             customer.SurveyInProgress = true;
+             db.SaveChanges();
+             var currentQuestion = surveyToRun.Questions.OrderBy(x => x.Order).First();
+             SendQuestionToCustomer(customer, currentQuestion);
+          }
         }
 
         private void SendQuestionToCustomer(Customer c, Question q)

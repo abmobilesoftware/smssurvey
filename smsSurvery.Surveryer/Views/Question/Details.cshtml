@@ -5,14 +5,14 @@
 }
 
 <h2>Details</h2>
-<script type="text/javascript" src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
+
  @Scripts.Render("~/bundles/jquery")
 <script>   
    $(document).ready(function () {
       if ($('#qtype').text() == "Rating") {
          var stuff = $.ajax({
-            data: { surveyId: 3 },
-            url: "/Reports/GetSurveyResults",
+            data: { questionId: $("#questionId").attr("value") },
+            url: "/Reports/GetSurveyQuestionResults",
             dataType: "json",
             async: false,
             success: function (jsonData) {
@@ -36,8 +36,7 @@
             }
          });
       }
-   });
-   
+   });  
 </script>
 <fieldset>
     <legend>Question</legend>
@@ -68,6 +67,7 @@
     @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
     @Html.ActionLink("Back to List", "Index")
 </p>
+@Html.Hidden("questionId", Model.Id)
 <div id="tableChart_div"></div> 
 <div id="pieChart_div"></div> 
 @if (Model.Type == "FreeText")

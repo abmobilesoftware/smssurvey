@@ -204,6 +204,7 @@
     <Compile Include="WordCloud\CommonBlacklist.cs" />
     <Compile Include="WordCloud\Blacklist\CommonWords.cs" />
     <Content Include="Content\WordCloud.css" />
+    <Content Include="Scripts\reports.js" />
     <Content Include="WordCloud\CustomBlacklist.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -353,11 +354,11 @@
     <Content Include="Views\Customer\Create.cshtml" />
     <Content Include="Views\Customer\Edit.cshtml" />
     <Content Include="Views\Customer\Delete.cshtml" />
-    <Content Include="Views\Reports\BuildWordCloud.cshtml" />
     <Content Include="Views\SurveyPlan\Index.cshtml" />
     <Content Include="Views\SurveyPlan\Create.cshtml" />
     <Content Include="Views\SurveyPlan\Details.cshtml" />
     <Content Include="Views\Shared\QuestionDetails.cshtml" />
+    <Content Include="Views\Reports\BuildWordCloud.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

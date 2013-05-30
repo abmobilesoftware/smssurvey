@@ -76,6 +76,54 @@ namespace smsSurvery.Surveryer.Controllers
          return null;
       }
 
+      [HttpGet]
+      public JsonResult GetSurveyQuestionResults(int questionId)
+      {
+         string[] optionDef = new string[] { "Easy as pie", "Easy enough", "Average", "Rather hard", "Hard to use" };
+         //for each question in the survey, aggregate the results
+         Question question = db.QuestionSet.Find(questionId);
+         QuestionSurveyResults res = null;
+         //Return different data for various question types
+         switch (question.Type)
+         {
+            case cRatingsTypeQuestion:            
+               {
+                  res = GenerateResultForRatingQuestion(question);
+                  List<RepDataRow> pieChartContent = new List<RepDataRow>();
+                  foreach (var rowData in res.AnswersPerValidOption)
+                  {
+                     var row = new RepDataRow(new RepDataRowCell[] { new RepDataRowCell(rowData.Key, optionDef[Int32.Parse(rowData.Key) - 1]), new RepDataRowCell(rowData.Value, rowData.Value.ToString() + " answer(s)") });
+                     pieChartContent.Add(row);
+                  }
+
+                  RepChartData pieChartSource = new RepChartData(
+                     new RepDataColumn[] {
+                new RepDataColumn("17", STRING_COLUMN_TYPE, "Type"),
+                new RepDataColumn("18", STRING_COLUMN_TYPE, "Value") },
+                        pieChartContent);
+                  //return Json(pieChartSource, JsonRequestBehavior.AllowGet);
+                  List<RepDataRow> tableData = new List<RepDataRow>()
+                        {
+                           new RepDataRow(new RepDataRowCell[] { new RepDataRowCell(res.TotalNumberOfAnswers, res.TotalNumberOfAnswers.ToString()), new RepDataRowCell(res.TotalNumberOfValidAnswers, res.TotalNumberOfValidAnswers.ToString()) })
+                        };
+                  RepChartData tableChartSource = new RepChartData(
+                     new RepDataColumn[] {
+                new RepDataColumn("17", STRING_COLUMN_TYPE, "Total Answers"),
+                new RepDataColumn("18", STRING_COLUMN_TYPE, "Valid Answers") },
+                        tableData);
+                  var dataToSendBack = new { pie = pieChartSource, table = tableChartSource };
+                  return Json(dataToSendBack, JsonRequestBehavior.AllowGet);
+               }             
+            case cFreeTextTypeQuestion:
+
+               break;
+            default:
+               break;
+         }                           
+         return null;
+      }
+
+
       private QuestionSurveyResults GenerateResultForRatingQuestion(Question q)
       {
          //we need the possible values - only valid answers are to be considered
@@ -127,7 +175,8 @@ namespace smsSurvery.Surveryer.Controllers
             Language lg = Language.RomanianTxt;
             IBlacklist blacklist = ByLanguageFactory.GetBlacklist(lg);
             IWordStemmer stemmer = ByLanguageFactory.GetStemmer(lg);
-            var x = stuff.Filter(blacklist).CountOccurences().GroupByStem(stemmer).SortByOccurences().Take(100).AsEnumerable().Cast<IWord>().ToList();
+            //DA make sure that we don't take words of less than 3 characters
+            var x = stuff.Where(w=> w.Length >=3).Filter(blacklist).CountOccurences().GroupByStem(stemmer).SortByOccurences().Take(100).AsEnumerable().Cast<IWord>().ToList();
             //remember the max - we'll need it later to better 'seed' the eventsCount
             var maxOccurences = x.First().Occurrences;
             x.Sort(Word.CompareByText);
@@ -141,18 +190,14 @@ namespace smsSurvery.Surveryer.Controllers
       }
 
       [HttpGet]
-      public ActionResult BuildWordCloud() 
+      public ActionResult BuildWordCloud(int questionId) 
       {
-         //var weightedWords = new List<IWord>();
-         //string testString = "Dragos Dragos this is not relevant a test test test";
-         //List<string> stuff = new List<string>(testString.Split(new char[]{' '}));
-         //Language lg = Language.EnglishTxt;
-         //IBlacklist blacklist = ByLanguageFactory.GetBlacklist(lg);
-         //IWordStemmer stemmer = ByLanguageFactory.GetStemmer(lg);
-         //var x = stuff.Filter(blacklist).CountOccurences().GroupByStem(stemmer).SortByOccurences().AsEnumerable().Cast<IWord>().ToList();
-         //TagCloud tg = new TagCloud();
-         //tg.MenuTags = x;
-         //return View(GetTagCloud());
+         //assuming that the question and valid
+         Question question = db.QuestionSet.Find(questionId);
+         if (question != null && question.Type == "FreeText")
+         {         
+            return PartialView(GetTagCloud(question));
+         }         
          return null;
       }
 

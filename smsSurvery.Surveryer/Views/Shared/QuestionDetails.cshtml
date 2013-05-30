@@ -5,52 +5,15 @@
 }
 
 <h2>Question @Model.Order</h2>
-<script type="text/javascript" src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
- @Scripts.Render("~/bundles/jquery")
-<script>   
-   $(document).ready(function () {
-      if ($('#qtype').text() == "Rating") {
-         var stuff = $.ajax({
-            data: { surveyId: 3 },
-            url: "/Reports/GetSurveyResults",
-            dataType: "json",
-            async: false,
-            success: function (jsonData) {
-               var options = {
-                  backgroundColor: '#F5F8FA',
-                  sliceVisibilityThreshold: 0
-               };               
-               var piechart = new google.visualization.PieChart(document.getElementById('pieChart_div'));
-               data = new google.visualization.DataTable(jsonData.pie);
-               piechart.draw(data, options);
-               var tablechart = new google.visualization.Table(document.getElementById('tableChart_div'));
-               data = new google.visualization.DataTable(jsonData.table);
-               var tableOptions = {
-                  backgroundColor: '#F5F8FA',
-                  sliceVisibilityThreshold: 0,
-                  cssClassNames: { tableCell: "tCell"}
-               };
-               tablechart.draw(data, tableOptions);
-               //var barchart = new google.visualization.ColumnChart(document.getElementById('barChart_div'));
-               //barchart.draw(data, options);
-            }
-         });
-      }
-   });
-   
-</script>
 <fieldset>
     <legend>Question</legend>
-
     <div class="display-field">
-        @Html.DisplayFor(model => model.Text)
-    </div>
-    <span id="qtype" style="display: none">@Model.Type</span>    
+       @Html.DisplayFor(model => model.Text)
+       @* we specify the question in case (will be needed later to get the report data) *@
+       @Html.HiddenFor(model => model.Id, new { qid = Model.Id, qtype=Model.Type})
+    </div>    
 </fieldset>
 
-<div id="tableChart_div"></div> 
-<div id="pieChart_div"></div> 
-@if (Model.Type == "FreeText")
-{
-    @Html.Raw(Html.TagCloud( smsSurvery.Surveryer.Controllers.ReportsController.GetTagCloud(Model) ))
-}
+<div id="@String.Format("tableChart_div{0}", Model.Id)"></div>
+<div id="@String.Format("pieChart_div{0}", Model.Id)"></div> 
+<div id="@String.Format("textCloudSection{0}", Model.Id)"></div> 

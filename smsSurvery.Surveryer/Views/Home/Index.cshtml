@@ -1,6 +1,7 @@
 ﻿@{
     ViewBag.Title = "SMS Survey";
 }
+<script type="text/javascript" src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
 @section featured {
     <section class="featured">
         <div class="content-wrapper">
@@ -43,7 +44,7 @@
 <h2>Current running survey</h2>
 @if (ViewBag.CurrentSurvey != null)
 {
-   foreach (var q in ViewBag.CurrentSurvey.Questions)
+   foreach (var q in ViewBag.SurveyQuestions)
    {
     Html.RenderPartial("QuestionDetails", (smsSurvey.dbInterface.Question) q);
    }
@@ -51,4 +52,9 @@
 else
 {
    <p>No running surveys. Start or create one</p>   
+}   
+ 
+@section Scripts {
+@Scripts.Render("~/bundles/custom")
 }
+ 

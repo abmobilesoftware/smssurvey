@@ -19,6 +19,7 @@ namespace smsSurvery.Surveryer.Controllers
             db.Entry(currentSurveys).Collection(s => s.Questions).Load();
          }
          ViewBag.CurrentSurvey = currentSurveys;
+         ViewBag.SurveyQuestions = currentSurveys.Questions.OrderBy(q=>q.Order);
          return View();
       }
 
