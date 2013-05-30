@@ -68,6 +68,7 @@
           <Property Name="Order" Type="int" Nullable="false" />
           <Property Name="Type" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="ValidAnswers" Type="nvarchar" MaxLength="1000" />
+          <Property Name="ValidAnswersDetails" Type="nvarchar" MaxLength="1000" />
         </EntityType>
         <EntityType Name="ResultSet">
           <Key>
@@ -304,6 +305,7 @@
               <Summary>Comma separated values of acceptable answers</Summary>
             </Documentation>
           </Property>
+          <Property Type="String" Name="ValidAnswersDetails" Nullable="false" MaxLength="1000" Unicode="true" />
         </EntityType>
         <EntityType Name="SurveyPlan">
           <Key>
@@ -458,6 +460,7 @@
     <EntitySetMapping Name="QuestionSet">
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.Question)">
         <MappingFragment StoreEntitySet="QuestionSet">
+                <ScalarProperty Name="ValidAnswersDetails" ColumnName="ValidAnswersDetails" />
                 <ScalarProperty Name="ValidAnswers" ColumnName="ValidAnswers" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Text" ColumnName="Text" />

@@ -78,16 +78,16 @@ namespace smsSurvery.Surveryer.Controllers
 
       [HttpGet]
       public JsonResult GetSurveyQuestionResults(int questionId)
-      {
-         string[] optionDef = new string[] { "Easy as pie", "Easy enough", "Average", "Rather hard", "Hard to use" };
+      {        
          //for each question in the survey, aggregate the results
-         Question question = db.QuestionSet.Find(questionId);
+         Question question = db.QuestionSet.Find(questionId);                
          QuestionSurveyResults res = null;
          //Return different data for various question types
          switch (question.Type)
          {
             case cRatingsTypeQuestion:            
                {
+                  string[] optionDef = question.ValidAnswersDetails.Split(';');
                   res = GenerateResultForRatingQuestion(question);
                   List<RepDataRow> pieChartContent = new List<RepDataRow>();
                   foreach (var rowData in res.AnswersPerValidOption)

@@ -25,6 +25,7 @@ namespace smsSurvey.dbInterface
         public int Order { get; set; }
         public string Type { get; set; }
         public string ValidAnswers { get; set; }
+        public string ValidAnswersDetails { get; set; }
     
         public virtual ICollection<SurveyPlan> SurveyPlan { get; set; }
         public virtual ICollection<Result> Result { get; set; }
