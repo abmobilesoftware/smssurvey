@@ -32,7 +32,7 @@ window.app.displayReportsForRatingQ = function (questionId) {
 window.app.displayReportsForFreeTextQ = function (questionId) {
    $.ajax({
       data: { questionId: questionId },
-      url: "/Reports/BuildWordCloud",
+      url: "/Reports/GetWordCloud",
       dataType: 'html',
       async: true,
       cache: false,

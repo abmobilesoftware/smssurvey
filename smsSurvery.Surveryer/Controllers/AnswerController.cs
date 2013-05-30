@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using smsSurvey.dbInterface;
 using smsSurvery.Surveryer.SmsIntegration;
+using smsSurvery.Surveryer.Models;
 
 namespace smsSurvery.Surveryer.Controllers
 {
@@ -125,6 +126,32 @@ namespace smsSurvery.Surveryer.Controllers
            return RedirectToAction("Index");
         }
 
+
+        [HttpGet]
+        public ActionResult GetMessagesWithStem(int questionId, string stem)
+        {
+           //for the given survey (if allowed access) show messages with given stem
+           Question question = db.QuestionSet.Find(questionId);
+           if (question != null && question.Type == "FreeText")
+           {
+              List<FreeTextAnswer> messages = new List<FreeTextAnswer>();
+              foreach (var result in question.Result)
+	               {
+		               if (AnswerContainsStemOfWord(result.Answer, stem) ){
+                        messages.Add(new FreeTextAnswer(){Text=result.Answer, SurveyResult=result.SurveyResult, Customer=result.SurveyResult.Customer});
+                     }                     
+	               }   
+              return View(messages);
+           }  
+           return View();
+        }
+
+        private bool AnswerContainsStemOfWord(string p, string stem)
+        {
+           //TODO depeding on the language
+           return p.ToLowerInvariant().Contains(stem.ToLowerInvariant());
+           //return true;
+        }
         [HttpPost]
         public ActionResult AnswerReceived(string from, string to, string text)
         {

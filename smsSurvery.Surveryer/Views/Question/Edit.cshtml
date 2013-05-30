@@ -39,6 +39,22 @@
             @Html.ValidationMessageFor(model => model.Type)
         </div>
 
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ValidAnswers)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ValidAnswers)
+            @Html.ValidationMessageFor(model => model.ValidAnswers)
+        </div>
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.ValidAnswersDetails)
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.ValidAnswersDetails)
+            @Html.ValidationMessageFor(model => model.ValidAnswersDetails)
+        </div>
+
         <p>
             <input type="submit" value="Save" />
         </p>

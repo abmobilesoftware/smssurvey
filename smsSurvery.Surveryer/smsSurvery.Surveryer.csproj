@@ -198,6 +198,7 @@
     </Compile>
     <Compile Include="Helpers\ReportHelpers.cs" />
     <Compile Include="Models\AccountModels.cs" />
+    <Compile Include="Models\FreeTextAnswer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SmsIntegration\SmsInterface.cs" />
     <Compile Include="WordCloud\ByLanguageFactory.cs" />
@@ -335,7 +336,6 @@
     <Content Include="Views\Question\Index.cshtml" />
     <Content Include="Views\Question\Details.cshtml" />
     <Content Include="Views\Question\Create.cshtml" />
-    <Content Include="Views\Question\Edit.cshtml" />
     <Content Include="Views\Question\Delete.cshtml" />
     <Content Include="Views\SurveyPlan\Edit.cshtml" />
     <Content Include="Views\SurveyPlan\Delete.cshtml" />
@@ -358,7 +358,9 @@
     <Content Include="Views\SurveyPlan\Create.cshtml" />
     <Content Include="Views\SurveyPlan\Details.cshtml" />
     <Content Include="Views\Shared\QuestionDetails.cshtml" />
-    <Content Include="Views\Reports\BuildWordCloud.cshtml" />
+    <Content Include="Views\Reports\GetWordCloud.cshtml" />
+    <Content Include="Views\Answer\GetMessagesWithStem.cshtml" />
+    <Content Include="Views\Question\Edit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
