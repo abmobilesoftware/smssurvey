@@ -57,6 +57,7 @@
           <Property Name="PhoneNumber" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="Surname" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="SurveyInProgress" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="QuestionSet">
           <Key>
@@ -329,6 +330,7 @@
           <Property Type="String" Name="Name" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
           <Property Type="String" Name="Surname" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
           <NavigationProperty Name="SurveyResult" Relationship="smsSurveyModel.CustomerSurveyResult" FromRole="Customer" ToRole="SurveyResult" />
+          <Property Type="Boolean" Name="SurveyInProgress" Nullable="false" />
         </EntityType>
         <EntityType Name="SurveyResult">
           <Key>
@@ -479,7 +481,8 @@
     <EntitySetMapping Name="CustomerSet">
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.Customer)">
         <MappingFragment StoreEntitySet="CustomerSet">
-          <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+          <ScalarProperty Name="SurveyInProgress" ColumnName="SurveyInProgress" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Surname" ColumnName="Surname" />
         </MappingFragment>
