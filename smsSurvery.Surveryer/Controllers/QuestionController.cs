@@ -18,7 +18,7 @@ namespace smsSurvery.Surveryer.Controllers
 
         public ActionResult Index()
         {
-            return View(db.QuestionSet.ToList());
+            return View(db.QuestionSet.OrderBy(q=> q.Order).ToList());
         }
 
         //
