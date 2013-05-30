@@ -92,6 +92,9 @@
           <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="Description" Type="nvarchar" Nullable="false" MaxLength="100" />
           <Property Name="ThankYouMessage" Type="nvarchar" Nullable="false" MaxLength="160" />
+          <Property Name="DateStarted" Type="datetime" />
+          <Property Name="DateEnded" Type="datetime" />
+          <Property Name="IsRunning" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="SurveyResultSet">
           <Key>
@@ -295,7 +298,7 @@
           <Property Type="String" Name="Type" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
           <NavigationProperty Name="SurveyPlan" Relationship="smsSurveyModel.SurveyPlanQuestion" FromRole="Question" ToRole="SurveyPlan" />
           <NavigationProperty Name="Result" Relationship="smsSurveyModel.QuestionResult" FromRole="Question" ToRole="Result" />
-          <Property Type="String" Name="ValidAnswers" Nullable="true" MaxLength="1000" >
+          <Property Type="String" Name="ValidAnswers" Nullable="true" MaxLength="1000" Unicode="true" FixedLength="false" >
             <Documentation>
               <Summary>Comma separated values of acceptable answers</Summary>
             </Documentation>
@@ -310,7 +313,10 @@
           <NavigationProperty Name="SurveyResult" Relationship="smsSurveyModel.SurveyPlanSurveyResult" FromRole="SurveyPlan" ToRole="SurveyResult" />
           <Property Type="String" Name="Description" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
           <Property Type="String" Name="ThankYouMessage" Nullable="false" MaxLength="160" FixedLength="false" Unicode="true" />
-        </EntityType>
+          <Property Type="DateTime" Name="DateStarted" Precision="3" />
+          <Property Type="DateTime" Name="DateEnded" Precision="3" />
+          <Property Type="Boolean" Name="IsRunning" Nullable="false" />
+          </EntityType>
         <Association Name="SurveyPlanQuestion">
           <End Type="smsSurveyModel.SurveyPlan" Role="SurveyPlan" Multiplicity="*" />
           <End Type="smsSurveyModel.Question" Role="Question" Multiplicity="*" />
@@ -461,6 +467,9 @@
     <EntitySetMapping Name="SurveyPlanSet">
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.SurveyPlan)">
         <MappingFragment StoreEntitySet="SurveyPlanSet">
+                <ScalarProperty Name="IsRunning" ColumnName="IsRunning" />
+                <ScalarProperty Name="DateEnded" ColumnName="DateEnded" />
+                <ScalarProperty Name="DateStarted" ColumnName="DateStarted" />
                 <ScalarProperty Name="ThankYouMessage" ColumnName="ThankYouMessage" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Id" ColumnName="Id" />

@@ -23,6 +23,9 @@ namespace smsSurvey.dbInterface
         public int Id { get; set; }
         public string Description { get; set; }
         public string ThankYouMessage { get; set; }
+        public Nullable<System.DateTime> DateStarted { get; set; }
+        public Nullable<System.DateTime> DateEnded { get; set; }
+        public bool IsRunning { get; set; }
     
         public virtual ICollection<Question> Questions { get; set; }
         public virtual ICollection<SurveyResult> SurveyResult { get; set; }
