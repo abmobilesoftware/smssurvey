@@ -33,7 +33,7 @@ namespace smsSurvery.Surveryer.Controllers
             }
            if(question.Type == "FreeText")
            {
-            ViewBag.WordCloud = ReportsController.GetTagCloud(db);            
+            //ViewBag.WordCloud = ReportsController.GetTagCloud(question);            
         }
             return View(question);
         }

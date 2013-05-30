@@ -4,7 +4,7 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
+<h2>Question @Model.Order</h2>
 <script type="text/javascript" src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
  @Scripts.Render("~/bundles/jquery")
 <script>   
@@ -42,36 +42,15 @@
 <fieldset>
     <legend>Question</legend>
 
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.Text)
-    </div>
     <div class="display-field">
         @Html.DisplayFor(model => model.Text)
     </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.Order)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Order)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.Type)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Type)
-       <span id="qtype" stype="display: none">@Model.Type</span>
-    </div>
+    <span id="qtype" style="display: none">@Model.Type</span>    
 </fieldset>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+
 <div id="tableChart_div"></div> 
 <div id="pieChart_div"></div> 
 @if (Model.Type == "FreeText")
 {
     @Html.Raw(Html.TagCloud( smsSurvery.Surveryer.Controllers.ReportsController.GetTagCloud(Model) ))
 }
-

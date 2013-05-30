@@ -336,9 +336,6 @@
     <Content Include="Views\Question\Create.cshtml" />
     <Content Include="Views\Question\Edit.cshtml" />
     <Content Include="Views\Question\Delete.cshtml" />
-    <Content Include="Views\SurveyPlan\Index.cshtml" />
-    <Content Include="Views\SurveyPlan\Details.cshtml" />
-    <Content Include="Views\SurveyPlan\Create.cshtml" />
     <Content Include="Views\SurveyPlan\Edit.cshtml" />
     <Content Include="Views\SurveyPlan\Delete.cshtml" />
     <Content Include="Views\Answer\Index.cshtml" />
@@ -357,6 +354,10 @@
     <Content Include="Views\Customer\Edit.cshtml" />
     <Content Include="Views\Customer\Delete.cshtml" />
     <Content Include="Views\Reports\BuildWordCloud.cshtml" />
+    <Content Include="Views\SurveyPlan\Index.cshtml" />
+    <Content Include="Views\SurveyPlan\Create.cshtml" />
+    <Content Include="Views\SurveyPlan\Details.cshtml" />
+    <Content Include="Views\Shared\QuestionDetails.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

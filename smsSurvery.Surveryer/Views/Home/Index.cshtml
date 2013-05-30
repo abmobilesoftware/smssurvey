@@ -39,3 +39,16 @@
         <a href="http://go.microsoft.com/fwlink/?LinkId=245157">Learn more…</a>
     </li>
 </ol>
+
+<h2>Current running survey</h2>
+@if (ViewBag.CurrentSurvey != null)
+{
+   foreach (var q in ViewBag.CurrentSurvey.Questions)
+   {
+    Html.RenderPartial("QuestionDetails", (smsSurvey.dbInterface.Question) q);
+   }
+}
+else
+{
+   <p>No running surveys. Start or create one</p>   
+}

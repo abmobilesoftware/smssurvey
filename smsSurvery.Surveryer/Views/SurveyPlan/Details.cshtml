@@ -8,8 +8,77 @@
 
 <fieldset>
     <legend>SurveyPlan</legend>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.Description)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.Description)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.ThankYouMessage)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.ThankYouMessage)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DateStarted)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DateStarted)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.DateEnded)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.DateEnded)
+    </div>
+
+    <div class="display-label">
+         @Html.DisplayNameFor(model => model.IsRunning)
+    </div>
+    <div class="display-field">
+        @Html.DisplayFor(model => model.IsRunning)
+    </div>
 </fieldset>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
     @Html.ActionLink("Back to List", "Index")
 </p>
+
+
+<h2> Questions</h2>
+<table>
+    <tr>
+        <th>
+           Text
+        </th>
+        <th>
+            Order
+        </th>
+        <th>
+            Type
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model.Questions) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Text)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Order)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Type)
+        </td>
+        <td>
+            @Html.ActionLink("Edit question", "Edit", "Question", new RouteValueDictionary { {"id",item.Id} }, null) 
+        </td>
+    </tr>
+}
+   </table>
