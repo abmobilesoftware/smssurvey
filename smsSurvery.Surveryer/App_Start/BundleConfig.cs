@@ -11,6 +11,9 @@ namespace smsSurvery.Surveryer
          bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                      "~/Scripts/jquery-{version}.js"));
 
+         bundles.Add(new ScriptBundle("~/bundles/custom").Include(
+                     "~/Scripts/reports.js"));
+
          bundles.Add(new ScriptBundle("~/bundles/jqueryui").Include(
                      "~/Scripts/jquery-ui-{version}.js"));
 
