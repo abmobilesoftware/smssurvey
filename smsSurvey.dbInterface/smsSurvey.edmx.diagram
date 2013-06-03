@@ -6,9 +6,9 @@
     <edmx:Diagrams>
       <Diagram DiagramId="e9a2859271bd473b9e049f0d6e9b4a34" Name="Diagram1" ZoomLevel="63">
         <EntityTypeShape EntityType="smsSurveyModel.Question" Width="1.5" PointX="14.125" PointY="1.75" />
-        <EntityTypeShape EntityType="smsSurveyModel.SurveyPlan" Width="1.75" PointX="7.5" PointY="1.875" />
+        <EntityTypeShape EntityType="smsSurveyModel.SurveyPlan" Width="1.75" PointX="9" PointY="1.875" />
         <AssociationConnector Association="smsSurveyModel.SurveyPlanQuestion" />
-        <EntityTypeShape EntityType="smsSurveyModel.Customer" Width="1.5" PointX="5.875" PointY="5" />
+        <EntityTypeShape EntityType="smsSurveyModel.Customer" Width="1.5" PointX="6.625" PointY="5" />
         <EntityTypeShape EntityType="smsSurveyModel.SurveyResult" Width="1.5" PointX="9" PointY="5" />
         <AssociationConnector Association="smsSurveyModel.CustomerSurveyResult" />
         <AssociationConnector Association="smsSurveyModel.SurveyPlanSurveyResult" />
@@ -20,6 +20,7 @@
         <EntityTypeShape EntityType="smsSurveyModel.webpages_OAuthMembership" Width="1.5" PointX="3.375" PointY="4.75" />
         <EntityTypeShape EntityType="smsSurveyModel.webpages_Roles" Width="1.5" PointX="3.125" PointY="2.25" />
         <AssociationConnector Association="smsSurveyModel.webpages_UsersInRoles" />
+        <AssociationConnector Association="smsSurveyModel.UserProfileSurveyPlan" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

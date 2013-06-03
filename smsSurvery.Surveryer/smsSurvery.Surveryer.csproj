@@ -361,6 +361,7 @@
     <Content Include="Views\Reports\GetWordCloud.cshtml" />
     <Content Include="Views\Answer\GetMessagesWithStem.cshtml" />
     <Content Include="Views\Question\Edit.cshtml" />
+    <Content Include="Views\Home\MyHome.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -12,6 +12,7 @@
           <EntitySet Name="SurveyPlanQuestion" EntityType="smsSurveyModel.Store.SurveyPlanQuestion" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="SurveyPlanSet" EntityType="smsSurveyModel.Store.SurveyPlanSet" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="SurveyResultSet" EntityType="smsSurveyModel.Store.SurveyResultSet" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="UserProfileSurveyPlan" EntityType="smsSurveyModel.Store.UserProfileSurveyPlan" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="UserProfile" EntityType="smsSurveyModel.Store.UserProfile" store:Type="Tables" Schema="sms_feedback_2" />
           <EntitySet Name="webpages_Membership" EntityType="smsSurveyModel.Store.webpages_Membership" store:Type="Tables" Schema="sms_feedback_2" />
           <EntitySet Name="webpages_OAuthMembership" EntityType="smsSurveyModel.Store.webpages_OAuthMembership" store:Type="Tables" Schema="sms_feedback_2" />
@@ -48,6 +49,14 @@
           <AssociationSet Name="fk_UserId" Association="smsSurveyModel.Store.fk_UserId">
             <End Role="UserProfile" EntitySet="UserProfile" />
             <End Role="webpages_UsersInRoles" EntitySet="webpages_UsersInRoles" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserProfileSurveyPlan_SurveyPlan" Association="smsSurveyModel.Store.FK_UserProfileSurveyPlan_SurveyPlan">
+            <End Role="SurveyPlanSet" EntitySet="SurveyPlanSet" />
+            <End Role="UserProfileSurveyPlan" EntitySet="UserProfileSurveyPlan" />
+          </AssociationSet>
+          <AssociationSet Name="FK_UserProfileSurveyPlan_UserProfile" Association="smsSurveyModel.Store.FK_UserProfileSurveyPlan_UserProfile">
+            <End Role="UserProfile" EntitySet="UserProfile" />
+            <End Role="UserProfileSurveyPlan" EntitySet="UserProfileSurveyPlan" />
           </AssociationSet>
         </EntityContainer>
         <EntityType Name="CustomerSet">
@@ -107,6 +116,14 @@
           <Property Name="CustomerPhoneNumber" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="SurveyPlanId" Type="int" Nullable="false" />
           <Property Name="Complete" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserProfileSurveyPlan">
+          <Key>
+            <PropertyRef Name="UserProfile_UserId" />
+            <PropertyRef Name="SurveyPlan_Id" />
+          </Key>
+          <Property Name="UserProfile_UserId" Type="int" Nullable="false" />
+          <Property Name="SurveyPlan_Id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="UserProfile">
           <Key>
@@ -251,6 +268,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_UserProfileSurveyPlan_SurveyPlan">
+          <End Role="SurveyPlanSet" Type="smsSurveyModel.Store.SurveyPlanSet" Multiplicity="1" />
+          <End Role="UserProfileSurveyPlan" Type="smsSurveyModel.Store.UserProfileSurveyPlan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SurveyPlanSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="UserProfileSurveyPlan">
+              <PropertyRef Name="SurveyPlan_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_UserProfileSurveyPlan_UserProfile">
+          <End Role="UserProfile" Type="smsSurveyModel.Store.UserProfile" Multiplicity="1" />
+          <End Role="UserProfileSurveyPlan" Type="smsSurveyModel.Store.UserProfileSurveyPlan" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="UserProfile">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="UserProfileSurveyPlan">
+              <PropertyRef Name="UserProfile_UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
@@ -289,6 +330,10 @@
             <End Role="webpages_Roles" EntitySet="webpages_Roles" />
             <End Role="UserProfile" EntitySet="UserProfile" />
           </AssociationSet>
+          <AssociationSet Name="UserProfileSurveyPlan" Association="smsSurveyModel.UserProfileSurveyPlan">
+            <End Role="SurveyPlan" EntitySet="SurveyPlanSet" />
+            <End Role="UserProfile" EntitySet="UserProfile" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Question">
           <Key>
@@ -305,7 +350,7 @@
               <Summary>Comma separated values of acceptable answers</Summary>
             </Documentation>
           </Property>
-          <Property Type="String" Name="ValidAnswersDetails" Nullable="false" MaxLength="1000" Unicode="true" />
+          <Property Type="String" Name="ValidAnswersDetails" MaxLength="1000" Unicode="true" FixedLength="false" />
         </EntityType>
         <EntityType Name="SurveyPlan">
           <Key>
@@ -319,6 +364,7 @@
           <Property Type="DateTime" Name="DateStarted" Precision="3" />
           <Property Type="DateTime" Name="DateEnded" Precision="3" />
           <Property Type="Boolean" Name="IsRunning" Nullable="false" />
+          <NavigationProperty Name="UserProfile" Relationship="smsSurveyModel.UserProfileSurveyPlan" FromRole="SurveyPlan" ToRole="UserProfile" />
           </EntityType>
         <Association Name="SurveyPlanQuestion">
           <End Type="smsSurveyModel.SurveyPlan" Role="SurveyPlan" Multiplicity="*" />
@@ -413,6 +459,7 @@
           <Property Type="Int32" Name="UserId" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="String" Name="UserName" Nullable="false" MaxLength="56" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="webpages_Roles" Relationship="smsSurveyModel.webpages_UsersInRoles" FromRole="UserProfile" ToRole="webpages_Roles" />
+          <NavigationProperty Name="SurveyPlanSet" Relationship="smsSurveyModel.UserProfileSurveyPlan" FromRole="UserProfile" ToRole="SurveyPlan" />
         </EntityType>
         <EntityType Name="webpages_Membership">
           <Key>
@@ -449,6 +496,10 @@
         </EntityType>
         <Association Name="webpages_UsersInRoles">
           <End Type="smsSurveyModel.webpages_Roles" Role="webpages_Roles" Multiplicity="*" />
+          <End Type="smsSurveyModel.UserProfile" Role="UserProfile" Multiplicity="*" />
+        </Association>
+        <Association Name="UserProfileSurveyPlan">
+          <End Type="smsSurveyModel.SurveyPlan" Role="SurveyPlan" Multiplicity="*" />
           <End Type="smsSurveyModel.UserProfile" Role="UserProfile" Multiplicity="*" />
         </Association>
       </Schema>
@@ -568,6 +619,14 @@
             </EndProperty>
             <EndProperty Name="webpages_Roles">
               <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="UserProfileSurveyPlan" TypeName="smsSurveyModel.UserProfileSurveyPlan" StoreEntitySet="UserProfileSurveyPlan">
+            <EndProperty Name="UserProfile">
+              <ScalarProperty Name="UserId" ColumnName="UserProfile_UserId" />
+            </EndProperty>
+            <EndProperty Name="SurveyPlan">
+              <ScalarProperty Name="Id" ColumnName="SurveyPlan_Id" />
             </EndProperty>
           </AssociationSetMapping>
           </EntityContainerMapping>

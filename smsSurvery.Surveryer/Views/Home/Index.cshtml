@@ -41,20 +41,6 @@
     </li>
 </ol>
 
-<h2>Current running survey</h2>
-@if (ViewBag.CurrentSurvey != null)
-{
-   foreach (var q in ViewBag.SurveyQuestions)
-   {
-    Html.RenderPartial("QuestionDetails", (smsSurvey.dbInterface.Question) q);
-   }
-}
-else
-{
-   <p>No running surveys. Start or create one</p>   
-}   
- 
-@section Scripts {
-@Scripts.Render("~/bundles/custom")
-}
+<p>To view your currently running surveys or to create a new survey please @Html.ActionLink("log in", "Login","Account") </p>
+
  
