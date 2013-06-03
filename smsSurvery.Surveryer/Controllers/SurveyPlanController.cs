@@ -31,7 +31,7 @@ namespace smsSurvery.Surveryer.Controllers
             {
                 return HttpNotFound();
             }
-            db.Entry(surveyplan).Reference(s => s.Questions).Load();
+            db.Entry(surveyplan).Collection(s => s.Questions).Load();
             return View(surveyplan);
         }
 
