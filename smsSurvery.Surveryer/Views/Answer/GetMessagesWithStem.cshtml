@@ -4,7 +4,7 @@
     ViewBag.Title = "GetMessagesWithStem";
 }
 
-<h2>GetMessagesWithStem</h2>
+<h2>Messages containing "@ViewBag.Stem"</h2>
 
 <table>
     <tr>
@@ -14,6 +14,9 @@
         <th>
          Customer
         </th>
+       <th>
+          Survey results
+       </th>
        <th>
          Date ran
         </th>
@@ -28,6 +31,9 @@
            @*@Html.DisplayFor(modelItem => item.Customer.PhoneNumber)*@
            @Html.ActionLink(item.Customer.PhoneNumber, "Details", "Customer", new { id = item.Customer.PhoneNumber }, null)
         </td>
+       <td>
+          @Html.ActionLink("Show entire survey results", "Details", "SurveyResult", new { id = item.SurveyResult.Id}, null)
+       </td>
        <td>
           @Html.DisplayFor(modelItem => item.SurveyResult.DateRan)           
         </td>

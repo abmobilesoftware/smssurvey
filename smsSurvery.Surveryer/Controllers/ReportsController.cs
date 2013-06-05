@@ -30,7 +30,7 @@ namespace smsSurvery.Surveryer.Controllers
          QuestionSurveyResults res = null;
          if (survey != null)
          {
-            foreach (var question in survey.Questions)
+            foreach (var question in survey.QuestionSet)
             {
                switch (question.Type)
                {

@@ -16,9 +16,11 @@ namespace smsSurvery.Surveryer.Controllers
         //
         // GET: /SurveyPlan/
 
+       [Authorize]
         public ActionResult Index()
         {
-            return View(db.SurveyPlanSet.ToList());
+           UserProfile user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();                     
+            return View(user.SurveyPlanSet.ToList());
         }
 
         //
@@ -31,15 +33,17 @@ namespace smsSurvery.Surveryer.Controllers
             {
                 return HttpNotFound();
             }
-            db.Entry(surveyplan).Collection(s => s.Questions).Load();
+            db.Entry(surveyplan).Collection(s => s.QuestionSet).Load();
             return View(surveyplan);
         }
 
         //
         // GET: /SurveyPlan/Create
 
+       [Authorize]
         public ActionResult Create()
         {
+           ViewBag.Action = "Create";
             return View();
         }
 
@@ -48,11 +52,15 @@ namespace smsSurvery.Surveryer.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize]
         public ActionResult Create(SurveyPlan surveyplan)
         {
             if (ModelState.IsValid)
             {
+               //associate with the current user
+               UserProfile user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();                     
                 db.SurveyPlanSet.Add(surveyplan);
+                user.SurveyPlanSet.Add(surveyplan);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
@@ -60,6 +68,30 @@ namespace smsSurvery.Surveryer.Controllers
             return View(surveyplan);
         }
 
+        [HttpGet]        
+        [Authorize]
+        public ActionResult MakeActive(int id)
+        {
+           SurveyPlan surveyplan = db.SurveyPlanSet.Find(id);
+           MakeActive(surveyplan);
+           return RedirectToAction("Index");           
+        }
+
+        private void MakeActive(SurveyPlan surveyplan)
+        {
+           var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+           var currentRunningSurvey = user.SurveyPlanSet.Where(s => s.IsRunning).FirstOrDefault();
+           if (currentRunningSurvey != null && currentRunningSurvey.Id != surveyplan.Id)
+           {
+              currentRunningSurvey.IsRunning = false;
+              currentRunningSurvey.DateEnded = DateTime.UtcNow;
+           }
+           //the current survey becomes active - all the other become inactive
+           surveyplan.IsRunning = true;
+           surveyplan.DateStarted = DateTime.UtcNow;
+           surveyplan.DateEnded = null;
+           db.SaveChanges();
+        }
         //
         // GET: /SurveyPlan/Edit/5
 

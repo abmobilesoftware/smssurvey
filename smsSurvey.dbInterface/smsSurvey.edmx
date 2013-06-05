@@ -9,7 +9,6 @@
           <EntitySet Name="CustomerSet" EntityType="smsSurveyModel.Store.CustomerSet" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="QuestionSet" EntityType="smsSurveyModel.Store.QuestionSet" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="ResultSet" EntityType="smsSurveyModel.Store.ResultSet" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="SurveyPlanQuestion" EntityType="smsSurveyModel.Store.SurveyPlanQuestion" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="SurveyPlanSet" EntityType="smsSurveyModel.Store.SurveyPlanSet" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="SurveyResultSet" EntityType="smsSurveyModel.Store.SurveyResultSet" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="UserProfileSurveyPlan" EntityType="smsSurveyModel.Store.UserProfileSurveyPlan" store:Type="Tables" Schema="dbo" />
@@ -30,13 +29,13 @@
             <End Role="webpages_Roles" EntitySet="webpages_Roles" />
             <End Role="webpages_UsersInRoles" EntitySet="webpages_UsersInRoles" />
           </AssociationSet>
-          <AssociationSet Name="FK_SurveyPlanQuestion_Question" Association="smsSurveyModel.Store.FK_SurveyPlanQuestion_Question">
-            <End Role="QuestionSet" EntitySet="QuestionSet" />
-            <End Role="SurveyPlanQuestion" EntitySet="SurveyPlanQuestion" />
-          </AssociationSet>
-          <AssociationSet Name="FK_SurveyPlanQuestion_SurveyPlan" Association="smsSurveyModel.Store.FK_SurveyPlanQuestion_SurveyPlan">
+          <AssociationSet Name="FK_RunningSurvey" Association="smsSurveyModel.Store.FK_RunningSurvey">
             <End Role="SurveyPlanSet" EntitySet="SurveyPlanSet" />
-            <End Role="SurveyPlanQuestion" EntitySet="SurveyPlanQuestion" />
+            <End Role="CustomerSet" EntitySet="CustomerSet" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SurveyPlanQuestion" Association="smsSurveyModel.Store.FK_SurveyPlanQuestion">
+            <End Role="SurveyPlanSet" EntitySet="SurveyPlanSet" />
+            <End Role="QuestionSet" EntitySet="QuestionSet" />
           </AssociationSet>
           <AssociationSet Name="FK_SurveyPlanSurveyResult" Association="smsSurveyModel.Store.FK_SurveyPlanSurveyResult">
             <End Role="SurveyPlanSet" EntitySet="SurveyPlanSet" />
@@ -67,6 +66,7 @@
           <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="Surname" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="SurveyInProgress" Type="bit" Nullable="false" />
+          <Property Name="SurveyPlan_Id" Type="int" />
         </EntityType>
         <EntityType Name="QuestionSet">
           <Key>
@@ -78,6 +78,7 @@
           <Property Name="Type" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="ValidAnswers" Type="nvarchar" MaxLength="1000" />
           <Property Name="ValidAnswersDetails" Type="nvarchar" MaxLength="1000" />
+          <Property Name="SurveyPlan_Id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="ResultSet">
           <Key>
@@ -87,14 +88,6 @@
           <Property Name="Answer" Type="nvarchar" Nullable="false" MaxLength="500" />
           <Property Name="QuestionId" Type="int" Nullable="false" />
           <Property Name="SurveyResultId" Type="int" Nullable="false" />
-        </EntityType>
-        <EntityType Name="SurveyPlanQuestion">
-          <Key>
-            <PropertyRef Name="SurveyPlan_Id" />
-            <PropertyRef Name="Questions_Id" />
-          </Key>
-          <Property Name="SurveyPlan_Id" Type="int" Nullable="false" />
-          <Property Name="Questions_Id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="SurveyPlanSet">
           <Key>
@@ -208,26 +201,26 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_SurveyPlanQuestion_Question">
-          <End Role="QuestionSet" Type="smsSurveyModel.Store.QuestionSet" Multiplicity="1" />
-          <End Role="SurveyPlanQuestion" Type="smsSurveyModel.Store.SurveyPlanQuestion" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="QuestionSet">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="SurveyPlanQuestion">
-              <PropertyRef Name="Questions_Id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_SurveyPlanQuestion_SurveyPlan">
-          <End Role="SurveyPlanSet" Type="smsSurveyModel.Store.SurveyPlanSet" Multiplicity="1" />
-          <End Role="SurveyPlanQuestion" Type="smsSurveyModel.Store.SurveyPlanQuestion" Multiplicity="*" />
+        <Association Name="FK_RunningSurvey">
+          <End Role="SurveyPlanSet" Type="smsSurveyModel.Store.SurveyPlanSet" Multiplicity="0..1" />
+          <End Role="CustomerSet" Type="smsSurveyModel.Store.CustomerSet" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="SurveyPlanSet">
               <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="SurveyPlanQuestion">
+            <Dependent Role="CustomerSet">
+              <PropertyRef Name="SurveyPlan_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SurveyPlanQuestion">
+          <End Role="SurveyPlanSet" Type="smsSurveyModel.Store.SurveyPlanSet" Multiplicity="1" />
+          <End Role="QuestionSet" Type="smsSurveyModel.Store.QuestionSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SurveyPlanSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="QuestionSet">
               <PropertyRef Name="SurveyPlan_Id" />
             </Dependent>
           </ReferentialConstraint>
@@ -299,10 +292,6 @@
         <EntityContainer Name="smsSurveyEntities" p1:LazyLoadingEnabled="true">
           <EntitySet Name="QuestionSet" EntityType="smsSurveyModel.Question" />
           <EntitySet Name="SurveyPlanSet" EntityType="smsSurveyModel.SurveyPlan" />
-          <AssociationSet Name="SurveyPlanQuestion" Association="smsSurveyModel.SurveyPlanQuestion">
-            <End Role="SurveyPlan" EntitySet="SurveyPlanSet" />
-            <End Role="Question" EntitySet="QuestionSet" />
-          </AssociationSet>
           <EntitySet Name="CustomerSet" EntityType="smsSurveyModel.Customer" />
           <EntitySet Name="SurveyResultSet" EntityType="smsSurveyModel.SurveyResult" />
           <AssociationSet Name="CustomerSurveyResult" Association="smsSurveyModel.CustomerSurveyResult">
@@ -334,6 +323,14 @@
             <End Role="SurveyPlan" EntitySet="SurveyPlanSet" />
             <End Role="UserProfile" EntitySet="UserProfile" />
           </AssociationSet>
+          <AssociationSet Name="FK_SurveyPlanQuestion" Association="smsSurveyModel.FK_SurveyPlanQuestion">
+            <End Role="SurveyPlan" EntitySet="SurveyPlanSet" />
+            <End Role="Question" EntitySet="QuestionSet" />
+          </AssociationSet>
+          <AssociationSet Name="RunningSurvey" Association="smsSurveyModel.FK_RunningSurvey">
+            <End Role="SurveyPlan" EntitySet="SurveyPlanSet" />
+            <End Role="Customer" EntitySet="CustomerSet" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Question">
           <Key>
@@ -343,7 +340,6 @@
           <Property Type="String" Name="Text" Nullable="false" MaxLength="160" Unicode="true" FixedLength="false" />
           <Property Type="Int32" Name="Order" Nullable="false" />
           <Property Type="String" Name="Type" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
-          <NavigationProperty Name="SurveyPlan" Relationship="smsSurveyModel.SurveyPlanQuestion" FromRole="Question" ToRole="SurveyPlan" />
           <NavigationProperty Name="Result" Relationship="smsSurveyModel.QuestionResult" FromRole="Question" ToRole="Result" />
           <Property Type="String" Name="ValidAnswers" Nullable="true" MaxLength="1000" Unicode="true" FixedLength="false" >
             <Documentation>
@@ -351,13 +347,14 @@
             </Documentation>
           </Property>
           <Property Type="String" Name="ValidAnswersDetails" MaxLength="1000" Unicode="true" FixedLength="false" />
+          <Property Type="Int32" Name="SurveyPlan_Id" Nullable="false" />
+          <NavigationProperty Name="SurveyPlanSet" Relationship="smsSurveyModel.FK_SurveyPlanQuestion" FromRole="Question" ToRole="SurveyPlan" />
         </EntityType>
         <EntityType Name="SurveyPlan">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
           <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <NavigationProperty Name="Questions" Relationship="smsSurveyModel.SurveyPlanQuestion" FromRole="SurveyPlan" ToRole="Question" />
           <NavigationProperty Name="SurveyResult" Relationship="smsSurveyModel.SurveyPlanSurveyResult" FromRole="SurveyPlan" ToRole="SurveyResult" />
           <Property Type="String" Name="Description" Nullable="false" MaxLength="100" Unicode="true" FixedLength="false" />
           <Property Type="String" Name="ThankYouMessage" Nullable="false" MaxLength="160" FixedLength="false" Unicode="true" />
@@ -365,11 +362,9 @@
           <Property Type="DateTime" Name="DateEnded" Precision="3" />
           <Property Type="Boolean" Name="IsRunning" Nullable="false" />
           <NavigationProperty Name="UserProfile" Relationship="smsSurveyModel.UserProfileSurveyPlan" FromRole="SurveyPlan" ToRole="UserProfile" />
+          <NavigationProperty Name="QuestionSet" Relationship="smsSurveyModel.FK_SurveyPlanQuestion" FromRole="SurveyPlan" ToRole="Question" />
+          <NavigationProperty Name="CustomerSet" Relationship="smsSurveyModel.FK_RunningSurvey" FromRole="SurveyPlan" ToRole="Customer" />
           </EntityType>
-        <Association Name="SurveyPlanQuestion">
-          <End Type="smsSurveyModel.SurveyPlan" Role="SurveyPlan" Multiplicity="*" />
-          <End Type="smsSurveyModel.Question" Role="Question" Multiplicity="*" />
-        </Association>
         <EntityType Name="Customer">
           <Key>
             <PropertyRef Name="PhoneNumber" />
@@ -379,6 +374,8 @@
           <Property Type="String" Name="Surname" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
           <NavigationProperty Name="SurveyResult" Relationship="smsSurveyModel.CustomerSurveyResult" FromRole="Customer" ToRole="SurveyResult" />
           <Property Type="Boolean" Name="SurveyInProgress" Nullable="false" />
+          <Property Type="Int32" Name="SurveyPlan_Id" />
+          <NavigationProperty Name="RunningSurvey" Relationship="smsSurveyModel.FK_RunningSurvey" FromRole="Customer" ToRole="SurveyPlan" />
         </EntityType>
         <EntityType Name="SurveyResult">
           <Key>
@@ -502,6 +499,30 @@
           <End Type="smsSurveyModel.SurveyPlan" Role="SurveyPlan" Multiplicity="*" />
           <End Type="smsSurveyModel.UserProfile" Role="UserProfile" Multiplicity="*" />
         </Association>
+        <Association Name="FK_SurveyPlanQuestion">
+          <End Type="smsSurveyModel.SurveyPlan" Role="SurveyPlan" Multiplicity="1" />
+          <End Type="smsSurveyModel.Question" Role="Question" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SurveyPlan">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Question">
+              <PropertyRef Name="SurveyPlan_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RunningSurvey">
+          <End Type="smsSurveyModel.SurveyPlan" Role="SurveyPlan" Multiplicity="0..1" />
+          <End Type="smsSurveyModel.Customer" Role="Customer" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SurveyPlan">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Customer">
+              <PropertyRef Name="SurveyPlan_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -511,6 +532,7 @@
     <EntitySetMapping Name="QuestionSet">
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.Question)">
         <MappingFragment StoreEntitySet="QuestionSet">
+                <ScalarProperty Name="SurveyPlan_Id" ColumnName="SurveyPlan_Id" />
                 <ScalarProperty Name="ValidAnswersDetails" ColumnName="ValidAnswersDetails" />
                 <ScalarProperty Name="ValidAnswers" ColumnName="ValidAnswers" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -535,7 +557,8 @@
     <EntitySetMapping Name="CustomerSet">
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.Customer)">
         <MappingFragment StoreEntitySet="CustomerSet">
-          <ScalarProperty Name="SurveyInProgress" ColumnName="SurveyInProgress" />
+          <ScalarProperty Name="SurveyPlan_Id" ColumnName="SurveyPlan_Id" />
+                <ScalarProperty Name="SurveyInProgress" ColumnName="SurveyInProgress" />
                 <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Surname" ColumnName="Surname" />
@@ -563,14 +586,6 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <AssociationSetMapping Name="SurveyPlanQuestion" TypeName="smsSurveyModel.SurveyPlanQuestion" StoreEntitySet="SurveyPlanQuestion">
-      <EndProperty Name="SurveyPlan">
-        <ScalarProperty Name="Id" ColumnName="SurveyPlan_Id" />
-      </EndProperty>
-      <EndProperty Name="Question">
-        <ScalarProperty Name="Id" ColumnName="Questions_Id" />
-      </EndProperty>
-    </AssociationSetMapping>
           <EntitySetMapping Name="UserProfile">
             <EntityTypeMapping TypeName="smsSurveyModel.UserProfile">
               <MappingFragment StoreEntitySet="UserProfile">

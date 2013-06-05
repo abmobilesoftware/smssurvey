@@ -16,9 +16,10 @@ namespace smsSurvey.dbInterface
     {
         public SurveyPlan()
         {
-            this.Questions = new HashSet<Question>();
             this.SurveyResult = new HashSet<SurveyResult>();
             this.UserProfile = new HashSet<UserProfile>();
+            this.QuestionSet = new HashSet<Question>();
+            this.CustomerSet = new HashSet<Customer>();
         }
     
         public int Id { get; set; }
@@ -28,8 +29,9 @@ namespace smsSurvey.dbInterface
         public Nullable<System.DateTime> DateEnded { get; set; }
         public bool IsRunning { get; set; }
     
-        public virtual ICollection<Question> Questions { get; set; }
         public virtual ICollection<SurveyResult> SurveyResult { get; set; }
         public virtual ICollection<UserProfile> UserProfile { get; set; }
+        public virtual ICollection<Question> QuestionSet { get; set; }
+        public virtual ICollection<Customer> CustomerSet { get; set; }
     }
 }

@@ -20,10 +20,10 @@ namespace smsSurvery.Surveryer.Controllers
          var currentSurveys = db.SurveyPlanSet.Where(s => s.IsRunning).FirstOrDefault();
          if (currentSurveys != null)
          {            
-            db.Entry(currentSurveys).Collection(s => s.Questions).Load();
+            db.Entry(currentSurveys).Collection(s => s.QuestionSet).Load();
          }
          ViewBag.CurrentSurvey = currentSurveys;
-         ViewBag.SurveyQuestions = currentSurveys.Questions.OrderBy(q=>q.Order);
+         ViewBag.SurveyQuestions = currentSurveys.QuestionSet.OrderBy(q=>q.Order);
          return View();
       }
    
@@ -36,10 +36,10 @@ namespace smsSurvery.Surveryer.Controllers
          var currentSurveys = user.SurveyPlanSet.Where(s => s.IsRunning).FirstOrDefault();
          if (currentSurveys != null)
          {
-            db.Entry(currentSurveys).Collection(s => s.Questions).Load();
-         }
-         ViewBag.CurrentSurvey = currentSurveys;
-         ViewBag.SurveyQuestions = currentSurveys.Questions.OrderBy(q => q.Order);
+            db.Entry(currentSurveys).Collection(s => s.QuestionSet).Load();
+            ViewBag.CurrentSurvey = currentSurveys;
+            ViewBag.SurveyQuestions = currentSurveys.QuestionSet.OrderBy(q => q.Order);
+         }        
          return View();
          
       }

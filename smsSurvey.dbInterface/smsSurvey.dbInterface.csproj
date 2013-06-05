@@ -50,7 +50,9 @@
     <Compile Include="Customer.cs">
       <DependentUpon>smsSurvey.tt</DependentUpon>
     </Compile>
+    <Compile Include="Extensions\Question.cs" />
     <Compile Include="Extensions\SurveyPlan.cs" />
+    <Compile Include="Extensions\SurveyResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Question.cs">
       <DependentUpon>smsSurvey.tt</DependentUpon>

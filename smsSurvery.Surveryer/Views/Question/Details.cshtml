@@ -6,72 +6,45 @@
 
 <h2>Details</h2>
 
- @Scripts.Render("~/bundles/jquery")
-<script>   
-   $(document).ready(function () {
-      if ($('#qtype').text() == "Rating") {
-         var stuff = $.ajax({
-            data: { questionId: $("#questionId").attr("value") },
-            url: "/Reports/GetSurveyQuestionResults",
-            dataType: "json",
-            async: false,
-            success: function (jsonData) {
-               var options = {
-                  backgroundColor: '#F5F8FA',
-                  sliceVisibilityThreshold: 0
-               };               
-               var piechart = new google.visualization.PieChart(document.getElementById('pieChart_div'));
-               data = new google.visualization.DataTable(jsonData.pie);
-               piechart.draw(data, options);
-               var tablechart = new google.visualization.Table(document.getElementById('tableChart_div'));
-               data = new google.visualization.DataTable(jsonData.table);
-               var tableOptions = {
-                  backgroundColor: '#F5F8FA',
-                  sliceVisibilityThreshold: 0,
-                  cssClassNames: { tableCell: "tCell"}
-               };
-               tablechart.draw(data, tableOptions);
-               //var barchart = new google.visualization.ColumnChart(document.getElementById('barChart_div'));
-               //barchart.draw(data, options);
-            }
-         });
-      }
-   });  
-</script>
 <fieldset>
     <legend>Question</legend>
 
     <div class="display-label">
-         @Html.DisplayNameFor(model => model.Text)
+         @Html.LabelFor(model => model.Text)
     </div>
     <div class="display-field">
         @Html.DisplayFor(model => model.Text)
     </div>
 
     <div class="display-label">
-         @Html.DisplayNameFor(model => model.Order)
+         @Html.LabelFor(model => model.Order)
     </div>
     <div class="display-field">
         @Html.DisplayFor(model => model.Order)
     </div>
 
     <div class="display-label">
-         @Html.DisplayNameFor(model => model.Type)
+         @Html.LabelFor(model => model.Type)
     </div>
     <div class="display-field">
         @Html.DisplayFor(model => model.Type)
        <span id="qtype" stype="display: none">@Model.Type</span>
     </div>
-</fieldset>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
-@Html.Hidden("questionId", Model.Id)
-<div id="tableChart_div"></div> 
-<div id="pieChart_div"></div> 
-@if (Model.Type == "FreeText")
-{
-    @Html.Raw(Html.TagCloud( smsSurvery.Surveryer.Controllers.ReportsController.GetTagCloud(Model) ))
-}
 
+   <div class="editor-label">
+      @Html.LabelFor(model => model.ValidAnswers)
+   </div>
+   <div class="editor-field">
+      @Html.DisplayFor(model => model.ValidAnswers)      
+   </div>
+
+   <div class="editor-label">
+      @Html.LabelFor(model => model.ValidAnswersDetails)
+   </div>
+   <div class="editor-field">
+      @Html.DisplayFor(model => model.ValidAnswersDetails)      
+   </div>
+</fieldset>
+<p>       
+   @Html.ActionLink("Back to survey", "Details", "SurveyPlan", new {id = Model.SurveyPlan_Id }, null)
+</p>

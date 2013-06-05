@@ -1,0 +1,57 @@
+﻿@model smsSurvey.dbInterface.Question
+
+<fieldset>
+   <legend>Question</legend>
+
+   @Html.HiddenFor(model => model.SurveyPlan_Id)
+   <div class="editor-label">
+      @Html.LabelFor(model => model.Text)
+   </div>
+   <div class="editor-field">
+      @Html.EditorFor(model => model.Text)
+      @Html.ValidationMessageFor(model => model.Text)
+   </div>
+
+   <div class="editor-label">
+      @Html.LabelFor(model => model.Order)
+   </div>
+   <div class="editor-field">
+      @Html.EditorFor(model => model.Order)
+      @Html.ValidationMessageFor(model => model.Order)
+   </div>
+
+   <div class="editor-label">
+      @Html.LabelFor(model => model.Type)
+   </div>
+   <div class="editor-field">
+      @Html.EditorFor(model => model.Type)
+      @Html.ValidationMessageFor(model => model.Type)
+   </div>
+
+   <div class="editor-label">
+      @Html.LabelFor(model => model.ValidAnswers)
+   </div>
+   <div class="editor-field">
+      @Html.EditorFor(model => model.ValidAnswers)
+      @Html.ValidationMessageFor(model => model.ValidAnswers)
+   </div>
+
+   <div class="editor-label">
+      @Html.LabelFor(model => model.ValidAnswersDetails)
+   </div>
+   <div class="editor-field">
+      @Html.EditorFor(model => model.ValidAnswersDetails)
+      @Html.ValidationMessageFor(model => model.ValidAnswersDetails)
+   </div>
+
+   <p>
+      @if (ViewBag.Action == "Create")
+      {
+         <input type="submit" value="Create" />
+           }
+      else
+      {
+         <input type="submit" value="Save" />
+           }
+   </p>
+</fieldset>

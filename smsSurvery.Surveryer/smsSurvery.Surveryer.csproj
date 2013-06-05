@@ -362,6 +362,8 @@
     <Content Include="Views\Answer\GetMessagesWithStem.cshtml" />
     <Content Include="Views\Question\Edit.cshtml" />
     <Content Include="Views\Home\MyHome.cshtml" />
+    <Content Include="Views\SurveyPlan\CreateEditSurveyPlan.cshtml" />
+    <Content Include="Views\Question\CreateEditQuestion.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

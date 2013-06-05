@@ -431,7 +431,8 @@ input, textarea {
     font-size: 1.2em;
     margin: 5px 0 6px 0;
     padding: 5px;
-    width: 300px;
+    /*width: 300px;*/
+    width: 100%;
 }
 
 textarea {
@@ -532,6 +533,7 @@ table {
     border-spacing: 0;
     margin-top: 0.75em;
     border: 0 none;
+    width: 100%;
 }
 
 th {
@@ -837,3 +839,29 @@ text-align: center;
  {
      padding: 0px;      
  }
+
+.surveyPlan .display-label{
+  float: left;
+  width: 100px;   
+  text-align: right; 
+}
+ 
+.clear {
+   clear: both;
+}
+
+.wordwrap { 
+   white-space: pre-wrap;      /* CSS3 */   
+   white-space: -moz-pre-wrap; /* Firefox */    
+   white-space: -pre-wrap;     /* Opera <7 */   
+   white-space: -o-pre-wrap;   /* Opera 7 */    
+   word-wrap: break-word;      /* IE */
+}
+
+.labelCol {
+   width:150px;
+   text-align: right;
+}
+.questionsTable {
+   width: 100%;
+}

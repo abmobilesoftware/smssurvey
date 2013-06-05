@@ -9,42 +9,14 @@
 @using (Html.BeginForm()) {
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
-
-    <fieldset>
-        <legend>Question</legend>
-
-        <div class="editor-label">
-            @Html.LabelFor(model => model.Text)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.Text)
-            @Html.ValidationMessageFor(model => model.Text)
-        </div>
-
-        <div class="editor-label">
-            @Html.LabelFor(model => model.Order)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.Order)
-            @Html.ValidationMessageFor(model => model.Order)
-        </div>
-
-        <div class="editor-label">
-            @Html.LabelFor(model => model.Type)
-        </div>
-        <div class="editor-field">
-            @Html.EditorFor(model => model.Type)
-            @Html.ValidationMessageFor(model => model.Type)
-        </div>
-
-        <p>
-            <input type="submit" value="Create" />
-        </p>
-    </fieldset>
+   
+    <text>
+    @{Html.RenderPartial("CreateEditQuestion", Model);}
+    </text> 
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Back to survey", "Edit", "SurveyPlan", new {id = Model.SurveyPlan_Id }, null)
 </div>
 
 @section Scripts {

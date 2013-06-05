@@ -6,43 +6,50 @@
 
 <h2>Details</h2>
 
-<fieldset>
+<fieldset class="surveyPlan">
     <legend>SurveyPlan</legend>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.Description)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Description)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.ThankYouMessage)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.ThankYouMessage)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.DateStarted)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.DateStarted)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.DateEnded)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.DateEnded)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.IsRunning)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.IsRunning)
-    </div>
+    <table>
+       <tr>
+          <td class="labelCol">
+               @Html.DisplayNameFor(model => model.Description)
+          </td>
+          <td>
+              @Html.DisplayFor(model => model.Description)
+          </td>
+       </tr>
+       <tr>
+          <td class="labelCol">
+               @Html.DisplayNameFor(model => model.ThankYouMessage)
+          </td>
+          <td>
+              @Html.DisplayFor(model => model.ThankYouMessage)
+          </td>
+       </tr>
+       <tr>
+          <td class="labelCol">
+               @Html.DisplayNameFor(model => model.DateStarted)
+          </td>
+          <td>
+              @Html.DisplayFor(model => model.DateStarted)
+          </td>
+       </tr>
+       <tr>
+          <td class="labelCol">
+               @Html.DisplayNameFor(model => model.DateEnded)
+          </td>
+          <td>
+              @Html.DisplayFor(model => model.DateEnded)
+          </td>
+       </tr>
+       <tr>
+          <td class="labelCol">
+               @Html.DisplayNameFor(model => model.IsRunning)
+          </td>
+          <td>
+              @Html.DisplayFor(model => model.IsRunning)
+          </td>
+       </tr>
+    </table>
 </fieldset>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id=Model.Id }) |
@@ -51,7 +58,9 @@
 
 
 <h2> Questions</h2>
-<table>
+@if (Model.QuestionSet.Count != 0)
+{
+<table class="questionsTable">
     <tr>
         <th>
            Text
@@ -65,7 +74,7 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model.Questions) {
+@foreach (var item in Model.QuestionSet) {
     <tr>
         <td>
             @Html.DisplayFor(modelItem => item.Text)
@@ -77,8 +86,16 @@
             @Html.DisplayFor(modelItem => item.Type)
         </td>
         <td>
-            @Html.ActionLink("Edit question", "Edit", "Question", new RouteValueDictionary { {"id",item.Id} }, null) 
+            @Html.ActionLink("Details", "Details", "Question", new RouteValueDictionary { {"id",item.Id} }, null) 
         </td>
     </tr>
 }
-   </table>
+</table>   
+}
+else {
+   <p>
+      No questions defined so far. How about adding a question to this survey?
+      Edit the survey to continue.
+   </p>
+}
+

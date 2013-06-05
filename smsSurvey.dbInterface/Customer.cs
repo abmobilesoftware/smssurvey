@@ -23,7 +23,9 @@ namespace smsSurvey.dbInterface
         public string Name { get; set; }
         public string Surname { get; set; }
         public bool SurveyInProgress { get; set; }
+        public Nullable<int> SurveyPlan_Id { get; set; }
     
         public virtual ICollection<SurveyResult> SurveyResult { get; set; }
+        public virtual SurveyPlan RunningSurvey { get; set; }
     }
 }

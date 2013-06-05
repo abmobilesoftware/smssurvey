@@ -1,0 +1,64 @@
+﻿@model smsSurvey.dbInterface.SurveyPlan
+
+<fieldset class="surveyPlan">
+   <legend>SurveyPlan</legend>
+
+    @if (Model != null)
+    {
+         @Html.HiddenFor(model => model.Id)
+    }
+   <table>
+      <tr>
+         <td class="labelCol">
+            @Html.DisplayNameFor(model => model.Description)
+         </td>
+         <td>
+            @Html.EditorFor(model => model.Description)
+            @Html.ValidationMessageFor(model => model.Description)
+         </td>
+      </tr>
+      <tr>
+         <td class="labelCol">
+            @Html.DisplayNameFor(model => model.ThankYouMessage)
+         </td>
+         <td>
+            @Html.EditorFor(model => model.ThankYouMessage)
+            @Html.ValidationMessageFor(model => model.ThankYouMessage)
+         </td>
+      </tr>
+      <tr>
+         <td class="labelCol">
+            @Html.DisplayNameFor(model => model.DateStarted)
+         </td>
+         <td>
+            @Html.EditorFor(model => model.DateStarted)
+            @Html.ValidationMessageFor(model => model.DateStarted)
+         </td>
+      </tr>
+      <tr>
+         <td class="labelCol">
+            @Html.DisplayNameFor(model => model.DateEnded)
+         </td>
+         <td>
+            @Html.EditorFor(model => model.DateEnded)
+            @Html.ValidationMessageFor(model => model.DateEnded)
+         </td>
+      </tr>
+      <tr>
+         <td class="labelCol">
+            @Html.DisplayNameFor(model => model.IsRunning)
+         </td>
+         <td>
+            @Html.CheckBoxFor(model => model.IsRunning,new { disabled = "disabled", @readonly = "readonly" })
+         </td>
+      </tr>
+   </table>
+   @if (ViewBag.Action == "Create")
+   {
+      <input type="submit" value="Create" />
+      }
+   else
+   {
+      <input type="submit" value="Save" />
+   }    
+</fieldset>

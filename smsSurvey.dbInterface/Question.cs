@@ -16,7 +16,6 @@ namespace smsSurvey.dbInterface
     {
         public Question()
         {
-            this.SurveyPlan = new HashSet<SurveyPlan>();
             this.Result = new HashSet<Result>();
         }
     
@@ -26,8 +25,9 @@ namespace smsSurvey.dbInterface
         public string Type { get; set; }
         public string ValidAnswers { get; set; }
         public string ValidAnswersDetails { get; set; }
+        public int SurveyPlan_Id { get; set; }
     
-        public virtual ICollection<SurveyPlan> SurveyPlan { get; set; }
         public virtual ICollection<Result> Result { get; set; }
+        public virtual SurveyPlan SurveyPlanSet { get; set; }
     }
 }

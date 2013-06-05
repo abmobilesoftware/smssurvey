@@ -6,24 +6,64 @@
 
 <h2>Edit</h2>
 
-@using (Html.BeginForm()) {
+@using (Html.BeginForm("Edit", "SurveyPlan"))
+{
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
-
-    <fieldset>
-        <legend>SurveyPlan</legend>
-
-        @Html.HiddenFor(model => model.Id)
-
-        <p>
-            <input type="submit" value="Save" />
-        </p>
-    </fieldset>
+    <text>
+    @{Html.RenderPartial("CreateEditSurveyPlan", Model);}
+    </text> 
 }
 
 <div>
     @Html.ActionLink("Back to List", "Index")
 </div>
+
+<h2> Questions</h2>
+@if (Model.QuestionSet.Count != 0)
+{
+<table class="questionsTable">
+    <tr>
+        <th>
+           Text
+        </th>
+        <th>
+            Order
+        </th>
+        <th>
+            Type
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model.QuestionSet) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Text)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Order)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Type)
+        </td>
+        <td>
+            @Html.ActionLink("Edit question", "Edit", "Question", new RouteValueDictionary { {"id",item.Id} }, null) 
+        </td>
+    </tr>
+}
+</table>   
+}
+else {
+   <p>
+      No questions defined so far. How about adding a question to this survey?
+      Click the link below.
+   </p>
+}
+
+<p>
+   @Html.ActionLink("Add question", "Create", "Question", new {surveyplanid = Model.Id}, null)
+</p>
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
