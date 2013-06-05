@@ -104,7 +104,20 @@ namespace smsSurvery.Surveryer.Controllers
             if (ModelState.IsValid)
             {
                 db.Entry(question).State = EntityState.Modified;
-                db.SaveChanges();
+                try
+                {
+                   db.SaveChanges();
+                }
+                catch (System.Data.Entity.Validation.DbEntityValidationException dbEx)
+                {
+                   foreach (var validationErrors in dbEx.EntityValidationErrors)
+                   {
+                      foreach (var validationError in validationErrors.ValidationErrors)
+                      {
+                         System.Diagnostics.Trace.TraceInformation("Property: {0} Error: {1}", validationError.PropertyName, validationError.ErrorMessage);
+                      }
+                   }
+                }
                 return RedirectToAction("Edit", "SurveyPlan", new { id = question.SurveyPlan_Id });
             }
             return View(question);

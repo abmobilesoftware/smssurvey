@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@using smsSurvery.Surveryer.Utilities
+<!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="utf-8" />
@@ -11,9 +12,10 @@
     <body>
         <header>
             <div class="content-wrapper">
-                <div class="float-left">
-                   <img class="site-title" src="~/Content/images/logo.png" />
+                <div class="float-left logo">
+                   @*<img class="site-title" src="~/Content/images/logo.png" />*@
                     @*<p class="site-title">@Html.ActionLink("your logo here", "Index", "Home")</p>*@
+                    @Url.ImageLink(Url.Content("~/Content/images/logo.png"),"home","Index","Home", "SMSSurvey",null,"logo")
                 </div>
                 <div class="float-right">
                     <section id="login">
@@ -25,7 +27,7 @@
                         <ul id="menu">
                             <li>@Html.ActionLink("Home", "Index", "Home")</li>
                             <li>@Html.ActionLink("Surveys", "Index", "SurveyPlan")</li>                                                       
-                           <li>@Html.ActionLink("Surveys Results", "Index", "SurveyResult")</li>
+                           <li>@Html.ActionLink("Responses", "Index", "SurveyResult")</li>
                         </ul>
                     </nav>  
                    }

@@ -24,7 +24,7 @@
       @Html.LabelFor(model => model.Type)
    </div>
    <div class="editor-field">
-      @Html.EditorFor(model => model.Type)
+      @Html.DropDownListFor(model=> model.Type, new SelectList(new List<SelectListItem>() {  new SelectListItem(){Text ="Rating", Value="Rating"}, new SelectListItem() {Text="FreeText",Value="FreeText"} },"Text","Value"))      
       @Html.ValidationMessageFor(model => model.Type)
    </div>
 

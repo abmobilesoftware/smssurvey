@@ -84,6 +84,7 @@
     <Compile Include="UserProfile.cs">
       <DependentUpon>smsSurvey.tt</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\RequiredIfAttribute.cs" />
     <Compile Include="webpages_Membership.cs">
       <DependentUpon>smsSurvey.tt</DependentUpon>
     </Compile>

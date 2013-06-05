@@ -865,3 +865,7 @@ text-align: center;
 .questionsTable {
    width: 100%;
 }
+
+.logo a:hover {
+   background-color: transparent;
+}
