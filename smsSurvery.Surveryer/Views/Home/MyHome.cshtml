@@ -5,10 +5,9 @@
 <h2>Currently running survey</h2>
 @if (ViewBag.CurrentSurvey != null)
 {
-   foreach (var q in ViewBag.SurveyQuestions)
-   {
-    Html.RenderPartial("QuestionDetails", (smsSurvey.dbInterface.Question) q);
-   }
+   <text>
+    @{Html.RenderPartial("SurveyReport", (IEnumerable<smsSurvey.dbInterface.Question>) ViewBag.SurveyQuestions);} 
+   </text>
 }
 else
 {

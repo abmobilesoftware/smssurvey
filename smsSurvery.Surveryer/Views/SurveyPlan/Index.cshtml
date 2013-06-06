@@ -51,10 +51,12 @@
             @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
             @Html.ActionLink("Details", "Details", new { id=item.Id }) |            
            @if(item.IsRunning) {
-            @Html.ActionLink("Stop", "MakeActive", new { id=item.Id })            
+            @Html.ActionLink("Stop", "MakeActive", new { id=item.Id })           
            } else {
-              @Html.ActionLink("Make active", "MakeActive", new { id=item.Id })            
-           }
+              @Html.ActionLink("Make active", "MakeActive", new { id=item.Id }) 
+           } |
+            @Html.ActionLink("Report", "Report","SurveyPlan", new { id=item.Id }, null) |
+            @Html.ActionLink("Responses", "Responses","SurveyPlan", new { id=item.Id }, null)
         </td>
     </tr>
 }

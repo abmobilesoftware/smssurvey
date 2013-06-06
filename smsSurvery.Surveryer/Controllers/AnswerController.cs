@@ -13,8 +13,10 @@ namespace smsSurvery.Surveryer.Controllers
 {
     public class AnswerController : Controller
     {
+
        //private const string cNumberFromWhichToSendSMS = "40371700012";
-       private smsSurveyEntities db = new smsSurveyEntities();       
+       private smsSurveyEntities db = new smsSurveyEntities();
+       private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         //
         // GET: /Answer/
 
@@ -156,6 +158,7 @@ namespace smsSurvery.Surveryer.Controllers
         [HttpPost]
         public ActionResult AnswerReceived(string from, string to, string text)
         {
+           logger.InfoFormat("from: {0}, to: {1}, text: {2}", from, to, text);
            /**So we got an answer -> see if there is an on-going survey with that particular customer 
             * if yes - continue
             * if not - start the surveyResult and then continue
@@ -241,6 +244,7 @@ namespace smsSurvery.Surveryer.Controllers
        [HttpGet]
        public void StartSMSQuery(string userName, string numberToSendFrom, string customerPhoneNumber)
         {
+           logger.InfoFormat("userName: {0}, numberToSendFrom: {1}, customerPhoneNumber: {2}", userName, numberToSendFrom, customerPhoneNumber);
           //the customer info should be coming from the customer's system
            var customer = db.CustomerSet.Find(customerPhoneNumber);
           if (customer == null) {
@@ -275,6 +279,7 @@ namespace smsSurvery.Surveryer.Controllers
 
         private void SendQuestionToCustomer(Customer c, string numberToSendFrom, Question q)
         {
+           logger.DebugFormat("question id: {0}, to customer: {1}, from number: {2}", q.Id, c.PhoneNumber, numberToSendFrom);
            var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyPlan(q.SurveyPlanSet);
            smsinterface.SendMessage(numberToSendFrom, c.PhoneNumber, q.Text);
         }

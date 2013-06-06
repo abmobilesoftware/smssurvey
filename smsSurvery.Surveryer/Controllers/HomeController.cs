@@ -9,6 +9,7 @@ namespace smsSurvery.Surveryer.Controllers
 {
    public class HomeController : Controller
    {
+      private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
       private smsSurveyEntities db = new smsSurveyEntities();
       public ActionResult Index()
       {
@@ -30,6 +31,7 @@ namespace smsSurvery.Surveryer.Controllers
       [Authorize]
       public ActionResult MyHome()
       {
+         logger.InfoFormat("User logged on: {0}", User.Identity.Name);
          var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
          //get only the surveys to which you have access (as a user)
          ViewBag.Message = "Are you ready for our newest, ground-breaking product?";
@@ -40,14 +42,12 @@ namespace smsSurvery.Surveryer.Controllers
             ViewBag.CurrentSurvey = currentSurveys;
             ViewBag.SurveyQuestions = currentSurveys.QuestionSet.OrderBy(q => q.Order);
          }        
-         return View();
-         
+         return View();         
       }
 
       public ActionResult About()
       {
          ViewBag.Message = "Your app description page.";
-
          return View();
       }
 

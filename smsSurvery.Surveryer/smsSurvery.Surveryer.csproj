@@ -39,6 +39,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Nexmo-CSharp-lib">
       <HintPath>ExternalReferences\Nexmo-CSharp-lib.dll</HintPath>
@@ -369,13 +373,17 @@
     <Content Include="Views\SurveyPlan\Index.cshtml" />
     <Content Include="Views\SurveyPlan\Create.cshtml" />
     <Content Include="Views\SurveyPlan\Details.cshtml" />
-    <Content Include="Views\Home\QuestionDetails.cshtml" />
+    <Content Include="Views\Shared\QuestionDetails.cshtml" />
     <Content Include="Views\Reports\GetWordCloud.cshtml" />
     <Content Include="Views\Answer\GetMessagesWithStem.cshtml" />
     <Content Include="Views\Question\Edit.cshtml" />
     <Content Include="Views\Home\MyHome.cshtml" />
     <Content Include="Views\SurveyPlan\CreateEditSurveyPlan.cshtml" />
     <Content Include="Views\Question\CreateEditQuestion.cshtml" />
+    <Content Include="Views\Shared\SurveyReport.cshtml" />
+    <Content Include="Views\SurveyPlan\Report.cshtml" />
+    <Content Include="Views\Shared\SurveyResultsDetails.cshtml" />
+    <Content Include="Views\SurveyPlan\Responses.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

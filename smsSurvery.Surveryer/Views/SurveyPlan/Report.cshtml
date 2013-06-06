@@ -1,0 +1,20 @@
+﻿@model smsSurvey.dbInterface.SurveyPlan
+
+<script type="text/javascript" src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
+<h2>Report for survey "@Model.Description"</h2>
+@if (Model != null)
+{
+   <text>
+    @{Html.RenderPartial("SurveyReport", (IEnumerable<smsSurvey.dbInterface.Question>) Model.QuestionSet.OrderBy(q => q.Order));} 
+   </text>
+}
+else
+{
+   <p>
+      If you are reading this then you have stumbled into an "under construction" area - congrats!
+   </p>      
+}   
+ 
+@section Scripts {
+@Scripts.Render("~/bundles/custom")
+}

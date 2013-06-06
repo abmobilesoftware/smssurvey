@@ -165,5 +165,20 @@ namespace smsSurvery.Surveryer.Controllers
             db.Dispose();
             base.Dispose(disposing);
         }
+
+        [HttpGet]
+        public ActionResult Report(int id)
+        {
+           SurveyPlan surveyplan = db.SurveyPlanSet.Find(id);
+           return View(surveyplan);
+        }
+
+        [HttpGet]
+        public ActionResult Responses(int id)
+        {
+           SurveyPlan surveyplan = db.SurveyPlanSet.Find(id);
+           var res = surveyplan.SurveyResult.OrderByDescending(s => s.DateRan);
+           return View(res);
+        }
     }
 }

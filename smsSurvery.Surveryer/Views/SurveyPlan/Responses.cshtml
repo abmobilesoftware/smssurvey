@@ -1,11 +1,9 @@
 ﻿@model IEnumerable<smsSurvey.dbInterface.SurveyResult>
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Responses";
 }
 
 <text>
    @{Html.RenderPartial("SurveyResultsDetails", (IEnumerable<smsSurvey.dbInterface.SurveyResult>) Model);}
 </text>
-
-

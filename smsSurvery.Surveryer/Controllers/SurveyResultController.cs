@@ -16,10 +16,12 @@ namespace smsSurvery.Surveryer.Controllers
         //
         // GET: /SurveyResult/
 
+        [Authorize]
         public ActionResult Index()
         {
-            var surveyresultset = db.SurveyResultSet.Include(s => s.Customer).Include(s => s.SurveyPlan).Include(s=> s.Result);
-            return View(surveyresultset.ToList());
+           var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+           var res = (from s in user.SurveyPlanSet select s.SurveyResult).SelectMany(x=>x).OrderByDescending(r=>r.DateRan);
+           return View(res.ToList());
         }
 
         //

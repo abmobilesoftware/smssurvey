@@ -25,7 +25,7 @@ namespace smsSurvery.Surveryer
          BundleConfig.RegisterBundles(BundleTable.Bundles);
          AuthConfig.RegisterAuth();
          DataAnnotationsModelValidatorProvider.RegisterAdapter(typeof(RequiredIfAttribute), typeof(RequiredIfValidator));
-
+         log4net.Config.XmlConfigurator.Configure();
       }
    }
 }
