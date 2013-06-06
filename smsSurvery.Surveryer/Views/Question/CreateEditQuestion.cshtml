@@ -3,55 +3,62 @@
 <fieldset>
    <legend>Question</legend>
 
-   @Html.HiddenFor(model => model.SurveyPlan_Id)
-   <div class="editor-label">
-      @Html.LabelFor(model => model.Text)
-   </div>
-   <div class="editor-field">
-      @Html.EditorFor(model => model.Text)
-      @Html.ValidationMessageFor(model => model.Text)
-   </div>
-
-   <div class="editor-label">
-      @Html.LabelFor(model => model.Order)
-   </div>
-   <div class="editor-field">
-      @Html.EditorFor(model => model.Order)
-      @Html.ValidationMessageFor(model => model.Order)
-   </div>
-
-   <div class="editor-label">
-      @Html.LabelFor(model => model.Type)
-   </div>
-   <div class="editor-field">
-      @Html.DropDownListFor(model=> model.Type, new SelectList(new List<SelectListItem>() {  new SelectListItem(){Text ="Rating", Value="Rating"}, new SelectListItem() {Text="FreeText",Value="FreeText"} },"Text","Value"))      
-      @Html.ValidationMessageFor(model => model.Type)
-   </div>
-
-   <div class="editor-label">
-      @Html.LabelFor(model => model.ValidAnswers)
-   </div>
-   <div class="editor-field">
-      @Html.EditorFor(model => model.ValidAnswers)
-      @Html.ValidationMessageFor(model => model.ValidAnswers)
-   </div>
-
-   <div class="editor-label">
-      @Html.LabelFor(model => model.ValidAnswersDetails)
-   </div>
-   <div class="editor-field">
-      @Html.EditorFor(model => model.ValidAnswersDetails)
-      @Html.ValidationMessageFor(model => model.ValidAnswersDetails)
-   </div>
-
+    @Html.HiddenFor(model => model.SurveyPlan_Id)
+    <table class="txteditor table table-striped table-bordered table-hover">
+      <tr>
+         <td class="labelCol" >
+            @Html.DisplayNameFor(model => model.Text)
+         </td>
+         <td>
+            @Html.EditorFor(model => model.Text)
+            @Html.ValidationMessageFor(model => model.Text)
+         </td>
+      </tr>
+      <tr>
+         <td class="labelCol">
+            @Html.DisplayNameFor(model => model.Order)
+         </td>
+         <td>
+            @Html.EditorFor(model => model.Order)
+            @Html.ValidationMessageFor(model => model.Order)
+         </td>
+      </tr>
+      <tr>
+         <td class="labelCol">
+            @Html.DisplayNameFor(model => model.Type)
+         </td>
+         <td>
+            @Html.DropDownListFor(model=> model.Type, new SelectList(new List<SelectListItem>() {  new SelectListItem(){Text ="Rating", Value="Rating"}, new SelectListItem() {Text="FreeText",Value="FreeText"} },"Text","Value"))      
+            @Html.ValidationMessageFor(model => model.Type)
+         </td>
+      </tr>
+      <tr>
+         <td class="labelCol">
+            @Html.DisplayNameFor(model => model.ValidAnswers)
+         </td>
+         <td>
+            @Html.EditorFor(model => model.ValidAnswers)
+            @Html.ValidationMessageFor(model => model.ValidAnswers)
+         </td>
+      </tr>
+      <tr>
+         <td class="labelCol">
+            @Html.DisplayNameFor(model => model.ValidAnswersDetails)
+         </td>
+         <td>
+            @Html.EditorFor(model => model.ValidAnswersDetails)
+            @Html.ValidationMessageFor(model => model.ValidAnswersDetails)
+         </td>
+      </tr>
+   </table>
    <p>
       @if (ViewBag.Action == "Create")
       {
-         <input type="submit" value="Create" />
+         <input class="btn btn-primary" type="submit" value="Create" />
            }
       else
       {
-         <input type="submit" value="Save" />
+         <input class="btn btn-primary" type="submit" value="Save" />
            }
    </p>
 </fieldset>

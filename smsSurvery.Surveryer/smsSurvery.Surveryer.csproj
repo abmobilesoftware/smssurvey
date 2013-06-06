@@ -40,8 +40,12 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="OneApi">
-      <HintPath>..\..\Compatel\oneapi-dot-net\OneApi\bin\Release\OneApi\OneApi.dll</HintPath>
+    <Reference Include="Nexmo-CSharp-lib">
+      <HintPath>ExternalReferences\Nexmo-CSharp-lib.dll</HintPath>
+    </Reference>
+    <Reference Include="OneApi, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>ExternalReferences\OneApi.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -190,6 +194,10 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\QuestionController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
+    <Compile Include="Models\BusinessObjects\SmsMessage.cs" />
+    <Compile Include="Models\SmsInterface\CompatelSmsRepository.cs" />
+    <Compile Include="Models\SmsInterface\IExternalSmsRepository.cs" />
+    <Compile Include="Models\SmsInterface\NexmoSmsRepository.cs" />
     <Compile Include="Controllers\SurveyPlanController.cs" />
     <Compile Include="Controllers\SurveyResultController.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
@@ -199,14 +207,16 @@
     <Compile Include="Helpers\ReportHelpers.cs" />
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\FreeTextAnswer.cs" />
+    <Compile Include="Models\SmsInterface\SmsInterfaceFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SmsIntegration\SmsInterface.cs" />
     <Compile Include="Utilities\RequiredIfValidator.cs" />
     <Compile Include="Utilities\ViewExtensionMethods.cs" />
     <Compile Include="WordCloud\ByLanguageFactory.cs" />
     <Compile Include="WordCloud\CommonBlacklist.cs" />
     <Compile Include="WordCloud\Blacklist\CommonWords.cs" />
+    <Content Include="Content\bootstrap.css" />
     <Content Include="Content\WordCloud.css" />
+    <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\reports.js" />
     <Content Include="WordCloud\CustomBlacklist.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -359,7 +369,7 @@
     <Content Include="Views\SurveyPlan\Index.cshtml" />
     <Content Include="Views\SurveyPlan\Create.cshtml" />
     <Content Include="Views\SurveyPlan\Details.cshtml" />
-    <Content Include="Views\Shared\QuestionDetails.cshtml" />
+    <Content Include="Views\Home\QuestionDetails.cshtml" />
     <Content Include="Views\Reports\GetWordCloud.cshtml" />
     <Content Include="Views\Answer\GetMessagesWithStem.cshtml" />
     <Content Include="Views\Question\Edit.cshtml" />

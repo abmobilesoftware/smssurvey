@@ -58,7 +58,8 @@ namespace smsSurvery.Surveryer.Controllers
             if (ModelState.IsValid)
             {
                //associate with the current user
-               UserProfile user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();                     
+               UserProfile user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+               surveyplan.Provider = user.DefaultProvider;
                 db.SurveyPlanSet.Add(surveyplan);
                 user.SurveyPlanSet.Add(surveyplan);
                 db.SaveChanges();
@@ -79,18 +80,29 @@ namespace smsSurvery.Surveryer.Controllers
 
         private void MakeActive(SurveyPlan surveyplan)
         {
-           var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-           var currentRunningSurvey = user.SurveyPlanSet.Where(s => s.IsRunning).FirstOrDefault();
-           if (currentRunningSurvey != null && currentRunningSurvey.Id != surveyplan.Id)
+           //DA if the survey is already started, stop it
+           if (surveyplan.IsRunning)
            {
-              currentRunningSurvey.IsRunning = false;
-              currentRunningSurvey.DateEnded = DateTime.UtcNow;
+              surveyplan.IsRunning = false;
+              surveyplan.DateEnded = DateTime.UtcNow;
+              db.SaveChanges();
            }
-           //the current survey becomes active - all the other become inactive
-           surveyplan.IsRunning = true;
-           surveyplan.DateStarted = DateTime.UtcNow;
-           surveyplan.DateEnded = null;
-           db.SaveChanges();
+           else
+           {
+              var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+              var currentRunningSurvey = user.SurveyPlanSet.Where(s => s.IsRunning).FirstOrDefault();
+              if (currentRunningSurvey != null && currentRunningSurvey.Id != surveyplan.Id)
+              {
+                 currentRunningSurvey.IsRunning = false;
+                 currentRunningSurvey.DateEnded = DateTime.UtcNow;
+              }
+              //the current survey becomes active - all the other become inactive
+              surveyplan.IsRunning = true;
+              surveyplan.DateStarted = DateTime.UtcNow;
+              surveyplan.DateEnded = null;
+              db.SaveChanges();
+           }
+           
         }
         //
         // GET: /SurveyPlan/Edit/5

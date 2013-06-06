@@ -99,6 +99,7 @@
           <Property Name="DateStarted" Type="datetime" />
           <Property Name="DateEnded" Type="datetime" />
           <Property Name="IsRunning" Type="bit" Nullable="false" />
+          <Property Name="Provider" Type="nvarchar" Nullable="false" MaxLength="50" />
         </EntityType>
         <EntityType Name="SurveyResultSet">
           <Key>
@@ -124,6 +125,7 @@
           </Key>
           <Property Name="UserId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="UserName" Type="nvarchar" Nullable="false" MaxLength="56" />
+          <Property Name="DefaultProvider" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="webpages_Membership">
           <Key>
@@ -364,6 +366,7 @@
           <NavigationProperty Name="UserProfile" Relationship="smsSurveyModel.UserProfileSurveyPlan" FromRole="SurveyPlan" ToRole="UserProfile" />
           <NavigationProperty Name="QuestionSet" Relationship="smsSurveyModel.FK_SurveyPlanQuestion" FromRole="SurveyPlan" ToRole="Question" />
           <NavigationProperty Name="CustomerSet" Relationship="smsSurveyModel.FK_RunningSurvey" FromRole="SurveyPlan" ToRole="Customer" />
+          <Property Type="String" Name="Provider" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           </EntityType>
         <EntityType Name="Customer">
           <Key>
@@ -457,6 +460,7 @@
           <Property Type="String" Name="UserName" Nullable="false" MaxLength="56" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="webpages_Roles" Relationship="smsSurveyModel.webpages_UsersInRoles" FromRole="UserProfile" ToRole="webpages_Roles" />
           <NavigationProperty Name="SurveyPlanSet" Relationship="smsSurveyModel.UserProfileSurveyPlan" FromRole="UserProfile" ToRole="SurveyPlan" />
+          <Property Type="String" Name="DefaultProvider" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="webpages_Membership">
           <Key>
@@ -545,6 +549,7 @@
     <EntitySetMapping Name="SurveyPlanSet">
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.SurveyPlan)">
         <MappingFragment StoreEntitySet="SurveyPlanSet">
+                <ScalarProperty Name="Provider" ColumnName="Provider" />
                 <ScalarProperty Name="IsRunning" ColumnName="IsRunning" />
                 <ScalarProperty Name="DateEnded" ColumnName="DateEnded" />
                 <ScalarProperty Name="DateStarted" ColumnName="DateStarted" />
@@ -589,6 +594,7 @@
           <EntitySetMapping Name="UserProfile">
             <EntityTypeMapping TypeName="smsSurveyModel.UserProfile">
               <MappingFragment StoreEntitySet="UserProfile">
+                <ScalarProperty Name="DefaultProvider" ColumnName="DefaultProvider" />
                 <ScalarProperty Name="UserName" ColumnName="UserName" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
               </MappingFragment>

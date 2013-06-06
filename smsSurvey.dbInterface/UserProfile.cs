@@ -22,6 +22,7 @@ namespace smsSurvey.dbInterface
     
         public int UserId { get; set; }
         public string UserName { get; set; }
+        public string DefaultProvider { get; set; }
     
         public virtual ICollection<webpages_Roles> webpages_Roles { get; set; }
         public virtual ICollection<SurveyPlan> SurveyPlanSet { get; set; }

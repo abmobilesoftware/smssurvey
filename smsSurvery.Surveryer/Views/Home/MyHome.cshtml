@@ -13,10 +13,9 @@
 else
 {
    <p>
-      No running surveys. Start one of the existing surveys or 
-      @Html.ActionLink("create a new one", "Create", "SurveyPlan",null,null)
-   </p>   
-    
+      No running surveys. 
+      @Html.ActionLink("Start one of the existing surveys or create a new survey", "Index", "SurveyPlan",null,null)
+   </p>      
 }   
  
 @section Scripts {

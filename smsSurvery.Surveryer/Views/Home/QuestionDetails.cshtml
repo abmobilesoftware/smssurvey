@@ -3,10 +3,8 @@
 @{
     ViewBag.Title = "Details";
 }
-
-<h2>Question @Model.Order</h2>
 <fieldset>
-    <legend>Question</legend>
+    <legend>Question @Model.Order</legend>
     <div class="display-field">
        @Html.DisplayFor(model => model.Text)
        @* we specify the question in case (will be needed later to get the report data) *@

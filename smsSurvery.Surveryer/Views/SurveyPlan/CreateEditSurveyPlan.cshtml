@@ -6,10 +6,11 @@
     @if (Model != null)
     {
          @Html.HiddenFor(model => model.Id)
+         @Html.HiddenFor(model => model.Provider)
     }
-   <table>
+   <table class="txteditor table table-striped table-bordered table-hover">
       <tr>
-         <td class="labelCol">
+         <td class="labelCol" >
             @Html.DisplayNameFor(model => model.Description)
          </td>
          <td>
@@ -31,7 +32,8 @@
             @Html.DisplayNameFor(model => model.DateStarted)
          </td>
          <td>
-            @Html.EditorFor(model => model.DateStarted)
+            @Html.HiddenFor(model => model.DateStarted)
+            @Html.DisplayFor(model => model.DateStarted)
             @Html.ValidationMessageFor(model => model.DateStarted)
          </td>
       </tr>
@@ -40,7 +42,8 @@
             @Html.DisplayNameFor(model => model.DateEnded)
          </td>
          <td>
-            @Html.EditorFor(model => model.DateEnded)
+            @Html.HiddenFor(model => model.DateEnded)
+            @Html.DisplayFor(model => model.DateEnded)
             @Html.ValidationMessageFor(model => model.DateEnded)
          </td>
       </tr>
@@ -55,10 +58,10 @@
    </table>
    @if (ViewBag.Action == "Create")
    {
-      <input type="submit" value="Create" />
+      <input class="btn btn-primary" type="submit" value="Create" />
       }
    else
    {
-      <input type="submit" value="Save" />
+      <input class="btn btn-primary" type="submit" value="Save" />
    }    
 </fieldset>

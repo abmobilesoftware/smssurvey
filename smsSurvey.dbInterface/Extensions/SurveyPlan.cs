@@ -33,6 +33,9 @@ namespace smsSurvey.dbInterface
 
       [DisplayName("Is running")]
       public bool IsRunning { get; set; }
+
+      [DisplayName("SMS Provider")]      
+      public string Provider { get; set; }
    }
    #endregion
 }

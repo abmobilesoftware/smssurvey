@@ -22,14 +22,14 @@ a {
     text-decoration: underline;
 }
 
-    a:link, a:visited,
+    /*a:link, a:visited,
     a:active, a:hover {
         color: #333;
     }
 
     a:hover {
         background-color: #c7d1d6;
-    }
+    }*/
 
 header, footer, hgroup,
 nav, section {
@@ -329,7 +329,7 @@ aside {
 }
 
 /* login page */
-#loginForm {
+/*#loginForm {
     border-right: solid 2px #c8c8c8;
     float: left;
     width: 55%;
@@ -360,7 +360,7 @@ aside {
     #loginForm input[type="button"],
     #loginForm button {
         width: auto;
-    }
+    }*/
 
 #socialLoginForm {
     margin-left: 40px;
@@ -395,7 +395,7 @@ aside {
 }
 
 /* forms */
-fieldset {
+/*fieldset {
     border: none;
     margin: 0;
     padding: 0;
@@ -430,12 +430,11 @@ input, textarea {
     color: #333;
     font-size: 1.2em;
     margin: 5px 0 6px 0;
-    padding: 5px;
-    /*width: 300px;*/
+    padding: 5px;    
     width: 100%;
-}
+}*/
 
-textarea {
+/*textarea {
     font-family: inherit;
     width: 500px;
 }
@@ -469,7 +468,7 @@ textarea {
         font-size: 1em;
         padding: 4px;
         margin-right: 4px;
-    }
+    }*/
 
 /* info and errors */
 .message-info {
@@ -528,7 +527,7 @@ input[type="checkbox"].input-validation-error {
 
 /* tables
 ----------------------------------------------------------*/
-table {
+/*table {
     border-collapse: collapse;
     border-spacing: 0;
     margin-top: 0.75em;
@@ -586,7 +585,7 @@ td {
 
 tr.pager td {
     padding: 0 0.25em 0 0;
-}
+}*/
 
 
 /********************
@@ -768,12 +767,18 @@ text-align: center;
    text-decoration: none;
       color: #607ec5;
 }
+#cloud a.tag1:hover {
+   text-decoration: underline;
+}
 
 #cloud a.tag2 {
    font-size: 0.8em;
    font-weight: 200;
    text-decoration: none;
       color: #607ec5;
+}
+#cloud a.tag2:hover {
+   text-decoration: underline;
 }
 
 #cloud a.tag3 {
@@ -782,12 +787,18 @@ text-align: center;
    text-decoration: none;
       color: #607ec5;
 }
+#cloud a.tag3:hover {
+   text-decoration: underline;
+}
 
 #cloud a.tag4 {
    font-size: 1.0em;
    font-weight: 400;
    text-decoration: none;
       color: #607ec5;
+}
+#cloud a.tag4:hover {
+   text-decoration: underline;
 }
 
 #cloud a.tag5 {
@@ -796,6 +807,9 @@ text-align: center;
    text-decoration: none;
       color: #607ec5;
 }
+#cloud a.tag5:hover {
+   text-decoration: underline;
+}
 
 #cloud a.tag6 {
    font-size: 1.4em;
@@ -803,19 +817,26 @@ text-align: center;
    text-decoration: none;
       color: #4c6db9;
 }
-
+#cloud a.tag6:hover {
+   text-decoration: underline;
+}
 #cloud a.tag7 {
    font-size: 1.6em;
    font-weight: 700;
    text-decoration: none;
       color: #395cae;
 }
-
+#cloud a.tag7:hover {
+   text-decoration: underline;
+}
 #cloud a.tag8 {
    font-size: 1.8em;
    font-weight: 800;
    text-decoration: none;
       color: #264ca2;
+}
+#cloud a.tag8:hover {
+   text-decoration: underline;
 }
 
 #cloud a.tag9 {
@@ -824,12 +845,18 @@ text-align: center;
    text-decoration: none;
       color: #133b97;
 }
+#cloud a.tag9:hover {
+   text-decoration: underline;
+}
 
 #cloud a.tag10 {
    font-size: 2.5em;
    font-weight: 900;
    text-decoration: none;
    color: #002a8b;
+}
+#cloud a.tag10:hover {
+   text-decoration: underline;
 }
 
 #cloud { margin: 0; }
@@ -841,7 +868,7 @@ text-align: center;
  }
 
 .surveyPlan .display-label{
-  float: left;
+  float: left; 
   width: 100px;   
   text-align: right; 
 }
@@ -868,4 +895,9 @@ text-align: center;
 
 .logo a:hover {
    background-color: transparent;
+}
+
+.txteditor input[type="text"]
+{
+   width: 800px;
 }

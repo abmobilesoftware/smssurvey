@@ -9,7 +9,7 @@ namespace smsSurvery.Surveryer
       public static void RegisterBundles(BundleCollection bundles)
       {
          bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
-                     "~/Scripts/jquery-{version}.js"));
+                     "~/Scripts/jquery-{version}.js", "~/Scripts/bootstrap.js"));
 
          bundles.Add(new ScriptBundle("~/bundles/custom").Include(
                      "~/Scripts/reports.js"));
@@ -26,7 +26,7 @@ namespace smsSurvery.Surveryer
          bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
                      "~/Scripts/modernizr-*"));
 
-         bundles.Add(new StyleBundle("~/Content/css").Include("~/Content/site.css"));
+         bundles.Add(new StyleBundle("~/Content/css").Include("~/Content/site.css", "~/Content/bootstrap.css"));
 
          bundles.Add(new StyleBundle("~/Content/themes/base/css").Include(
                      "~/Content/themes/base/jquery.ui.core.css",

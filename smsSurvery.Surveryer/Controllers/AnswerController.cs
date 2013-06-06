@@ -6,16 +6,15 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using smsSurvey.dbInterface;
-using smsSurvery.Surveryer.SmsIntegration;
 using smsSurvery.Surveryer.Models;
+using smsSurvery.Surveryer.Models.SmsInterface;
 
 namespace smsSurvery.Surveryer.Controllers
 {
     public class AnswerController : Controller
     {
-       private const string cNumberFromWhichToSendSMS = "40371700012";
-       private smsSurveyEntities db = new smsSurveyEntities();
-       private SmsInterface smsHandler = new SmsInterface();
+       //private const string cNumberFromWhichToSendSMS = "40371700012";
+       private smsSurveyEntities db = new smsSurveyEntities();       
         //
         // GET: /Answer/
 
@@ -153,6 +152,7 @@ namespace smsSurvery.Surveryer.Controllers
            return p.ToLowerInvariant().Contains(stem.ToLowerInvariant());
            //return true;
         }
+
         [HttpPost]
         public ActionResult AnswerReceived(string from, string to, string text)
         {
@@ -160,13 +160,12 @@ namespace smsSurvery.Surveryer.Controllers
             * if yes - continue
             * if not - start the surveyResult and then continue
             */
-           var customer = db.CustomerSet.Find(from);
-           var surveyToRun = db.SurveyPlanSet.Find(3);
+           var customer = db.CustomerSet.Find(from);           
            if (customer != null)
            {
               if (customer.SurveyInProgress)
               {
-                 AddSurveyResult(text, customer, customer.RunningSurvey);   
+                 AddSurveyResult(text, customer,to, customer.RunningSurvey);   
               }              
            }
            else
@@ -178,7 +177,7 @@ namespace smsSurvery.Surveryer.Controllers
            return null;
         }
        
-        private void AddSurveyResult(string text, Customer customer, SurveyPlan surveyToRun)
+        private void AddSurveyResult(string text, Customer customer, string numberToSendFrom, SurveyPlan surveyToRun)
         {
            /**DA is there is no running survey -> the user most probably answered after the thank you message has been sent - this is discard for the time being,
             * in the future we should store this for reference
@@ -219,7 +218,7 @@ namespace smsSurvery.Surveryer.Controllers
                  //TODO fix logic errors if no next question
                  if (nextQuestion != null)
                  {
-                    SendQuestionToCustomer(customer, nextQuestion);
+                    SendQuestionToCustomer(customer,numberToSendFrom, nextQuestion);
                  }
               }
               else
@@ -230,9 +229,9 @@ namespace smsSurvery.Surveryer.Controllers
                  customer.SurveyInProgress = false;
                  db.SaveChanges();
                  //send ThankYouMessage
-                 SendThankYouToCustomer(customer, surveyToRun);
+                 SendThankYouToCustomer(customer,numberToSendFrom, surveyToRun);
               }
-           }
+           } 
         }
 
        /**
@@ -240,7 +239,7 @@ namespace smsSurvery.Surveryer.Controllers
         * while an edge case, this is still a possibility
         */ 
        [HttpGet]
-       public void StartSMSQuery(string userName,string customerPhoneNumber)
+       public void StartSMSQuery(string userName, string numberToSendFrom, string customerPhoneNumber)
         {
           //the customer info should be coming from the customer's system
            var customer = db.CustomerSet.Find(customerPhoneNumber);
@@ -269,25 +268,25 @@ namespace smsSurvery.Surveryer.Controllers
                 customer.RunningSurvey = surveyToRun;
                 db.SaveChanges();
                 var currentQuestion = surveyToRun.QuestionSet.OrderBy(x => x.Order).First();
-                SendQuestionToCustomer(customer, currentQuestion);
+                SendQuestionToCustomer(customer,numberToSendFrom, currentQuestion);
              }
-          }
-          
+          }          
         }
 
-        private void SendQuestionToCustomer(Customer c, Question q)
+        private void SendQuestionToCustomer(Customer c, string numberToSendFrom, Question q)
         {
-           smsHandler.SendMessage(cNumberFromWhichToSendSMS,c.PhoneNumber, q.Text);
+           var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyPlan(q.SurveyPlanSet);
+           smsinterface.SendMessage(numberToSendFrom, c.PhoneNumber, q.Text);
         }
-        private void SendThankYouToCustomer(Customer c, SurveyPlan survey)
+        private void SendThankYouToCustomer(Customer c,string numberToSendFrom, SurveyPlan survey)
         {
-           smsHandler.SendMessage(cNumberFromWhichToSendSMS, c.PhoneNumber, survey.ThankYouMessage);
+           var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyPlan(survey);
+           smsinterface.SendMessage(numberToSendFrom, c.PhoneNumber, survey.ThankYouMessage);
         }
 
         protected override void Dispose(bool disposing)
         {
             db.Dispose();
-            smsHandler = null;
             base.Dispose(disposing);
         }
     }
