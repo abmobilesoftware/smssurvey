@@ -187,16 +187,22 @@ namespace smsSurvery.Surveryer.Controllers
             */
            if (customer.SurveyInProgress)
            {
+              
               SurveyResult latestSurveyResult = null;
               if (customer.SurveyResult.Count != 0)
               {
-                 latestSurveyResult = customer.SurveyResult.OrderByDescending(x => x.DateRan).First();
+                 //DA this is a potential problem if 2 surveys are running for the same user
+                 //the where clause should solve it
+                 latestSurveyResult = customer.SurveyResult.Where(s=>s.SurveyPlanId == surveyToRun.Id).OrderByDescending(x => x.DateRan).First();                 
               }
               Question currentQuestion = null;
               var numberOfQuestionsInSurvey = surveyToRun.QuestionSet.Count();
               //if not final than add, otherwise start a new one
-              if (latestSurveyResult == null || latestSurveyResult.Result.Count == numberOfQuestionsInSurvey)
+              if (latestSurveyResult == null || latestSurveyResult.Complete)
               {
+                 //DA TODO - now this branch is bullshit as it is never reached
+                 //no survey or the previous one was completed -> start a new survey
+                 logger.DebugFormat("Received answer for a new survey");
                  SurveyResult currentSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyPlan = surveyToRun, Complete = false };
                  db.SurveyResultSet.Add(currentSurvey);
                  db.SaveChanges();
@@ -207,6 +213,7 @@ namespace smsSurvery.Surveryer.Controllers
               }
               else
               {
+                 logger.DebugFormat("Received another answer for a running survey");
                  SurveyResult currentSurvey = latestSurveyResult;
                  int currentQuestionId = currentSurvey.Result.Count + 1;
                  currentQuestion = surveyToRun.QuestionSet.Where(x => x.Order == currentQuestionId).First();
@@ -221,7 +228,7 @@ namespace smsSurvery.Surveryer.Controllers
                  //TODO fix logic errors if no next question
                  if (nextQuestion != null)
                  {
-                    SendQuestionToCustomer(customer,numberToSendFrom, nextQuestion);
+                    SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion);
                  }
               }
               else
@@ -232,9 +239,13 @@ namespace smsSurvery.Surveryer.Controllers
                  customer.SurveyInProgress = false;
                  db.SaveChanges();
                  //send ThankYouMessage
-                 SendThankYouToCustomer(customer,numberToSendFrom, surveyToRun);
+                 SendThankYouToCustomer(customer, numberToSendFrom, surveyToRun);
               }
-           } 
+           }
+           else
+           {
+              logger.ErrorFormat("Received answer from client {0} while survey not in progress. Text {1}", customer.PhoneNumber, text);
+           }
         }
 
        /**
@@ -285,6 +296,7 @@ namespace smsSurvery.Surveryer.Controllers
         }
         private void SendThankYouToCustomer(Customer c,string numberToSendFrom, SurveyPlan survey)
         {
+           logger.DebugFormat("Send thank you to customer {0}, from number {1}, for surveyId {2}", c.PhoneNumber, numberToSendFrom, survey.Id);
            var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyPlan(survey);
            smsinterface.SendMessage(numberToSendFrom, c.PhoneNumber, survey.ThankYouMessage);
         }
