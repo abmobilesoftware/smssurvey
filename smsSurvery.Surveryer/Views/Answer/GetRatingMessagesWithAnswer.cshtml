@@ -1,0 +1,44 @@
+﻿@model IEnumerable<smsSurvery.Surveryer.Models.FreeTextAnswer>
+
+@{
+    ViewBag.Title = "GetRatingMessagesWithAnswer";
+}
+
+<h2>Answers of "@ViewBag.Answer" for question: </h2>
+<p>"@ViewBag.QuestionText"</p>
+
+<table class="table table-striped table-bordered table-hover">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Text)
+        </th>
+        <th>
+         Customer
+        </th>
+       <th>
+          Survey results
+       </th>
+       <th>
+         Date ran
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Text)
+        </td>
+        <td>           
+           @*@Html.DisplayFor(modelItem => item.Customer.PhoneNumber)*@
+           @Html.ActionLink(item.Customer.PhoneNumber, "Details", "Customer", new { id = item.Customer.PhoneNumber }, null)
+        </td>
+       <td>
+          @Html.ActionLink("Show entire survey results", "Details", "SurveyResult", new { id = item.SurveyResult.Id}, null)
+       </td>
+       <td>
+          @Html.DisplayFor(modelItem => item.SurveyResult.DateRan)           
+        </td>
+    </tr>
+}
+
+</table>

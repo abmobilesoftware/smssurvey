@@ -1,6 +1,5 @@
 ﻿window.app = window.app || {};
-
-
+window.app.piedata = {};
 window.app.displayReportsForRatingQ = function (questionId) {
    $.ajax({
       data: { questionId: questionId },
@@ -10,19 +9,44 @@ window.app.displayReportsForRatingQ = function (questionId) {
       success: function (jsonData) {
          var options = {
             backgroundColor: '#F5F8FA',
-            sliceVisibilityThreshold: 0
+            sliceVisibilityThreshold: 0,
+            'width': 'auto',
+            'height': 350
          };
          var piechart = new google.visualization.PieChart(document.getElementById('pieChart_div' + questionId));
-         data = new google.visualization.DataTable(jsonData.pie);
-         piechart.draw(data, options);
+         var piedata = new google.visualization.DataTable(jsonData.pie);
+         window.app.piedata[questionId] = piedata;
+         piechart.draw(piedata, options);
+         google.visualization.events.addListener(piechart, 'select', function (e) {
+            var sel = piechart.getSelection();            
+            var selectedValue = window.app.piedata[questionId].getValue(sel[0].row,0);
+            var url = "http://localhost:3288/Answer/GetRatingMessagesWithAnswer?questionId=" + questionId + "&answer=" + selectedValue;
+            //window.location.href = url;
+            window.open(url, "_blank");
+            //$.ajax({
+            //   data: {
+            //      questionId: questionId,
+            //      answer: selectedValue
+            //   },
+            //   url: "/Answer/GetRatingMessagesWithAnswer",
+            //   dataType: 'html',
+            //   async: false,
+            //   cache: false,
+            //   success: function (drilldowndata) {
+
+            //   }
+            //});
+            //console.log(piechart.pd);
+            //alert('selected: ' + sel[0].row);
+         });
          var tablechart = new google.visualization.Table(document.getElementById('tableChart_div' + questionId));
-         data = new google.visualization.DataTable(jsonData.table);
+         tabledata = new google.visualization.DataTable(jsonData.table);
          var tableOptions = {
             backgroundColor: '#F5F8FA',
             sliceVisibilityThreshold: 0,
             cssClassNames: { tableCell: "tCell" }
          };
-         tablechart.draw(data, tableOptions);
+         tablechart.draw(tabledata, tableOptions);
          //var barchart = new google.visualization.ColumnChart(document.getElementById('barChart_div'));
          //barchart.draw(data, options);
       }

@@ -127,6 +127,27 @@ namespace smsSurvery.Surveryer.Controllers
            return RedirectToAction("Index");
         }
 
+        [HttpGet]
+        public ActionResult GetRatingMessagesWithAnswer(int questionId, int answer)
+        {
+           //for the given survey (if allowed access) show messages with given stem
+           Question question = db.QuestionSet.Find(questionId);
+           if (question != null && question.Type == "Rating")
+           {
+              List<FreeTextAnswer> messages = new List<FreeTextAnswer>();
+              foreach (var result in question.Result)
+              {
+                 if (result.Answer == answer.ToString())
+                 {
+                    messages.Add(new FreeTextAnswer() { Text = result.Answer, SurveyResult = result.SurveyResult, Customer = result.SurveyResult.Customer });
+                 }
+              }
+              @ViewBag.Answer = answer;
+              @ViewBag.QuestionText = question.Text;
+              return View(messages);
+           }
+           return View();
+        }
 
         [HttpGet]
         public ActionResult GetMessagesWithStem(int questionId, string stem)
@@ -179,6 +200,7 @@ namespace smsSurvery.Surveryer.Controllers
            }                    
            return null;
         }
+
        
         private void AddSurveyResult(string text, Customer customer, string numberToSendFrom, SurveyPlan surveyToRun)
         {

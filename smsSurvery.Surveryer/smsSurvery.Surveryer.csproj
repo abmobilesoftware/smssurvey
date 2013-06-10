@@ -384,6 +384,7 @@
     <Content Include="Views\SurveyPlan\Report.cshtml" />
     <Content Include="Views\Shared\SurveyResultsDetails.cshtml" />
     <Content Include="Views\SurveyPlan\Responses.cshtml" />
+    <Content Include="Views\Answer\GetRatingMessagesWithAnswer.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

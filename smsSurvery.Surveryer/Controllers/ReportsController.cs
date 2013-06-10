@@ -99,9 +99,8 @@ namespace smsSurvery.Surveryer.Controllers
                   RepChartData pieChartSource = new RepChartData(
                      new RepDataColumn[] {
                 new RepDataColumn("17", STRING_COLUMN_TYPE, "Type"),
-                new RepDataColumn("18", STRING_COLUMN_TYPE, "Value") },
-                        pieChartContent);
-                  //return Json(pieChartSource, JsonRequestBehavior.AllowGet);
+                new RepDataColumn("18", NUMBER_COLUMN_TYPE, "Value") },
+                        pieChartContent);                  
                   List<RepDataRow> tableData = new List<RepDataRow>()
                         {
                            new RepDataRow(new RepDataRowCell[] { new RepDataRowCell(res.TotalNumberOfAnswers, res.TotalNumberOfAnswers.ToString()), new RepDataRowCell(res.TotalNumberOfValidAnswers, res.TotalNumberOfValidAnswers.ToString()) })
@@ -155,8 +154,7 @@ namespace smsSurvery.Surveryer.Controllers
          outcome.ValidOptions = validPossibleAnswers;
          outcome.AnswersPerValidOption = resultsPerAnswer;
          return outcome;
-      }
-      private String testString = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla vel pellentesque augue. Praesent nec ligula sit amet dolor consequat sollicitudin at quis quam. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla facilisi. Donec nec congue justo. Nam vitae ipsum malesuada nunc vulputate molestie vel vel leo. Donec mollis bibendum posuere. Aliquam ultrices, nisl ac sollicitudin elementum, nulla augue venenatis arcu, quis cursus elit purus non dolor. Morbi malesuada vestibulum dignissim. Duis sed metus at tellus malesuada convallis. Suspendisse potenti. Ut blandit eros a sem laoreet eget gravida risus elementum. Integer fringilla, neque vel hendrerit auctor, dui arcu consectetur neque, a egestas nisl eros sed arcu. In venenatis erat et risus tempus faucibus. Vestibulum tincidunt arcu at tortor porttitor fermentum.Vestibulum in dapibus elit. Curabitur eget dui lacus. Nullam leo tellus, dapibus suscipit tempus quis, consectetur vitae leo. Vestibulum in dui nulla. Phasellus convallis libero ut sem semper mollis. Cras bibendum mattis libero at venenatis. In hac habitasse platea dictumst. Sed sollicitudin, nisi sit amet viverra fermentum, quam ante tincidunt nulla, eu convallis lectus eros ac sem. Suspendisse eu neque sit amet purus aliquam scelerisque sed vitae quam. Ut sollicitudin molestie feugiat. Donec id neque sed odio interdum semper. In consectetur lectus at dui congue ac ultricies massa laoreet. Duis nec fermentum metus. Nulla facilisi. Cras feugiat lacinia metus vulputate lacinia.Integer ultricies mollis nulla, eget pharetra mi fringilla in. Aliquam non velit eu nibh aliquam eleifend ac sed metus. Pellentesque fermentum dolor sit amet dui commodo congue. Vivamus vulputate diam eu ligula interdum nec gravida lectus cursus. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Duis condimentum ipsum eu nisi blandit ac egestas nisl lacinia. Proin ut ipsum odio. Maecenas mi eros, hendrerit quis suscipit eget, mollis vel justo. Phasellus sollicitudin magna nec est varius dignissim. Vivamus sapien felis, rhoncus nec mollis ac, sagittis ac";
+      }      
 
       public static TagCloud GetTagCloudData(Question q) {
          using (smsSurveyEntities  db = new smsSurveyEntities())
