@@ -19,8 +19,8 @@ window.app.displayReportsForRatingQ = function (questionId) {
          piechart.draw(piedata, options);
          google.visualization.events.addListener(piechart, 'select', function (e) {
             var sel = piechart.getSelection();            
-            var selectedValue = window.app.piedata[questionId].getValue(sel[0].row,0);
-            var url = "http://localhost:3288/Answer/GetRatingMessagesWithAnswer?questionId=" + questionId + "&answer=" + selectedValue;
+            var selectedValue = window.app.piedata[questionId].getValue(sel[0].row, 0);            
+            var url = "/Answer/GetRatingMessagesWithAnswer?questionId=" + questionId + "&answer=" + selectedValue;
             //window.location.href = url;
             window.open(url, "_blank");
             //$.ajax({
