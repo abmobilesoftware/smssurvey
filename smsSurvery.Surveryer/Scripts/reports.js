@@ -22,22 +22,7 @@ window.app.displayReportsForRatingQ = function (questionId) {
             var selectedValue = window.app.piedata[questionId].getValue(sel[0].row, 0);            
             var url = "/Answer/GetRatingMessagesWithAnswer?questionId=" + questionId + "&answer=" + selectedValue;
             //window.location.href = url;
-            window.open(url, "_blank");
-            //$.ajax({
-            //   data: {
-            //      questionId: questionId,
-            //      answer: selectedValue
-            //   },
-            //   url: "/Answer/GetRatingMessagesWithAnswer",
-            //   dataType: 'html',
-            //   async: false,
-            //   cache: false,
-            //   success: function (drilldowndata) {
-
-            //   }
-            //});
-            //console.log(piechart.pd);
-            //alert('selected: ' + sel[0].row);
+            window.open(url, "_blank");            
          });
          var tablechart = new google.visualization.Table(document.getElementById('tableChart_div' + questionId));
          tabledata = new google.visualization.DataTable(jsonData.table);
@@ -46,9 +31,7 @@ window.app.displayReportsForRatingQ = function (questionId) {
             sliceVisibilityThreshold: 0,
             cssClassNames: { tableCell: "tCell" }
          };
-         tablechart.draw(tabledata, tableOptions);
-         //var barchart = new google.visualization.ColumnChart(document.getElementById('barChart_div'));
-         //barchart.draw(data, options);
+         tablechart.draw(tabledata, tableOptions);        
       }
    });
 };
