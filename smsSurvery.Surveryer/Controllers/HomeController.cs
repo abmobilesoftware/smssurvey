@@ -7,6 +7,14 @@ using System.Web.Mvc;
 
 namespace smsSurvery.Surveryer.Controllers
 {
+   public class ManualSurvey
+   {
+      public List<SurveyPlan> Surveys { get; set; }
+      [System.ComponentModel.DisplayName("Survey to run")]
+      public int SelectedSurveyID { get; set; }
+      public IEnumerable<Customer> Customers { get; set; }
+   }
+
    public class HomeController : Controller
    {
       private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
@@ -44,6 +52,27 @@ namespace smsSurvery.Surveryer.Controllers
          }        
          return View();         
       }
+
+      [Authorize]
+      public ActionResult ManualSurvey()
+      {
+         var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+         ViewBag.Surveys = user.SurveyPlanSet;
+         var manSurvey = new ManualSurvey();
+         manSurvey.Surveys = user.SurveyPlanSet.ToList();
+         ViewBag.ID = new SelectList(user.SurveyPlanSet.ToList(), "Id", "Description");
+         return View();
+      }
+
+      [Authorize]
+      public JsonResult UserForSurvey()
+      {
+         List<Customer> customers = new List<Customer>();
+         var c = new Customer() { PhoneNumber = "40751569435", Name="40751569435", Surname="40751569435" };
+         customers.Add(c);
+         return Json(customers, JsonRequestBehavior.AllowGet);
+      }
+     
 
       public ActionResult About()
       {

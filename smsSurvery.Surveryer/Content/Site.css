@@ -901,3 +901,14 @@ text-align: center;
 {
    width: 800px;
 }
+
+#left {
+   float: left;
+   width:60%;
+}
+
+#table-scroll {
+  height:400px;
+  overflow:auto;  
+  margin-top:20px;
+}

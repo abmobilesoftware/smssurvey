@@ -1,0 +1,87 @@
+﻿@model smsSurvery.Surveryer.Controllers.ManualSurvey
+
+@{
+    ViewBag.Title = "ManualSurvey";
+}
+
+<h2>Start manual survey</h2>
+
+
+
+
+<div id="left">
+   <h3>Add list of users</h3>
+   <button class="btn btn-info"> Import CVS</button>
+   <p>or</p>
+   <label>Add customer phone number</label> 
+   <input type="text" id="newphonenr"/>
+   <button id="add" class="btn btn-info"> Add</button> 
+   <div id="table-scroll">
+    <table id="phonenumbers">
+       <thead>
+          <th>
+             Phone number
+          </th>
+          <th>
+
+          </th>
+       </thead>
+       <tr type="phnr">
+          <td type="nr">40751569435</td>
+          <td> <button class="remove btn btn-danger btn-small"> Remove</button></td>
+       </tr>
+    </table>
+    </div>
+</div>
+<div if="userList"></div>
+<div id="right" >
+   <fieldset>
+      <legend> Survey settings</legend>
+      <div>
+         @Html.LabelFor(model => model.SelectedSurveyID)
+      </div>
+      <div>
+         @Html.DropDownList("ID", "Choose a survey")      
+      </div>
+      <p>
+          <button id="run" class="btn btn-primary"> Run</button> 
+      </p>
+   </fieldset>   
+</div>
+
+@section Scripts {
+<script>
+   $(function () {
+      $('#add').click(function () {
+         var newtelno = $("#newphonenr").val();
+         if (newtelno !== "") {
+            var elem = '<tr type="phnr"> <td type="nr">' + $("#newphonenr").val() + '</td><td><button class="remove btn btn-danger btn-small"> Remove</button></td></tr>';
+            $('#phonenumbers tr:last').after(elem);
+         }
+      });
+      //DA when the remove button is clicked, remove the set phone number
+      $('table').on('click', '.remove', function (event) {
+         var trow = $(event.target).parents('tr')[0];
+         trow.remove();         
+      });
+
+      $('#run').click(function () {
+         //we should have a survey selected
+         var selSurveyId = $('#ID').find(":selected").attr('value');
+         if (selSurveyId === "") {
+            //display message that you should select a survey
+         }
+         //we should have at least 1 phone number
+         var phonenumbers = $('tr[type=phnr] td[type=nr]');
+         if (phonenumbers.length === 0) {
+            //display message that we should have at least 1 number
+         }
+         var numbers = new Array();
+         $.each(phonenumbers, function (index, value) {
+            numbers.push(value.textContent);
+         });
+      });
+   });
+</script>
+ }
+
