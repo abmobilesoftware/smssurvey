@@ -221,6 +221,8 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\WordCloud.css" />
     <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\jquery-1.10.1.js" />
+    <Content Include="Scripts\jquery-1.10.1.min.js" />
     <Content Include="Scripts\reports.js" />
     <Content Include="WordCloud\CustomBlacklist.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -297,9 +299,6 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <None Include="Properties\PublishProfiles\smssurvey.pubxml" />
-    <None Include="Scripts\jquery-1.8.2.intellisense.js" />
-    <Content Include="Scripts\jquery-1.8.2.js" />
-    <Content Include="Scripts\jquery-1.8.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-ui-1.8.24.js" />
     <Content Include="Scripts\jquery-ui-1.8.24.min.js" />
@@ -385,6 +384,7 @@
     <Content Include="Views\Shared\SurveyResultsDetails.cshtml" />
     <Content Include="Views\SurveyPlan\Responses.cshtml" />
     <Content Include="Views\Answer\GetRatingMessagesWithAnswer.cshtml" />
+    <Content Include="Views\Home\ManualSurvey.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
