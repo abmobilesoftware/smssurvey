@@ -250,7 +250,7 @@ namespace smsSurvery.Surveryer.Controllers
                  //TODO fix logic errors if no next question
                  if (nextQuestion != null)
                  {
-                    SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion);
+                    SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion, db);
                  }
               }
               else
@@ -279,12 +279,18 @@ namespace smsSurvery.Surveryer.Controllers
         {
            logger.InfoFormat("userName: {0}, numberToSendFrom: {1}, customerPhoneNumber: {2}", userName, numberToSendFrom, customerPhoneNumber);
           //the customer info should be coming from the customer's system
-           var customer = db.CustomerSet.Find(customerPhoneNumber);
-          if (customer == null) {
+           StartSmsSurveyInternal(userName, numberToSendFrom, customerPhoneNumber, db);          
+        }
+
+       public static void StartSmsSurveyInternal(string userName, string numberToSendFrom, string customerPhoneNumber, smsSurveyEntities db)
+       {
+          var customer = db.CustomerSet.Find(customerPhoneNumber);
+          if (customer == null)
+          {
              customer = new Customer() { PhoneNumber = customerPhoneNumber, Name = customerPhoneNumber, Surname = customerPhoneNumber };
              db.CustomerSet.Add(customer);
              db.SaveChanges();
-         }
+          }
           //make sure that the previous survey is marked as completed, even if not fully answered
           if (customer.SurveyResult.Count != 0)
           {
@@ -305,12 +311,12 @@ namespace smsSurvery.Surveryer.Controllers
                 customer.RunningSurvey = surveyToRun;
                 db.SaveChanges();
                 var currentQuestion = surveyToRun.QuestionSet.OrderBy(x => x.Order).First();
-                SendQuestionToCustomer(customer,numberToSendFrom, currentQuestion);
+                SendQuestionToCustomer(customer, numberToSendFrom, currentQuestion, db);
              }
-          }          
-        }
+          }
+       }
 
-        private void SendQuestionToCustomer(Customer c, string numberToSendFrom, Question q)
+        private static void SendQuestionToCustomer(Customer c, string numberToSendFrom, Question q, smsSurveyEntities db)
         {
            logger.DebugFormat("question id: {0}, to customer: {1}, from number: {2}", q.Id, c.PhoneNumber, numberToSendFrom);
            var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyPlan(q.SurveyPlanSet);

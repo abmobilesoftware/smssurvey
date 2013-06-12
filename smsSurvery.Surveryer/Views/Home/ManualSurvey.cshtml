@@ -10,10 +10,10 @@
 
 
 <div id="left">
-   <h3>Add list of users</h3>
+   <h3>Add users</h3>
    <button class="btn btn-info"> Import CVS</button>
    <p>or</p>
-   <label>Add customer phone number</label> 
+   <label>Add customer phone number (numbers must start with the country prefix)</label> 
    <input type="text" id="newphonenr"/>
    <button id="add" class="btn btn-info"> Add</button> 
    <div id="table-scroll">
@@ -23,20 +23,16 @@
              Phone number
           </th>
           <th>
-
+             Actions
           </th>
-       </thead>
-       <tr type="phnr">
-          <td type="nr">40751569435</td>
-          <td> <button class="remove btn btn-danger btn-small"> Remove</button></td>
-       </tr>
+       </thead>       
     </table>
     </div>
 </div>
 <div if="userList"></div>
 <div id="right" >
-   <fieldset>
-      <legend> Survey settings</legend>
+    <h3>Select Survey</h3>
+   <fieldset>      
       <div>
          @Html.LabelFor(model => model.SelectedSurveyID)
       </div>
@@ -55,8 +51,16 @@
       $('#add').click(function () {
          var newtelno = $("#newphonenr").val();
          if (newtelno !== "") {
-            var elem = '<tr type="phnr"> <td type="nr">' + $("#newphonenr").val() + '</td><td><button class="remove btn btn-danger btn-small"> Remove</button></td></tr>';
-            $('#phonenumbers tr:last').after(elem);
+            //test the phone number to be added
+            var regex = /^\d+$/;
+            if (regex.test(newtelno)) {               
+               var elem = '<tr type="phnr"> <td type="nr">' + newtelno + '</td><td><button class="remove btn btn-danger btn-small"> Remove</button></td></tr>';
+               $('#phonenumbers tr:last').after(elem);
+            } else {
+               alert("only digits are allowed");
+            }
+
+            $("#newphonenr").val("");
          }
       });
       //DA when the remove button is clicked, remove the set phone number
@@ -70,18 +74,34 @@
          var selSurveyId = $('#ID').find(":selected").attr('value');
          if (selSurveyId === "") {
             //display message that you should select a survey
+            alert("Please select a survey to run");
+            return;
          }
          //we should have at least 1 phone number
          var phonenumbers = $('tr[type=phnr] td[type=nr]');
-         if (phonenumbers.length === 0) {
+         if (phonenumbers.length === 0) {            
             //display message that we should have at least 1 number
+            alert("Please add at least 1 phone number");
+            return;
          }
          var numbers = new Array();
          $.each(phonenumbers, function (index, value) {
             numbers.push(value.textContent);
          });
+         $.ajax({
+            data: {
+               surveyid: selSurveyId,
+               customerNumbers: numbers
+            },
+            url: "/Home/RunSurveyForNumbers",
+            traditional: true,
+            async: true,
+            cache: false,
+            success: function (data) {
+              
+            }
+         });
       });
    });
 </script>
  }
-

@@ -906,9 +906,16 @@ text-align: center;
    float: left;
    width:60%;
 }
+#right {
+   float: left;
+}
 
 #table-scroll {
   height:400px;
   overflow:auto;  
   margin-top:20px;
+}
+
+#newphonenr {
+   margin-bottom: 0px;
 }

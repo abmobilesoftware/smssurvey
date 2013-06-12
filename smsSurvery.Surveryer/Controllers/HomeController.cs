@@ -65,6 +65,22 @@ namespace smsSurvery.Surveryer.Controllers
       }
 
       [Authorize]
+      public JsonResult RunSurveyForNumbers(int surveyid, string[] customerNumbers)
+      {
+         var userName = User.Identity.Name;
+         var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();         
+         //some sanity checks should be required, but later
+         var surveyToRun = db.SurveyPlanSet.Find(surveyid);
+         if(surveyToRun != null) {
+            foreach (var nr in customerNumbers)
+            {
+               AnswerController.StartSmsSurveyInternal(userName, "40371700012", nr, db);
+            }
+         }
+         return null;
+      }
+
+      [Authorize]
       public JsonResult UserForSurvey()
       {
          List<Customer> customers = new List<Customer>();
