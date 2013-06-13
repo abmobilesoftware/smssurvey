@@ -9,41 +9,54 @@
 <fieldset>
     <legend>Question</legend>
 
-    <div class="display-label">
-         @Html.LabelFor(model => model.Text)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Text)
-    </div>
-
-    <div class="display-label">
-         @Html.LabelFor(model => model.Order)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Order)
-    </div>
-
-    <div class="display-label">
-         @Html.LabelFor(model => model.Type)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Type)
-       <span id="qtype" stype="display: none">@Model.Type</span>
-    </div>
-
-   <div class="editor-label">
-      @Html.LabelFor(model => model.ValidAnswers)
-   </div>
-   <div class="editor-field">
-      @Html.DisplayFor(model => model.ValidAnswers)      
-   </div>
-
-   <div class="editor-label">
-      @Html.LabelFor(model => model.ValidAnswersDetails)
-   </div>
-   <div class="editor-field">
-      @Html.DisplayFor(model => model.ValidAnswersDetails)      
-   </div>
+     @Html.HiddenFor(model => model.SurveyPlan_Id)
+    <table class="txteditor table table-striped table-bordered table-hover">
+      <tr>
+         <td class="labelCol" >
+            @Html.DisplayNameFor(model => model.Text)
+         </td>
+         <td>
+            @Html.DisplayFor(model => model.Text)
+            @Html.ValidationMessageFor(model => model.Text)
+         </td>
+      </tr>
+      <tr>
+         <td class="labelCol">
+            @Html.DisplayNameFor(model => model.Order)
+         </td>
+         <td>
+            @Html.DisplayFor(model => model.Order)
+            @Html.ValidationMessageFor(model => model.Order)
+         </td>
+      </tr>
+      <tr>
+         <td class="labelCol">
+            @Html.DisplayNameFor(model => model.Type)
+         </td>
+         <td>
+             @Html.DisplayFor(model => model.Type)
+            @Html.ValidationMessageFor(model => model.Type)
+         </td>
+      </tr>
+      <tr>
+         <td class="labelCol">
+            @Html.DisplayNameFor(model => model.ValidAnswers)
+         </td>
+         <td>
+            @Html.DisplayFor(model => model.ValidAnswers)
+            @Html.ValidationMessageFor(model => model.ValidAnswers)
+         </td>
+      </tr>
+      <tr>
+         <td class="labelCol">
+            @Html.DisplayNameFor(model => model.ValidAnswersDetails)
+         </td>
+         <td>
+            @Html.DisplayFor(model => model.ValidAnswersDetails)
+            @Html.ValidationMessageFor(model => model.ValidAnswersDetails)
+         </td>
+      </tr>
+   </table>
 </fieldset>
 <p>       
    @Html.ActionLink("Back to survey", "Details", "SurveyPlan", new {id = Model.SurveyPlan_Id }, null)

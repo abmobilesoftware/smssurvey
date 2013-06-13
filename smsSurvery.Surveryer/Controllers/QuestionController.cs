@@ -146,7 +146,8 @@ namespace smsSurvery.Surveryer.Controllers
             Question question = db.QuestionSet.Find(id);
             db.QuestionSet.Remove(question);
             db.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction("Edit", "SurveyPlan", new { id = question.SurveyPlan_Id });
+            //return RedirectToAction("Index");
         }
 
         protected override void Dispose(bool disposing)

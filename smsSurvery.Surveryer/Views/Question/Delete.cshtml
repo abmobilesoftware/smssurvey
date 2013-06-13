@@ -10,31 +10,60 @@
 <fieldset>
     <legend>Question</legend>
 
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.Text)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Text)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.Order)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Order)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.Type)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Type)
-    </div>
+    @Html.HiddenFor(model => model.SurveyPlan_Id)
+    <table class="txteditor table table-striped table-bordered table-hover">
+      <tr>
+         <td class="labelCol" >
+            @Html.DisplayNameFor(model => model.Text)
+         </td>
+         <td>
+            @Html.DisplayFor(model => model.Text)
+            @Html.ValidationMessageFor(model => model.Text)
+         </td>
+      </tr>
+      <tr>
+         <td class="labelCol">
+            @Html.DisplayNameFor(model => model.Order)
+         </td>
+         <td>
+            @Html.DisplayFor(model => model.Order)
+            @Html.ValidationMessageFor(model => model.Order)
+         </td>
+      </tr>
+      <tr>
+         <td class="labelCol">
+            @Html.DisplayNameFor(model => model.Type)
+         </td>
+         <td>
+            @Html.DisplayFor(model => model.Type)
+            @Html.ValidationMessageFor(model => model.Type)
+         </td>
+      </tr>
+      <tr>
+         <td class="labelCol">
+            @Html.DisplayNameFor(model => model.ValidAnswers)
+         </td>
+         <td>
+            @Html.DisplayFor(model => model.ValidAnswers)
+            @Html.ValidationMessageFor(model => model.ValidAnswers)
+         </td>
+      </tr>
+      <tr>
+         <td class="labelCol">
+            @Html.DisplayNameFor(model => model.ValidAnswersDetails)
+         </td>
+         <td>
+            @Html.DisplayFor(model => model.ValidAnswersDetails)
+            @Html.ValidationMessageFor(model => model.ValidAnswersDetails)
+         </td>
+      </tr>
+   </table>
 </fieldset>
 @using (Html.BeginForm()) {
     @Html.AntiForgeryToken()
     <p>
-        <input type="submit" value="Delete" /> |
-        @Html.ActionLink("Back to List", "Index")
+        <input type="submit" class="btn btn-danger btn-small" value="Delete" /> |
+       @Html.ActionLink("Back to survey", "Edit", "SurveyPlan", new {id = Model.SurveyPlan_Id }, null)
+        @*@Html.ActionLink("Back to List", "Index")*@
     </p>
 }

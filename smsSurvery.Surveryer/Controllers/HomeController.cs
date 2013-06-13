@@ -56,6 +56,7 @@ namespace smsSurvery.Surveryer.Controllers
       [Authorize]
       public ActionResult ManualSurvey()
       {
+         throw new Exception("blablabla");
          var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
          ViewBag.Surveys = user.SurveyPlanSet;
          var manSurvey = new ManualSurvey();

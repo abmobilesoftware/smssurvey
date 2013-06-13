@@ -36,7 +36,7 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model.QuestionSet) {
+@foreach (var item in Model.QuestionSet.OrderBy(q=>q.Order)) {
     <tr>
         <td>
             @Html.DisplayFor(modelItem => item.Text)
@@ -48,7 +48,8 @@
             @Html.DisplayFor(modelItem => item.Type)
         </td>
         <td>
-            @Html.ActionLink("Edit question", "Edit", "Question", new RouteValueDictionary { {"id",item.Id} }, null) 
+            @Html.ActionLink("Edit question", "Edit", "Question", new RouteValueDictionary { {"id",item.Id} }, null) |
+            @Html.ActionLink("Delete question", "Delete","Question", new RouteValueDictionary {{ "id",item.Id }}, null) 
         </td>
     </tr>
 }
