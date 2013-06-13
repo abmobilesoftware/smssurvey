@@ -1,12 +1,16 @@
-﻿using smsSurvey.dbInterface;
+﻿using CsvHelper;
+using smsSurvey.dbInterface;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
 namespace smsSurvery.Surveryer.Controllers
 {
+  
+
    public class ManualSurvey
    {
       public List<SurveyPlan> Surveys { get; set; }
@@ -17,6 +21,13 @@ namespace smsSurvery.Surveryer.Controllers
 
    public class HomeController : Controller
    {
+      protected class CsvCustomer
+      {
+         public string Telephone { get; set; }
+         public string Name { get; set; }
+         public string Surname { get; set; }
+      }
+
       private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
       private smsSurveyEntities db = new smsSurveyEntities();
       public ActionResult Index()
@@ -54,15 +65,51 @@ namespace smsSurvery.Surveryer.Controllers
       }
 
       [Authorize]
+      [HttpGet]
       public ActionResult ManualSurvey()
       {
-         throw new Exception("blablabla");
          var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
          ViewBag.Surveys = user.SurveyPlanSet;
          var manSurvey = new ManualSurvey();
          manSurvey.Surveys = user.SurveyPlanSet.ToList();
          ViewBag.ID = new SelectList(user.SurveyPlanSet.ToList(), "Id", "Description");
-         return View();
+         ViewBag.DefaultSelectionForSurveyId = 0;
+         return View(manSurvey);
+      }
+      
+      [Authorize]
+      [HttpPost]
+      public ActionResult ManualSurvey(int selectedSurveyId)
+      {        
+         //the file is in Request.Files
+         var postedFile = Request.Files["cvsFile"];
+         if (!String.IsNullOrEmpty(postedFile.FileName))
+         {
+            //var fileContent = new StreamReader(postedFile.InputStream).ReadToEnd();
+            var csv = new CsvReader(new StreamReader(postedFile.InputStream));
+            var customers = csv.GetRecords<CsvCustomer>();
+            ViewBag.PhoneNumbers = customers.Select(x => x.Telephone).ToList();
+         }
+         var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+         ViewBag.Surveys = user.SurveyPlanSet;
+         var manSurvey = new ManualSurvey();
+         manSurvey.Surveys = user.SurveyPlanSet.ToList();
+         if (selectedSurveyId != 0)
+         {
+            ViewBag.ID = new SelectList(user.SurveyPlanSet.ToList(), "Id", "Description", selectedSurveyId);
+         }
+         else
+         {
+            ViewBag.ID = new SelectList(user.SurveyPlanSet.ToList(), "Id", "Description", selectedSurveyId);
+         }
+         ViewBag.DefaultSelectionForSurveyId = selectedSurveyId;
+         return View("ManualSurvey", manSurvey);
+      }
+
+      [Authorize]
+      public ActionResult ThrowError()
+      {
+         throw new Exception("blablabla");
       }
 
       [Authorize]

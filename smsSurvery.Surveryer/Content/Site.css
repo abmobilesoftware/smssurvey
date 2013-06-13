@@ -919,3 +919,8 @@ text-align: center;
 #newphonenr {
    margin-bottom: 0px;
 }
+
+#phonenumbers {
+   width: 330px;
+   text-align: left;
+}

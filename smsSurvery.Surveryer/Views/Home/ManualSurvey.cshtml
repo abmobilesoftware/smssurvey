@@ -6,12 +6,17 @@
 
 <h2>Start manual survey</h2>
 
-
-
-
 <div id="left">
    <h3>Add users</h3>
-   <button class="btn btn-info"> Import CVS</button>
+  @using (Html.BeginForm("ManualSurvey", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+  {
+      @Html.AntiForgeryToken()
+      @Html.Hidden("selectedSurveyId", (int)  @ViewBag.DefaultSelectionForSurveyId);
+      <input class="btn " type="file" id="cvsFile" name="cvsFile" />
+      <input class="btn btn-info"  type="submit" name="btnImport" value="Import CVS" />
+  }
+
+ @*  <button class="btn btn-info"> Import CVS</button>*@
    <p>or</p>
    <label>Add customer phone number (numbers must start with the country prefix)</label> 
    <input type="text" id="newphonenr"/>
@@ -25,7 +30,17 @@
           <th>
              Actions
           </th>
-       </thead>       
+       </thead>
+       @if (ViewBag.PhoneNumbers != null) {
+       foreach (var phNr in ViewBag.PhoneNumbers)
+       {
+          <tr type="phnr">
+              <td type="nr"> @phNr </td>
+             <td><button class="remove btn btn-danger btn-small"> Remove</button></td>
+
+          </tr>
+       }
+       }
     </table>
     </div>
 </div>
@@ -67,6 +82,11 @@
       $('table').on('click', '.remove', function (event) {
          var trow = $(event.target).parents('tr')[0];
          trow.remove();         
+      });
+
+      $('#ID').change(function () {
+         var newVal = $(this).val();
+         $('#selectedSurveyId').val(newVal);
       });
 
       $('#run').click(function () {
