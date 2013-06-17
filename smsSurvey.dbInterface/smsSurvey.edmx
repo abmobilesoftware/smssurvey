@@ -126,6 +126,7 @@
           <Property Name="UserId" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="UserName" Type="nvarchar" Nullable="false" MaxLength="56" />
           <Property Name="DefaultProvider" Type="nvarchar" MaxLength="50" />
+          <Property Name="DefaultTelNo" Type="nvarchar" Nullable="false" MaxLength="50" />
         </EntityType>
         <EntityType Name="webpages_Membership">
           <Key>
@@ -461,6 +462,7 @@
           <NavigationProperty Name="webpages_Roles" Relationship="smsSurveyModel.webpages_UsersInRoles" FromRole="UserProfile" ToRole="webpages_Roles" />
           <NavigationProperty Name="SurveyPlanSet" Relationship="smsSurveyModel.UserProfileSurveyPlan" FromRole="UserProfile" ToRole="SurveyPlan" />
           <Property Type="String" Name="DefaultProvider" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="DefaultTelNo" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="webpages_Membership">
           <Key>
@@ -594,6 +596,7 @@
           <EntitySetMapping Name="UserProfile">
             <EntityTypeMapping TypeName="smsSurveyModel.UserProfile">
               <MappingFragment StoreEntitySet="UserProfile">
+                <ScalarProperty Name="DefaultTelNo" ColumnName="DefaultTelNo" />
                 <ScalarProperty Name="DefaultProvider" ColumnName="DefaultProvider" />
                 <ScalarProperty Name="UserName" ColumnName="UserName" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />

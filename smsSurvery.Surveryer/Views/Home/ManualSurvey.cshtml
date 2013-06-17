@@ -58,6 +58,7 @@
           <button id="run" class="btn btn-primary"> Run</button> 
       </p>
    </fieldset>   
+   <div><span id="runSurveyResult"></span></div>
 </div>
 
 @section Scripts {
@@ -118,7 +119,7 @@
             async: true,
             cache: false,
             success: function (data) {
-              
+               $("#runSurveyResult").html(data);
             }
          });
       });

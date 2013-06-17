@@ -121,11 +121,11 @@ namespace smsSurvery.Surveryer.Controllers
          var surveyToRun = db.SurveyPlanSet.Find(surveyid);
          if(surveyToRun != null) {
             foreach (var nr in customerNumbers)
-            {
-               AnswerController.StartSmsSurveyInternal(userName, "40371700012", nr, db);
+            {               
+               AnswerController.StartSmsSurveyInternal(userName, user.DefaultTelNo, nr, db);
             }
          }
-         return null;
+         return Json("Survey started successfully", JsonRequestBehavior.AllowGet);
       }
 
       [Authorize]
