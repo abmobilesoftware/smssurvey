@@ -122,7 +122,7 @@ namespace smsSurvery.Surveryer.Controllers
          if(surveyToRun != null) {
             foreach (var nr in customerNumbers)
             {               
-               AnswerController.StartSmsSurveyInternal(userName, user.DefaultTelNo, nr, db);
+               AnswerController.StartSmsSurveyInternal(user.DefaultTelNo, nr, surveyToRun, db);
             }
          }
          return Json("Survey started successfully", JsonRequestBehavior.AllowGet);

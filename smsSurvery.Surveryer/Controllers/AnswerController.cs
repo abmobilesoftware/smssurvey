@@ -279,10 +279,19 @@ namespace smsSurvery.Surveryer.Controllers
         {
            logger.InfoFormat("userName: {0}, numberToSendFrom: {1}, customerPhoneNumber: {2}", userName, numberToSendFrom, customerPhoneNumber);
           //the customer info should be coming from the customer's system
-           StartSmsSurveyInternal(userName, numberToSendFrom, customerPhoneNumber, db);          
+           var user = db.UserProfile.Where(u => u.UserName == userName).FirstOrDefault();
+           if (user != null)
+           {
+              var surveyToRun = user.SurveyPlanSet.Where(s => s.IsRunning).FirstOrDefault();
+              //TODO DA sanity check - only one active survey at a time          
+              if (surveyToRun != null)
+              {
+                 StartSmsSurveyInternal(numberToSendFrom, customerPhoneNumber, surveyToRun, db);
+              }
+           }           
         }
 
-       public static void StartSmsSurveyInternal(string userName, string numberToSendFrom, string customerPhoneNumber, smsSurveyEntities db)
+       public static void StartSmsSurveyInternal(string numberToSendFrom, string customerPhoneNumber,SurveyPlan surveyToRun, smsSurveyEntities db)
        {
           var customer = db.CustomerSet.Find(customerPhoneNumber);
           if (customer == null)
@@ -297,23 +306,18 @@ namespace smsSurvery.Surveryer.Controllers
              var latestSurveyResult = customer.SurveyResult.OrderByDescending(x => x.DateRan).First();
              latestSurveyResult.Complete = true;
           }
-          //TODO DA sanity check - only one active survey at a time
-          var user = db.UserProfile.Where(u => u.UserName == userName).FirstOrDefault();
-          if (user != null)
-          {
-             var surveyToRun = user.SurveyPlanSet.Where(s => s.IsRunning).FirstOrDefault();
-             if (surveyToRun != null)
-             {
-                SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyPlan = surveyToRun, Complete = false };
-                db.SurveyResultSet.Add(newSurvey);
-                //mark that we have started a new survey for the current user
-                customer.SurveyInProgress = true;
-                customer.RunningSurvey = surveyToRun;
-                db.SaveChanges();
-                var currentQuestion = surveyToRun.QuestionSet.OrderBy(x => x.Order).First();
-                SendQuestionToCustomer(customer, numberToSendFrom, currentQuestion, db);
-             }
-          }
+          //TODO DA sanity check - only one active survey at a time          
+         if (surveyToRun != null)
+         {
+            SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyPlan = surveyToRun, Complete = false };
+            db.SurveyResultSet.Add(newSurvey);
+            //mark that we have started a new survey for the current user
+            customer.SurveyInProgress = true;
+            customer.RunningSurvey = surveyToRun;
+            db.SaveChanges();
+            var currentQuestion = surveyToRun.QuestionSet.OrderBy(x => x.Order).First();
+            SendQuestionToCustomer(customer, numberToSendFrom, currentQuestion, db);
+         }          
        }
 
         private static void SendQuestionToCustomer(Customer c, string numberToSendFrom, Question q, smsSurveyEntities db)
