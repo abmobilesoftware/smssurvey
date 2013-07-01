@@ -135,7 +135,8 @@ namespace smsSurvery.Surveryer.Controllers
            if (question != null && question.Type == "Rating")
            {
               List<FreeTextAnswer> messages = new List<FreeTextAnswer>();
-              foreach (var result in question.Result)
+              var results = question.Result.OrderByDescending(x => x.SurveyResult.DateRan);
+              foreach (var result in results)
               {
                  if (result.Answer == answer.ToString())
                  {
@@ -158,8 +159,8 @@ namespace smsSurvery.Surveryer.Controllers
               var totalNrOfQuestions = sp.QuestionSet.Count();
               var percentageCompleted = (double)nrOfAnsweredQuestions / totalNrOfQuestions;
 
-              var sResult = sp.SurveyResult.Where(sr => Math.Abs( sr.PercentageComplete - percentageCompleted) <= 0.01);
-              @ViewBag.ReportTitle = String.Format("Customers that answered {0} out of {1} questions", nrOfAnsweredQuestions, totalNrOfQuestions);
+              var sResult = sp.SurveyResult.Where(sr => Math.Abs( sr.PercentageComplete - percentageCompleted) <= 0.01).OrderByDescending(sr=>sr.DateRan);
+              @ViewBag.ReportTitle = String.Format("Surveys with {0} out of {1} answers", nrOfAnsweredQuestions, totalNrOfQuestions);
               return View(sResult);
            }
            return View();
