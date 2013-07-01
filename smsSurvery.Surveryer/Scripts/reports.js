@@ -82,7 +82,7 @@ window.app.displayReportOverview = function (surveyPlanId) {
 };
 
 $(document).ready(function () {
-  // window.app.displayReportOverview(3);
+   window.app.displayReportOverview($("#surveyId").text());
    //based on the type of the question get the report
    //for each question, show the outcome (if required)
    $('input[qid]').each(function (index) {

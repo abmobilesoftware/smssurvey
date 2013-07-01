@@ -176,7 +176,7 @@ namespace smsSurvery.Surveryer.Controllers
            //return true;
         }
 
-        [HttpGet]
+        [HttpPost]
         public ActionResult AnswerReceived(string from, string to, string text)
         {
            logger.InfoFormat("from: {0}, to: {1}, text: {2}", from, to, text);

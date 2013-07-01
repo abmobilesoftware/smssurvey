@@ -203,14 +203,32 @@ namespace smsSurvery.Surveryer.Controllers
       [HttpGet]
       public JsonResult GetSurveyOverview(int surveyPlanId)
       {
-         //SurveyPlan survey = db.SurveyPlanSet.Find(surveyPlanId);
+         //go through all surveyResults and group them by completion rate
+         SurveyPlan survey = db.SurveyPlanSet.Find(surveyPlanId);
+         var x = (from s in survey.SurveyResult group s by s.PercentageComplete into g select new { PercentageComplete = g.Key, Count = g.Count() }).OrderBy(i=>i.PercentageComplete);
+         var a = from s in survey.SurveyResult select new { ID = s.Id, Result = s.Result.Count(), Total = s.SurveyPlan.QuestionSet.Count() };
+         int totalNumberOfSentSurveys = 0;
+         int totalNumberOfQuestions = survey.QuestionSet.Count();
+         int nrOfSurveysFullyAnswered = 0;
          List<RepDataRow> pieChartContent = new List<RepDataRow>();
-         var row = new RepDataRow(new RepDataRowCell[] { new RepDataRowCell("blabla", "Answered 1 out of 3 questions"), new RepDataRowCell(12, " 12 survey(s)") });
-         pieChartContent.Add(row);
-         row = new RepDataRow(new RepDataRowCell[] { new RepDataRowCell("blabla2", "Answered 2 out of 3 questions"), new RepDataRowCell(13, "13 survey(s)") });
-         pieChartContent.Add(row);
-         row = new RepDataRow(new RepDataRowCell[] { new RepDataRowCell("blabla3", "Answered 3 out of 3 questions"), new RepDataRowCell(2, "2 survey (s)") });
-         pieChartContent.Add(row);
+         foreach (var item in x)
+         {
+            totalNumberOfSentSurveys += item.Count;
+            var answeredQuestions = Math.Round(item.PercentageComplete * totalNumberOfQuestions);
+            if (item.PercentageComplete == 1) { nrOfSurveysFullyAnswered = item.Count; }
+            var row = new RepDataRow(new RepDataRowCell[] {
+               new RepDataRowCell(item.Count, String.Format("Answered {0} out of {1} questions",answeredQuestions,totalNumberOfQuestions )),
+               new RepDataRowCell(item.Count, String.Format("{0} survey(s)",item.Count)) });
+            pieChartContent.Add(row);
+         }
+
+         
+         //var row = new RepDataRow(new RepDataRowCell[] { new RepDataRowCell("blabla", "Answered 1 out of 3 questions"), new RepDataRowCell(12, " 12 survey(s)") });
+         //pieChartContent.Add(row);
+         //row = new RepDataRow(new RepDataRowCell[] { new RepDataRowCell("blabla2", "Answered 2 out of 3 questions"), new RepDataRowCell(13, "13 survey(s)") });
+         //pieChartContent.Add(row);
+         //row = new RepDataRow(new RepDataRowCell[] { new RepDataRowCell("blabla3", "Answered 3 out of 3 questions"), new RepDataRowCell(2, "2 survey (s)") });
+         //pieChartContent.Add(row);
          
          RepChartData pieChartSource = new RepChartData(
               new RepDataColumn[] {
@@ -220,12 +238,12 @@ namespace smsSurvery.Surveryer.Controllers
          List<RepDataRow> tableData = new List<RepDataRow>()
             {
                new RepDataRow(new RepDataRowCell[] {
-                  new RepDataRowCell(40, "40"), new RepDataRowCell(20, "20") })
+                  new RepDataRowCell(totalNumberOfSentSurveys, totalNumberOfSentSurveys.ToString()), new RepDataRowCell(nrOfSurveysFullyAnswered, nrOfSurveysFullyAnswered.ToString()) })
             };
          RepChartData tableChartSource = new RepChartData(
             new RepDataColumn[] {
-                new RepDataColumn("17", STRING_COLUMN_TYPE, "Number of inquiries sent"),
-                new RepDataColumn("18", STRING_COLUMN_TYPE, "Number of surveys fully answered") },
+                new RepDataColumn(totalNumberOfSentSurveys.ToString(), STRING_COLUMN_TYPE, "Number of inquiries sent"),
+                new RepDataColumn(nrOfSurveysFullyAnswered.ToString(), STRING_COLUMN_TYPE, "Number of surveys fully answered") },
                tableData);
          var dataToSendBack = new { pie = pieChartSource, table = tableChartSource };
          return Json(dataToSendBack, JsonRequestBehavior.AllowGet);         
