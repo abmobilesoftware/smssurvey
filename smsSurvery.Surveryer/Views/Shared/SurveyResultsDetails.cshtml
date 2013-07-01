@@ -14,7 +14,10 @@
            Survey description
         </th>
        <th>
-          @Html.DisplayNameFor(model => model.Complete)
+          @Html.DisplayNameFor(model => model.Terminated)
+       </th>
+        <th>
+          @Html.DisplayNameFor(model => model.PercentageComplete)
        </th>
         <th></th>
     </tr>
@@ -31,7 +34,11 @@
             @Html.DisplayFor(modelItem => item.SurveyPlan.Description)
         </td>
        <td>
-          @Html.DisplayFor(modelItem => item.Complete)
+          @Html.DisplayFor(modelItem => item.Terminated)
+       </td>
+       
+       <td @( item.PercentageComplete == 1 ? "class=centopercent" : "")>       
+          @Html.DisplayFor(modelItem => item.PercentageComplete)
        </td>
         <td>            
             @Html.ActionLink("Details", "Details", new { id=item.Id }) |

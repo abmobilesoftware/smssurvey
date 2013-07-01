@@ -17,6 +17,7 @@ namespace smsSurvey.dbInterface
         public Question()
         {
             this.Result = new HashSet<Result>();
+            this.SurveyResultSet = new HashSet<SurveyResult>();
         }
     
         public int Id { get; set; }
@@ -29,5 +30,6 @@ namespace smsSurvey.dbInterface
     
         public virtual ICollection<Result> Result { get; set; }
         public virtual SurveyPlan SurveyPlanSet { get; set; }
+        public virtual ICollection<SurveyResult> SurveyResultSet { get; set; }
     }
 }

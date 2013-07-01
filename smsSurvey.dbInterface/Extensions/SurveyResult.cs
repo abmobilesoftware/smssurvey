@@ -23,8 +23,12 @@ namespace smsSurvey.dbInterface
        [DisplayName("Customer phone number")]
        public string CustomerPhoneNumber { get; set; }
 
-       [DisplayName("Survey completed")]
-       public bool Complete { get; set; }
+       [DisplayName("Survey closed")]
+       public bool Terminated { get; set; }
+
+       [DisplayName("Percentage filled in (%)")]
+       [DisplayFormat(DataFormatString = "{0:P2}")]
+       public double PercentageComplete { get; set; }
    }
    #endregion
 }

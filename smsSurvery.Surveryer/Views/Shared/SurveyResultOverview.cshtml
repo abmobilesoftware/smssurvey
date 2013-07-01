@@ -1,0 +1,9 @@
+﻿@model smsSurvey.dbInterface.SurveyPlan
+
+<fieldset>
+    <legend> @Model.Description </legend>
+    <div id="@String.Format("tableOverviewChart_div{0}", Model.Id)"></div>
+    <div id="@String.Format("pieOverviewChart_div{0}", Model.Id)"></div>
+</fieldset>
+
+

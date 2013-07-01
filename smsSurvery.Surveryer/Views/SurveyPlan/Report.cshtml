@@ -1,7 +1,11 @@
 ﻿@model smsSurvey.dbInterface.SurveyPlan
 
 <script type="text/javascript" src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
-<h2>Report for survey "@Model.Description"</h2>
+
+<text>
+@{Html.RenderPartial("SurveyResultOverview", (smsSurvey.dbInterface.SurveyPlan) Model);}
+</text>
+
 @if (Model != null)
 {
    <text>

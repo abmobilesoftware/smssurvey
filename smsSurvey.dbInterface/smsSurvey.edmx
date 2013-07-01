@@ -41,6 +41,10 @@
             <End Role="SurveyPlanSet" EntitySet="SurveyPlanSet" />
             <End Role="SurveyResultSet" EntitySet="SurveyResultSet" />
           </AssociationSet>
+          <AssociationSet Name="FK_SurveyResultQuestion" Association="smsSurveyModel.Store.FK_SurveyResultQuestion">
+            <End Role="QuestionSet" EntitySet="QuestionSet" />
+            <End Role="SurveyResultSet" EntitySet="SurveyResultSet" />
+          </AssociationSet>
           <AssociationSet Name="FK_SurveyResultResult" Association="smsSurveyModel.Store.FK_SurveyResultResult">
             <End Role="SurveyResultSet" EntitySet="SurveyResultSet" />
             <End Role="ResultSet" EntitySet="ResultSet" />
@@ -110,6 +114,8 @@
           <Property Name="CustomerPhoneNumber" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="SurveyPlanId" Type="int" Nullable="false" />
           <Property Name="Complete" Type="bit" Nullable="false" />
+          <Property Name="PercentageComplete" Type="float" Nullable="false" />
+          <Property Name="CurrentQuestion_Id" Type="int" />
         </EntityType>
         <EntityType Name="UserProfileSurveyPlan">
           <Key>
@@ -240,6 +246,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_SurveyResultQuestion">
+          <End Role="QuestionSet" Type="smsSurveyModel.Store.QuestionSet" Multiplicity="0..1" />
+          <End Role="SurveyResultSet" Type="smsSurveyModel.Store.SurveyResultSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QuestionSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SurveyResultSet">
+              <PropertyRef Name="CurrentQuestion_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_SurveyResultResult">
           <End Role="SurveyResultSet" Type="smsSurveyModel.Store.SurveyResultSet" Multiplicity="1" />
           <End Role="ResultSet" Type="smsSurveyModel.Store.ResultSet" Multiplicity="*" />
@@ -334,6 +352,10 @@
             <End Role="SurveyPlan" EntitySet="SurveyPlanSet" />
             <End Role="Customer" EntitySet="CustomerSet" />
           </AssociationSet>
+          <AssociationSet Name="FK_SurveyResultQuestion" Association="smsSurveyModel.FK_SurveyResultQuestion">
+            <End Role="Question" EntitySet="QuestionSet" />
+            <End Role="SurveyResult" EntitySet="SurveyResultSet" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="Question">
           <Key>
@@ -352,6 +374,7 @@
           <Property Type="String" Name="ValidAnswersDetails" MaxLength="1000" Unicode="true" FixedLength="false" />
           <Property Type="Int32" Name="SurveyPlan_Id" Nullable="false" />
           <NavigationProperty Name="SurveyPlanSet" Relationship="smsSurveyModel.FK_SurveyPlanQuestion" FromRole="Question" ToRole="SurveyPlan" />
+          <NavigationProperty Name="SurveyResultSet" Relationship="smsSurveyModel.FK_SurveyResultQuestion" FromRole="Question" ToRole="SurveyResult" />
         </EntityType>
         <EntityType Name="SurveyPlan">
           <Key>
@@ -392,7 +415,10 @@
           <NavigationProperty Name="SurveyPlan" Relationship="smsSurveyModel.SurveyPlanSurveyResult" FromRole="SurveyResult" ToRole="SurveyPlan" />
           <Property Type="Int32" Name="SurveyPlanId" Nullable="false" />
           <NavigationProperty Name="Result" Relationship="smsSurveyModel.SurveyResultResult" FromRole="SurveyResult" ToRole="Result" />
-          <Property Type="Boolean" Name="Complete" Nullable="false" />
+          <Property Type="Boolean" Name="Terminated" Nullable="false" />
+          <Property Type="Int32" Name="CurrentQuestion_Id" />
+          <NavigationProperty Name="CurrentQuestion" Relationship="smsSurveyModel.FK_SurveyResultQuestion" FromRole="SurveyResult" ToRole="Question" />
+          <Property Type="Double" Name="PercentageComplete" Nullable="false" DefaultValue="0" />
         </EntityType>
         <Association Name="CustomerSurveyResult">
           <End Type="smsSurveyModel.Customer" Role="Customer" Multiplicity="1" />
@@ -529,6 +555,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_SurveyResultQuestion">
+          <End Type="smsSurveyModel.Question" Role="Question" Multiplicity="0..1" />
+          <End Type="smsSurveyModel.SurveyResult" Role="SurveyResult" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Question">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="SurveyResult">
+              <PropertyRef Name="CurrentQuestion_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -575,7 +613,9 @@
     <EntitySetMapping Name="SurveyResultSet">
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.SurveyResult)">
         <MappingFragment StoreEntitySet="SurveyResultSet">
-          <ScalarProperty Name="Complete" ColumnName="Complete" />
+                <ScalarProperty Name="PercentageComplete" ColumnName="PercentageComplete" />
+                <ScalarProperty Name="CurrentQuestion_Id" ColumnName="CurrentQuestion_Id" />
+                <ScalarProperty Name="Terminated" ColumnName="Complete" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="DateRan" ColumnName="DateRan" />
           <ScalarProperty Name="CustomerPhoneNumber" ColumnName="CustomerPhoneNumber" />

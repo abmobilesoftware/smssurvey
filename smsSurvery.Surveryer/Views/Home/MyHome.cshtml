@@ -6,6 +6,9 @@
 @if (ViewBag.CurrentSurvey != null)
 {
    <text>
+    @{Html.RenderPartial("SurveyResultOverview", (smsSurvey.dbInterface.SurveyPlan) ViewBag.CurrentSurvey);}
+   </text>   
+   <text>
     @{Html.RenderPartial("SurveyReport", (IEnumerable<smsSurvey.dbInterface.Question>) ViewBag.SurveyQuestions);} 
    </text>
 }

@@ -16,6 +16,7 @@ namespace smsSurvey.dbInterface
     {
         public SurveyResult()
         {
+            this.PercentageComplete = 0D;
             this.Result = new HashSet<Result>();
         }
     
@@ -23,10 +24,13 @@ namespace smsSurvey.dbInterface
         public System.DateTime DateRan { get; set; }
         public string CustomerPhoneNumber { get; set; }
         public int SurveyPlanId { get; set; }
-        public bool Complete { get; set; }
+        public bool Terminated { get; set; }
+        public Nullable<int> CurrentQuestion_Id { get; set; }
+        public double PercentageComplete { get; set; }
     
         public virtual Customer Customer { get; set; }
         public virtual SurveyPlan SurveyPlan { get; set; }
         public virtual ICollection<Result> Result { get; set; }
+        public virtual Question CurrentQuestion { get; set; }
     }
 }

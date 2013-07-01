@@ -8,10 +8,10 @@
         <EntityTypeShape EntityType="smsSurveyModel.Question" Width="1.5" PointX="14.5" PointY="1.75" />
         <EntityTypeShape EntityType="smsSurveyModel.SurveyPlan" Width="1.75" PointX="8" PointY="1.875" />
         <EntityTypeShape EntityType="smsSurveyModel.Customer" Width="1.5" PointX="5.25" PointY="7.5" />
-        <EntityTypeShape EntityType="smsSurveyModel.SurveyResult" Width="1.5" PointX="11.5" PointY="7.375" />
+        <EntityTypeShape EntityType="smsSurveyModel.SurveyResult" Width="1.5" PointX="11.625" PointY="6.25" />
         <AssociationConnector Association="smsSurveyModel.CustomerSurveyResult" />
         <AssociationConnector Association="smsSurveyModel.SurveyPlanSurveyResult" />
-        <EntityTypeShape EntityType="smsSurveyModel.Result" Width="1.5" PointX="17.75" PointY="6.875" />
+        <EntityTypeShape EntityType="smsSurveyModel.Result" Width="1.5" PointX="18.375" PointY="7" />
         <AssociationConnector Association="smsSurveyModel.QuestionResult" />
         <AssociationConnector Association="smsSurveyModel.SurveyResultResult" />
         <EntityTypeShape EntityType="smsSurveyModel.UserProfile" Width="1.5" PointX="1.125" PointY="2" />
@@ -23,6 +23,7 @@
         <AssociationConnector Association="smsSurveyModel.FK_SurveyPlanQuestion" />
         <AssociationConnector Association="smsSurveyModel.FK_RunningSurvey" ManuallyRouted="false" >
         </AssociationConnector>
+        <AssociationConnector Association="smsSurveyModel.FK_SurveyResultQuestion" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

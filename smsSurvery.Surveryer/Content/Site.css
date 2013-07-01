@@ -924,3 +924,8 @@ text-align: center;
    width: 330px;
    text-align: left;
 }
+
+.centopercent {
+   background-color:green !important;
+   color: white;
+}

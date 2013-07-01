@@ -49,7 +49,40 @@ window.app.displayReportsForFreeTextQ = function (questionId) {
    });
 };
 
+window.app.displayReportOverview = function (surveyPlanId) {
+   $.ajax({
+      data: { surveyPlanId: surveyPlanId },
+      url: "/Reports/GetSurveyOverview",
+      dataType: "json",
+      async: true,
+      cache: false,
+      success: function (jsonData) {
+         var options = {
+            backgroundColor: '#F5F8FA',
+            sliceVisibilityThreshold: 0,
+            'width': 'auto',
+            'height': 300,
+            'title': "Percentage of completion (out of 100)"
+         };
+         var piechart = new google.visualization.PieChart(document.getElementById('pieOverviewChart_div' + surveyPlanId));
+         var piedata = new google.visualization.DataTable(jsonData.pie);
+         //window.app.piedata[questionId] = piedata;
+         piechart.draw(piedata, options);
+         
+         var tablechart = new google.visualization.Table(document.getElementById('tableOverviewChart_div' + surveyPlanId));
+         tabledata = new google.visualization.DataTable(jsonData.table);
+         var tableOptions = {
+            backgroundColor: '#F5F8FA',
+            sliceVisibilityThreshold: 0,
+            cssClassNames: { tableCell: "tCell" }
+         };
+         tablechart.draw(tabledata, tableOptions);
+      }
+   });
+};
+
 $(document).ready(function () {
+  // window.app.displayReportOverview(3);
    //based on the type of the question get the report
    //for each question, show the outcome (if required)
    $('input[qid]').each(function (index) {

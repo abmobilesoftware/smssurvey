@@ -26,7 +26,7 @@ namespace smsSurvery.Surveryer.Controllers
       {
          string[] optionDef = new string[] {"Easy as pie", "Easy enough", "Average", "Rather hard", "Hard to use" };
          //for each question in the survey, aggregate the results
-         SurveyPlan survey = db.SurveyPlanSet.Find(surveyId);
+         SurveyPlan survey = db.SurveyPlanSet.Find(surveyId);         
          QuestionSurveyResults res = null;
          if (survey != null)
          {
@@ -198,6 +198,37 @@ namespace smsSurvery.Surveryer.Controllers
             return PartialView(GetTagCloudData(question));
          }         
          return null;
+      }
+
+      [HttpGet]
+      public JsonResult GetSurveyOverview(int surveyPlanId)
+      {
+         //SurveyPlan survey = db.SurveyPlanSet.Find(surveyPlanId);
+         List<RepDataRow> pieChartContent = new List<RepDataRow>();
+         var row = new RepDataRow(new RepDataRowCell[] { new RepDataRowCell("blabla", "Answered 1 out of 3 questions"), new RepDataRowCell(12, " 12 survey(s)") });
+         pieChartContent.Add(row);
+         row = new RepDataRow(new RepDataRowCell[] { new RepDataRowCell("blabla2", "Answered 2 out of 3 questions"), new RepDataRowCell(13, "13 survey(s)") });
+         pieChartContent.Add(row);
+         row = new RepDataRow(new RepDataRowCell[] { new RepDataRowCell("blabla3", "Answered 3 out of 3 questions"), new RepDataRowCell(2, "2 survey (s)") });
+         pieChartContent.Add(row);
+         
+         RepChartData pieChartSource = new RepChartData(
+              new RepDataColumn[] {
+                new RepDataColumn("17", STRING_COLUMN_TYPE, "Type"),
+                new RepDataColumn("18", STRING_COLUMN_TYPE, "Value") },
+                 pieChartContent);         
+         List<RepDataRow> tableData = new List<RepDataRow>()
+            {
+               new RepDataRow(new RepDataRowCell[] {
+                  new RepDataRowCell(40, "40"), new RepDataRowCell(20, "20") })
+            };
+         RepChartData tableChartSource = new RepChartData(
+            new RepDataColumn[] {
+                new RepDataColumn("17", STRING_COLUMN_TYPE, "Number of inquiries sent"),
+                new RepDataColumn("18", STRING_COLUMN_TYPE, "Number of surveys fully answered") },
+               tableData);
+         var dataToSendBack = new { pie = pieChartSource, table = tableChartSource };
+         return Json(dataToSendBack, JsonRequestBehavior.AllowGet);         
       }
 
       protected override void Dispose(bool disposing)

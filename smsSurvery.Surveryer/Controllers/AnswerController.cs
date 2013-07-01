@@ -176,7 +176,7 @@ namespace smsSurvery.Surveryer.Controllers
            //return true;
         }
 
-        [HttpPost]
+        [HttpGet]
         public ActionResult AnswerReceived(string from, string to, string text)
         {
            logger.InfoFormat("from: {0}, to: {1}, text: {2}", from, to, text);
@@ -196,7 +196,7 @@ namespace smsSurvery.Surveryer.Controllers
            {
               //TODO - this is something that should not be encouraged - the user should already be present in the db
               //new customer
-              //here we should definitely have an error
+              //here we should definitely have an error              
            }                    
            return null;
         }
@@ -217,51 +217,73 @@ namespace smsSurvery.Surveryer.Controllers
                  //the where clause should solve it
                  latestSurveyResult = customer.SurveyResult.Where(s=>s.SurveyPlanId == surveyToRun.Id).OrderByDescending(x => x.DateRan).First();                 
               }
+              SurveyResult currentSurvey = latestSurveyResult;
               Question currentQuestion = null;
               var numberOfQuestionsInSurvey = surveyToRun.QuestionSet.Count();
+              bool receivedMultipleAnswersToSameQuestion = false;
               //if not final than add, otherwise start a new one
-              if (latestSurveyResult == null || latestSurveyResult.Complete)
+              if (latestSurveyResult == null || latestSurveyResult.Terminated)
               {
                  //DA TODO - now this branch is bullshit as it is never reached
                  //no survey or the previous one was completed -> start a new survey
-                 logger.DebugFormat("Received answer for a new survey");
-                 SurveyResult currentSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyPlan = surveyToRun, Complete = false };
-                 db.SurveyResultSet.Add(currentSurvey);
-                 db.SaveChanges();
-                 currentQuestion = surveyToRun.QuestionSet.OrderBy(x => x.Order).First();
-                 var res = new Result() { Answer = text, Question = currentQuestion };
-                 currentSurvey.Result.Add(res);
-                 db.SaveChanges();
+                 logger.ErrorFormat("Received answer for a undefined query: text: {0}", text);                 
               }
               else
               {
                  logger.DebugFormat("Received another answer for a running survey");
-                 SurveyResult currentSurvey = latestSurveyResult;
-                 int currentQuestionId = currentSurvey.Result.Count + 1;
-                 currentQuestion = surveyToRun.QuestionSet.Where(x => x.Order == currentQuestionId).First();
-                 var res = new Result() { Answer = text, Question = currentQuestion };
-                 currentSurvey.Result.Add(res);
-                 db.SaveChanges();
-              }
-              //if we haven't reached the end of the survey then ask the next question
-              if (currentQuestion.Order != numberOfQuestionsInSurvey)
-              {
-                 var nextQuestion = surveyToRun.QuestionSet.Where(x => x.Order == currentQuestion.Order + 1).First();
-                 //TODO fix logic errors if no next question
-                 if (nextQuestion != null)
+               
+                 int currentQuestionPosition = currentSurvey.Result.Count + 1;
+                 currentQuestion = currentSurvey.CurrentQuestion;
+                 //TODO DA - sanity check - what to do if the user answered twice to the same question?
+                 //Answer- update the already existing answer
+                 if (currentQuestionPosition > currentQuestion.Order)
                  {
-                    SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion, db);
+                    //very unlikely
+                    logger.DebugFormat("Received another answer of the same question {0}, updating answer", currentQuestion.Id);
+                    var resultToUpdate = currentSurvey.Result.Where(r => r.Question.Order == currentQuestionPosition).FirstOrDefault();
+                    if (resultToUpdate != null)
+                    {
+                       resultToUpdate.Answer = text;
+                       db.SaveChanges();
+                       receivedMultipleAnswersToSameQuestion = true;
+                    }
                  }
+                 else
+                 {
+                    //compute the completed percentage - based on the total number of questions and the received answers
+                    double newPercentageCompleted = (double) currentQuestion.Order / numberOfQuestionsInSurvey ;
+                    currentSurvey.PercentageComplete = newPercentageCompleted;
+                    //currentQuestion = surveyToRun.QuestionSet.Where(x => x.Order == currentQuestionId).First();
+                    var res = new Result() { Answer = text, Question = currentQuestion };
+                    currentSurvey.Result.Add(res);
+                    db.SaveChanges();
+                 }
+                 
               }
-              else
+              if (!receivedMultipleAnswersToSameQuestion)
               {
-                 //mark survey as  complete
-                 latestSurveyResult.Complete = true;
-                 customer.RunningSurvey = null;
-                 customer.SurveyInProgress = false;
-                 db.SaveChanges();
-                 //send ThankYouMessage
-                 SendThankYouToCustomer(customer, numberToSendFrom, surveyToRun);
+                 //if we haven't reached the end of the survey then ask the next question
+                 if (currentQuestion.Order != numberOfQuestionsInSurvey)
+                 {
+                    var nextQuestion = surveyToRun.QuestionSet.Where(x => x.Order == currentQuestion.Order + 1).First();
+                    //TODO fix logic errors if no next question
+                    if (nextQuestion != null)
+                    {
+                       currentSurvey.CurrentQuestion = nextQuestion;
+                       db.SaveChanges();
+                       //SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion, db);
+                    }
+                 }
+                 else
+                 {
+                    //mark survey as  complete
+                    latestSurveyResult.Terminated = true;
+                    customer.RunningSurvey = null;
+                    customer.SurveyInProgress = false;
+                    db.SaveChanges();
+                    //send ThankYouMessage
+                    //SendThankYouToCustomer(customer, numberToSendFrom, surveyToRun);
+                 }
               }
            }
            else
@@ -304,18 +326,19 @@ namespace smsSurvery.Surveryer.Controllers
           if (customer.SurveyResult.Count != 0)
           {
              var latestSurveyResult = customer.SurveyResult.OrderByDescending(x => x.DateRan).First();
-             latestSurveyResult.Complete = true;
+             latestSurveyResult.Terminated = true;
           }
           //TODO DA sanity check - only one active survey at a time          
          if (surveyToRun != null)
          {
-            SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyPlan = surveyToRun, Complete = false };
+            SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyPlan = surveyToRun, Terminated = false, PercentageComplete= 0 };            
             db.SurveyResultSet.Add(newSurvey);
             //mark that we have started a new survey for the current user
             customer.SurveyInProgress = true;
-            customer.RunningSurvey = surveyToRun;
-            db.SaveChanges();
+            customer.RunningSurvey = surveyToRun;            
             var currentQuestion = surveyToRun.QuestionSet.OrderBy(x => x.Order).First();
+            newSurvey.CurrentQuestion = currentQuestion;
+            db.SaveChanges();
             SendQuestionToCustomer(customer, numberToSendFrom, currentQuestion, db);
          }          
        }

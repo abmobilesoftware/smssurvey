@@ -1,5 +1,6 @@
 ﻿@model IEnumerable<smsSurvey.dbInterface.Question>
 
+<h3>Results per question</h3>
 @foreach (var q in Model)
 {
    Html.RenderPartial("QuestionDetails", (smsSurvey.dbInterface.Question) q);
