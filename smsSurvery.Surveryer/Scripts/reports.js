@@ -1,5 +1,6 @@
 ﻿window.app = window.app || {};
 window.app.piedata = {};
+window.app.overviewPieData = {};
 window.app.displayReportsForRatingQ = function (questionId) {
    $.ajax({
       data: { questionId: questionId },
@@ -22,7 +23,8 @@ window.app.displayReportsForRatingQ = function (questionId) {
             var selectedValue = window.app.piedata[questionId].getValue(sel[0].row, 0);            
             var url = "/Answer/GetRatingMessagesWithAnswer?questionId=" + questionId + "&answer=" + selectedValue;
             //window.location.href = url;
-            window.open(url, "_blank");            
+            var win = window.open(url, "_blank");
+            win.focus();
          });
          var tablechart = new google.visualization.Table(document.getElementById('tableChart_div' + questionId));
          tabledata = new google.visualization.DataTable(jsonData.table);
@@ -66,9 +68,16 @@ window.app.displayReportOverview = function (surveyPlanId) {
          };
          var piechart = new google.visualization.PieChart(document.getElementById('pieOverviewChart_div' + surveyPlanId));
          var piedata = new google.visualization.DataTable(jsonData.pie);
+         window.app.overviewPieData[surveyPlanId] = piedata;
          //window.app.piedata[questionId] = piedata;
          piechart.draw(piedata, options);
-         
+         google.visualization.events.addListener(piechart, 'select', function (e) {
+            var sel = piechart.getSelection();
+            var selectedValue = window.app.overviewPieData[surveyPlanId].getValue(sel[0].row, 0);
+            var url = "/Answer/GetCustomerWhichAnsweredXQuestions?surveyId=" + surveyPlanId + "&nrOfAnsweredQuestions=" + selectedValue;            
+            var win = window.open(url, "_blank");
+            win.focus();
+         });
          var tablechart = new google.visualization.Table(document.getElementById('tableOverviewChart_div' + surveyPlanId));
          tabledata = new google.visualization.DataTable(jsonData.table);
          var tableOptions = {

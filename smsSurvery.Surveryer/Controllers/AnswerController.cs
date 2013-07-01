@@ -150,6 +150,22 @@ namespace smsSurvery.Surveryer.Controllers
         }
 
         [HttpGet]
+        public ActionResult GetCustomerWhichAnsweredXQuestions(int surveyId, double nrOfAnsweredQuestions)
+        {
+           SurveyPlan sp = db.SurveyPlanSet.Find(surveyId);
+           if (sp != null)
+           {
+              var totalNrOfQuestions = sp.QuestionSet.Count();
+              var percentageCompleted = (double)nrOfAnsweredQuestions / totalNrOfQuestions;
+
+              var sResult = sp.SurveyResult.Where(sr => Math.Abs( sr.PercentageComplete - percentageCompleted) <= 0.01);
+              @ViewBag.ReportTitle = String.Format("Customers that answered {0} out of {1} questions", nrOfAnsweredQuestions, totalNrOfQuestions);
+              return View(sResult);
+           }
+           return View();
+        }
+
+        [HttpGet]
         public ActionResult GetMessagesWithStem(int questionId, string stem)
         {
            //for the given survey (if allowed access) show messages with given stem

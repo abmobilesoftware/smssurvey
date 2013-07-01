@@ -397,6 +397,7 @@
     <Content Include="Views\Answer\GetRatingMessagesWithAnswer.cshtml" />
     <Content Include="Views\Home\ManualSurvey.cshtml" />
     <Content Include="Views\Shared\SurveyResultOverview.cshtml" />
+    <Content Include="Views\Answer\GetCustomerWhichAnsweredXQuestions.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

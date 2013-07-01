@@ -217,19 +217,11 @@ namespace smsSurvery.Surveryer.Controllers
             var answeredQuestions = Math.Round(item.PercentageComplete * totalNumberOfQuestions);
             if (item.PercentageComplete == 1) { nrOfSurveysFullyAnswered = item.Count; }
             var row = new RepDataRow(new RepDataRowCell[] {
-               new RepDataRowCell(item.Count, String.Format("Answered {0} out of {1} questions",answeredQuestions,totalNumberOfQuestions )),
+               new RepDataRowCell(answeredQuestions, String.Format("Answered {0} out of {1} questions",answeredQuestions,totalNumberOfQuestions )),
                new RepDataRowCell(item.Count, String.Format("{0} survey(s)",item.Count)) });
             pieChartContent.Add(row);
          }
 
-         
-         //var row = new RepDataRow(new RepDataRowCell[] { new RepDataRowCell("blabla", "Answered 1 out of 3 questions"), new RepDataRowCell(12, " 12 survey(s)") });
-         //pieChartContent.Add(row);
-         //row = new RepDataRow(new RepDataRowCell[] { new RepDataRowCell("blabla2", "Answered 2 out of 3 questions"), new RepDataRowCell(13, "13 survey(s)") });
-         //pieChartContent.Add(row);
-         //row = new RepDataRow(new RepDataRowCell[] { new RepDataRowCell("blabla3", "Answered 3 out of 3 questions"), new RepDataRowCell(2, "2 survey (s)") });
-         //pieChartContent.Add(row);
-         
          RepChartData pieChartSource = new RepChartData(
               new RepDataColumn[] {
                 new RepDataColumn("17", STRING_COLUMN_TYPE, "Type"),
