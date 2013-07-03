@@ -288,7 +288,7 @@ namespace smsSurvery.Surveryer.Controllers
                     {
                        currentSurvey.CurrentQuestion = nextQuestion;
                        db.SaveChanges();
-                       //SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion, db);
+                       SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion, db);
                     }
                  }
                  else
@@ -299,7 +299,7 @@ namespace smsSurvery.Surveryer.Controllers
                     customer.SurveyInProgress = false;
                     db.SaveChanges();
                     //send ThankYouMessage
-                    //SendThankYouToCustomer(customer, numberToSendFrom, surveyToRun);
+                    SendThankYouToCustomer(customer, numberToSendFrom, surveyToRun);
                  }
               }
            }
