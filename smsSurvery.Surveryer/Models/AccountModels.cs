@@ -86,6 +86,10 @@ namespace smsSurvery.Surveryer.Models
       [Display(Name = "Confirm password")]
       [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
       public string ConfirmPassword { get; set; }
+
+      [Required]
+      [Display(Name = "Company name")]
+      public string CompanyName { get; set; }
    }
 
    public class ExternalLogin

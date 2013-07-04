@@ -46,6 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Companies.cs">
+      <DependentUpon>smsSurvey.tt</DependentUpon>
+    </Compile>
     <Compile Include="Customer.cs">
       <DependentUpon>smsSurvey.tt</DependentUpon>
     </Compile>
@@ -78,6 +81,15 @@
       <DependentUpon>smsSurvey.tt</DependentUpon>
     </Compile>
     <Compile Include="SurveyResult.cs">
+      <DependentUpon>smsSurvey.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Tags.cs">
+      <DependentUpon>smsSurvey.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TagTagTypes.cs">
+      <DependentUpon>smsSurvey.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TagTypes.cs">
       <DependentUpon>smsSurvey.tt</DependentUpon>
     </Compile>
     <Compile Include="UserProfile.cs">
