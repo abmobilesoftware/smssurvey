@@ -19,7 +19,7 @@ namespace smsSurvery.Surveryer.Models
    }
 
    [Table("UserProfile")]
-   public class UserProfile
+   public class  UserProfile
    {
       [Key]
       [DatabaseGeneratedAttribute(DatabaseGeneratedOption.Identity)]

@@ -11,8 +11,10 @@ namespace smsSurvery.Surveryer
          bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                      "~/Scripts/jquery-{version}.js",
                      "~/Scripts/bootstrap.js"));
+         bundles.Add(new ScriptBundle("~/bundles/referencescripts").Include(
+                     "~/Scripts/jquery.tagsinput.js"));                     
 
-         bundles.Add(new ScriptBundle("~/bundles/custom").Include(
+         bundles.Add(new ScriptBundle("~/bundles/custom").Include(                     
                      "~/Scripts/reports.js"));
 
          bundles.Add(new ScriptBundle("~/bundles/jqueryui").Include(
@@ -30,6 +32,10 @@ namespace smsSurvery.Surveryer
          bundles.Add(new StyleBundle("~/Content/css").Include(
             "~/Content/site.css",
             "~/Content/bootstrap.css"));
+
+         bundles.Add(new StyleBundle("~/Content/custom").Include(
+            "~/Content/jquery-ui-1.8.23.custom.css",
+            "~/Content/jquery.tagsinput.css"));
 
          bundles.Add(new StyleBundle("~/Content/themes/base/css").Include(
                      "~/Content/themes/base/jquery.ui.core.css",

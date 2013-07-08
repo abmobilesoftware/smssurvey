@@ -18,6 +18,7 @@ namespace smsSurvey.dbInterface
         {
             this.PercentageComplete = 0D;
             this.Result = new HashSet<Result>();
+            this.Tags = new HashSet<Tags>();
         }
     
         public int Id { get; set; }
@@ -32,5 +33,6 @@ namespace smsSurvey.dbInterface
         public virtual SurveyPlan SurveyPlan { get; set; }
         public virtual ICollection<Result> Result { get; set; }
         public virtual Question CurrentQuestion { get; set; }
+        public virtual ICollection<Tags> Tags { get; set; }
     }
 }

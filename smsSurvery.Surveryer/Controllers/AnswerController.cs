@@ -314,7 +314,7 @@ namespace smsSurvery.Surveryer.Controllers
         * while an edge case, this is still a possibility
         */ 
        [HttpGet]
-       public void StartSMSQuery(string userName, string numberToSendFrom, string customerPhoneNumber)
+       public void StartSMSQuery(string userName, string numberToSendFrom, string customerPhoneNumber, string[] tags)
         {
            logger.InfoFormat("userName: {0}, numberToSendFrom: {1}, customerPhoneNumber: {2}", userName, numberToSendFrom, customerPhoneNumber);
           //the customer info should be coming from the customer's system
@@ -325,12 +325,18 @@ namespace smsSurvery.Surveryer.Controllers
               //TODO DA sanity check - only one active survey at a time          
               if (surveyToRun != null)
               {
-                 StartSmsSurveyInternal(numberToSendFrom, customerPhoneNumber, surveyToRun, db);
+                 StartSmsSurveyInternal(numberToSendFrom, customerPhoneNumber, surveyToRun,user,tags, db);
               }
            }           
         }
 
-       public static void StartSmsSurveyInternal(string numberToSendFrom, string customerPhoneNumber,SurveyPlan surveyToRun, smsSurveyEntities db)
+       public static void StartSmsSurveyInternal(
+          string numberToSendFrom,
+          string customerPhoneNumber,
+          SurveyPlan surveyToRun,
+          smsSurvey.dbInterface.UserProfile authenticatedUser,
+          string[] tags,
+          smsSurveyEntities db)
        {
           var customer = db.CustomerSet.Find(customerPhoneNumber);
           if (customer == null)
@@ -355,6 +361,16 @@ namespace smsSurvery.Surveryer.Controllers
             customer.RunningSurvey = surveyToRun;            
             var currentQuestion = surveyToRun.QuestionSet.OrderBy(x => x.Order).First();
             newSurvey.CurrentQuestion = currentQuestion;
+            //add the tags
+            var companyTags = authenticatedUser.Company.Tags;
+            foreach (var tg in tags)
+            {
+               var tagToAdd = companyTags.Where(t=> t.Name == tg).FirstOrDefault();
+               if (tagToAdd != null)
+               {
+                  newSurvey.Tags.Add(tagToAdd);
+               }
+            }
             db.SaveChanges();
             SendQuestionToCustomer(customer, numberToSendFrom, currentQuestion, db);
          }          

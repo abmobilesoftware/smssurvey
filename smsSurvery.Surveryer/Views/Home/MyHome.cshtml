@@ -3,6 +3,11 @@
 }
 <script type="text/javascript" src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
 <h2>Currently running survey</h2>
+<div id="tagContainer">
+       <input name="filterTag"  id="filterTag" type="text"/>
+       <input id="refreshReport" class="btn btn-primary" value="Refresh" />
+ </div>
+<div class="clear:both"></div>
 @if (ViewBag.CurrentSurvey != null)
 {
    <text>
@@ -19,8 +24,13 @@ else
       @Html.ActionLink("Start one of the existing surveys or create a new survey", "Index", "SurveyPlan",null,null)
    </p>      
 }   
- 
+ @section css{
+    @Styles.Render("~/Content/custom")
+   }
+
 @section Scripts {
+@Scripts.Render("~/bundles/jqueryui")
+@Scripts.Render("~/bundles/referencescripts")
 @Scripts.Render("~/bundles/custom")
 }
  

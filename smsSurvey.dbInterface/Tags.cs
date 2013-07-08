@@ -17,6 +17,7 @@ namespace smsSurvey.dbInterface
         public Tags()
         {
             this.TagTagTypes = new HashSet<TagTagTypes>();
+            this.SurveyResultSet = new HashSet<SurveyResult>();
         }
     
         public string Name { get; set; }
@@ -25,5 +26,6 @@ namespace smsSurvey.dbInterface
     
         public virtual Companies Companies { get; set; }
         public virtual ICollection<TagTagTypes> TagTagTypes { get; set; }
+        public virtual ICollection<SurveyResult> SurveyResultSet { get; set; }
     }
 }

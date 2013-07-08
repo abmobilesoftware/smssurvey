@@ -1,12 +1,17 @@
 ﻿window.app = window.app || {};
 window.app.piedata = {};
 window.app.overviewPieData = {};
+window.app.tags = [];
 window.app.displayReportsForRatingQ = function (questionId) {
    $.ajax({
-      data: { questionId: questionId },
+      data: {
+         questionId: questionId,
+         tags: window.app.tags
+      },
+      traditional: true,
       url: "/Reports/GetSurveyQuestionResults",
       dataType: "json",
-      async: false,
+      async: true,
       success: function (jsonData) {
          var options = {
             backgroundColor: '#F5F8FA',
@@ -40,10 +45,14 @@ window.app.displayReportsForRatingQ = function (questionId) {
 
 window.app.displayReportsForFreeTextQ = function (questionId) {
    $.ajax({
-      data: { questionId: questionId },
+      data: {
+         questionId: questionId,
+         tags: window.app.tags
+      },
       url: "/Reports/GetWordCloud",
       dataType: 'html',
-      async: true,
+      traditional: true,
+      async: false,
       cache: false,
       success: function (wordCloudData) {
          $("#textCloudSection" + questionId).replaceWith(wordCloudData);
@@ -53,8 +62,12 @@ window.app.displayReportsForFreeTextQ = function (questionId) {
 
 window.app.displayReportOverview = function (surveyPlanId) {
    $.ajax({
-      data: { surveyPlanId: surveyPlanId },
+      data: {
+         surveyPlanId: surveyPlanId,
+         tags: window.app.tags
+      },
       url: "/Reports/GetSurveyOverview",
+      traditional: true,
       dataType: "json",
       async: true,
       cache: false,
@@ -90,15 +103,48 @@ window.app.displayReportOverview = function (surveyPlanId) {
    });
 };
 
-$(document).ready(function () {
+window.app.runrunrun = function () {
    window.app.displayReportOverview($("#surveyId").text());
-   //based on the type of the question get the report
-   //for each question, show the outcome (if required)
    $('input[qid]').each(function (index) {
       if ($(this).attr('qtype') === "Rating") {
          window.app.displayReportsForRatingQ($(this).attr('qid'));
       } else if ($(this).attr('qtype') === "FreeText") {
          window.app.displayReportsForFreeTextQ($(this).attr('qid'));
       }
-   });      
+   });
+}
+$(document).ready(function () {
+   window.app.runrunrun();
+
+   $("#refreshReport").click(function () {
+      window.app.runrunrun();
+   });
+
+   $("#filterTag").tagsInput({
+      'height': '22px',
+      'width': 'auto',
+      'autocomplete_url': "/Home/FindMatchingTags",
+      'onAddTag': function (tagValue) {
+         var delimiter = ',';
+         window.app.tags = $("#filterTag").val().split(delimiter);         
+         
+      },
+      'onRemoveTag': function (tagValue) {
+         var delimiter = ',';
+         window.app.tags = $("#filterTag").val().split(delimiter);
+         if ("" === window.app.tags[0]) {
+            window.app.tags = [];
+         }
+      },
+      'defaultText': 'add tag here',
+      'placeholder': 'add tag here',
+      'interactive': true,
+      'placeholderColor': '#666666',
+      'minChars': 3,
+      'maxChars': 10,
+      'autocomplete': {
+         autoFocus: true,
+         minLength: 3
+      }
+   });
 });

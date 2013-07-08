@@ -106,6 +106,22 @@ namespace smsSurvery.Surveryer.Controllers
          return View("ManualSurvey", manSurvey);
       }
 
+      [HttpGet]
+      public JsonResult FindMatchingTags(string term)
+      {         
+         try
+         {
+            var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var candidateTags = user.Company.Tags.Where(t => t.Name.IndexOf(term, StringComparison.InvariantCultureIgnoreCase) != -1).Select(t=>t.Name);
+            return Json(candidateTags, JsonRequestBehavior.AllowGet);
+         }
+         catch (Exception ex)
+         {
+            logger.Error("FindMatchingTags error", ex);
+            return null;
+         }
+      }
+
       [Authorize]
       public ActionResult ThrowError()
       {
@@ -113,7 +129,7 @@ namespace smsSurvery.Surveryer.Controllers
       }
 
       [Authorize]
-      public JsonResult RunSurveyForNumbers(int surveyid, string[] customerNumbers)
+      public JsonResult RunSurveyForNumbers(int surveyid, string[] customerNumbers, string[] tags)
       {
          var userName = User.Identity.Name;
          var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();         
@@ -122,7 +138,7 @@ namespace smsSurvery.Surveryer.Controllers
          if(surveyToRun != null) {
             foreach (var nr in customerNumbers)
             {               
-               AnswerController.StartSmsSurveyInternal(user.DefaultTelNo, nr, surveyToRun, db);
+              AnswerController.StartSmsSurveyInternal(user.DefaultTelNo, nr, surveyToRun,user,tags, db);
             }
          }
          return Json("Survey started successfully", JsonRequestBehavior.AllowGet);

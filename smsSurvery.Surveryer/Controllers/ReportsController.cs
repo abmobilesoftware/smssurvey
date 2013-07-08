@@ -26,7 +26,8 @@ namespace smsSurvery.Surveryer.Controllers
       {
          string[] optionDef = new string[] {"Easy as pie", "Easy enough", "Average", "Rather hard", "Hard to use" };
          //for each question in the survey, aggregate the results
-         SurveyPlan survey = db.SurveyPlanSet.Find(surveyId);         
+         SurveyPlan survey = db.SurveyPlanSet.Find(surveyId);
+         //tags = tags ?? new string[0];
          QuestionSurveyResults res = null;
          if (survey != null)
          {
@@ -35,7 +36,7 @@ namespace smsSurvery.Surveryer.Controllers
                switch (question.Type)
                {
                   case cRatingsTypeQuestion:
-                      res = GenerateResultForRatingQuestion(question);
+                     res = GenerateResultForRatingQuestion(question, new string[0]);
                      break;
                   case cFreeTextTypeQuestion:
 
@@ -77,18 +78,19 @@ namespace smsSurvery.Surveryer.Controllers
       }
 
       [HttpGet]
-      public JsonResult GetSurveyQuestionResults(int questionId)
+      public JsonResult GetSurveyQuestionResults(int questionId, string[] tags)
       {        
          //for each question in the survey, aggregate the results
          Question question = db.QuestionSet.Find(questionId);                
          QuestionSurveyResults res = null;
          //Return different data for various question types
+         tags = tags ?? new string[0];
          switch (question.Type)
          {
             case cRatingsTypeQuestion:            
                {
                   string[] optionDef = question.ValidAnswersDetails.Split(';');
-                  res = GenerateResultForRatingQuestion(question);
+                  res = GenerateResultForRatingQuestion(question,tags);
                   List<RepDataRow> pieChartContent = new List<RepDataRow>();
                   foreach (var rowData in res.AnswersPerValidOption)
                   {
@@ -123,7 +125,7 @@ namespace smsSurvery.Surveryer.Controllers
       }
 
 
-      private QuestionSurveyResults GenerateResultForRatingQuestion(Question q)
+      private QuestionSurveyResults GenerateResultForRatingQuestion(Question q, string[] tags)
       {
          //we need the possible values - only valid answers are to be considered
          /**the output should contain
@@ -139,7 +141,8 @@ namespace smsSurvery.Surveryer.Controllers
          }
 
          int validResponses = 0;
-         foreach (var result in q.Result)
+         tags = tags ?? new string[0];
+         foreach (var result in q.Result.Where(r=> !tags.Except(r.SurveyResult.Tags.Select(tag => tag.Name)).Any()))
          {
             if (validPossibleAnswers.Contains(result.Answer))
             {
@@ -149,18 +152,19 @@ namespace smsSurvery.Surveryer.Controllers
          }
          //now in resultsPerAnswer we should have, per possible answer value the number of responses and in validResponses the total number of valid/acceptable responses
          QuestionSurveyResults outcome = new QuestionSurveyResults();
-         outcome.TotalNumberOfAnswers = q.Result.Count();
+         outcome.TotalNumberOfAnswers = q.Result.Where(r => !tags.Except(r.SurveyResult.Tags.Select(tag => tag.Name)).Any()).Count();
          outcome.TotalNumberOfValidAnswers = validResponses;
          outcome.ValidOptions = validPossibleAnswers;
          outcome.AnswersPerValidOption = resultsPerAnswer;
          return outcome;
-      }      
+      }
 
-      public static TagCloud GetTagCloudData(Question q) {
+      public static TagCloud GetTagCloudData(Question q, string[] tags)
+      {
          using (smsSurveyEntities  db = new smsSurveyEntities())
          {
             List<string> stuff = new List<string>();
-            var results = q.Result;
+            var results = q.Result.Where(r => !tags.Except(r.SurveyResult.Tags.Select(tag => tag.Name)).Any());
             foreach (var item in results)
             {
                stuff.AddRange(Regex.Split(item.Answer, "\\W+"));
@@ -176,42 +180,54 @@ namespace smsSurvery.Surveryer.Controllers
             //DA make sure that we don't take words of less than 3 characters
             var x = stuff.Where(w=> w.Length >=3).Filter(blacklist).CountOccurences().GroupByStem(stemmer).SortByOccurences().Take(100).AsEnumerable().Cast<IWord>().ToList();
             //remember the max - we'll need it later to better 'seed' the eventsCount
-            var maxOccurences = x.First().Occurrences;
-            x.Sort(Word.CompareByText);
             TagCloud tg = new TagCloud();
-            //we tweak the eventsCount so that the highest occurring word in category 8 and all other fall beneath
-            tg.EventsCount = 2 * maxOccurences - 1;
-            tg.MenuTags = x;
-            tg.QuestionId = q.Id;
+            if (x.Count > 0)
+            {
+               var maxOccurences = x.First().Occurrences;
+               x.Sort(Word.CompareByText);
+               
+               //we tweak the eventsCount so that the highest occurring word in category 8 and all other fall beneath
+               tg.EventsCount = 2 * maxOccurences - 1;
+               tg.MenuTags = x;
+               tg.QuestionId = q.Id;
+            }
             return tg;
          }
         
       }
 
       [HttpGet]
-      public ActionResult GetWordCloud(int questionId) 
+      public ActionResult GetWordCloud(
+         int questionId,
+          string[] tags
+         ) 
       {
          //assuming that the question and valid
          Question question = db.QuestionSet.Find(questionId);
+         tags = tags ?? new string[0];
          if (question != null && question.Type == "FreeText")
          {         
-            return PartialView(GetTagCloudData(question));
+            return PartialView(GetTagCloudData(question,tags));
          }         
          return null;
       }
 
       [HttpGet]
-      public JsonResult GetSurveyOverview(int surveyPlanId)
+      public JsonResult GetSurveyOverview(
+         int surveyPlanId,
+         string[] tags)
       {
          //go through all surveyResults and group them by completion rate
          SurveyPlan survey = db.SurveyPlanSet.Find(surveyPlanId);
-         var x = (from s in survey.SurveyResult group s by s.PercentageComplete into g select new { PercentageComplete = g.Key, Count = g.Count() }).OrderBy(i=>i.PercentageComplete);
-         var a = from s in survey.SurveyResult select new { ID = s.Id, Result = s.Result.Count(), Total = s.SurveyPlan.QuestionSet.Count() };
+         tags = tags ?? new string[0];
+         var surveyResults = (from s in survey.SurveyResult where (!tags.Except(s.Tags.Select(tag => tag.Name)).Any())
+                  group s by s.PercentageComplete into g 
+                  select new { PercentageComplete = g.Key, Count = g.Count() }).OrderBy(i => i.PercentageComplete);         
          int totalNumberOfSentSurveys = 0;
          int totalNumberOfQuestions = survey.QuestionSet.Count();
          int nrOfSurveysFullyAnswered = 0;
          List<RepDataRow> pieChartContent = new List<RepDataRow>();
-         foreach (var item in x)
+         foreach (var item in surveyResults)
          {
             totalNumberOfSentSurveys += item.Count;
             var answeredQuestions = Math.Round(item.PercentageComplete * totalNumberOfQuestions);
@@ -295,7 +311,7 @@ public static class HtmlHelperExtension
    {
       //We build an unordered list where each word points to it's category
       var output = new StringBuilder();
-      output.Append(@"<ul id=""cloud"">");
+      output.AppendFormat(@"<ul class=""cloud"" id=""textCloudSection{0}"">",tagCloud.QuestionId);
 
       foreach (smsSurvery.Surveryer.WordCloud.IWord tag in tagCloud.MenuTags)
       {

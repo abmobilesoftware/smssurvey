@@ -6,6 +6,10 @@
 
 <h2>Start manual survey</h2>
 
+<h5>Add tags that you want to associate to your survey</h5>
+<div id="tagContainer">
+       <input name="filterTag" id="filterTag" type="text"/>
+ </div>
 <div id="left">
    <h3>Add users</h3>
   @using (Html.BeginForm("ManualSurvey", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
@@ -15,8 +19,7 @@
       <input class="btn " type="file" id="cvsFile" name="cvsFile" />
       <input class="btn btn-info"  type="submit" name="btnImport" value="Import CVS" />
   }
-
- @*  <button class="btn btn-info"> Import CVS</button>*@
+   
    <p>or</p>
    <label>Add customer phone number (numbers must start with the country prefix)</label> 
    <input type="text" id="newphonenr"/>
@@ -61,9 +64,16 @@
    <div><span id="runSurveyResult"></span></div>
 </div>
 
+@section css{
+    @Styles.Render("~/Content/custom")
+   }
 @section Scripts {
+    @Scripts.Render("~/bundles/jqueryui")
+   @Scripts.Render("~/bundles/referencescripts")
 <script>
    $(function () {
+      var self = this;
+
       $('#add').click(function () {
          var newtelno = $("#newphonenr").val();
          if (newtelno !== "") {
@@ -109,10 +119,19 @@
          $.each(phonenumbers, function (index, value) {
             numbers.push(value.textContent);
          });
+         var tags = new Array();
+         var delimiter = ',';
+         tags = $("#filterTag").val().split(delimiter);
+         //if there are no tags the split will return [""] and this will be sent to the server
+         //we guard against this
+         if ("" === tags[0]) {
+            tags = [];
+         }
          $.ajax({
             data: {
                surveyid: selSurveyId,
-               customerNumbers: numbers
+               customerNumbers: numbers,
+               tags: tags
             },
             url: "/Home/RunSurveyForNumbers",
             traditional: true,
@@ -122,6 +141,26 @@
                $("#runSurveyResult").html(data);
             }
          });
+      });
+      
+      $("#filterTag").tagsInput({
+         'height': '22px',
+         'width': 'auto',
+         'autocomplete_url': "/Home/FindMatchingTags",
+         'onAddTag': function (tagValue) {                       
+         },
+         'onRemoveTag': function (tagValue) {            
+         },
+         'defaultText': 'add tag here',
+         'placeholder': 'add tag here',
+         'interactive': true,
+         'placeholderColor': '#666666',
+         'minChars': 3,
+         'maxChars': 10,
+         'autocomplete': {            
+            autoFocus: true,
+            minLength: 3
+         }
       });
    });
 </script>
