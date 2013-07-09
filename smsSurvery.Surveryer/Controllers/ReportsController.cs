@@ -184,13 +184,12 @@ namespace smsSurvery.Surveryer.Controllers
             if (x.Count > 0)
             {
                var maxOccurences = x.First().Occurrences;
-               x.Sort(Word.CompareByText);
-               
+               x.Sort(Word.CompareByText);               
                //we tweak the eventsCount so that the highest occurring word in category 8 and all other fall beneath
-               tg.EventsCount = 2 * maxOccurences - 1;
-               tg.MenuTags = x;
-               tg.QuestionId = q.Id;
+               tg.EventsCount = 2 * maxOccurences - 1;              
             }
+            tg.MenuTags = x;
+            tg.QuestionId = q.Id;
             return tg;
          }
         

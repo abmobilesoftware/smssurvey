@@ -144,7 +144,7 @@ $(document).ready(function () {
       'maxChars': 10,
       'autocomplete': {
          autoFocus: true,
-         minLength: 3
+         minLength: 1
       }
    });
 });

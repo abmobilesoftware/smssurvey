@@ -18,7 +18,12 @@ else
       If you are reading this then you have stumbled into an "under construction" area - congrats!
    </p>      
 }   
- 
+@section css{
+   @Styles.Render("~/Content/custom")
+}
+
 @section Scripts {
+@Scripts.Render("~/bundles/jqueryui")
+@Scripts.Render("~/bundles/referencescripts")
 @Scripts.Render("~/bundles/custom")
 }

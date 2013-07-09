@@ -1,5 +1,10 @@
 ﻿@model smsSurvey.dbInterface.SurveyPlan
 
+<div id="tagContainer">
+       <input name="filterTag"  id="filterTag" type="text"/>
+       <input id="refreshReport" class="btn btn-primary" value="Refresh" />
+ </div>
+<div class="clear:both"></div>
 <fieldset>
     <legend> Overview: @Model.Description </legend>
     <div id="@String.Format("tableOverviewChart_div{0}", Model.Id)"></div>
