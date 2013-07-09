@@ -169,7 +169,7 @@ namespace smsSurvery.Surveryer.Controllers
         [HttpGet]
         public ActionResult Report(int id)
         {
-           SurveyPlan surveyplan = db.SurveyPlanSet.Find(id);
+           SurveyPlan surveyplan = db.SurveyPlanSet.Find(id);           
            return View(surveyplan);
         }
 

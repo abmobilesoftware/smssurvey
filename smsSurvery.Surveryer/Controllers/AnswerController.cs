@@ -314,7 +314,7 @@ namespace smsSurvery.Surveryer.Controllers
         * while an edge case, this is still a possibility
         */ 
        [HttpGet]
-       public void StartSMSQuery(string userName, string numberToSendFrom, string customerPhoneNumber, string[] tags)
+       public void StartSMSQuery(string userName, string numberToSendFrom, string customerPhoneNumber, string[] tags = null )
         {
            logger.InfoFormat("userName: {0}, numberToSendFrom: {1}, customerPhoneNumber: {2}", userName, numberToSendFrom, customerPhoneNumber);
           //the customer info should be coming from the customer's system
