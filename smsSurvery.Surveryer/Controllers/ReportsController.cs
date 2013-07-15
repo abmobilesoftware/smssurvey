@@ -196,6 +196,49 @@ namespace smsSurvery.Surveryer.Controllers
       }
 
       [HttpGet]
+      public ViewResult GetTagComparisonReport(int surveyId)
+      {
+         return View();
+      }
+      [HttpGet]
+      public JsonResult GetTagComparisonReportForRatingQuestion(int questionID, string[] tags = null)
+      {
+         /*for each question different from free text build a bar chart ready structure that can be displayed
+          * assume that each tag defines a location
+          */
+         var headerContent = new List<RepDataColumn>();
+        
+         tags = new string[3] { "Location1", "Location2", "Location3" };
+         questionID = 1;
+         //get the question
+         var question = db.QuestionSet.Find(questionID);
+         if(question!=null) {
+            headerContent.Add(new RepDataColumn("0", STRING_COLUMN_TYPE, "Options"));
+            for(int i=0; i< tags.Count(); i++)
+            {
+               headerContent.Add(new RepDataColumn((i+1).ToString(),NUMBER_COLUMN_TYPE,tags[i]));
+            }
+
+            //one row per optionDef
+            string[] optionDef = question.ValidAnswersDetails.Split(';');
+            string[] valuesDef = question.ValidAnswers.Split(';');
+            List<RepDataRow> rows = new List<RepDataRow>();
+            for (int i = 0; i < optionDef.Count(); i++)
+            {
+               var rowContent = new List<RepDataRowCell>();
+               rowContent.Add(new RepDataRowCell(optionDef[i], optionDef[i]));
+               rowContent.Add(new RepDataRowCell(33+i, (33+i).ToString() + "%"));
+               rowContent.Add(new RepDataRowCell(22 + i, (22 + i).ToString() + "%"));
+               rowContent.Add(new RepDataRowCell(44 + i, (22 + i).ToString() + "%"));
+               rows.Add(new RepDataRow (rowContent));
+            }
+
+            RepChartData chartSource = new RepChartData(headerContent, rows.ToArray());
+            return Json(chartSource, JsonRequestBehavior.AllowGet);
+         }
+         return null;
+      }
+      [HttpGet]
       public ActionResult GetWordCloud(
          int questionId,
           string[] tags

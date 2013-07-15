@@ -1,0 +1,16 @@
+﻿@{
+    ViewBag.Title = "GetTagComparisonReport";
+}
+
+<h2>GetTagComparisonReport</h2>
+
+<div id="barChart_div1"></div>
+
+@section Scripts {
+ <script type="text/javascript" src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
+@Scripts.Render("~/bundles/jqueryui")
+@Scripts.Render("~/bundles/referencescripts")
+@Scripts.Render("~/bundles/reports")
+
+}
+ 

@@ -235,6 +235,7 @@
     <Content Include="Content\jquery.tagsinput.css" />
     <Content Include="Content\WordCloud.css" />
     <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\reports1.js" />
     <Content Include="Scripts\jquery-1.10.1.js" />
     <Content Include="Scripts\jquery-1.10.1.min.js" />
     <Content Include="Scripts\jquery.tagsinput.js" />
@@ -404,6 +405,7 @@
     <Content Include="Views\Home\ManualSurvey.cshtml" />
     <Content Include="Views\Shared\SurveyResultOverview.cshtml" />
     <Content Include="Views\Answer\GetCustomerWhichAnsweredXQuestions.cshtml" />
+    <Content Include="Views\Reports\GetTagComparisonReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
