@@ -56,6 +56,7 @@
               @Html.ActionLink("Make active", "MakeActive", new { id=item.Id }) 
            } |
             @Html.ActionLink("Report", "Report","SurveyPlan", new { id=item.Id }, null) |
+            @Html.ActionLink("Comparison report", "GetTagComparisonReport","Reports", new { surveyId=item.Id }, null) |
             @Html.ActionLink("Responses", "Responses","SurveyPlan", new { id=item.Id }, null)
         </td>
     </tr>

@@ -114,8 +114,6 @@ window.app.runrunrun = function () {
    });
 }
 $(document).ready(function () {
-   window.app.runrunrun();
-
    $("#refreshReport").click(function () {
       window.app.runrunrun();
    });
@@ -147,4 +145,6 @@ $(document).ready(function () {
          minLength: 1
       }
    });
+
+   window.app.runrunrun();
 });

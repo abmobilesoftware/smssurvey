@@ -46,17 +46,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AlertNotificationSet.cs">
+      <DependentUpon>smsSurvey.tt</DependentUpon>
+    </Compile>
     <Compile Include="Companies.cs">
       <DependentUpon>smsSurvey.tt</DependentUpon>
     </Compile>
     <Compile Include="Customer.cs">
       <DependentUpon>smsSurvey.tt</DependentUpon>
     </Compile>
+    <Compile Include="Extensions\AlertNotificationSet.cs" />
     <Compile Include="Extensions\Question.cs" />
+    <Compile Include="Extensions\QuestionAlertSet.cs" />
     <Compile Include="Extensions\SurveyPlan.cs" />
     <Compile Include="Extensions\SurveyResult.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Question.cs">
+      <DependentUpon>smsSurvey.tt</DependentUpon>
+    </Compile>
+    <Compile Include="QuestionAlertSet.cs">
       <DependentUpon>smsSurvey.tt</DependentUpon>
     </Compile>
     <Compile Include="Result.cs">

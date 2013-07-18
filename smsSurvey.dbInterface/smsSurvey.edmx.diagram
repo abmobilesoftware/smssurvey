@@ -34,6 +34,10 @@
         <AssociationConnector Association="smsSurveyModel.FK_TagTypeTagTagType" />
         <AssociationConnector Association="smsSurveyModel.FK_UserProfileCompanies" />
         <AssociationConnector Association="smsSurveyModel.SurveyResultTags" />
+        <EntityTypeShape EntityType="smsSurveyModel.AlertNotificationSet" Width="1.5" PointX="18.5" PointY="1.75" />
+        <EntityTypeShape EntityType="smsSurveyModel.QuestionAlertSet" Width="1.5" PointX="15.75" PointY="1.75" />
+        <AssociationConnector Association="smsSurveyModel.FK_QuestionAlertAlertNotification" />
+        <AssociationConnector Association="smsSurveyModel.FK_QuestionQuestionAlert" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

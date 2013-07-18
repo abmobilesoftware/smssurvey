@@ -18,7 +18,7 @@ namespace smsSurvery.Surveryer
                      "~/Scripts/reports.js"));
          
          bundles.Add(new ScriptBundle("~/bundles/reports").Include(
-                     "~/Scripts/reports1.js"));
+                     "~/Scripts/reportsTags.js"));
 
 
          bundles.Add(new ScriptBundle("~/bundles/jqueryui").Include(

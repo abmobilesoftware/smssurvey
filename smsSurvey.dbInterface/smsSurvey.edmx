@@ -6,8 +6,10 @@
     <edmx:StorageModels>
     <Schema Namespace="smsSurveyModel.Store" Alias="Self" Provider="System.Data.SqlClient" ProviderManifestToken="2008" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityContainer Name="smsSurveyModelStoreContainer">
+          <EntitySet Name="AlertNotificationSet" EntityType="smsSurveyModel.Store.AlertNotificationSet" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Companies" EntityType="smsSurveyModel.Store.Companies" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="CustomerSet" EntityType="smsSurveyModel.Store.CustomerSet" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="QuestionAlertSet" EntityType="smsSurveyModel.Store.QuestionAlertSet" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="QuestionSet" EntityType="smsSurveyModel.Store.QuestionSet" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="ResultSet" EntityType="smsSurveyModel.Store.ResultSet" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="SurveyPlanSet" EntityType="smsSurveyModel.Store.SurveyPlanSet" store:Type="Tables" Schema="dbo" />
@@ -29,6 +31,14 @@
           <AssociationSet Name="FK_CustomerSurveyResult" Association="smsSurveyModel.Store.FK_CustomerSurveyResult">
             <End Role="CustomerSet" EntitySet="CustomerSet" />
             <End Role="SurveyResultSet" EntitySet="SurveyResultSet" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QuestionAlertAlertNotification" Association="smsSurveyModel.Store.FK_QuestionAlertAlertNotification">
+            <End Role="QuestionAlertSet" EntitySet="QuestionAlertSet" />
+            <End Role="AlertNotificationSet" EntitySet="AlertNotificationSet" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QuestionQuestionAlert" Association="smsSurveyModel.Store.FK_QuestionQuestionAlert">
+            <End Role="QuestionSet" EntitySet="QuestionSet" />
+            <End Role="QuestionAlertSet" EntitySet="QuestionAlertSet" />
           </AssociationSet>
           <AssociationSet Name="FK_QuestionResult" Association="smsSurveyModel.Store.FK_QuestionResult">
             <End Role="QuestionSet" EntitySet="QuestionSet" />
@@ -91,6 +101,15 @@
             <End Role="UserProfileSurveyPlan" EntitySet="UserProfileSurveyPlan" />
           </AssociationSet>
         </EntityContainer>
+        <EntityType Name="AlertNotificationSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Type" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="DistributionList" Type="nvarchar" Nullable="false" MaxLength="500" />
+          <Property Name="QuestionAlertId" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="Companies">
           <Key>
             <PropertyRef Name="Name" />
@@ -115,6 +134,16 @@
           <Property Name="Surname" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="SurveyInProgress" Type="bit" Nullable="false" />
           <Property Name="SurveyPlan_Id" Type="int" />
+        </EntityType>
+        <EntityType Name="QuestionAlertSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="Description" Type="nvarchar" Nullable="false" MaxLength="200" />
+          <Property Name="Operator" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="TriggerAnswer" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="QuestionId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="QuestionSet">
           <Key>
@@ -276,6 +305,30 @@
             </Principal>
             <Dependent Role="SurveyResultSet">
               <PropertyRef Name="CustomerPhoneNumber" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QuestionAlertAlertNotification">
+          <End Role="QuestionAlertSet" Type="smsSurveyModel.Store.QuestionAlertSet" Multiplicity="1" />
+          <End Role="AlertNotificationSet" Type="smsSurveyModel.Store.AlertNotificationSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QuestionAlertSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AlertNotificationSet">
+              <PropertyRef Name="QuestionAlertId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QuestionQuestionAlert">
+          <End Role="QuestionSet" Type="smsSurveyModel.Store.QuestionSet" Multiplicity="1" />
+          <End Role="QuestionAlertSet" Type="smsSurveyModel.Store.QuestionAlertSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QuestionSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="QuestionAlertSet">
+              <PropertyRef Name="QuestionId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -537,6 +590,16 @@
             <End Role="SurveyResult" EntitySet="SurveyResultSet" />
             <End Role="Tags" EntitySet="Tags" />
           </AssociationSet>
+          <EntitySet Name="AlertNotificationSet" EntityType="smsSurveyModel.AlertNotificationSet" />
+          <EntitySet Name="QuestionAlertSet" EntityType="smsSurveyModel.QuestionAlertSet" />
+          <AssociationSet Name="FK_QuestionAlertAlertNotification" Association="smsSurveyModel.FK_QuestionAlertAlertNotification">
+            <End Role="QuestionAlertSet" EntitySet="QuestionAlertSet" />
+            <End Role="AlertNotificationSet" EntitySet="AlertNotificationSet" />
+          </AssociationSet>
+          <AssociationSet Name="FK_QuestionQuestionAlert" Association="smsSurveyModel.FK_QuestionQuestionAlert">
+            <End Role="Question" EntitySet="QuestionSet" />
+            <End Role="QuestionAlertSet" EntitySet="QuestionAlertSet" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Question">
           <Key>
@@ -556,6 +619,7 @@
           <Property Type="Int32" Name="SurveyPlan_Id" Nullable="false" />
           <NavigationProperty Name="SurveyPlanSet" Relationship="smsSurveyModel.FK_SurveyPlanQuestion" FromRole="Question" ToRole="SurveyPlan" />
           <NavigationProperty Name="SurveyResultSet" Relationship="smsSurveyModel.FK_SurveyResultQuestion" FromRole="Question" ToRole="SurveyResult" />
+          <NavigationProperty Name="QuestionAlertSet" Relationship="smsSurveyModel.FK_QuestionQuestionAlert" FromRole="Question" ToRole="QuestionAlertSet" />
         </EntityType>
         <EntityType Name="SurveyPlan">
           <Key>
@@ -854,6 +918,52 @@
           <End Type="smsSurveyModel.SurveyResult" Role="SurveyResult" Multiplicity="*" />
           <End Type="smsSurveyModel.Tags" Role="Tags" Multiplicity="*" />
         </Association>
+        <EntityType Name="AlertNotificationSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Type" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="DistributionList" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="QuestionAlertId" Nullable="false" />
+          <NavigationProperty Name="QuestionAlertSet" Relationship="smsSurveyModel.FK_QuestionAlertAlertNotification" FromRole="AlertNotificationSet" ToRole="QuestionAlertSet" />
+        </EntityType>
+        <EntityType Name="QuestionAlertSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="Description" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Operator" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="TriggerAnswer" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="QuestionId" Nullable="false" />
+          <NavigationProperty Name="AlertNotificationSet" Relationship="smsSurveyModel.FK_QuestionAlertAlertNotification" FromRole="QuestionAlertSet" ToRole="AlertNotificationSet" />
+          <NavigationProperty Name="QuestionSet" Relationship="smsSurveyModel.FK_QuestionQuestionAlert" FromRole="QuestionAlertSet" ToRole="Question" />
+        </EntityType>
+        <Association Name="FK_QuestionAlertAlertNotification">
+          <End Type="smsSurveyModel.QuestionAlertSet" Role="QuestionAlertSet" Multiplicity="1" />
+          <End Type="smsSurveyModel.AlertNotificationSet" Role="AlertNotificationSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="QuestionAlertSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="AlertNotificationSet">
+              <PropertyRef Name="QuestionAlertId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QuestionQuestionAlert">
+          <End Type="smsSurveyModel.Question" Role="Question" Multiplicity="1" />
+          <End Type="smsSurveyModel.QuestionAlertSet" Role="QuestionAlertSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Question">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="QuestionAlertSet">
+              <PropertyRef Name="QuestionId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1032,6 +1142,27 @@
               <ScalarProperty Name="Id" ColumnName="SurveyResult_Id" />
             </EndProperty>
           </AssociationSetMapping>
+          <EntitySetMapping Name="AlertNotificationSet">
+            <EntityTypeMapping TypeName="smsSurveyModel.AlertNotificationSet">
+              <MappingFragment StoreEntitySet="AlertNotificationSet">
+                <ScalarProperty Name="QuestionAlertId" ColumnName="QuestionAlertId" />
+                <ScalarProperty Name="DistributionList" ColumnName="DistributionList" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="QuestionAlertSet">
+            <EntityTypeMapping TypeName="smsSurveyModel.QuestionAlertSet">
+              <MappingFragment StoreEntitySet="QuestionAlertSet">
+                <ScalarProperty Name="QuestionId" ColumnName="QuestionId" />
+                <ScalarProperty Name="TriggerAnswer" ColumnName="TriggerAnswer" />
+                <ScalarProperty Name="Operator" ColumnName="Operator" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           </EntityContainerMapping>
 </Mapping></edmx:Mappings>
   </edmx:Runtime>

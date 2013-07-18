@@ -1,13 +1,45 @@
-﻿@{
+﻿@model smsSurvey.dbInterface.SurveyPlan
+@{
     ViewBag.Title = "GetTagComparisonReport";
 }
 
-<h2>GetTagComparisonReport</h2>
+<h2>Location comparison report</h2>
+ <div style="display:none" class="alert fade in alert-error" id="noTags-error" >
+    <button type="button" class="close">×</button>
+    Select at least 2 locations to have a relevant comparison report
+   </div>
 
-<div id="barChart_div1"></div>
+<div id="tagContainer" >
+      <div id="wrapperForTags" rel="popover" data-content="Using this filter, select the locations for which you would like to visualize the report for and hit Generate report" data-original-title="Select location">
+       <input name="filterTag" id="filterTag" type="text"  />
+      </div>
+       <button id="refreshReport" class="btn btn-primary" value="Generate report" >Generate report</button>
+ </div>
+
+@foreach (var q in Model.QuestionSet)
+{
+   if (q.Type == "Rating")
+   {
+    <fieldset>
+    <legend>Question @q.Order</legend>
+    <div class="display-field">
+       @Html.DisplayFor(model=> q.Text)
+       @* we specify the question in case (will be needed later to get the report data) *@
+       @Html.HiddenFor(model => model.Id, new { qid = q.Id, qtype=q.Type})
+    </div>    
+   </fieldset>
+   <div id="@String.Format("barChart_div{0}", q.Id)" qid="@q.Id" qtype="@q.Type"></div>      
+   }
+   
+}
+
+ @section css{
+    @Styles.Render("~/Content/custom")
+   }
 
 @section Scripts {
  <script type="text/javascript" src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
+
 @Scripts.Render("~/bundles/jqueryui")
 @Scripts.Render("~/bundles/referencescripts")
 @Scripts.Render("~/bundles/reports")

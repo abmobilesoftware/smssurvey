@@ -941,3 +941,7 @@ text-align: center;
    display: inline-block;
    width: 100%;
 }
+
+.hidden {
+   display:none !important;
+}

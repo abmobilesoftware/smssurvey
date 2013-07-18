@@ -1,0 +1,51 @@
+﻿@model IEnumerable<smsSurvey.dbInterface.QuestionAlertSet>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Operator)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.TriggerAnswer)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.QuestionSet.Text)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Operator)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TriggerAnswer)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.QuestionSet.Text)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+        </td>
+    </tr>
+}
+
+</table>

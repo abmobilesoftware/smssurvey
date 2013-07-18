@@ -19,7 +19,7 @@ namespace smsSurvery.Surveryer.Controllers
 
       public const string STRING_COLUMN_TYPE = "string";
       public const string NUMBER_COLUMN_TYPE = "number";
-
+      private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
       
       [HttpGet]
       public JsonResult GetSurveyResults(int surveyId)
@@ -198,39 +198,82 @@ namespace smsSurvery.Surveryer.Controllers
       [HttpGet]
       public ViewResult GetTagComparisonReport(int surveyId)
       {
-         return View();
+         var survey = db.SurveyPlanSet.Find(surveyId);
+         return View(survey);
       }
+
+      public JsonResult FindMatchingLocationTags(string term)
+      {
+         try
+         {
+            var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();            
+            var candidateTags = (from tag in user.Company.Tags
+                                 select
+                                    (from ct in tag.TagTagTypes where ct.TagTypeType == "Location" && ct.TagName.IndexOf(term, StringComparison.InvariantCultureIgnoreCase) != -1 select ct.TagName)).SelectMany(x => x);
+            return Json(candidateTags, JsonRequestBehavior.AllowGet);
+         }
+         catch (Exception ex)
+         {
+            logger.Error("FindMatchingLocationTags error", ex);
+            return null;
+         }
+      }
+
+      /*for each question different from free text build a bar chart ready structure that can be displayed
+          * assume that each tag defines a location
+          */
       [HttpGet]
       public JsonResult GetTagComparisonReportForRatingQuestion(int questionID, string[] tags = null)
       {
-         /*for each question different from free text build a bar chart ready structure that can be displayed
-          * assume that each tag defines a location
-          */
+         //TODO check if tags are location tags
+
          var headerContent = new List<RepDataColumn>();
-        
-         tags = new string[3] { "Location1", "Location2", "Location3" };
-         questionID = 1;
+
+         //tags = new string[2] { "Dorobantilor-89-Cluj", "Eroilor-Floresti" };
+         tags = tags != null ? tags : new string[0];
+         //questionID = 1;
          //get the question
          var question = db.QuestionSet.Find(questionID);
          if(question!=null) {
-            headerContent.Add(new RepDataColumn("0", STRING_COLUMN_TYPE, "Options"));
+            //create the data structure required by combo chart
+            //Documentation can be found at https://developers.google.com/chart/interactive/docs/gallery/combochart
+            //create the header
+            headerContent.Add(new RepDataColumn("0", STRING_COLUMN_TYPE, "Options")); //first column will represent the groups
             for(int i=0; i< tags.Count(); i++)
-            {
+            { //the next columns will represent the locations (in this case the tags)
                headerContent.Add(new RepDataColumn((i+1).ToString(),NUMBER_COLUMN_TYPE,tags[i]));
-            }
-
+            } 
             //one row per optionDef
             string[] optionDef = question.ValidAnswersDetails.Split(';');
             string[] valuesDef = question.ValidAnswers.Split(';');
+            QuestionSurveyResults[] results = new QuestionSurveyResults[tags.Count()];
+            for (int i = 0; i < tags.Count(); i++)
+            {
+               QuestionSurveyResults qRes = GenerateResultForRatingQuestion(question, new string[1] { tags[i] });
+               results[i] = qRes;
+            }
             List<RepDataRow> rows = new List<RepDataRow>();
             for (int i = 0; i < optionDef.Count(); i++)
             {
+               
                var rowContent = new List<RepDataRowCell>();
-               rowContent.Add(new RepDataRowCell(optionDef[i], optionDef[i]));
-               rowContent.Add(new RepDataRowCell(33+i, (33+i).ToString() + "%"));
-               rowContent.Add(new RepDataRowCell(22 + i, (22 + i).ToString() + "%"));
-               rowContent.Add(new RepDataRowCell(44 + i, (22 + i).ToString() + "%"));
-               rows.Add(new RepDataRow (rowContent));
+               rowContent.Add(new RepDataRowCell(valuesDef[i], optionDef[i])); //on the first column we add the group description (in this case "Very hard", "Very easy", etc.)
+               //on the next rows, for each tag get the percentage value
+               for (int j = 0; j < tags.Count(); j++)
+               {
+                  var nrOfAnswerPerOption = results[j].AnswersPerValidOption[valuesDef[i]];
+                  var nrOfTotalValidAnswers = results[j].TotalNumberOfValidAnswers;
+                  double percentage = 0.0;
+                  if (nrOfTotalValidAnswers != 0)
+                  {
+                     percentage = Math.Round(((double)nrOfAnswerPerOption) * 100 / nrOfTotalValidAnswers, 2);   
+                  }
+                  //rowContent.Add(new RepDataRowCell( 22.22, (22 + j).ToString() + "%"));
+                  rowContent.Add(new RepDataRowCell(percentage, percentage.ToString()));
+               }
+               rows.Add(new RepDataRow(rowContent));
+               //rowContent.Add(new RepDataRowCell(22 + i, (22 + i).ToString() + "%"));
+               //rowContent.Add(new RepDataRowCell(44 + i, (22 + i).ToString() + "%"));               
             }
 
             RepChartData chartSource = new RepChartData(headerContent, rows.ToArray());

@@ -202,6 +202,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\AlertsController.cs" />
     <Compile Include="Controllers\AnswerController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -235,7 +236,7 @@
     <Content Include="Content\jquery.tagsinput.css" />
     <Content Include="Content\WordCloud.css" />
     <Content Include="Scripts\bootstrap.js" />
-    <Content Include="Scripts\reports1.js" />
+    <Content Include="Scripts\reportsTags.js" />
     <Content Include="Scripts\jquery-1.10.1.js" />
     <Content Include="Scripts\jquery-1.10.1.min.js" />
     <Content Include="Scripts\jquery.tagsinput.js" />
@@ -406,6 +407,11 @@
     <Content Include="Views\Shared\SurveyResultOverview.cshtml" />
     <Content Include="Views\Answer\GetCustomerWhichAnsweredXQuestions.cshtml" />
     <Content Include="Views\Reports\GetTagComparisonReport.cshtml" />
+    <Content Include="Views\Alerts\Index.cshtml" />
+    <Content Include="Views\Alerts\Details.cshtml" />
+    <Content Include="Views\Alerts\Create.cshtml" />
+    <Content Include="Views\Alerts\Edit.cshtml" />
+    <Content Include="Views\Alerts\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
