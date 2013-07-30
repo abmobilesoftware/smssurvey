@@ -58,7 +58,7 @@
       <HintPath>ExternalReferences\Nexmo-CSharp-lib.dll</HintPath>
     </Reference>
     <Reference Include="OneApi">
-      <HintPath>..\..\smsFeedback\ExternalReferences\OneApi.dll</HintPath>
+      <HintPath>..\..\..\txtFeedback\ExternalReferences\OneApi.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp">
       <HintPath>..\packages\RestSharp.104.1\lib\net4\RestSharp.dll</HintPath>
@@ -233,12 +233,17 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\jquery-ui-1.8.23.custom.css" />
     <Content Include="Content\jquery.tagsinput.css" />
+    <Content Include="Content\SurveyPlan\questionSet.css" />
     <Content Include="Content\WordCloud.css" />
+    <Content Include="MyScripts\SurveyPlan.js" />
+    <Content Include="MyScripts\Utilities.js" />
+    <Content Include="Scripts\backbone.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\jquery-1.10.1.js" />
     <Content Include="Scripts\jquery-1.10.1.min.js" />
     <Content Include="Scripts\jquery.tagsinput.js" />
     <Content Include="Scripts\reports.js" />
+    <Content Include="Scripts\underscore.js" />
     <Content Include="WordCloud\CustomBlacklist.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
