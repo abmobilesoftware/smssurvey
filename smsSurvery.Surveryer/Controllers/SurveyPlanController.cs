@@ -118,6 +118,73 @@ namespace smsSurvery.Surveryer.Controllers
             return View(surveyplan);
         }
 
+        public JsonResult GetSurvey(int id = 0)
+        {
+           try
+           {
+              SurveyPlan surveyplan = db.SurveyPlanSet.Find(id);
+              if (surveyplan == null)
+              {
+                 return Json("resource not found", JsonRequestBehavior.AllowGet);
+              }
+              List<smsSurvery.Surveryer.DbModels.Question> questions =
+                 new List<smsSurvery.Surveryer.DbModels.Question>();
+              foreach (var question in surveyplan.QuestionSet)
+              {
+                 smsSurvery.Surveryer.DbModels.Question q =
+                    new smsSurvery.Surveryer.DbModels.Question(question.Id,
+                       question.Text, question.Order, question.Type,
+                       question.ValidAnswers, question.ValidAnswersDetails);
+                 questions.Add(q);
+              }
+              smsSurvery.Surveryer.DbModels.SurveyPlan surveyPlan =
+                 new smsSurvery.Surveryer.DbModels.SurveyPlan(
+                    surveyplan.Id, surveyplan.Description,
+                    surveyplan.ThankYouMessage, surveyplan.DateStarted,
+                    surveyplan.DateEnded, surveyplan.IsRunning, questions);
+              return Json(surveyPlan, JsonRequestBehavior.AllowGet);
+           }
+           catch (Exception e)
+           {
+              return Json(null, JsonRequestBehavior.AllowGet);
+           }
+        }
+
+       [HttpPut]
+        public JsonResult SaveSurvey(
+           smsSurvery.Surveryer.DbModels.SurveyPlan clientSurveyPlan)
+        {
+           try
+           {
+              SurveyPlan dbSurveyPlan = db.SurveyPlanSet.Find(clientSurveyPlan.Id);
+              if (dbSurveyPlan == null)
+              {
+                 return Json("resource not found", JsonRequestBehavior.AllowGet);
+              }
+              dbSurveyPlan.ThankYouMessage = clientSurveyPlan.ThankYouMessage;
+              dbSurveyPlan.Description = clientSurveyPlan.Description;
+              var dbQuestions = dbSurveyPlan.QuestionSet;
+              foreach (var clientQuestion in clientSurveyPlan.QuestionSet)
+              {
+                 var dbQuestionResult = dbQuestions.Where(x => x.Id.Equals(clientQuestion.Id));
+                 if (dbQuestionResult.Count() > 0)
+                 {
+                    var dbQuestion = dbQuestionResult.First();
+                    dbQuestion.Order = clientQuestion.Order;
+                    dbQuestion.Text = clientQuestion.Text;
+                    dbQuestion.Type = clientQuestion.Type;
+                    dbQuestion.ValidAnswers = clientQuestion.ValidAnswers;
+                    dbQuestion.ValidAnswersDetails = clientQuestion.ValidAnswersDetails;
+                 }
+              }
+              db.SaveChanges();
+              return Json("success", JsonRequestBehavior.AllowGet);
+           }
+           catch (Exception e)
+           {
+              return Json("error", JsonRequestBehavior.AllowGet);
+           }
+        }
         //
         // POST: /SurveyPlan/Edit/5
 
@@ -179,6 +246,12 @@ namespace smsSurvery.Surveryer.Controllers
            SurveyPlan surveyplan = db.SurveyPlanSet.Find(id);
            var res = surveyplan.SurveyResult.OrderByDescending(s => s.DateRan);
            return View(res);
+        }
+
+       [HttpPost]
+        public JsonResult TestPost(string abc)
+        {
+           return Json("Ai trimis " + abc, JsonRequestBehavior.AllowGet);
         }
     }
 }

@@ -36,11 +36,23 @@
    margin-top: 0.5em;
 }
 
-.survey-builder-title {
-   display: inline;
+
+/* SECTION TITLE */
+.section-title {
+  background: linear-gradient(to bottom, #0088CC, #0044CC) repeat scroll 0 0 transparent;
+  color: #FFFFFF;
+   padding: 0.5em;
+   height: 30px;
 }
 
-.preview-btn {
+.section-title-text {
+   display: inline;
+   font-size: 1em;
+   position:relative;
+   top:0.3em;
+}
+
+.section-title-button {
    float: right;
 }
 
@@ -48,9 +60,7 @@
    clear: both;
 }
 
-.survey-builder-title-wrapper {
-   padding: 0.5em;
-}
+/* END SECTION TITLE */
 
 .preview-content {
    display: block;
@@ -186,7 +196,7 @@ div p.message {
 }
 
 .preview-tabs {
-   width: 95%;
+   width: 93%;
 }
 
 div#preview-content-modal {
@@ -201,8 +211,44 @@ div#preview-content-modal {
    box-shadow: none;
    border: 0;
    background: transparent;
+   width: 368px;
+   margin-left: -213px;
 }
 
 .modal-header {
    background: #fff;
+}
+
+#survey-builder {
+   margin-top:0.5em
+}
+
+.edit-survey {
+   color: #c3f0ff;
+}
+
+.edit-survey:hover {
+   color: #FAA732;
+}
+
+.edit-survey:visited {
+   color: #c3f0ff;
+}
+
+.hide {
+   display:none;
+}
+
+.notification-error {
+  background: linear-gradient(to bottom, #EE5F5B, #BD362F);
+  border-radius: 4px 4px 4px 4px;
+  color: white;
+  padding: 10px;
+}
+
+.notification-success {
+  background: linear-gradient(to bottom, #62C462, #51A351) repeat scroll 0 0 transparent;
+  border-radius: 4px 4px 4px 4px;
+  color: white;
+  padding: 10px;
 }

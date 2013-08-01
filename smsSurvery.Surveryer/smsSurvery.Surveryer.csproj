@@ -208,6 +208,7 @@
     <Compile Include="Controllers\QuestionController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Models\BusinessObjects\SmsMessage.cs" />
+    <Compile Include="Models\Question.cs" />
     <Compile Include="Models\SmsInterface\CompatelSmsRepository.cs" />
     <Compile Include="Models\SmsInterface\IExternalSmsRepository.cs" />
     <Compile Include="Models\SmsInterface\NexmoSmsRepository.cs" />
@@ -221,6 +222,7 @@
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\FreeTextAnswer.cs" />
     <Compile Include="Models\SmsInterface\SmsInterfaceFactory.cs" />
+    <Compile Include="Models\SurveyPlan.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\RequiredIfValidator.cs" />
     <Compile Include="Utilities\ViewExtensionMethods.cs" />

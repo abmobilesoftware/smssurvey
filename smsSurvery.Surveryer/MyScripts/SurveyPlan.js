@@ -52,7 +52,7 @@ var StarBarView = Backbone.View.extend({
       this.starsCollection = new StarsCollection(starsArray);
       this.starsCollection.on("resultEvent", this.starClicked);
       this.result = -1;
-      this.render();      
+      this.render();
    },
    render: function () {
       _.each(this.starsCollection.models, function (value, index, list) {
@@ -114,6 +114,20 @@ var QuestionModel = Backbone.Model.extend({
    initialize: function () {
 
    },
+   parseAttributes: function () {
+      if (this.get("Type") == "Multiple answers") {
+         var answersIdentifier = this.get("ValidAnswers").split(";");
+         var answersLabel = this.get("ValidAnswersDetails").split(";");
+         var answers = [];
+         for (var i = 0; i < answersLabel.length; ++i) {
+            answers.push({
+               AnswerIdentifier: answersIdentifier[i],
+               AnswerLabel: answersLabel[i]
+            });
+         }
+         this.set("Answers", answers);
+      }
+   },
    deleteQuestion: function () {
       /*
       Destroy the model and listen to sync*/
@@ -132,19 +146,37 @@ var QuestionModel = Backbone.Model.extend({
       var answers = this.get("Answers");
       answers[index].AnswerLabel = label;
       this.set("Answers", answers);
+      this.updateAnswerDbAttribute();
    },
    addAnswer: function () {
       var answers = this.get("Answers");
       answers.push({ AnswerLabel: "" });
       this.set("Answers", answers);
       this.trigger(this.events.ANSWERS_CHANGED);
+      this.updateAnswerDbAttribute();
    },
    deleteAnswer: function (index) {
       var answers = this.get("Answers");
       answers.splice(index, 1);
       this.set("Answers", answers);
       this.trigger(this.events.ANSWERS_CHANGED);
-   }
+      this.updateAnswerDbAttribute();
+   },
+   updateAnswerDbAttribute: function () {
+      var answers = this.get("Answers");
+      var answersLabelAsString = "";
+      var answersIdentifierAsString = "";
+      if (answers.length > 0) {
+         answersLabelAsString = answers[0].AnswerLabel;
+         answersIdentifierAsString = answers[0].AnswerIdentifier;
+      }
+      for (var i = 1; i < answers.length; ++i) {
+         answersLabelAsString += ";" + answers[i].AnswerLabel;
+         answersIdentifierAsString += ";" + answers[i].AnswerIdentifier;
+      }
+      this.set("ValidAnswers", answersIdentifierAsString);
+      this.set("ValidAnswersDetails", answersLabelAsString);      
+   },
 
 });
 
@@ -295,22 +327,132 @@ var QuestionSetView = Backbone.View.extend({
    }
 });
 
-var SurveyView = new Backbone.View.extend({
+var SurveyView = Backbone.View.extend({
+   events: {
+      "click .edit-survey": "editSurveyInfo",
+      "keyup #survey-description": "updateDescription",
+      "keyup #survey-thank-you-message": "updateThankYouMessage",
+      "click .save-btn": "saveSurvey"
+   },
    initialize: function () {
+      var self = this;
+      _.bindAll(this, "editSurveyInfo", "render", "updateDescription",
+         "updateThankYouMessage", "saveSurvey", "confirmPageLeaving");
+      this.template = _.template($("#survey-info").html());
+      this.dom = {
+         $SURVEY_INFO: $("#survey-info", this.$el),
+         $SURVEY_BUILDER: $("#survey-builder", this.$el),
+         $NOTIFICATION_TEXT: $(".notification-text", this.$el),
+         $NOTIFICATION: $("#survey-notification", this.$el)
+      }
+      var dom = this.dom;
+      this.model.on("change:DisplayInfoTable", this.render);
+      window.onbeforeunload = this.confirmPageLeaving;
 
+      this.model.fetch({
+         data: "Id=" + this.model.get("Id"),
+         success: function (model, response, options) {
+            self.questionSetModel = new QuestionSetModel({ jsonQuestions: model.get("QuestionSet") });
+            self.questionSetView = new QuestionSetView({
+               el: dom.$SURVEY_BUILDER,
+               model: self.questionSetModel
+            });            
+            self.render();
+            
+         },
+         error: function (model, response, options) {
+            alert(response)
+         }         
+      });      
    },
    render: function () {
-
+      this.dom.$SURVEY_INFO.html(this.template(this.model.toJSON()));
+      this.dom.$EDIT_SURVEY_INFO = $(".edit-survey", this.$el);
+      this.dom.$INFO_TABLE = $(".survey-info-data", this.$el);
+   },
+   editSurveyInfo: function (event) {
+      event.preventDefault();
+      if (this.model.get("DisplayInfoTable")) {
+         this.model.set("DisplayInfoTable", false);
+      } else {
+         this.model.set("DisplayInfoTable", true);
+      }
+   },
+   updateDescription: function (event) {
+      this.model.updateDescription(event.currentTarget.value);
+   },
+   updateThankYouMessage: function (event) {
+      this.model.updateThankYouMessage(event.currentTarget.value);
+   },
+   updateQuestionSet: function () {
+      this.model.set("QuestionSet", this.questionSetModel.getQuestionSetCollectionAsJson());
+   },
+   saveSurvey: function (event) {
+      event.preventDefault();
+      var self = this;
+      this.updateQuestionSet();
+      this.model.save(this.model.toJSON(), 
+         {
+            success: function (model, response, options) {
+               if (response == "success") {
+                  self.dom.$NOTIFICATION_TEXT.text("Changes saved successfully.");
+                  self.dom.$NOTIFICATION_TEXT.removeClass("notification-success notification-error").addClass("notification-success");                  
+                  self.model.set("DataChanged", false);
+               } else if (response == "error") {
+                  self.dom.$NOTIFICATION_TEXT.text("Errors while saving.");
+                  self.dom.$NOTIFICATION_TEXT.removeClass("notification-success notification-error").addClass("notification-error");                  
+               }
+               self.dom.$NOTIFICATION.show();
+            }
+         });
+   }, 
+   confirmPageLeaving: function () {
+      this.updateQuestionSet();
+      if (this.model.get("DataChanged")) {
+         return "On the page are unsaved fields and " +
+            "this changes will be lost when you will leave the" +
+            "page. Are you sure you want to do this?";
+      }
    }
 });
 
-var SurveyModel = new Backbone.Model.extend({
+var SurveyModel = Backbone.Model.extend({
    defaults: {
+      Id: 7,
       Description: "no description",
       ThankYouMessage: "no thank you message",
       StartDate: "no start date",
       EndDate: "no end date",
-      IsRunning: false
+      IsRunning: false,
+      DisplayInfoTable: false,
+      HasChanged: false
+   },
+   initialize: function () {
+      _.bindAll(this, "attributeChanged", "modelSynced");
+      this.on("change", this.attributeChanged);
+      this.on("sync", this.modelSynced);
+   },
+   urlByMethod: {
+      "read": "/SurveyPlan/GetSurvey",
+      "update": "/SurveyPlan/SaveSurvey"
+   },
+   idAttribute: "Id",
+   updateThankYouMessage: function (thankYouMessage) {
+      this.set("ThankYouMessage", thankYouMessage);
+   },
+   updateDescription: function (description) {
+      this.set("Description", description);
+   },
+   sync: function (method, model, options) {
+      options = options || {};
+      options.url = this.urlByMethod[method];
+      Backbone.sync(method, model, options);
+   },
+   attributeChanged: function () {
+      this.set("DataChanged", true);
+   },
+   modelSynced: function () {
+      this.set("DataChanged", false);
    }
 });
 
@@ -320,60 +462,15 @@ var QuestionSetModel = Backbone.View.extend({
    },
    initialize: function () {
       _.bindAll(this, "getQuestionSetCollection");
-      var questionModel1 = new QuestionModel({
-         Id: 0,
-         Text: "What's your favorite beer?",
-         Type: "Multiple answers",
-         Order: 0,
-         Answers: [
-            {
-               AnswerLabel: "Ursus"
-            },
-            {
-               AnswerLabel: "Becks",
-            },
-            {
-               AnswerLabel: "Silva",
-            }
-         ]
-      });
-      var questionModel2 = new QuestionModel({
-         Id: 1,
-         Text: "Rate the movie Sherlock Holmes",
-         Type: "Rating",
-         Order: 1,
-         Answers: [
-            {
-               AnswerLabel: "Red"
-            },
-            {
-               AnswerLabel: "Blue",
-            },
-            {
-               AnswerLabel: "Green",
-            }
-         ]
-      });
-      var questionModel3 = new QuestionModel({
-         Id: 2,
-         Text: "Do you have iPhone?",
-         Type: "Yes/No",
-         Order: 2,
-         Answers: [
-            {
-               AnswerLabel: "Red"
-            },
-            {
-               AnswerLabel: "Blue",
-            },
-            {
-               AnswerLabel: "Green",
-            }
-         ]
-      });
-      var questionModels = [questionModel1, questionModel2, questionModel3];
+      this.jsonQuestions = this.options.jsonQuestions;
+      this.questionModels = [];
+      for (var i = 0; i < this.jsonQuestions.length; ++i) {
+         var question = new QuestionModel(this.jsonQuestions[i]);
+         question.parseAttributes();
+         this.questionModels.push(question);
+      }
       this.questionSetCollection =
-         new QuestionSetCollection(questionModels);
+         new QuestionSetCollection(this.questionModels);
       this.questionSetCollection.on("remove add",
          function () {
             this.trigger(this.events.UPDATE_VIEW);
@@ -381,6 +478,13 @@ var QuestionSetModel = Backbone.View.extend({
    },
    getQuestionSetCollection: function () {
       return this.questionSetCollection.models;
+   },
+   getQuestionSetCollectionAsJson: function () {
+      var collectionAsJson = [];
+      for (var i = 0; i < this.questionSetCollection.models.length; ++i) {
+         collectionAsJson.push(this.questionSetCollection.models[i].toJSON());
+      }
+      return collectionAsJson;
    },
    addQuestion: function () {
       var questionModel = new QuestionModel();
@@ -418,7 +522,7 @@ var QuestionPreviewSmsView = Backbone.View.extend({
 var SurveyPreviewSmsView = Backbone.View.extend({
    className: "survey-preview-content",
    initialize: function () {
-      this.surveyPreviewTemplate = _.template($("#preview-sms-template").html());      
+      this.surveyPreviewTemplate = _.template($("#preview-sms-template").html());
    },
    render: function () {
       this.$el.html(this.surveyPreviewTemplate());
@@ -486,7 +590,19 @@ var SurveyPreviewModel = Backbone.Model.extend({
 });
 
 $(document).ready(function () {
-   var questionSetModel = new QuestionSetModel();
-   var questionSetView = new QuestionSetView({ el: $("#survey-builder"), model: questionSetModel });
+   var urlParts = document.URL.split("/");
+   var surveyId = urlParts[urlParts.length - 1];
+   var surveyModel = new SurveyModel({
+      Id: surveyId,
+      Description: "Beer survey",
+      ThankYouMessage: "Thank you!",
+      StartDate: "15/6/2013",
+      EndDate: "17/7/2013",
+      IsRunning: false
+   });
+   var survey = new SurveyView({
+      el: $("#survey"),
+      model: surveyModel
+   })
 });
 
