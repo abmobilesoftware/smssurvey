@@ -412,6 +412,7 @@
     <Content Include="Views\Alerts\Create.cshtml" />
     <Content Include="Views\Alerts\Edit.cshtml" />
     <Content Include="Views\Alerts\Delete.cshtml" />
+    <Content Include="Views\Alerts\CreateEditAlert.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -6,12 +6,15 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using smsSurvey.dbInterface;
+using System.Data.Entity.Validation;
+using System.Text;
 
 namespace smsSurvery.Surveryer.Controllers
 {
     public class AlertsController : Controller
     {
         private smsSurveyEntities db = new smsSurveyEntities();
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
         //
         // GET: /Alerts/
 
@@ -61,6 +64,9 @@ namespace smsSurvery.Surveryer.Controllers
                new SelectListItem() {Text="contains",Value="contains"}
             }, "Text", "Value");
            ViewBag.OperatorList = operatorList;
+           //DA create at least one alert notification
+           var alertNotification = new AlertNotificationSet() { QuestionAlertId = alert.Id, Type="email" };
+           alert.AlertNotificationSet.Add(alertNotification);           
            return View(alert);
         }
 
@@ -73,8 +79,26 @@ namespace smsSurvery.Surveryer.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.QuestionAlertSet.Add(questionalertset);
-                db.SaveChanges();
+               try
+               {
+                  db.QuestionAlertSet.Add(questionalertset);
+                  db.SaveChanges();
+               }
+               catch (DbEntityValidationException ex)
+               {
+                  StringBuilder sb = new StringBuilder();
+
+                  foreach (var failure in ex.EntityValidationErrors)
+                  {
+                     sb.AppendFormat("{0} failed validation\n", failure.Entry.Entity.GetType());
+                     foreach (var error in failure.ValidationErrors)
+                     {
+                        sb.AppendFormat("- {0} : {1}", error.PropertyName, error.ErrorMessage);
+                        sb.AppendLine();
+                     }
+                  }
+                  logger.Error(sb.ToString());
+               }
                 return RedirectToAction("Index");
             }
 

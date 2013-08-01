@@ -6,7 +6,8 @@
 
 <h2>Create</h2>
 
-@using (Html.BeginForm()) {
+@using (Html.BeginForm())
+{
     @Html.AntiForgeryToken()
     @Html.ValidationSummary(true)
 
@@ -14,7 +15,7 @@
         <legend>QuestionAlertSet</legend>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.Description)
+            @Html.DisplayNameFor(model => model.Description)
         </div>
         <div class="editor-field">
             @Html.EditorFor(model => model.Description)
@@ -22,10 +23,10 @@
         </div>
 
         <div class="editor-label">
-            @Html.LabelFor(model => model.Operator)
+            @Html.DisplayNameFor(model => model.Operator)
         </div>
         <div class="editor-field">            
-            @Html.DropDownList("OperatorList", String.Empty)
+            @Html.DropDownListFor(model => model.Operator, (IEnumerable<SelectListItem>)ViewBag.OperatorList)
             @Html.ValidationMessageFor(model => model.Operator)
         </div>
 
@@ -35,9 +36,15 @@
         <div class="editor-field">
             @Html.EditorFor(model => model.TriggerAnswer)
             @Html.ValidationMessageFor(model => model.TriggerAnswer)
-        </div>
+        </div>       
+       @* we force that at least 1 alertNotification is created  *@
+       @foreach (smsSurvey.dbInterface.AlertNotificationSet alertNotification in Model.AlertNotificationSet)
+       {
+          Html.RenderPartial("CreateEditAlert", alertNotification);
+       }
+      
 
-        @Html.HiddenFor(model => model.QuestionId):
+        @Html.HiddenFor(model => model.QuestionId)
         <p>
             <input type="submit" value="Create" />
         </p>

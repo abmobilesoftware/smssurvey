@@ -288,7 +288,7 @@ namespace smsSurvery.Surveryer.Controllers
                     {
                        currentSurvey.CurrentQuestion = nextQuestion;
                        db.SaveChanges();
-                       SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion, db);
+                       SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion, db);                       
                     }
                  }
                  else
@@ -301,6 +301,10 @@ namespace smsSurvery.Surveryer.Controllers
                     //send ThankYouMessage
                     SendThankYouToCustomer(customer, numberToSendFrom, surveyToRun);
                  }
+              }
+              else
+              {
+                 logger.Error("Received multiple answers to question. wtf");
               }
            }
            else
