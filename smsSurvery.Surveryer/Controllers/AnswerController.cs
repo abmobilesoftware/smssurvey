@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using smsSurvey.dbInterface;
 using smsSurvery.Surveryer.Models;
 using smsSurvery.Surveryer.Models.SmsInterface;
+using smsSurvery.Surveryer.Mailers;
 
 namespace smsSurvery.Surveryer.Controllers
 {
@@ -237,7 +238,7 @@ namespace smsSurvery.Surveryer.Controllers
               SurveyResult currentSurvey = latestSurveyResult;
               Question currentQuestion = null;
               var numberOfQuestionsInSurvey = surveyToRun.QuestionSet.Count();
-              bool receivedMultipleAnswersToSameQuestion = false;
+              bool receivedMultipleAnswersToSameQuestion = false;          
               //if not final than add, otherwise start a new one
               if (latestSurveyResult == null || latestSurveyResult.Terminated)
               {
@@ -262,7 +263,7 @@ namespace smsSurvery.Surveryer.Controllers
                     {
                        resultToUpdate.Answer = text;
                        db.SaveChanges();
-                       receivedMultipleAnswersToSameQuestion = true;
+                       receivedMultipleAnswersToSameQuestion = true;                    
                     }
                  }
                  else
@@ -273,7 +274,7 @@ namespace smsSurvery.Surveryer.Controllers
                     //currentQuestion = surveyToRun.QuestionSet.Where(x => x.Order == currentQuestionId).First();
                     var res = new Result() { Answer = text, Question = currentQuestion };
                     currentSurvey.Result.Add(res);
-                    db.SaveChanges();
+                    db.SaveChanges();                   
                  }
                  
               }
@@ -287,8 +288,8 @@ namespace smsSurvery.Surveryer.Controllers
                     if (nextQuestion != null)
                     {
                        currentSurvey.CurrentQuestion = nextQuestion;
-                       db.SaveChanges();
-                       SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion, db);                       
+                      // db.SaveChanges();
+                      // SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion, db);                      
                     }
                  }
                  else
@@ -297,10 +298,11 @@ namespace smsSurvery.Surveryer.Controllers
                     latestSurveyResult.Terminated = true;
                     customer.RunningSurvey = null;
                     customer.SurveyInProgress = false;
-                    db.SaveChanges();
+                    //db.SaveChanges();
                     //send ThankYouMessage
-                    SendThankYouToCustomer(customer, numberToSendFrom, surveyToRun);
+                    //SendThankYouToCustomer(customer, numberToSendFrom, surveyToRun);                    
                  }
+                 HandleAlertsForQuestion(currentQuestion, text, currentSurvey.Id);
               }
               else
               {
@@ -310,6 +312,90 @@ namespace smsSurvery.Surveryer.Controllers
            else
            {
               logger.ErrorFormat("Received answer from client {0} while survey not in progress. Text {1}", customer.PhoneNumber, text);
+           }
+        }
+
+        private void HandleAlertsForQuestion(Question currentQuestion, String answerText, int surveyResultId)
+        {
+           foreach (var alert in currentQuestion.QuestionAlertSet)
+           {
+              bool notificationRequired = false;
+              string alertCause = String.Empty;
+              switch (alert.Operator)
+              {
+                 case "==":
+                    if (answerText == alert.TriggerAnswer)
+                    {
+                       notificationRequired = true;
+                    }
+                    break;
+                 case "!=":
+                    if (answerText != alert.TriggerAnswer)
+                    {
+                       notificationRequired = true; 
+                    }
+                    break;
+                 case "<":
+                    //< makes sense only for numeric type answers
+                    int receivedAnswerAsInt =0 ;
+                    int alertTriggerAnswerAsInt = 0;
+                    if (Int32.TryParse(answerText, out receivedAnswerAsInt) && Int32.TryParse(alert.TriggerAnswer, out alertTriggerAnswerAsInt))
+                    {
+                       if (receivedAnswerAsInt < alertTriggerAnswerAsInt)
+                       {
+                          notificationRequired = true;
+                          alertCause = String.Format("Received answer '{0}' < then threshold answer '{1}'", receivedAnswerAsInt, alertTriggerAnswerAsInt);
+                       }
+                    }
+                    
+                    break;
+                 case "<=":
+
+                    break;
+                 case ">":
+
+                    break;
+                 case ">=":
+
+                    break;
+                 case "any":
+
+                    break;
+                 case "all":
+
+                    break;
+                 case "contains":
+
+                    break;
+                 default:
+                    logger.Error("invalid operator detected");
+                    break;
+              }
+              if (notificationRequired)
+              {
+                 foreach (var notification in alert.AlertNotificationSet)
+                 {
+                    SendNotificationForAlert(notification, answerText, alertCause, surveyResultId);
+                 }
+              }
+           }
+        }
+
+        private void SendNotificationForAlert(AlertNotificationSet alert, String answerText, String alertCause, int surveyResultId)
+        {
+           switch (alert.Type)
+           {
+              case "email":
+                 AlertMailer mailer = new AlertMailer();
+                 //DA here we compose the email Subject & message
+                 var emailSubject = String.Format("Alert '{0}' triggered for question '{1}' ", alert.QuestionAlertSet.Description, alert.QuestionAlertSet.QuestionSet.Text);
+                 var message = "";
+                 string linkToSurveyResults = String.Format("http://localhost:3288/SurveyResult/Details/{0}", surveyResultId);
+                 var mail = mailer.SendAlert(emailSubject, alert.DistributionList, message, alertCause,linkToSurveyResults);
+                 mail.Send();
+                 break;
+              default:
+                 break;
            }
         }
 
@@ -323,6 +409,7 @@ namespace smsSurvery.Surveryer.Controllers
            logger.InfoFormat("userName: {0}, numberToSendFrom: {1}, customerPhoneNumber: {2}", userName, numberToSendFrom, customerPhoneNumber);
           //the customer info should be coming from the customer's system
            var user = db.UserProfile.Where(u => u.UserName == userName).FirstOrDefault();
+           tags = tags != null ? tags : new string[0];
            if (user != null)
            {
               var surveyToRun = user.SurveyPlanSet.Where(s => s.IsRunning).FirstOrDefault();
@@ -376,7 +463,7 @@ namespace smsSurvery.Surveryer.Controllers
                }
             }
             db.SaveChanges();
-            SendQuestionToCustomer(customer, numberToSendFrom, currentQuestion, db);
+           // SendQuestionToCustomer(customer, numberToSendFrom, currentQuestion, db);
          }          
        }
 

@@ -1,0 +1,67 @@
+@using Mvc.Mailer
+<html>
+<head>
+   <style type="text/css">
+      .conversation:after {
+            content: "";
+            position: relative;
+            bottom: -25px; /* value = - border-top-width - border-bottom-width */
+            left: 52px; /* controls horizontal position */
+            border-width: 18px 22px 0 0px; /* vary these values to change the angle of the vertex */
+            border-style: solid;
+            border-color: #C5E4F1 transparent;
+            /* reduce the damage in FF3.0 */
+            display: block;
+            width: 0;
+         }
+   </style>
+</head>
+<body style="margin: 0;
+             padding: 0; 
+             border: 0; 
+             outline: 0; 
+             font-size: 100%; 
+             vertical-align: baseline; 
+             background: transparent;
+             line-height: 1;
+             background: #eee; 
+             padding-top:0.5em;
+             padding-bottom:0.5em">
+   <div id="container" style="width: 980px;
+         margin: 0 auto;
+         border-radius: 1em;
+         background: #fff;
+         font-family: 'Verdana';
+         margin-top: 0.5em;
+         margin-bottom: 0.5em;">
+      <div id="header" style="padding: 1em 0 1em 1em;">
+         <img style="margin-top: 4px; height: 90px; max-height: 90px" src="@Url.Abs(Url.Content("~/Content/images/logo1.png"))"/>
+         <div class="header-title" style="background: #009fe3;
+         color: #fff;
+         text-align: right;
+         padding-right: 0.5em;
+         padding-left: 1em;
+         float: right;
+         position: relative;
+         top: 50px;
+         border-bottom-left-radius: 5px;
+         border-top-left-radius: 5px;
+         padding: 0.2em 0.5em 0.2em 1em;
+         font-size: 0.9em;
+         font-family: Verdana;
+         font-weight: 500;">Alert triggered</div>
+      </div>
+      <div id="activity" style="padding: 0.7em 1.5em 0.7em 1.5em;
+         color: #0b4663;">
+         @RenderBody()
+      </div>
+   </div>
+   <div id="footer" style="font-size: 0.5em;
+         color: #333;
+         font-family: Verdana;
+         margin: 0 auto;
+         width: 980px;">
+      © Copyright 2012-2013 txtfeedback.net
+   </div>
+</body>
+</html>

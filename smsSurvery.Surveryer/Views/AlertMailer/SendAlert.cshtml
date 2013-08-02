@@ -1,0 +1,41 @@
+@using Mvc.Mailer
+<div class="conversation" style="background: #c5e4f1;
+         padding-top: 0.3em;
+         padding-bottom: 0.6em;
+         margin-bottom: 2em;
+         border-radius: 0.8em;">
+   <div class="conversation-details" style="margin-bottom: 0.5em;
+         padding-left: 0.3em;
+         padding-right: 0.3em;
+         font-size: 0.9em;
+         margin-top: 0.3em;">
+      <img class="conversation-image" style="width: 25px;
+         float: left;
+         margin-right: 0.5em;
+         width: 32px;" src="@Url.Abs(Url.Content("~/Content/images/error2_24.png"))" />
+      <div class="conversation-wp-date-wrapper" style="float: left;
+         font-family: Verdana;
+         font-weight: 500;
+         width: 800px;
+         position:relative;
+         top:7px;">
+         <div class="conversation-wp-date-wrapper-wrapper" style="margin-bottom: 1em;
+         font-size: 0.9em;">
+            <span class="conversation-from" style="float: left;">@ViewBag.Title</span>            
+            <div class="clear" style="clear: both;"></div>
+         </div>
+      </div>
+      <div class="clear" style="clear: both;"></div>
+   </div>
+   <div class="conversation-text-wrapper" style="font-size: 0.7em;
+         padding: 0.5em;">
+      <div class="conversation-text" style="margin-bottom: 0.5em;">@ViewBag.Message</div>
+      <a style="color: #207688;" href="@ViewBag.LinkToPlatform" target="_blank" title="">Check survey results</a>
+   </div>
+</div>
+<div id="unsubscribe" style="padding: 0.5em;
+         font-size: 0.6em;
+         color: #666;">
+   If you don't want to receive more of these alerts
+      <a style="color: #207688;" href="" target="_blank" title="Stop alerts">Edit alerts</a>   
+</div>
