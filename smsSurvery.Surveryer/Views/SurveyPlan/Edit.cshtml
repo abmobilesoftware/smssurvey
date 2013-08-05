@@ -1,71 +1,194 @@
 ﻿@model smsSurvey.dbInterface.SurveyPlan
 
 @{
-    ViewBag.Title = "Edit";
+   ViewBag.Title = "Edit";
 }
 
-<h2>Edit</h2>
+<script type="text/template" id="question-template">
+   <%
+      var questionType = (Type == "no type") ? "Type" : Type; 
+   %>
+      <div class="input-append">
+         <input class="question-input" type="text" value="<%= Text %>" placeholder="Input question..." />
+         <div class="btn-group">
+            <button class="btn dropdown-toggle type-btn" data-toggle="dropdown">
+               <span class="type-btn-text"><%= questionType %></span>
+               <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">            
+               <li><a href="#" class="question-type">Yes/No</a></li>
+               <li><a href="#" class="question-type">Free text</a></li>
+               <li><a href="#" class="question-type">Rating</a></li>
+               <li><a href="#" class="question-type">Multiple answers</a></li>
+            </ul>
+         </div>
+      </div>         
+      <a href="#" class="btn btn-danger delete-btn">Delete</a>
+    
+   <% if (Type == "Multiple answers") { %>
+      <a href="#multiple-answer-modal<%= Id %>" role="button" class="open-modal-btn btn" data-toggle="modal"><img class="icon" src="/Content/images/edit_20.png" />Edit answers</a>   
 
-@using (Html.BeginForm("Edit", "SurveyPlan"))
-{
-    @Html.AntiForgeryToken()
-    @Html.ValidationSummary(true)
-    <text>
-    @{Html.RenderPartial("CreateEditSurveyPlan", Model);}
-    </text> 
-}
+      <div id="multiple-answer-modal<%= Id %>" class="modal hide">
+         <div class="modal-header">
+            <button type="button" class="close-modal-btn close" data-dismiss="modal" aria-hidden="true">x</button>
+            <h3> Configure answers </h3>
+         </div>
+         <div class="modal-body">
+            <table class="table table-striped table-bordered answers-table">
+                <% _.each(Answers, function(answer, index) { %>
+                  <tr index="<%= index %>">
+                     <td><%= index %></td>
+                     <td><input class="answer-label-input" type="text" value="<%= answer.AnswerLabel %>" placeholder="Input answer..." /></td>
+                     <td><button class="btn btn-danger delete-answer">Delete answer</button></td>
+                  </tr>     
+               <%}); %>
+            </table>
+            <a class="btn btn-primary add-answer-btn">Add answer</a>
+         </div>
+      </div>
+   <% } else if (Type == "Rating") { %>
+      <a href="#" role="button" class="open-modal-btn btn" data-toggle="modal">Edit rating</a>   
+   <% } %>
+   <a href="#" role="button" class="open-modal-btn btn" data-toggle="modal"><img class="icon" src="/Content/images/bell-20.png" />Edit alerts</a>   
+</script>
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
+<script id="preview-sms-template" type="text/template">
+   <img src="/Content/images/iphone_frame.png" />
+   <div class="preview-content">
+
+   </div>
+</script>
+
+<script id="preview-website-template" type="text/template">
+   <img src="/Content/images/iphone_frame.png" />
+   <div class="preview-content">
+
+   </div>
+</script>
+
+<script id="question-preview-website-template" type="text/template">
+        <div class="website-question-preview">
+            <h4 class="website-question-title-preview"> <%= Text %> </h4>
+            <div class="website-answer-area-preview">
+               <%
+               if (Type == "Yes/No") { %>
+                   <input type="radio" name="yes-no-answer" value="Yes" /> Yes <br/>
+                   <input type="radio" name="yes-no-answer" value="No" /> No  
+               <% 
+               } else if (Type == "Free text") {
+               %>
+                   <textarea class="website-answer website-comment"></textarea>
+               <%
+               } else if (Type == "Rating") {
+               %>
+                
+               <%
+               } else if (Type == "Multiple answers") { 
+                  _.each(Answers, function(answer, index) {  %>
+                     <input type="checkbox" name="multiple-answers" value="<%= answer.AnswerLabel %>" /> <%=answer.AnswerLabel %> <br/>
+               <% });
+               } %>           
+            </div>
+        </div>
+</script>
+
+<script type="text/template" id="question-preview-sms-template">
+   <% 
+   var questionText = Text;
+   if (Type == "Yes/No") {
+      questionText += " If your answer is Yes reply with 1, else reply with 2.";
+   } else if (Type == "Rating") {
+      questionText += " Reply with a rating from 1 (worse) to 5 (best).";
+   } else if (Type == "Multiple answers") {
+      questionText += " Reply with the corresponding number.";
+      _.each(Answers, function(answer, index) {
+         questionText += index + "-" + answer.AnswerLabel + ", ";
+      });
+   }
+   %>
+   <div class="customer">
+      <p class="message"><%= questionText %></p>     
+   </div>
+   <div class="staff">
+      Customer's answer
+   </div>
+</script>
+
+
+<script type="text/template" id="star-template">
+        <% if (Active) { %>
+            <a href="#"><img class="starImg" src="/Content/images/star50.png" /></a>
+            <% } else { %>
+            <a href="#"><img class="starImg" src="/Content/images/star50_inactive.png" /></a>
+            <% } %>
+</script>
+
+<script type="text/template" id="survey-info">
+   <div id="survey-info-title" class="section-title">
+      <h4 class="section-title-text"><%= Description %> (<a class="edit-survey" href="#">
+      <% if (DisplayInfoTable) { %>
+           Close general information 
+      <% } else { %>
+            Open general information
+      <% } %>
+      </a>)</h4> 
+      <a class="btn btn-success save-btn section-title-button" role="button" data-toggle="modal" href="#">Save</a>
+   </div>
+   <% if (DisplayInfoTable) { %> 
+   <table class="table table-striped table-bordered survey-info-data">
+      <tr>
+         <td>Description</td>
+         <td><input type="text" id="survey-description" value="<%= Description %>"/></td>
+      </tr>
+      <tr>
+         <td>Thank you message & follow up</td>
+         <td><input type="text" id="survey-thank-you-message" value="<%= ThankYouMessage %>"/></td>
+      </tr>
+      <tr>
+         <td>ID</td>
+         <td><%= Id %></td>
+      </tr>
+      </table>
+   <% } %>
+</script>
+<div id="survey">
+   <div id="survey-notification hide">
+      <p class="notification-text"></p>
+   </div>
+   <div id="survey-info">
+      
+   </div>
+   <div id="survey-builder">
+      <div class="survey-builder-title-wrapper section-title">
+         <h4 class="survey-builder-title section-title-text">Questions</h4>
+         <a class="btn btn-warning preview-btn section-title-button" role="button" data-toggle="modal" href="#preview-modal">Preview</a>
+         <div class="clear"></div>
+      </div>
+      <div id="question-set">
+         <ul id="question-set-content">
+         </ul>
+         <button class="btn btn-primary add-question-btn" type="button">Add question</button>
+      </div>
+      <div id="preview-modal" class="modal hide fade">
+         <div class="modal-header">
+            <button type="button" class="close-modal-btn close" data-dismiss="modal" aria-hidden="true">x</button>
+            <div class="btn-group preview-tabs" data-toggle="buttons-radio">
+               <button type="button" class="btn btn-primary sms-preview-btn active">SMS</button>
+               <button type="button" class="btn btn-primary mobile-website-btn">Mobile website</button>
+            </div>
+         </div>
+         <div id="preview-content-modal" class="modal-body">
+         </div>
+      </div>
+   </div>
 </div>
 
-<h2> Questions</h2>
-@if (Model.QuestionSet.Count != 0)
-{
-<table class="table table-striped table-bordered table-hover"> @*class="questionsTable"*@
-    <tr>
-        <th>
-           Text
-        </th>
-        <th>
-            Order
-        </th>
-        <th>
-            Type
-        </th>
-        <th></th>
-    </tr>
-
-@foreach (var item in Model.QuestionSet.OrderBy(q=>q.Order)) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Text)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Order)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Type)
-        </td>
-        <td>
-            @Html.ActionLink("Edit question", "Edit", "Question", new RouteValueDictionary { {"id",item.Id} }, null) |
-            @Html.ActionLink("Delete question", "Delete","Question", new RouteValueDictionary {{ "id",item.Id }}, null) 
-        </td>
-    </tr>
-}
-</table>   
-}
-else {
-   <p>
-      No questions defined so far. How about adding a question to this survey?
-      Click the link below.
-   </p>
-}
-
-<p>
-   @Html.ActionLink("Add question", "Create", "Question", new {surveyplanid = Model.Id}, null)
-</p>
-
 @section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
+   @Scripts.Render("~/bundles/jqueryval")
+   @Scripts.Render("~/bundles/myscripts");
+
+}
+
+@section css {
+   @Styles.Render("~/bundles/SurveyPlan");
 }
