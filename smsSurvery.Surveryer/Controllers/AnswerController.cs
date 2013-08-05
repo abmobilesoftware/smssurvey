@@ -270,8 +270,7 @@ namespace smsSurvery.Surveryer.Controllers
                  {
                     //compute the completed percentage - based on the total number of questions and the received answers
                     double newPercentageCompleted = (double) currentQuestion.Order / numberOfQuestionsInSurvey ;
-                    currentSurvey.PercentageComplete = newPercentageCompleted;
-                    //currentQuestion = surveyToRun.QuestionSet.Where(x => x.Order == currentQuestionId).First();
+                    currentSurvey.PercentageComplete = newPercentageCompleted;                  
                     var res = new Result() { Answer = text, Question = currentQuestion };
                     currentSurvey.Result.Add(res);
                     db.SaveChanges();                   
@@ -288,8 +287,8 @@ namespace smsSurvery.Surveryer.Controllers
                     if (nextQuestion != null)
                     {
                        currentSurvey.CurrentQuestion = nextQuestion;
-                      // db.SaveChanges();
-                      // SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion, db);                      
+                       db.SaveChanges();
+                       SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion, db);                      
                     }
                  }
                  else
@@ -298,9 +297,9 @@ namespace smsSurvery.Surveryer.Controllers
                     latestSurveyResult.Terminated = true;
                     customer.RunningSurvey = null;
                     customer.SurveyInProgress = false;
-                    //db.SaveChanges();
+                    db.SaveChanges();
                     //send ThankYouMessage
-                    //SendThankYouToCustomer(customer, numberToSendFrom, surveyToRun);                    
+                    SendThankYouToCustomer(customer, numberToSendFrom, surveyToRun);                    
                  }
                  HandleAlertsForQuestion(currentQuestion, text, currentSurvey.Id);
               }
@@ -317,10 +316,14 @@ namespace smsSurvery.Surveryer.Controllers
 
         private void HandleAlertsForQuestion(Question currentQuestion, String answerText, int surveyResultId)
         {
+           //triggerAnswer, when containing more values, should be ; separated
            foreach (var alert in currentQuestion.QuestionAlertSet)
            {
               bool notificationRequired = false;
               string alertCause = String.Empty;
+              int receivedAnswerAsInt = 0;
+              int alertTriggerAnswerAsInt = 0;
+              char separator = ';';
               switch (alert.Operator)
               {
                  case "==":
@@ -336,9 +339,7 @@ namespace smsSurvery.Surveryer.Controllers
                     }
                     break;
                  case "<":
-                    //< makes sense only for numeric type answers
-                    int receivedAnswerAsInt =0 ;
-                    int alertTriggerAnswerAsInt = 0;
+                    //< makes sense only for numeric type answers                   
                     if (Int32.TryParse(answerText, out receivedAnswerAsInt) && Int32.TryParse(alert.TriggerAnswer, out alertTriggerAnswerAsInt))
                     {
                        if (receivedAnswerAsInt < alertTriggerAnswerAsInt)
@@ -346,26 +347,74 @@ namespace smsSurvery.Surveryer.Controllers
                           notificationRequired = true;
                           alertCause = String.Format("Received answer '{0}' < then threshold answer '{1}'", receivedAnswerAsInt, alertTriggerAnswerAsInt);
                        }
-                    }
-                    
+                    }                    
                     break;
                  case "<=":
-
+                    //< makes sense only for numeric type answers                   
+                    if (Int32.TryParse(answerText, out receivedAnswerAsInt) && Int32.TryParse(alert.TriggerAnswer, out alertTriggerAnswerAsInt))
+                    {
+                       if (receivedAnswerAsInt <= alertTriggerAnswerAsInt)
+                       {
+                          notificationRequired = true;
+                          alertCause = String.Format("Received answer '{0}' <= then threshold answer '{1}'", receivedAnswerAsInt, alertTriggerAnswerAsInt);
+                       }
+                    }
                     break;
                  case ">":
-
+                    //< makes sense only for numeric type answers                   
+                    if (Int32.TryParse(answerText, out receivedAnswerAsInt) && Int32.TryParse(alert.TriggerAnswer, out alertTriggerAnswerAsInt))
+                    {
+                       if (receivedAnswerAsInt > alertTriggerAnswerAsInt)
+                       {
+                          notificationRequired = true;
+                          alertCause = String.Format("Received answer '{0}' > then threshold answer '{1}'", receivedAnswerAsInt, alertTriggerAnswerAsInt);
+                       }
+                    }
                     break;
                  case ">=":
-
+                    //< makes sense only for numeric type answers                   
+                    if (Int32.TryParse(answerText, out receivedAnswerAsInt) && Int32.TryParse(alert.TriggerAnswer, out alertTriggerAnswerAsInt))
+                    {
+                       if (receivedAnswerAsInt >= alertTriggerAnswerAsInt)
+                       {
+                          notificationRequired = true;
+                          alertCause = String.Format("Received answer '{0}' >= then threshold answer '{1}'", receivedAnswerAsInt, alertTriggerAnswerAsInt);
+                       }
+                    }
                     break;
                  case "any":
-
+                    //find out if the received answer contains any of the trigger values
+                    //get the expected values                  
+                    var triggerValues = alert.TriggerAnswer.Split(separator);
+                    foreach (var val in triggerValues)
+                    {
+                       if (answerText.Contains(alert.TriggerAnswer))
+                       {
+                          notificationRequired = true;
+                          alertCause = String.Format("Keyword '{0}' detected'", val);
+                       }
+                       break;
+                    }                    
                     break;
                  case "all":
-
+                    //find out if the received answer contains all of the trigger values
+                    //get the expected values               
+                    var tValues = alert.TriggerAnswer.Split(separator);
+                    foreach (var val in tValues)
+                    {
+                       notificationRequired &=answerText.Contains(alert.TriggerAnswer);                       
+                    }
+                    if (notificationRequired)
+                    {
+                       alertCause = String.Format("Keywords '{0}' detected'", string.Join(", ", tValues));
+                    }
                     break;
-                 case "contains":
-
+                 case "contains":                    
+                    if (answerText.Contains(alert.TriggerAnswer))
+                    {
+                       notificationRequired = true;
+                       alertCause = String.Format("Keyword '{0}' detected'", alert.TriggerAnswer);
+                    }
                     break;
                  default:
                     logger.Error("invalid operator detected");
@@ -392,9 +441,12 @@ namespace smsSurvery.Surveryer.Controllers
                  var message = "";
                  string linkToSurveyResults = String.Format("http://localhost:3288/SurveyResult/Details/{0}", surveyResultId);
                  var mail = mailer.SendAlert(emailSubject, alert.DistributionList, message, alertCause,linkToSurveyResults);
-                 mail.Send();
+                 mail.SendAsync();
+                 break;
+              case "twitter":
                  break;
               default:
+                 logger.ErrorFormat("Invalid notification alert detected {0}", alert.Type);
                  break;
            }
         }
