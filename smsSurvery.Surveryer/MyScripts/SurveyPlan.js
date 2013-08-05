@@ -101,7 +101,7 @@ var QuestionModel = Backbone.Model.extend({
    defaults: {
       Id: MobileSurvey.Utilities.generateUUID(),
       Text: "",
-      Type: "Free text",
+      Type: "FreeText",
       Order: 0,
       Answers: [
          {
@@ -109,13 +109,14 @@ var QuestionModel = Backbone.Model.extend({
             AnswerLabel: "Yes"
          }
       ],
+      AlertOperators : ["==", "!=", "<", "<=", ">", ">="],
       IsAnswersModalOpen: false
    },
    initialize: function () {
 
    },
    parseAttributes: function () {
-      if (this.get("Type") == "Multiple answers") {
+      if (this.get("Type") == "SelectOneFromMany") {
          var answersIdentifier = this.get("ValidAnswers").split(";");
          var answersLabel = this.get("ValidAnswersDetails").split(";");
          var answers = [];
@@ -126,6 +127,27 @@ var QuestionModel = Backbone.Model.extend({
             });
          }
          this.set("Answers", answers);
+         var alertOperators = new Array(2);
+         alertOperators[0] = "==";
+         alertOperators[1] = "!=";
+         this.set("AlertOperators", alertOperators);
+      } else if (this.get("Type") == "Rating") {
+         var alertOperators = new Array(6);
+         alertOperators[0] = "==";
+         alertOperators[1] = "!=";
+         alertOperators[2] = "<";
+         alertOperators[3] = "<=";
+         alertOperators[4] = ">";
+         alertOperators[5] = ">=";
+         this.set("AlertOperators", alertOperators);
+      } else if (this.get("Type") == "FreeText") {
+         var alertOperators = new Array(1);
+         alertOperators[0] = "CONTAINS";
+         this.set("AlertOperators", alertOperators);
+      } else if (this.get("Type") == "YesNo") {
+         var alertOperators = new Array(1);
+         alertOperators[0] = "==";
+         this.set("AlertOperators", alertOperators);
       }
    },
    deleteQuestion: function () {
@@ -141,6 +163,7 @@ var QuestionModel = Backbone.Model.extend({
    },
    updateQuestionType: function (type) {
       this.set("Type", type);
+      this.parseAttributes();
    },
    updateAnswerLabel: function (label, index) {
       var answers = this.get("Answers");

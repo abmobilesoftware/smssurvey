@@ -16,16 +16,17 @@
                <span class="caret"></span>
             </button>
             <ul class="dropdown-menu">            
-               <li><a href="#" class="question-type">Yes/No</a></li>
-               <li><a href="#" class="question-type">Free text</a></li>
+               <li><a href="#" class="question-type">YesNo</a></li>
+               <li><a href="#" class="question-type">FreeText</a></li>
                <li><a href="#" class="question-type">Rating</a></li>
-               <li><a href="#" class="question-type">Multiple answers</a></li>
+               <li><a href="#" class="question-type">SelectOneFromMany</a></li>
+               <li><a href="#" class="question-type">SelectManyFromMany</a></li>               
             </ul>
          </div>
       </div>         
       <a href="#" class="btn btn-danger delete-btn">Delete</a>
     
-   <% if (Type == "Multiple answers") { %>
+   <% if (Type == "SelectOneFromMany") { %>
       <a href="#multiple-answer-modal<%= Id %>" role="button" class="open-modal-btn btn" data-toggle="modal"><img class="icon" src="/Content/images/edit_20.png" />Edit answers</a>   
 
       <div id="multiple-answer-modal<%= Id %>" class="modal hide">
@@ -49,7 +50,34 @@
    <% } else if (Type == "Rating") { %>
       <a href="#" role="button" class="open-modal-btn btn" data-toggle="modal">Edit rating</a>   
    <% } %>
-   <a href="#" role="button" class="open-modal-btn btn" data-toggle="modal"><img class="icon" src="/Content/images/bell-20.png" />Edit alerts</a>   
+   <a href="#edit-alerts-modal<%= Id %>" role="button" class="open-modal-btn btn edit-alerts" data-toggle="modal"><img class="icon" src="/Content/images/bell-20.png" />Edit alerts</a>   
+   
+   <div id="edit-alerts-modal<%= Id %>" class="modal hide">
+      <div class="modal-header">
+         <button type="button" class="close-modal-btn close" data-dismiss="modal" aria-hidden="true">x</button>
+         <h3>Edit alerts</h3>
+      </div>
+      <div class="modal-body">
+         <table> 
+            <tr>
+               <td>Operator</td>
+               <td>Value</td>
+            </tr>
+            <tr>
+               <td>
+                 <select>
+                     <% _.each(AlertOperators, function(alertOperator, index) { %>
+                        <option value="<%= alertOperator %>"><%= alertOperator %></option>
+                     <% });%>
+                  </select>
+               </td>
+               <td>
+
+               </td>
+            </tr>
+         </table>
+      </div>
+   </div>
 </script>
 
 <script id="preview-sms-template" type="text/template">
