@@ -61,7 +61,7 @@
       <HintPath>ExternalReferences\Nexmo-CSharp-lib.dll</HintPath>
     </Reference>
     <Reference Include="OneApi">
-      <HintPath>..\..\smsFeedback\ExternalReferences\OneApi.dll</HintPath>
+      <HintPath>..\..\..\txtFeedback\ExternalReferences\OneApi.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp">
       <HintPath>..\packages\RestSharp.104.1\lib\net4\RestSharp.dll</HintPath>
@@ -214,6 +214,7 @@
     <Compile Include="Mailers\AlertMailer.cs" />
     <Compile Include="Mailers\IAlertMailer.cs" />
     <Compile Include="Models\BusinessObjects\SmsMessage.cs" />
+    <Compile Include="Models\Question.cs" />
     <Compile Include="Models\SmsInterface\CompatelSmsRepository.cs" />
     <Compile Include="Models\SmsInterface\IExternalSmsRepository.cs" />
     <Compile Include="Models\SmsInterface\NexmoSmsRepository.cs" />
@@ -227,6 +228,7 @@
     <Compile Include="Models\AccountModels.cs" />
     <Compile Include="Models\FreeTextAnswer.cs" />
     <Compile Include="Models\SmsInterface\SmsInterfaceFactory.cs" />
+    <Compile Include="Models\SurveyPlan.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\RequiredIfValidator.cs" />
     <Compile Include="Utilities\ViewExtensionMethods.cs" />
@@ -242,13 +244,18 @@
     <Content Include="Content\images\logo1.png" />
     <Content Include="Content\jquery-ui-1.8.23.custom.css" />
     <Content Include="Content\jquery.tagsinput.css" />
+    <Content Include="Content\SurveyPlan\questionSet.css" />
     <Content Include="Content\WordCloud.css" />
+    <Content Include="MyScripts\SurveyPlan.js" />
+    <Content Include="MyScripts\Utilities.js" />
+    <Content Include="Scripts\backbone.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\reportsTags.js" />
     <Content Include="Scripts\jquery-1.10.1.js" />
     <Content Include="Scripts\jquery-1.10.1.min.js" />
     <Content Include="Scripts\jquery.tagsinput.js" />
     <Content Include="Scripts\reports.js" />
+    <Content Include="Scripts\underscore.js" />
     <Content Include="WordCloud\CustomBlacklist.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
