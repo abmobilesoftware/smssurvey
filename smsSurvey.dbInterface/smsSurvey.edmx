@@ -19,11 +19,11 @@
           <EntitySet Name="TagTagTypes" EntityType="smsSurveyModel.Store.TagTagTypes" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="TagTypes" EntityType="smsSurveyModel.Store.TagTypes" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="UserProfileSurveyPlan" EntityType="smsSurveyModel.Store.UserProfileSurveyPlan" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="UserProfile" EntityType="smsSurveyModel.Store.UserProfile" store:Type="Tables" Schema="sms_feedback_2" />
-          <EntitySet Name="webpages_Membership" EntityType="smsSurveyModel.Store.webpages_Membership" store:Type="Tables" Schema="sms_feedback_2" />
-          <EntitySet Name="webpages_OAuthMembership" EntityType="smsSurveyModel.Store.webpages_OAuthMembership" store:Type="Tables" Schema="sms_feedback_2" />
-          <EntitySet Name="webpages_Roles" EntityType="smsSurveyModel.Store.webpages_Roles" store:Type="Tables" Schema="sms_feedback_2" />
-          <EntitySet Name="webpages_UsersInRoles" EntityType="smsSurveyModel.Store.webpages_UsersInRoles" store:Type="Tables" Schema="sms_feedback_2" />
+          <EntitySet Name="UserProfile" EntityType="smsSurveyModel.Store.UserProfile" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="webpages_Membership" EntityType="smsSurveyModel.Store.webpages_Membership" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="webpages_OAuthMembership" EntityType="smsSurveyModel.Store.webpages_OAuthMembership" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="webpages_Roles" EntityType="smsSurveyModel.Store.webpages_Roles" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="webpages_UsersInRoles" EntityType="smsSurveyModel.Store.webpages_UsersInRoles" store:Type="Tables" Schema="dbo" />
           <AssociationSet Name="FK_CompanyTag" Association="smsSurveyModel.Store.FK_CompanyTag">
             <End Role="Companies" EntitySet="Companies" />
             <End Role="Tags" EntitySet="Tags" />
