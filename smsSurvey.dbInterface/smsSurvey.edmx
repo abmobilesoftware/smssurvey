@@ -702,7 +702,9 @@
           <Property Type="Int32" Name="SurveyResultId" Nullable="false" />
         </EntityType>
         <Association Name="QuestionResult">
-          <End Type="smsSurveyModel.Question" Role="Question" Multiplicity="1" />
+          <End Type="smsSurveyModel.Question" Role="Question" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="smsSurveyModel.Result" Role="Result" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Question">
@@ -780,7 +782,9 @@
           <End Type="smsSurveyModel.UserProfile" Role="UserProfile" Multiplicity="*" />
         </Association>
         <Association Name="FK_SurveyPlanQuestion">
-          <End Type="smsSurveyModel.SurveyPlan" Role="SurveyPlan" Multiplicity="1" />
+          <End Type="smsSurveyModel.SurveyPlan" Role="SurveyPlan" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="smsSurveyModel.Question" Role="Question" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="SurveyPlan">
@@ -804,7 +808,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_SurveyResultQuestion">
-          <End Type="smsSurveyModel.Question" Role="Question" Multiplicity="0..1" />
+          <End Type="smsSurveyModel.Question" Role="Question" Multiplicity="0..1" >
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="smsSurveyModel.SurveyResult" Role="SurveyResult" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Question">
@@ -953,7 +959,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_QuestionQuestionAlert">
-          <End Type="smsSurveyModel.Question" Role="Question" Multiplicity="1" />
+          <End Type="smsSurveyModel.Question" Role="Question" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="smsSurveyModel.QuestionAlertSet" Role="QuestionAlertSet" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Question">

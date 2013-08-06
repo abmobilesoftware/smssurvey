@@ -246,8 +246,11 @@
     <Content Include="Content\jquery.tagsinput.css" />
     <Content Include="Content\SurveyPlan\questionSet.css" />
     <Content Include="Content\WordCloud.css" />
-    <Content Include="MyScripts\SurveyPlan.js" />
-    <Content Include="MyScripts\Utilities.js" />
+    <Content Include="MyScripts\SurveyElements.js" />
+    <Content Include="MyScripts\SurveyBuilder.js" />
+    <Content Include="MyScripts\SurveyMain.js" />
+    <Content Include="MyScripts\SurveyPreview.js" />
+    <Content Include="MyScripts\SurveyUtilities.js" />
     <Content Include="Scripts\backbone.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\reportsTags.js" />

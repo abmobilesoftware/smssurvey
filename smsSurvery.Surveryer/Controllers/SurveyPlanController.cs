@@ -164,17 +164,42 @@ namespace smsSurvery.Surveryer.Controllers
               dbSurveyPlan.ThankYouMessage = clientSurveyPlan.ThankYouMessage;
               dbSurveyPlan.Description = clientSurveyPlan.Description;
               var dbQuestions = dbSurveyPlan.QuestionSet;
-              foreach (var clientQuestion in clientSurveyPlan.QuestionSet)
+              var clientQuestions = clientSurveyPlan.QuestionSet;
+              if (clientQuestions != null)
               {
-                 var dbQuestionResult = dbQuestions.Where(x => x.Id.Equals(clientQuestion.Id));
-                 if (dbQuestionResult.Count() > 0)
+                 foreach (var clientQuestion in clientQuestions)
                  {
-                    var dbQuestion = dbQuestionResult.First();
-                    dbQuestion.Order = clientQuestion.Order;
-                    dbQuestion.Text = clientQuestion.Text;
-                    dbQuestion.Type = clientQuestion.Type;
-                    dbQuestion.ValidAnswers = clientQuestion.ValidAnswers;
-                    dbQuestion.ValidAnswersDetails = clientQuestion.ValidAnswersDetails;
+                    var dbQuestionResult = dbQuestions.Where(x => x.Id.Equals(clientQuestion.Id));
+                    if (dbQuestionResult.Count() > 0)
+                    {
+                       // Update questions
+                       var dbQuestion = dbQuestionResult.First();
+                       dbQuestion.Order = clientQuestion.Order;
+                       dbQuestion.Text = clientQuestion.Text;
+                       dbQuestion.Type = clientQuestion.Type;
+                       dbQuestion.ValidAnswers = clientQuestion.ValidAnswers;
+                       dbQuestion.ValidAnswersDetails = clientQuestion.ValidAnswersDetails;
+                    }
+                    else
+                    {
+                       // Add questions
+                       var dbQuestion = new Question();
+                       dbQuestion.Order = clientQuestion.Order;
+                       dbQuestion.Text = clientQuestion.Text;
+                       dbQuestion.Type = clientQuestion.Type;
+                       dbQuestion.ValidAnswers = clientQuestion.ValidAnswers;
+                       dbQuestion.ValidAnswersDetails = clientQuestion.ValidAnswersDetails;
+                       dbQuestions.Add(dbQuestion);
+                    }
+                 }
+                 // Delete questions
+                 for (var i = dbQuestions.Count - 1; i > -1; --i)
+                 {
+                    var clientQuestionResult = clientQuestions.Where(x => x.Id.Equals(dbQuestions.ElementAt(i).Id));
+                    if (clientQuestionResult.Count() == 0)
+                    {
+                       db.QuestionSet.Remove(dbQuestions.ElementAt(i));
+                    }
                  }
               }
               db.SaveChanges();

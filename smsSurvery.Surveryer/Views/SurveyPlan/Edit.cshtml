@@ -151,9 +151,15 @@
             <% } %>
 </script>
 
-<script type="text/template" id="survey-info">
+<script type="text/template" id="star-bar-template">
+   "<fieldset class='additionalInfo'>" +
+              "<legend class='stars-additional-info'>Why?</legend><textarea class='website-comment'></textarea></fieldset>" +
+              "<input type='hidden' class='answer' value='noValue' />"
+</script>
+
+<script type="text/template" id="survey-info-template">
    <div id="survey-info-title" class="section-title">
-      <h4 class="section-title-text"><%= Description %> (<a class="edit-survey" href="#">
+      <h4 class="section-title-text"><span class="survey-info-title-text"><%= Description %></span> (<a class="edit-survey" href="#">
       <% if (DisplayInfoTable) { %>
            Close general information 
       <% } else { %>

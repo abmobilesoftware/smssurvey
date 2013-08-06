@@ -16,8 +16,11 @@ namespace smsSurvery.Surveryer
                      "~/Scripts/backbone.js"
                      ));
          bundles.Add(new ScriptBundle("~/bundles/myscripts").Include(
-                     "~/MyScripts/Utilities.js",
-                     "~/MyScripts/SurveyPlan.js"
+                     "~/MyScripts/SurveyUtilities.js",
+                     "~/MyScripts/SurveyElements.js",
+                     "~/MyScripts/SurveyPreview.js",
+                     "~/MyScripts/SurveyBuilder.js",
+                     "~/MyScripts/SurveyMain.js"
             ));
          bundles.Add(new ScriptBundle("~/bundles/referencescripts").Include(
                      "~/Scripts/jquery.tagsinput.js"));                     
