@@ -43,6 +43,8 @@
   color: #FFFFFF;
    padding: 0.5em;
    height: 30px;
+   border-top-left-radius: 5px;
+   border-top-right-radius: 5px;
 }
 
 .section-title-text {
