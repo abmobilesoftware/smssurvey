@@ -1,4 +1,7 @@
 ﻿/* STAR BAR */
+//TODO MB define namespace
+
+//TODO MB the file is long - and it is going to get longer - consider splitting in more files to make it more maintainable & testable
 var Star = Backbone.Model.extend({});
 var StarView = Backbone.View.extend({
    className: "star",
@@ -59,6 +62,8 @@ var StarBarView = Backbone.View.extend({
          var starView = new StarView({ model: value });
          this.$el.append(starView.render().el);
       }, this);
+
+      //TODO MB - this should be part of the template - especially since you have "translatable text"
       this.$el.append("<fieldset class='additionalInfo'>" +
               "<legend class='stars-additional-info'>Why?</legend><textarea class='website-comment'></textarea></fieldset>" +
               "<input type='hidden' class='answer' value='noValue' />");
@@ -70,6 +75,7 @@ var StarBarView = Backbone.View.extend({
          this.domElements.$ADDITIONAL_INFO.hide();
       }
    },
+   //TODO DA - don't hardcode the 2 value - it should be configurable (we should move this at db level as WhyThreshold)
    starClicked: function (value) {
       if (value < 2) {
          this.domElements.$ADDITIONAL_INFO.show();
@@ -101,7 +107,7 @@ var QuestionModel = Backbone.Model.extend({
    defaults: {
       Id: MobileSurvey.Utilities.generateUUID(),
       Text: "",
-      Type: "FreeText",
+      Type: "Free text", //TODO DA - it should be FreeText - conform with db spec
       Order: 0,
       Answers: [
          {
@@ -109,15 +115,14 @@ var QuestionModel = Backbone.Model.extend({
             AnswerLabel: "Yes"
          }
       ],
-      AlertOperators : ["==", "!=", "<", "<=", ">", ">="],
-      IsAnswersModalOpen: false
-   },
+      IsAnswersModalOpen: false //TODO MB - this sounds like a view property and not a model property - think about moving it to the view
+   }, 
    initialize: function () {
 
    },
    parseAttributes: function () {
-      if (this.get("Type") == "SelectOneFromMany") {
-         var answersIdentifier = this.get("ValidAnswers").split(";");
+      if (this.get("Type") == "Multiple answers") { //TODO MB - conform with db spec - create an enum to avoid magic strings
+         var answersIdentifier = this.get("ValidAnswers").split(";"); //TODO MB - define constant for separator
          var answersLabel = this.get("ValidAnswersDetails").split(";");
          var answers = [];
          for (var i = 0; i < answersLabel.length; ++i) {
@@ -127,27 +132,6 @@ var QuestionModel = Backbone.Model.extend({
             });
          }
          this.set("Answers", answers);
-         var alertOperators = new Array(2);
-         alertOperators[0] = "==";
-         alertOperators[1] = "!=";
-         this.set("AlertOperators", alertOperators);
-      } else if (this.get("Type") == "Rating") {
-         var alertOperators = new Array(6);
-         alertOperators[0] = "==";
-         alertOperators[1] = "!=";
-         alertOperators[2] = "<";
-         alertOperators[3] = "<=";
-         alertOperators[4] = ">";
-         alertOperators[5] = ">=";
-         this.set("AlertOperators", alertOperators);
-      } else if (this.get("Type") == "FreeText") {
-         var alertOperators = new Array(1);
-         alertOperators[0] = "CONTAINS";
-         this.set("AlertOperators", alertOperators);
-      } else if (this.get("Type") == "YesNo") {
-         var alertOperators = new Array(1);
-         alertOperators[0] = "==";
-         this.set("AlertOperators", alertOperators);
       }
    },
    deleteQuestion: function () {
@@ -155,15 +139,14 @@ var QuestionModel = Backbone.Model.extend({
       Destroy the model and listen to sync*/
       this.trigger("delete", this);
    },
-   updateOrder: function (order) {
+   updateOrder: function (order) {//TODO MB rename order to newOrder
       this.set("Order", order);
    },
-   updateQuestionText: function (text) {
+   updateQuestionText: function (text) { //TODO MB rename text to newText
       this.set("Text", text);
    },
-   updateQuestionType: function (type) {
+   updateQuestionType: function (type) {//TODO MB remane type to...
       this.set("Type", type);
-      this.parseAttributes();
    },
    updateAnswerLabel: function (label, index) {
       var answers = this.get("Answers");
@@ -240,7 +223,7 @@ var QuestionView = Backbone.View.extend({
    },
    selectQuestionType: function (event) {
       event.preventDefault();
-      var questionType = event.currentTarget.innerHTML;
+      var questionType = event.currentTarget.innerHTML;//TODO MB rename questionType to newQuestionType
       this.dom.TYPE_BUTTON.text(questionType);
       this.model.updateQuestionType(questionType);
    },
@@ -525,7 +508,7 @@ var QuestionPreviewWebsiteView = Backbone.View.extend({
    },
    render: function () {
       this.$el.html(this.questionPreviewTemplate(this.model.toJSON()));
-      if (this.model.get("Type") == "Rating") {
+      if (this.model.get("Type") == "Rating") {//TODO MB const const or enum and not magic strings
          var starBarView = new StarBarView({ el: $(".website-answer-area-preview", this.$el) });
       }
       return this.$el;
@@ -600,15 +583,16 @@ var SurveyPreviewView = Backbone.View.extend({
    },
    displaySmsPreview: function () {
       this.surveyPreviewModel.set("PreviewType", "sms")
-   },
+   },   
    displayMobileWebsitePreview: function () {
       this.surveyPreviewModel.set("PreviewType", "mobile website");
    }
 });
 
 var SurveyPreviewModel = Backbone.Model.extend({
+   //since this is something that only belongs to the view it should stay in the view (that's what the view is all about :) )
    defaults: {
-      PreviewType: "sms"
+      PreviewType: "sms" //TODO MB - constants pls
    }
 });
 
