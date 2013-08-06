@@ -11,16 +11,7 @@ namespace smsSurvey.dbInterface
 {
     using System;
     using System.Collections.Generic;
-
-   public enum QuestionType
-   {
-      Rating = 0,
-      FreeText = 1,
-      SelectOneFromMany = 2,
-      SelectManyFromMany = 3,
-      YesNo = 4
-   }
-
+    
     public partial class Question
     {
         public Question()
