@@ -440,6 +440,7 @@
     <Content Include="Views\Alerts\CreateEditAlert.cshtml" />
     <Content Include="Views\AlertMailer\_Layout.cshtml" />
     <Content Include="Views\AlertMailer\SendAlert.cshtml" />
+    <Content Include="Views\Shared\SurveyEditor.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
