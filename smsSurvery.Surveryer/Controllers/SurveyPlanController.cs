@@ -236,6 +236,20 @@ namespace smsSurvery.Surveryer.Controllers
                  surveyPlan.Provider = user.DefaultProvider;
                  surveyPlan.Description = clientSurveyPlan.Description;
                  surveyPlan.ThankYouMessage = clientSurveyPlan.ThankYouMessage;
+                 // Add questions
+                 ICollection<Question> dbQuestions = new List<Question>();
+                 foreach (var clientQuestion in clientSurveyPlan.QuestionSet)
+                 {
+                    var dbQuestion = new Question();
+                    dbQuestion.Order = clientQuestion.Order;
+                    dbQuestion.Text = clientQuestion.Text;
+                    dbQuestion.Type = clientQuestion.Type;
+                    dbQuestion.ValidAnswers = clientQuestion.ValidAnswers;
+                    dbQuestion.ValidAnswersDetails = clientQuestion.ValidAnswersDetails;
+                    db.QuestionSet.Add(dbQuestion);
+                    dbQuestions.Add(dbQuestion);                    
+                 }
+                 surveyPlan.QuestionSet = dbQuestions;
                  db.SurveyPlanSet.Add(surveyPlan);
                  user.SurveyPlanSet.Add(surveyPlan);
                  db.SaveChanges();
