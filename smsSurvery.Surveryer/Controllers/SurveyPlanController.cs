@@ -240,12 +240,35 @@ namespace smsSurvery.Surveryer.Controllers
                  ICollection<Question> dbQuestions = new List<Question>();
                  foreach (var clientQuestion in clientSurveyPlan.QuestionSet)
                  {
+                    ICollection<QuestionAlertSet> questionAlertSet =
+                    new List<QuestionAlertSet>();
+                    foreach (var questionAlert in clientQuestion.QuestionAlertSet)
+                    {
+                       ICollection<AlertNotificationSet> alertNotificationSet =
+                          new List<AlertNotificationSet>();
+                       foreach (var alertNotification in questionAlert.AlertNotificationSet)
+                       {
+                          AlertNotificationSet an = new AlertNotificationSet();
+                          an.DistributionList = alertNotification.DistributionList;
+                          an.Type = alertNotification.Type;
+                          db.AlertNotificationSet.Add(an);
+                          alertNotificationSet.Add(an);
+                       }
+                       QuestionAlertSet qa = new QuestionAlertSet();
+                       qa.AlertNotificationSet = alertNotificationSet;
+                       qa.Operator = questionAlert.Operator;
+                       qa.TriggerAnswer = questionAlert.TriggerAnswer;
+                       qa.Description = questionAlert.Description;
+                       db.QuestionAlertSet.Add(qa);
+                       questionAlertSet.Add(qa);
+                    }
                     var dbQuestion = new Question();
                     dbQuestion.Order = clientQuestion.Order;
                     dbQuestion.Text = clientQuestion.Text;
                     dbQuestion.Type = clientQuestion.Type;
                     dbQuestion.ValidAnswers = clientQuestion.ValidAnswers;
                     dbQuestion.ValidAnswersDetails = clientQuestion.ValidAnswersDetails;
+                    dbQuestion.QuestionAlertSet = questionAlertSet;
                     db.QuestionSet.Add(dbQuestion);
                     dbQuestions.Add(dbQuestion);                    
                  }

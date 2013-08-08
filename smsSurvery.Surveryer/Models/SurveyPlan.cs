@@ -33,6 +33,6 @@ namespace smsSurvery.Surveryer.DbModels
          DateEnded = iDateEnded;
          IsRunning = iIsRunning;
          QuestionSet = iQuestionSet;
-      }
+      }     
    }
 }

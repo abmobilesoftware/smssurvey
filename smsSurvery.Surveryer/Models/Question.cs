@@ -32,6 +32,6 @@ namespace smsSurvery.Surveryer.DbModels
          ValidAnswers = iValidAnswers;
          ValidAnswersDetails = iValidAnswersDetails;
          QuestionAlertSet = iQuestionAlertSet;
-      }
+      }     
    }
 }

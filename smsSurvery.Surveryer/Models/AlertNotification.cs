@@ -20,5 +20,7 @@ namespace smsSurvery.Surveryer.DbModels
          Type = iType;
          DistributionList = iDistributionList;
       }
+
+      public AlertNotification() { }
    }
 }

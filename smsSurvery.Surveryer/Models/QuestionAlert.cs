@@ -26,5 +26,7 @@ namespace smsSurvery.Surveryer.DbModels
          TriggerAnswer = iTriggerAnswer;
          AlertNotificationSet = iAlertNotificationSet;
       }
+
+      public QuestionAlert() { }
    }
 }
