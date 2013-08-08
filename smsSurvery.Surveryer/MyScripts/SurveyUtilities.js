@@ -20,7 +20,8 @@ SurveyUtilities.Utilities = (function () {
       TYPE_YES_NO: "YesNo"
    }
    innerClass.CONSTANTS_MISC = {
-      SEPARATOR_ANSWERS: ";"
+      SEPARATOR_ANSWERS: ";",
+      NEW_SURVEY: "new_survey"
    }
    return innerClass;
 })();

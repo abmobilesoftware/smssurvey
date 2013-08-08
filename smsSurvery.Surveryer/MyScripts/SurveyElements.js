@@ -1,6 +1,6 @@
 ﻿var SurveyElements = SurveyElements || {};
 SurveyElements.Star = Backbone.Model.extend({});
-var StarView = Backbone.View.extend({
+SurveyElements.StarView = Backbone.View.extend({
    className: "star",
    events: {
       "click a": "click"
@@ -73,11 +73,11 @@ SurveyElements.StarBarView = Backbone.View.extend({
    //TODO DA - don't hardcode the 2 value - it should be configurable (we should move this at db level as WhyThreshold)
    starClicked: function (value) {
       if (value < 2) {
-         this.domElements.$ADDITIONAL_INFO.show();
+         this.dom.$ADDITIONAL_INFO.show();
          this.saveResult(value,
-             this.domElements.$ADDITIONAL_INFO.val());
+             this.dom.$ADDITIONAL_INFO.val());
       } else {
-         this.domElements.$ADDITIONAL_INFO.hide();
+         this.dom.$ADDITIONAL_INFO.hide();
          this.saveResult(value, "");
       }
       this.result = value;
@@ -90,6 +90,6 @@ SurveyElements.StarBarView = Backbone.View.extend({
       var result = {};
       result.additionalInfo = pAdditionalInfo;
       result.value = pValue;
-      this.domElements.$ANSWER.val(JSON.stringify(result));
+      this.dom.$ANSWER.val(JSON.stringify(result));
    }
 });
