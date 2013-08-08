@@ -131,10 +131,30 @@ namespace smsSurvery.Surveryer.Controllers
                  new List<smsSurvery.Surveryer.DbModels.Question>();
               foreach (var question in surveyplan.QuestionSet)
               {
+                 List<smsSurvery.Surveryer.DbModels.QuestionAlert> questionAlertSet =
+                    new List<smsSurvery.Surveryer.DbModels.QuestionAlert>();
+                 foreach (var questionAlert in question.QuestionAlertSet)
+                 {
+                    List<smsSurvery.Surveryer.DbModels.AlertNotification> alertNotificationSet =
+                       new List<smsSurvery.Surveryer.DbModels.AlertNotification>();
+                    foreach (var alertNotification in questionAlert.AlertNotificationSet)
+                    {
+                       smsSurvery.Surveryer.DbModels.AlertNotification an =
+                          new smsSurvery.Surveryer.DbModels.AlertNotification(alertNotification.Id,
+                             alertNotification.Type, alertNotification.DistributionList);
+                       alertNotificationSet.Add(an);
+                    }
+                    smsSurvery.Surveryer.DbModels.QuestionAlert qa =
+                     new smsSurvery.Surveryer.DbModels.QuestionAlert(questionAlert.Id,
+                        questionAlert.Description, questionAlert.Operator,
+                        questionAlert.TriggerAnswer, alertNotificationSet);
+                    questionAlertSet.Add(qa);
+                 }
                  smsSurvery.Surveryer.DbModels.Question q =
                     new smsSurvery.Surveryer.DbModels.Question(question.Id,
                        question.Text, question.Order, question.Type,
-                       question.ValidAnswers, question.ValidAnswersDetails);
+                       question.ValidAnswers, question.ValidAnswersDetails, 
+                       questionAlertSet);
                  questions.Add(q);
               }
               smsSurvery.Surveryer.DbModels.SurveyPlan surveyPlan =
@@ -156,51 +176,66 @@ namespace smsSurvery.Surveryer.Controllers
         {
            try
            {
-              SurveyPlan dbSurveyPlan = db.SurveyPlanSet.Find(clientSurveyPlan.Id);
-              if (dbSurveyPlan == null)
+              if (clientSurveyPlan.Id >= 0)
               {
-                 return Json("resource not found", JsonRequestBehavior.AllowGet);
+                 SurveyPlan dbSurveyPlan = db.SurveyPlanSet.Find(clientSurveyPlan.Id);
+                 if (dbSurveyPlan == null)
+                 {
+                    return Json("resource not found", JsonRequestBehavior.AllowGet);
+                 }
+                 dbSurveyPlan.ThankYouMessage = clientSurveyPlan.ThankYouMessage;
+                 dbSurveyPlan.Description = clientSurveyPlan.Description;
+                 var dbQuestions = dbSurveyPlan.QuestionSet;
+                 var clientQuestions = clientSurveyPlan.QuestionSet;
+                 if (clientQuestions != null)
+                 {
+                    foreach (var clientQuestion in clientQuestions)
+                    {
+                       var dbQuestionResult = dbQuestions.Where(x => x.Id.Equals(clientQuestion.Id));
+                       if (dbQuestionResult.Count() > 0)
+                       {
+                          // Update questions
+                          var dbQuestion = dbQuestionResult.First();
+                          dbQuestion.Order = clientQuestion.Order;
+                          dbQuestion.Text = clientQuestion.Text;
+                          dbQuestion.Type = clientQuestion.Type;
+                          dbQuestion.ValidAnswers = clientQuestion.ValidAnswers;
+                          dbQuestion.ValidAnswersDetails = clientQuestion.ValidAnswersDetails;
+                       }
+                       else
+                       {
+                          // Add questions
+                          var dbQuestion = new Question();
+                          dbQuestion.Order = clientQuestion.Order;
+                          dbQuestion.Text = clientQuestion.Text;
+                          dbQuestion.Type = clientQuestion.Type;
+                          dbQuestion.ValidAnswers = clientQuestion.ValidAnswers;
+                          dbQuestion.ValidAnswersDetails = clientQuestion.ValidAnswersDetails;
+                          dbQuestions.Add(dbQuestion);
+                       }
+                    }
+                    // Delete questions
+                    for (var i = dbQuestions.Count - 1; i > -1; --i)
+                    {
+                       var clientQuestionResult = clientQuestions.Where(x => x.Id.Equals(dbQuestions.ElementAt(i).Id));
+                       if (clientQuestionResult.Count() == 0)
+                       {
+                          db.QuestionSet.Remove(dbQuestions.ElementAt(i));
+                       }
+                    }
+                 }
+                 
               }
-              dbSurveyPlan.ThankYouMessage = clientSurveyPlan.ThankYouMessage;
-              dbSurveyPlan.Description = clientSurveyPlan.Description;
-              var dbQuestions = dbSurveyPlan.QuestionSet;
-              var clientQuestions = clientSurveyPlan.QuestionSet;
-              if (clientQuestions != null)
+              else
               {
-                 foreach (var clientQuestion in clientQuestions)
-                 {
-                    var dbQuestionResult = dbQuestions.Where(x => x.Id.Equals(clientQuestion.Id));
-                    if (dbQuestionResult.Count() > 0)
-                    {
-                       // Update questions
-                       var dbQuestion = dbQuestionResult.First();
-                       dbQuestion.Order = clientQuestion.Order;
-                       dbQuestion.Text = clientQuestion.Text;
-                       dbQuestion.Type = clientQuestion.Type;
-                       dbQuestion.ValidAnswers = clientQuestion.ValidAnswers;
-                       dbQuestion.ValidAnswersDetails = clientQuestion.ValidAnswersDetails;
-                    }
-                    else
-                    {
-                       // Add questions
-                       var dbQuestion = new Question();
-                       dbQuestion.Order = clientQuestion.Order;
-                       dbQuestion.Text = clientQuestion.Text;
-                       dbQuestion.Type = clientQuestion.Type;
-                       dbQuestion.ValidAnswers = clientQuestion.ValidAnswers;
-                       dbQuestion.ValidAnswersDetails = clientQuestion.ValidAnswersDetails;
-                       dbQuestions.Add(dbQuestion);
-                    }
-                 }
-                 // Delete questions
-                 for (var i = dbQuestions.Count - 1; i > -1; --i)
-                 {
-                    var clientQuestionResult = clientQuestions.Where(x => x.Id.Equals(dbQuestions.ElementAt(i).Id));
-                    if (clientQuestionResult.Count() == 0)
-                    {
-                       db.QuestionSet.Remove(dbQuestions.ElementAt(i));
-                    }
-                 }
+                 SurveyPlan surveyPlan = new SurveyPlan();
+                 UserProfile user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+                 surveyPlan.Provider = user.DefaultProvider;
+                 surveyPlan.Description = clientSurveyPlan.Description;
+                 surveyPlan.ThankYouMessage = clientSurveyPlan.ThankYouMessage;
+                 db.SurveyPlanSet.Add(surveyPlan);
+                 user.SurveyPlanSet.Add(surveyPlan);
+                 db.SaveChanges();
               }
               db.SaveChanges();
               return Json("success", JsonRequestBehavior.AllowGet);

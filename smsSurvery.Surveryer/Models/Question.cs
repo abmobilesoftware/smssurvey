@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using smsSurvey.dbInterface;
 
 namespace smsSurvery.Surveryer.DbModels
 {
@@ -13,6 +14,7 @@ namespace smsSurvery.Surveryer.DbModels
       public string Type { get; set; }
       public string ValidAnswers { get; set; }
       public string ValidAnswersDetails { get; set; }
+      public List<QuestionAlert> QuestionAlertSet { get; set; }
       public Question() { }
 
       public Question(int iId,
@@ -20,7 +22,8 @@ namespace smsSurvery.Surveryer.DbModels
          int iOrder,
          string iType,
          string iValidAnswers,
-         string iValidAnswersDetails)
+         string iValidAnswersDetails,
+         List<QuestionAlert> iQuestionAlertSet)
       {
          Id = iId;
          Text = iText;
@@ -28,6 +31,7 @@ namespace smsSurvery.Surveryer.DbModels
          Type = iType;
          ValidAnswers = iValidAnswers;
          ValidAnswersDetails = iValidAnswersDetails;
+         QuestionAlertSet = iQuestionAlertSet;
       }
    }
 }
