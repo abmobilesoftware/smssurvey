@@ -213,8 +213,10 @@
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Mailers\AlertMailer.cs" />
     <Compile Include="Mailers\IAlertMailer.cs" />
+    <Compile Include="Models\AlertNotification.cs" />
     <Compile Include="Models\BusinessObjects\SmsMessage.cs" />
     <Compile Include="Models\Question.cs" />
+    <Compile Include="Models\QuestionAlert.cs" />
     <Compile Include="Models\SmsInterface\CompatelSmsRepository.cs" />
     <Compile Include="Models\SmsInterface\IExternalSmsRepository.cs" />
     <Compile Include="Models\SmsInterface\NexmoSmsRepository.cs" />
@@ -239,8 +241,12 @@
     <Content Include="App_Readme\Elmah.SqlServer.txt" />
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\images\bell-20.png" />
     <Content Include="Content\images\Bullet-Blue-32.png" />
+    <Content Include="Content\images\close_20.png" />
+    <Content Include="Content\images\edit_20.png" />
     <Content Include="Content\images\error2_24.png" />
+    <Content Include="Content\images\iphone_frame.png" />
     <Content Include="Content\images\logo1.png" />
     <Content Include="Content\jquery-ui-1.8.23.custom.css" />
     <Content Include="Content\jquery.tagsinput.css" />

@@ -39,8 +39,8 @@
 
 /* SECTION TITLE */
 .section-title {
-  background: linear-gradient(to bottom, #0088CC, #0044CC) repeat scroll 0 0 transparent;
-  color: #FFFFFF;
+   background: linear-gradient(to bottom, #0088CC, #0044CC) repeat scroll 0 0 transparent;
+   color: #FFFFFF;
    padding: 0.5em;
    height: 30px;
    border-top-left-radius: 5px;
@@ -50,8 +50,8 @@
 .section-title-text {
    display: inline;
    font-size: 1em;
-   position:relative;
-   top:0.3em;
+   position: relative;
+   top: 0.3em;
 }
 
 .section-title-button {
@@ -129,11 +129,11 @@ div.website-question-preview {
 }
 
 .stars-additional-info {
-  font-size: 1.5em;
-  line-height: 1.5em;
-  margin-bottom: 0.2em;
-  padding-bottom: 0.2em;
-  padding-top: 0.3em;
+   font-size: 1.5em;
+   line-height: 1.5em;
+   margin-bottom: 0.2em;
+   padding-bottom: 0.2em;
+   padding-top: 0.3em;
 }
 
 /* END STAR */
@@ -222,35 +222,56 @@ div#preview-content-modal {
 }
 
 #survey-builder {
-   margin-top:0.5em
+   margin-top: 0.5em;
 }
 
 .edit-survey {
    color: #c3f0ff;
+   text-decoration: none;
 }
 
-.edit-survey:hover {
-   color: #FAA732;
-}
+   .edit-survey:hover {
+      color: #FAA732;
+      text-decoration: none;
+   }
 
-.edit-survey:visited {
-   color: #c3f0ff;
-}
+   .edit-survey:visited {
+      color: #c3f0ff;
+      text-decoration: none;
+   }
 
 .hide {
-   display:none;
+   display: none;
 }
 
 .notification-error {
-  background: linear-gradient(to bottom, #EE5F5B, #BD362F);
-  border-radius: 4px 4px 4px 4px;
-  color: white;
-  padding: 10px;
+   background: linear-gradient(to bottom, #EE5F5B, #BD362F);
+   border-radius: 4px 4px 4px 4px;
+   color: white;
+   padding: 10px;
 }
 
 .notification-success {
-  background: linear-gradient(to bottom, #62C462, #51A351) repeat scroll 0 0 transparent;
-  border-radius: 4px 4px 4px 4px;
-  color: white;
-  padding: 10px;
+   background: linear-gradient(to bottom, #62C462, #51A351) repeat scroll 0 0 transparent;
+   border-radius: 4px 4px 4px 4px;
+   color: white;
+   padding: 10px;
 }
+
+.delete-alert-btn {
+   position: relative;
+   top: -5px;
+}
+
+.alert-mail-to-label{
+   text-align:right;
+}
+
+.alert-entry {
+   background: #F9F9F9;
+   border: 1px solid #ccc;
+   margin-bottom:0.5em;
+   padding: 0.5em;
+}
+
+
