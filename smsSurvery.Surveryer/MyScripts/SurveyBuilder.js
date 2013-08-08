@@ -86,15 +86,20 @@ SurveyBuilder.QuestionModel = Backbone.Model.extend({
    },
    updateAlertNotificationMail: function(value, index) {
       this.questionAlertSet = this.get("QuestionAlertSet");
-      //this.questionAlertSet[index].AlertNotificationMail = value;
-      //this.set("Alerts", this.alerts);
+      this.questionAlertSet[index].AlertNotificationSet[0].DistributionList = value;
+      this.questionAlertSet[index].AlertNotificationSet[0].Type = "mail";
+      this.set("QuestionAlertSet", this.alerts);
    },
    addAlert: function() {
       this.alerts = this.get("QuestionAlertSet");
       this.alerts.push({
          Operator: "",
          Description: "",
-         TriggerAnswer: ""
+         TriggerAnswer: "",
+         AlertNotificationSet: [{
+            DistributionList: "",
+            Type: ""
+         }]
       });
       this.set("QuestionAlertSet", this.questionAlertSet);
       this.trigger(this.events.ALERTS_CHANGED);
@@ -154,7 +159,7 @@ SurveyBuilder.QuestionView = Backbone.View.extend({
       "click .close-alerts-modal-btn": "closeAlertsModal",
       "keyup .alert-value-input": "updateAlertValue",
       "change .alert-operator-select": "updateAlertOperator",
-      "keyup .alert-notification-mail-input": "updateAlertNotificationMail"
+      "keyup .alert-notification-mail-input": "updateAlertNotificationMail"      
    },
    initialize: function () {
       _.bindAll(this, "selectQuestionType", "deleteQuestion", "updateQuestion",
@@ -252,6 +257,15 @@ SurveyBuilder.QuestionView = Backbone.View.extend({
    updateAlertNotificationMail: function (event) {
       this.model.updateAlertNotificationMail(event.currentTarget.value,
          $(event.currentTarget).parents("div").attr("index"));
+   }
+});
+
+var AnswersModal = Backbone.View.extend({
+   initialize: function () {
+
+   },
+   render: function () {
+
    }
 });
 
