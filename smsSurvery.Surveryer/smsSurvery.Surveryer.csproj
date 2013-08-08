@@ -217,6 +217,7 @@
     <Compile Include="Models\BusinessObjects\SmsMessage.cs" />
     <Compile Include="Models\Question.cs" />
     <Compile Include="Models\QuestionAlert.cs" />
+    <Compile Include="Models\RequestResult.cs" />
     <Compile Include="Models\SmsInterface\CompatelSmsRepository.cs" />
     <Compile Include="Models\SmsInterface\IExternalSmsRepository.cs" />
     <Compile Include="Models\SmsInterface\NexmoSmsRepository.cs" />

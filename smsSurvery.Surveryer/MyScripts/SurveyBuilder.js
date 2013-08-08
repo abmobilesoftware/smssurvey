@@ -347,6 +347,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       }
       var dom = this.dom;
       this.model.on("change:DisplayInfoTable", this.render);
+      this.model.on("change:Id", this.render);
       window.onbeforeunload = this.confirmPageLeaving;
 
       if (this.model.get("Id") != SurveyUtilities.Utilities.CONSTANTS_MISC.NEW_SURVEY) {
@@ -406,12 +407,15 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       this.model.save(this.model.toJSON(),
          {
             success: function (model, response, options) {
-               if (response == "success") {
+               if (response.Result == "success") {
                   self.dom.$NOTIFICATION_TEXT.text("Changes saved successfully.");
                   self.dom.$NOTIFICATION_TEXT.
                      removeClass("notification-success notification-error").addClass("notification-success");
-                  self.model.set("DataChanged", false);
-               } else if (response == "error") {
+                  if (response.Operation == "create") {
+                     self.model.set("Id", response.Details);
+                  }
+                  self.model.set("DataChanged", false);                  
+               } else if (response.Result == "error") {
                   self.dom.$NOTIFICATION_TEXT.text("Errors while saving.");
                   self.dom.$NOTIFICATION_TEXT.
                      removeClass("notification-success notification-error").addClass("notification-error");

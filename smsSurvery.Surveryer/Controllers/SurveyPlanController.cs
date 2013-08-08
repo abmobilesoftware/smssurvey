@@ -19,6 +19,7 @@ namespace smsSurvery.Surveryer.Controllers
        [Authorize]
         public ActionResult Index()
         {
+         
            UserProfile user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();                     
             return View(user.SurveyPlanSet.ToList());
         }
@@ -224,7 +225,9 @@ namespace smsSurvery.Surveryer.Controllers
                        }
                     }
                  }
-                 
+                 db.SaveChanges();
+                 return Json(new smsSurvery.Surveryer.Models.RequestResult("success",
+                    "update"), JsonRequestBehavior.AllowGet);                 
               }
               else
               {
@@ -236,9 +239,10 @@ namespace smsSurvery.Surveryer.Controllers
                  db.SurveyPlanSet.Add(surveyPlan);
                  user.SurveyPlanSet.Add(surveyPlan);
                  db.SaveChanges();
-              }
-              db.SaveChanges();
-              return Json("success", JsonRequestBehavior.AllowGet);
+                 return Json(new smsSurvery.Surveryer.Models.RequestResult("success", 
+                    "create", surveyPlan.Id.ToString()),
+                    JsonRequestBehavior.AllowGet);
+              }             
            }
            catch (Exception e)
            {
