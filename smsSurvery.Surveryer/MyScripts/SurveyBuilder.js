@@ -11,14 +11,10 @@ SurveyBuilder.QuestionModel = Backbone.Model.extend({
       Order: 0,
       Answers: [],
       AlertOperators: [],
-      QuestionAlertSet: []      
+      QuestionAlertSet: []
    },
-   initialize: function() {
-      this.parseAttributes();
-      this.questionAlertSet = [];
-      this.set("QuestionAlertSet", []);
-      this.answers = [];
-      this.set("Answers", []);
+   initialize: function () {
+      this.parseAttributes();      
    },
    parseAttributes: function () {
       var questionConstants = SurveyUtilities.Utilities.CONSTANTS_QUESTION;
@@ -49,7 +45,7 @@ SurveyBuilder.QuestionModel = Backbone.Model.extend({
       this.set("Text", newText);
    },
    updateQuestionType: function (newType) {
-      this.updateAlertOperators(newType);      
+      this.updateAlertOperators(newType);
       this.set("Type", newType);
    },
    updateAlertOperators: function (newType) {
@@ -67,7 +63,7 @@ SurveyBuilder.QuestionModel = Backbone.Model.extend({
          var alertOperators = new Array("==");
          this.set("AlertOperators", alertOperators);
       }
-   },   
+   },
    updateAnswerLabel: function (label, index) {
       var answers = this.get("Answers");
       answers[index].AnswerLabel = label;
@@ -79,18 +75,18 @@ SurveyBuilder.QuestionModel = Backbone.Model.extend({
       this.questionAlertSet[index].TriggerAnswer = value;
       this.set("QuestionAlertSet", this.questionAlertSet);
    },
-   updateAlertOperator: function(value, index) {
+   updateAlertOperator: function (value, index) {
       this.questionAlertSet = this.get("QuestionAlertSet");
       this.questionAlertSet[index].Operator = value;
       this.set("QuestionAlertSet", this.questionAlertSet);
    },
-   updateAlertNotificationMail: function(value, index) {
+   updateAlertNotificationMail: function (value, index) {
       this.questionAlertSet = this.get("QuestionAlertSet");
       this.questionAlertSet[index].AlertNotificationSet[0].DistributionList = value;
       this.questionAlertSet[index].AlertNotificationSet[0].Type = "mail";
       this.set("QuestionAlertSet", this.alerts);
    },
-   addAlert: function() {
+   addAlert: function () {
       this.alerts = this.get("QuestionAlertSet");
       this.alerts.push({
          Operator: "",
@@ -116,7 +112,7 @@ SurveyBuilder.QuestionModel = Backbone.Model.extend({
       this.set("Answers", answers);
       this.trigger(this.events.ANSWERS_CHANGED);
       this.updateAnswerDbAttribute();
-   },   
+   },
    deleteAnswer: function (index) {
       var answers = this.get("Answers");
       answers.splice(index, 1);
@@ -148,9 +144,6 @@ SurveyBuilder.QuestionView = Backbone.View.extend({
       "click .question-type": "selectQuestionType",
       "click .delete-btn": "deleteQuestion",
       "keyup .question-input": "updateQuestion",
-      "keyup .answer-label-input": "updateAnswer",
-      "click .add-answer-btn": "addAnswer",
-      "click .delete-answer": "deleteAnswer",
       "click .edit-answers-btn": "openAnswersModal",
       "click .close-answers-modal-btn": "closeAnswersModal",
       "click .add-alert-btn": "addAlert",
@@ -159,17 +152,18 @@ SurveyBuilder.QuestionView = Backbone.View.extend({
       "click .close-alerts-modal-btn": "closeAlertsModal",
       "keyup .alert-value-input": "updateAlertValue",
       "change .alert-operator-select": "updateAlertOperator",
-      "keyup .alert-notification-mail-input": "updateAlertNotificationMail"      
+      "keyup .alert-notification-mail-input": "updateAlertNotificationMail"
    },
    initialize: function () {
       _.bindAll(this, "selectQuestionType", "deleteQuestion", "updateQuestion",
-         "updateAnswer", "render", "deleteAnswer", "openAnswersModal", "closeAnswersModal",
+         "render", "openAnswersModal", "closeAnswersModal",
          "addAlert", "deleteAlert", "openAlertsModal", "closeAlertsModal",
-         "updateAlertValue", "updateAlertOperator", "updateAlertNotificationMail");
+         "updateAlertValue", "updateAlertNotificationMail");
       this.questionTemplate = _.template($("#question-template").html());
       this.model.on(this.model.events.ANSWERS_CHANGED, this.render);
       this.model.on(this.model.events.ALERTS_CHANGED, this.render);
       this.model.on("change:Type", this.render);
+      this.model.on("change:Type", this.updateAlertOperators)
       this.IsAnswersModalOpen = false;
       this.IsAlertsModalOpen = false;
    },
@@ -182,10 +176,24 @@ SurveyBuilder.QuestionView = Backbone.View.extend({
          $MULTIPLE_ANSWERS_MODAL: $("#multiple-answer-modal" + this.model.get("Id"), this.$el),
          $EDIT_ALERTS_MODAL: $("#edit-alerts-modal" + this.model.get("Id"), this.$el)
       };
+      this.answersModalModel = new SurveyModals.AnswersModalModel({ Answers: this.model.get("Answers") });
+      this.answersModalView = new SurveyModals.AnswersModalView({
+         el: this.dom.$MULTIPLE_ANSWERS_MODAL,
+         model: this.answersModalModel
+      });
 
+      this.alertsModalModel = new SurveyModals.AlertsModalModel({
+         QuestionAlertSet: this.model.get("QuestionAlertSet"),
+         Type: this.model.get("Type")
+      });
+      this.alertsModalModel.initializeAlertOperators(this.model.get("Type"));
+      this.alertsModalView = new SurveyModals.AlertsModalView({
+         el: this.dom.$EDIT_ALERTS_MODAL,
+         model: this.alertsModalModel
+      });
       this.dom.$MULTIPLE_ANSWERS_MODAL.modal({
          "backdrop": false,
-         "show": this.IsAnswersModalOpen 
+         "show": this.IsAnswersModalOpen
       });
       this.dom.$EDIT_ALERTS_MODAL.modal({
          "backdrop": false,
@@ -197,6 +205,7 @@ SurveyBuilder.QuestionView = Backbone.View.extend({
       event.preventDefault();
       var newQuestionType = $(event.currentTarget).attr("value");
       this.model.updateQuestionType(newQuestionType);
+      this.alertsModalModel.initializeAlertOperators(newQuestionType);
    },
    deleteQuestion: function (event) {
       event.preventDefault();
@@ -209,24 +218,12 @@ SurveyBuilder.QuestionView = Backbone.View.extend({
    },
    updateQuestion: function (event) {
       this.model.updateQuestionText(event.currentTarget.value)
-   },
-   updateAnswer: function (event) {
-      this.model.updateAnswerLabel(event.currentTarget.value,
-         $(event.currentTarget).parents("tr").attr("index"));
-   },
-   addAnswer: function (event) {
-      event.preventDefault();
-      this.model.addAnswer();
-   },
-   deleteAnswer: function (event) {
-      event.preventDefault();
-      this.model.deleteAnswer($(event.currentTarget).parents("tr").attr("index"));
-   },
+   },      
    addAlert: function (event) {
       event.preventDefault();
       this.model.addAlert();
    },
-   deleteAlert: function(event) {
+   deleteAlert: function (event) {
       event.preventDefault();
       this.model.deleteAlert($(event.currentTarget).parents("tr").attr("index"));
    },
@@ -250,22 +247,9 @@ SurveyBuilder.QuestionView = Backbone.View.extend({
       this.model.updateAlertValue(event.currentTarget.value,
          $(event.currentTarget).parents("div").attr("index"));
    },
-   updateAlertOperator: function (event) {
-      this.model.updateAlertOperator(event.currentTarget.value,
-         $(event.currentTarget).parents("div").attr("index"));
-   },
    updateAlertNotificationMail: function (event) {
       this.model.updateAlertNotificationMail(event.currentTarget.value,
          $(event.currentTarget).parents("div").attr("index"));
-   }
-});
-
-var AnswersModal = Backbone.View.extend({
-   initialize: function () {
-
-   },
-   render: function () {
-
    }
 });
 
@@ -428,7 +412,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
                   if (response.Operation == "create") {
                      self.model.set("Id", response.Details);
                   }
-                  self.model.set("DataChanged", false);                  
+                  self.model.set("DataChanged", false);
                } else if (response.Result == "error") {
                   self.dom.$NOTIFICATION_TEXT.text("Errors while saving.");
                   self.dom.$NOTIFICATION_TEXT.
@@ -488,27 +472,26 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
    }
 });
 
-SurveyBuilder.QuestionSetModel = Backbone.View.extend({
+SurveyBuilder.QuestionSetModel = Backbone.Model.extend({
    events: {
       UPDATE_VIEW: "updateView"
    },
    initialize: function () {
       _.bindAll(this, "getQuestionSetCollection");
-      this.jsonQuestions = this.options.jsonQuestions;
+      this.jsonQuestions = this.get("jsonQuestions");
       this.questionModels = [];
       if (this.jsonQuestions != undefined) {
          for (var i = 0; i < this.jsonQuestions.length; ++i) {
             var question = new SurveyBuilder.QuestionModel(this.jsonQuestions[i]);
-            question.parseAttributes();
             this.questionModels.push(question);
          }
       }
       this.questionSetCollection =
          new SurveyBuilder.QuestionSetCollection(this.questionModels);
-      this.questionSetCollection.on("remove add",
+      /*this.questionSetCollection.on("remove add",
          function () {
             this.trigger(this.events.UPDATE_VIEW);
-         }, this);
+         }, this);*/
    },
    getQuestionSetCollection: function () {
       return this.questionSetCollection.models;

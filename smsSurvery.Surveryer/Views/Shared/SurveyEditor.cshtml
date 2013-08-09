@@ -37,7 +37,6 @@
     
    <% if (Type == "SelectOneFromMany") { %>
       <a href="#multiple-answer-modal<%= Id %>" role="button" class="open-modal-btn btn edit-answers-btn" data-toggle="modal"><img class="icon" src="/Content/images/edit_20.png" />Edit answers</a>   
-
       <div id="multiple-answer-modal<%= Id %>" class="modal hide">
          <div class="modal-header">
             <button type="button" class="close-modal-btn close close-answers-modal-btn" data-dismiss="modal" aria-hidden="true">x</button>
@@ -45,19 +44,9 @@
          </div>
          <div class="modal-body">
             <table class="table table-striped table-bordered answers-table">
-                <% if (Answers.length > 0) {
-                  _.each(Answers, function(answer, index) { %>
-                  <tr index="<%= index %>">
-                     <td><%= index %></td>
-                     <td><input class="answer-label-input" type="text" value="<%= answer.AnswerLabel %>" placeholder="Input answer..." /></td>
-                     <td><button class="btn btn-danger delete-answer">Delete answer</button></td>
-                  </tr>     
-               <% });
-                  } else { %>
-                  <td>No answer</td>
-               <% } %>
-            </table>
-            <a class="btn btn-primary add-answer-btn">Add answer</a>
+               
+             </table>
+             <a class="btn btn-primary add-answer-btn">Add answer</a>
          </div>
       </div>
    <% } else if (Type == "Rating") { %>
@@ -71,36 +60,31 @@
          <h3>Edit alerts</h3>
       </div>
       <div class="modal-body">
-         <% if (QuestionAlertSet.length > 0) {
-            _.each(QuestionAlertSet, function(alert, index) { %>
-                  <div class="alert-entry" index="<%= index %>">
-                  <span><strong>Description:</span>
-                  <span><input type="text" class="alert-description-input" placeholder="Ex: Insert description ..." value="<%= alert.Description %>" /></span>                                
-                  <select class="alert-operator-select">
-                     <% _.each(AlertOperators, function(alertOperator, index) { 
-                           if (alertOperator == alert.Operator) { %>
-                              <option value="<%= alertOperator %>" selected="selected"><%= alertOperator %></option>
-                           <% } else { %>         
-                              <option value="<%= alertOperator %>"><%= alertOperator %></option>
-                        <% }
-                     });%>
-                  </select>
-                  <input type="text" class="alert-value-input" value="<%= alert.TriggerAnswer %>" />
-                  <button class="btn btn-danger delete-alert-btn"><img src="/Content/images/close_20.png" /></button><br/>
-                  <span>Send mail to:</span>
-                  <span><input type="text" class="alert-notification-mail-input" placeholder="Insert mail addresses separated by space" value="<%= alert.AlertNotificationSet[0].DistributionList %>" /></span>                                
-               </div>
-            <% });
-               } else { %>
-               <div class="alert-entry">
-                  No alerts added
-               </div>
-            <% } %>    
-         <button class="btn btn-primary add-alert-btn">Add alert</button>         
-         
-         
+         <div class="alerts-modal-content">
+         </div>
+         <button class="btn btn-primary add-alert-btn">Add alert</button>                 
       </div>
    </div>
+</script>
+
+<script type="text/template" id="alert-template">
+   <div class="alert-entry">
+      <span><strong>Description:</span>
+      <input type="text" class="alert-description-input" placeholder="Ex: Insert description ..." value="<%= alert.Description %>" />
+      <select class="alert-operator-select">
+         <% _.each(AlertOperators, function(alertOperator, index) { 
+               if (alertOperator == alert.Operator) { %>
+                  <option value="<%= alertOperator %>" selected="selected"><%= alertOperator %></option>
+               <% } else { %>         
+                  <option value="<%= alertOperator %>"><%= alertOperator %></option>
+               <% }
+            });%>			
+      </select>
+      <input type="text" class="alert-value-input" value="<%= alert.TriggerAnswer %>" />
+      <button class="btn btn-danger delete-alert-btn"><img src="/Content/images/close_20.png" /></button><br/>
+      <span>Send mail to:</span>
+      
+  </div>
 </script>
 
 <script id="preview-sms-template" type="text/template">
@@ -217,6 +201,15 @@
       </table>
    <% } %>
 </script>
+
+<script type="text/template" id="answer-template">
+   <tr>
+      <td></td>
+       <td><input class="answer-label-input" type="text" value="<%= AnswerLabel %>" placeholder="Input answer..." /></td>
+       <td><button class="btn btn-danger delete-answer">Delete answer</button></td>
+   </tr>     
+</script>
+
 <div id="survey">
    <div id="survey-notification hide">
       <p class="notification-text"></p>
