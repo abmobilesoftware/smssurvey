@@ -150,12 +150,30 @@ namespace smsSurvery.Surveryer.Controllers
         //
         // POST: /SurveyPlan/Delete/5
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName("Delete")]        
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
+           //DA we have to manually break the SurveyResults <-> Tags association
             SurveyPlan surveyplan = db.SurveyPlanSet.Find(id);
+            foreach (var result in surveyplan.SurveyResult)
+            {
+               var tagsPerResult = result.Tags.ToList();
+               foreach (var tag in tagsPerResult)
+               {
+                  result.Tags.Remove(tag);
+               }
+            }
+           //DA deal with customer - running survey reference before deleting
+            var customersWithSurveyUnderDeleteRunning = db.CustomerSet.Where(x => x.RunningSurvey.Id == surveyplan.Id);
+            foreach (var customer in customersWithSurveyUnderDeleteRunning)
+            {
+               customer.SurveyInProgress = false;
+               customer.RunningSurvey = null;
+            }
             db.SurveyPlanSet.Remove(surveyplan);
+            var connectedUser = db.UserProfile.Where(u=> u.UserName == User.Identity.Name).FirstOrDefault();
+            connectedUser.SurveyPlanSet.Remove(surveyplan);
             db.SaveChanges();
             return RedirectToAction("Index");
         }

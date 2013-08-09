@@ -945,3 +945,7 @@ text-align: center;
 .hidden {
    display:none !important;
 }
+
+textarea[name="Text"] {
+   width:80%;
+}

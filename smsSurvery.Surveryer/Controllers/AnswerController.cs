@@ -502,20 +502,28 @@ namespace smsSurvery.Surveryer.Controllers
             //mark that we have started a new survey for the current user
             customer.SurveyInProgress = true;
             customer.RunningSurvey = surveyToRun;            
-            var currentQuestion = surveyToRun.QuestionSet.OrderBy(x => x.Order).First();
-            newSurvey.CurrentQuestion = currentQuestion;
-            //add the tags
-            var companyTags = authenticatedUser.Company.Tags;
-            foreach (var tg in tags)
+            var currentQuestion = surveyToRun.QuestionSet.OrderBy(x => x.Order).FirstOrDefault();
+            if (currentQuestion != null)
             {
-               var tagToAdd = companyTags.Where(t=> t.Name == tg).FirstOrDefault();
-               if (tagToAdd != null)
+               //cannot start a survey without any questions
+               newSurvey.CurrentQuestion = currentQuestion;
+               //add the tags
+               var companyTags = authenticatedUser.Company.Tags;
+               foreach (var tg in tags)
                {
-                  newSurvey.Tags.Add(tagToAdd);
+                  var tagToAdd = companyTags.Where(t => t.Name == tg).FirstOrDefault();
+                  if (tagToAdd != null)
+                  {
+                     newSurvey.Tags.Add(tagToAdd);
+                  }
                }
+               db.SaveChanges();
+               //SendQuestionToCustomer(customer, numberToSendFrom, currentQuestion, db);
             }
-            db.SaveChanges();
-           // SendQuestionToCustomer(customer, numberToSendFrom, currentQuestion, db);
+            else
+            {
+               logger.InfoFormat("Attempting to start a survey, {0}, which has no questions", surveyToRun.Description);
+            }            
          }          
        }
 

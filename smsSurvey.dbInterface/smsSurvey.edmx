@@ -679,7 +679,9 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="SurveyPlanSurveyResult">
-          <End Type="smsSurveyModel.SurveyPlan" Role="SurveyPlan" Multiplicity="1" />
+          <End Type="smsSurveyModel.SurveyPlan" Role="SurveyPlan" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="smsSurveyModel.SurveyResult" Role="SurveyResult" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="SurveyPlan">
@@ -702,7 +704,9 @@
           <Property Type="Int32" Name="SurveyResultId" Nullable="false" />
         </EntityType>
         <Association Name="QuestionResult">
-          <End Type="smsSurveyModel.Question" Role="Question" Multiplicity="1" />
+          <End Type="smsSurveyModel.Question" Role="Question" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="smsSurveyModel.Result" Role="Result" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Question">
@@ -780,7 +784,9 @@
           <End Type="smsSurveyModel.UserProfile" Role="UserProfile" Multiplicity="*" />
         </Association>
         <Association Name="FK_SurveyPlanQuestion">
-          <End Type="smsSurveyModel.SurveyPlan" Role="SurveyPlan" Multiplicity="1" />
+          <End Type="smsSurveyModel.SurveyPlan" Role="SurveyPlan" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
           <End Type="smsSurveyModel.Question" Role="Question" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="SurveyPlan">
@@ -941,8 +947,11 @@
           <NavigationProperty Name="QuestionSet" Relationship="smsSurveyModel.FK_QuestionQuestionAlert" FromRole="QuestionAlertSet" ToRole="Question" />
         </EntityType>
         <Association Name="FK_QuestionAlertAlertNotification">
-          <End Type="smsSurveyModel.QuestionAlertSet" Role="QuestionAlertSet" Multiplicity="1" />
-          <End Type="smsSurveyModel.AlertNotificationSet" Role="AlertNotificationSet" Multiplicity="*" />
+          <End Type="smsSurveyModel.QuestionAlertSet" Role="QuestionAlertSet" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="smsSurveyModel.AlertNotificationSet" Role="AlertNotificationSet" Multiplicity="*" >
+          </End>
           <ReferentialConstraint>
             <Principal Role="QuestionAlertSet">
               <PropertyRef Name="Id" />
@@ -953,8 +962,11 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_QuestionQuestionAlert">
-          <End Type="smsSurveyModel.Question" Role="Question" Multiplicity="1" />
-          <End Type="smsSurveyModel.QuestionAlertSet" Role="QuestionAlertSet" Multiplicity="*" />
+          <End Type="smsSurveyModel.Question" Role="Question" Multiplicity="1" >
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="smsSurveyModel.QuestionAlertSet" Role="QuestionAlertSet" Multiplicity="*" >
+          </End>
           <ReferentialConstraint>
             <Principal Role="Question">
               <PropertyRef Name="Id" />

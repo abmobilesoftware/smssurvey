@@ -41,8 +41,8 @@
           @Html.DisplayFor(modelItem => item.PercentageComplete)
        </td>
         <td>            
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+            @Html.ActionLink("Details", "Details", "SurveyResult", new { id=item.Id }, null) |
+            @Html.ActionLink("Delete", "Delete", "SurveyResult", new { id=item.Id }, null)
         </td>
     </tr>
 }

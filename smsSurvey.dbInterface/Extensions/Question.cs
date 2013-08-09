@@ -11,16 +11,17 @@ namespace smsSurvey.dbInterface
 {
    public enum QuestionType
    {
-      YesNo=0,
-      Scale=1,
-      OneFromOptions=2,
-      ManyFromOptions=3,
-      FreeText=4,
+      Rating = 0,
+      FreeText = 1,
+      SelectOneFromMany = 2,
+      SelectManyFromMany = 3,
+      YesNo = 4
    }
 
     [MetadataType(typeof(Question_Validation))]
    partial class Question
    {
+
    }
 
    #region Validation
@@ -28,7 +29,8 @@ namespace smsSurvey.dbInterface
    {
       [DisplayName("Text")]
       [Required]
-      [MaxLength(160, ErrorMessage = "Max 160 characters")] 
+      [MaxLength(160, ErrorMessage = "Max 160 characters")]
+      [DataType(DataType.MultilineText)]
       public string Text { get; set; }
       [DisplayName("Order")]
       
