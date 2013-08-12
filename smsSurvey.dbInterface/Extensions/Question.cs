@@ -9,11 +9,14 @@ using System.Threading.Tasks;
 
 namespace smsSurvey.dbInterface
 {
+   public enum QuestionType
+   {
       Rating = 0,
       FreeText = 1,
       SelectOneFromMany = 2,
       SelectManyFromMany = 3,
       YesNo = 4
+   }
    [MetadataType(typeof(Question_Validation))]
    partial class Question
    {

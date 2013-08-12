@@ -61,7 +61,7 @@
       <HintPath>ExternalReferences\Nexmo-CSharp-lib.dll</HintPath>
     </Reference>
     <Reference Include="OneApi">
-      <HintPath>..\..\..\txtFeedback\ExternalReferences\OneApi.dll</HintPath>
+      <HintPath>..\..\Compatel\oneapi-dot-net\OneApi\bin\Release\OneApi\OneApi.dll</HintPath>
     </Reference>
     <Reference Include="RestSharp">
       <HintPath>..\packages\RestSharp.104.1\lib\net4\RestSharp.dll</HintPath>
