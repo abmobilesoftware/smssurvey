@@ -967,8 +967,12 @@
           <End Type="smsSurveyModel.Question" Role="Question" Multiplicity="1" >
             <OnDelete Action="Cascade" />
           </End>
+<<<<<<< HEAD
           <End Type="smsSurveyModel.QuestionAlertSet" Role="QuestionAlertSet" Multiplicity="*" >
           </End>
+=======
+          <End Type="smsSurveyModel.QuestionAlertSet" Role="QuestionAlertSet" Multiplicity="*" />
+>>>>>>> SurveyBuilder
           <ReferentialConstraint>
             <Principal Role="Question">
               <PropertyRef Name="Id" />

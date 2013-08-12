@@ -1,0 +1,277 @@
+﻿.question {
+   text-decoration: none;
+   background: #eee;
+   padding: 0.4em;
+   margin-top: 0.5em;
+   display: block;
+   cursor: move;
+   border: 1px dotted #ccc;
+}
+
+#question-set-content {
+   list-style: none;
+   margin: 0;
+}
+
+#question-set {
+   background: #fff;
+   border: 1px solid #ccc;
+   padding: 0 0.4em 0.4em 0.4em;
+}
+
+.input-append {
+   width: 90%;
+   margin: 0;
+}
+
+.question-input {
+   width: 80%;
+}
+
+.delete-btn {
+   float: right;
+}
+
+.add-question-btn, .open-modal-btn {
+   margin-top: 0.5em;
+}
+
+
+/* SECTION TITLE */
+.section-title {
+   background: linear-gradient(to bottom, #0088CC, #0044CC) repeat scroll 0 0 transparent;
+   color: #FFFFFF;
+   padding: 0.5em;
+   height: 30px;
+   border-top-left-radius: 5px;
+   border-top-right-radius: 5px;
+}
+
+.section-title-text {
+   display: inline;
+   font-size: 1em;
+   position: relative;
+   top: 0.3em;
+}
+
+.section-title-button {
+   float: right;
+}
+
+.clear {
+   clear: both;
+}
+
+/* END SECTION TITLE */
+
+.preview-content {
+   display: block;
+   height: 311px;
+   margin-left: 54px;
+   overflow-y: auto;
+   position: relative;
+   top: -453px;
+   width: 238px;
+}
+
+.survey-preview-content {
+   width: 352px;
+   margin: 0 auto;
+}
+
+/* WEBSITE QUESTION PREVIEW*/
+div.website-question-preview {
+   font-size: 1.1em;
+   margin-bottom: 0.2em;
+   background: #F4F7F8;
+   border-bottom: 1px solid #D6DEE3;
+}
+
+   div.website-question-preview h4.website-question-title-preview {
+      /*background: #327CCB;*/
+      background: #009FE3;
+      color: #FFFFFF;
+      padding: 6px 7px;
+      border-top: 0.1em solid #0A6DF6;
+      line-height: 1.2em;
+      display: block;
+      font-size: 0.8em;
+      margin-bottom: 0.2em;
+   }
+
+   div.website-question-preview div.website-answer-area-preview {
+      padding: 0.2em 0.4em 0.5em 1.2em;
+      text-indent: 0;
+      font-size: 0.6em;
+   }
+
+.website-comment {
+   width: 94%;
+}
+/* END WEBSITE QUESTION */
+
+/* STAR */
+.star {
+   display: inline;
+}
+
+.starImg {
+   width: 2em;
+   height: 2em;
+}
+
+.visible {
+   display: block;
+}
+
+.invisible {
+   display: none;
+}
+
+.stars-additional-info {
+   font-size: 1.5em;
+   line-height: 1.5em;
+   margin-bottom: 0.2em;
+   padding-bottom: 0.2em;
+   padding-top: 0.3em;
+}
+
+/* END STAR */
+
+div.staff, div.customer {
+   border-radius: 3px;
+   width: 80%;
+   margin-bottom: 0.4em;
+   margin-top: 0.3em;
+   color: #fff;
+   padding-left: 0.3em;
+   padding-right: 0.3em;
+}
+
+   div.staff:after, div.customer:after {
+      border-style: solid;
+      bottom: -8px;
+      content: "";
+      display: block;
+      position: relative;
+      width: 0;
+   }
+/******* End section 1 *********/
+
+/*#### Section 2. Staff, customer and carbons bubble specific ####*/
+/* Staff bubble */
+div.staff {
+   background: #92C942;
+   margin-right: 0.3em;
+   float: right;
+}
+
+   div.staff:after {
+      border-color: #92C942 transparent;
+      border-width: 10px 0 0 10px;
+      right: -164px;
+   }
+
+/* Customer bubble */
+div.customer {
+   background: #00A4E4;
+   margin-left: 0.3em;
+   float: left;
+}
+
+   div.customer:after {
+      border-color: #00A4E4 transparent;
+      border-width: 10px 10px 0 0;
+      left: 20px;
+   }
+
+/*#### Section 3. Message text formatting ####*/
+div p.message {
+   font-size: 0.9em;
+   margin-bottom: 0.2em;
+   margin-top: 0.3em;
+}
+/****** END Section 3 *******/
+
+.sms-preview-btn, .mobile-website-btn {
+   width: 50%;
+}
+
+.preview-tabs {
+   width: 93%;
+}
+
+div#preview-content-modal {
+   overflow-y: hidden;
+}
+
+.icon {
+   margin-right: 0.5em;
+}
+
+#preview-modal {
+   box-shadow: none;
+   border: 0;
+   background: transparent;
+   width: 368px;
+   margin-left: -213px;
+}
+
+.modal-header {
+   background: #fff;
+}
+
+#survey-builder {
+   margin-top: 0.5em;
+}
+
+.edit-survey {
+   color: #c3f0ff;
+   text-decoration: none;
+}
+
+   .edit-survey:hover {
+      color: #FAA732;
+      text-decoration: none;
+   }
+
+   .edit-survey:visited {
+      color: #c3f0ff;
+      text-decoration: none;
+   }
+
+.hide {
+   display: none;
+}
+
+.notification-error {
+   background: linear-gradient(to bottom, #EE5F5B, #BD362F);
+   border-radius: 4px 4px 4px 4px;
+   color: white;
+   padding: 10px;
+}
+
+.notification-success {
+   background: linear-gradient(to bottom, #62C462, #51A351) repeat scroll 0 0 transparent;
+   border-radius: 4px 4px 4px 4px;
+   color: white;
+   padding: 10px;
+}
+
+.delete-alert-btn {
+   position: relative;
+   top: -5px;
+}
+
+.alert-mail-to-label{
+   text-align:right;
+}
+
+.alert-entry {
+   background: #F9F9F9;
+   border: 1px solid #ccc;
+   margin-bottom:0.5em;
+   padding: 0.5em;
+}
+
+
