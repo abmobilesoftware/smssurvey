@@ -4,7 +4,6 @@
    padding: 0.4em;
    margin-top: 0.5em;
    display: block;
-   cursor: move;
    border: 1px dotted #ccc;
 }
 
@@ -274,4 +273,14 @@ div#preview-content-modal {
    padding: 0.5em;
 }
 
+.grip {
+   display:block;
+   float: left;
+   width:5%;
+   cursor: move;
+}
 
+.question-content {
+   float:left;
+   width: 94%;
+}

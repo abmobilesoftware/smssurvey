@@ -11,20 +11,20 @@ namespace smsSurvery.Surveryer.DbModels
       public string Description { get; set; }
       public string Operator { get; set; }
       public string TriggerAnswer { get; set; }
-      public List<AlertNotification> AlertNotificationSet { get; set; }
+      public AlertNotification AlertNotification { get; set; }
 
       public QuestionAlert(
          int iId,
          string iDescription,
          string iOperator,
          string iTriggerAnswer,
-         List<AlertNotification> iAlertNotificationSet)
+         AlertNotification iAlertNotification)
       {
          Id = iId;
          Description = iDescription;
          Operator = iOperator;
          TriggerAnswer = iTriggerAnswer;
-         AlertNotificationSet = iAlertNotificationSet;
+         AlertNotification = iAlertNotification;
       }
 
       public QuestionAlert() { }

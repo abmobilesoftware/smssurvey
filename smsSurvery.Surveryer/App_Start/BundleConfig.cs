@@ -19,6 +19,8 @@ namespace smsSurvery.Surveryer
                      "~/MyScripts/SurveyUtilities.js",
                      "~/MyScripts/SurveyElements.js",
                      "~/MyScripts/SurveyPreview.js",
+                     "~/MyScripts/SurveyAnswersModal.js",
+                     "~/MyScripts/SurveyAlertsModal.js",
                      "~/MyScripts/SurveyBuilder.js",
                      "~/MyScripts/SurveyMain.js"
             ));
