@@ -1,6 +1,4 @@
-﻿
-
-<script type="text/template" id="question-template">
+﻿<script type="text/template" id="question-template">
    <%
       var questionType = "";
       if (Type == "no type") {
@@ -17,74 +15,87 @@
          questionType = "Select many from many";
       }
    %>
-      <div class="input-append">
-         <input class="question-input" type="text" value="<%= Text %>" placeholder="Input question..." />
-         <div class="btn-group">
-            <button class="btn dropdown-toggle type-btn" data-toggle="dropdown">
-               <span class="type-btn-text"><%= questionType %></span>
-               <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu">            
-               <li><a href="#" value="YesNo" class="question-type">Yes/No</a></li>
-               <li><a href="#" value="FreeText" class="question-type">Free text</a></li>
-               <li><a href="#" value="Rating" class="question-type">Rating</a></li>
-               <li><a href="#" value="SelectOneFromMany" class="question-type">Select one from many</a></li>
-               <li><a href="#" value="SelectManyFromMany" class="question-type">Select many from many</a></li>               
-            </ul>
-         </div>
-      </div>         
-      <a href="#" class="btn btn-danger delete-btn">Delete</a>
+      <div class="grip">
+         <img src="/Content/images/grip.png"/>
+      </div>
+      <div class="question-content">
+         <div class="input-append">
+            <input class="question-input" type="text" value="<%= Text %>" placeholder="Input question..." />
+            <div class="btn-group">
+               <button class="btn dropdown-toggle type-btn" data-toggle="dropdown">
+                  <span class="type-btn-text"><%= questionType %></span>
+                  <span class="caret"></span>
+               </button>
+               <ul class="dropdown-menu">            
+                  <li><a href="#" value="YesNo" class="question-type">Yes/No</a></li>
+                  <li><a href="#" value="FreeText" class="question-type">Free text</a></li>
+                  <li><a href="#" value="Rating" class="question-type">Rating</a></li>
+                  <li><a href="#" value="SelectOneFromMany" class="question-type">Select one from many</a></li>
+                  <li><a href="#" value="SelectManyFromMany" class="question-type">Select many from many</a></li>               
+               </ul>
+            </div>
+         </div>         
+         <a href="#" class="btn btn-danger delete-btn">Delete</a>
     
-   <% if (Type == "SelectOneFromMany") { %>
-      <a href="#multiple-answer-modal<%= Id %>" role="button" class="open-modal-btn btn edit-answers-btn" data-toggle="modal"><img class="icon" src="/Content/images/edit_20.png" />Edit answers</a>   
-      <div id="multiple-answer-modal<%= Id %>" class="modal hide">
+      <% if (Type == "SelectOneFromMany") { %>
+         <a href="#multiple-answer-modal<%= Id %>" role="button" class="open-modal-btn btn edit-answers-btn" data-toggle="modal"><img class="icon" src="/Content/images/edit_20.png" />Edit answers</a>   
+         <div id="multiple-answer-modal<%= Id %>" class="modal hide fade">
+            <div class="modal-header">
+               <button type="button" class="close-modal-btn close close-answers-modal-btn" data-dismiss="modal" aria-hidden="true">x</button>
+               <h3> Configure answers </h3>
+            </div>
+            <div class="modal-body">
+               <table class="table table-striped table-bordered answers-table">
+               
+                </table>
+                <a class="btn btn-primary add-answer-btn">Add answer</a>
+            </div>
+         </div>
+      <% } else if (Type == "Rating") { %>
+         <a href="#" role="button" class="open-modal-btn btn" data-toggle="modal">Edit rating</a>   
+      <% } %>
+      <a href="#edit-alerts-modal<%= Id %>" role="button" class="open-modal-btn btn edit-alerts-btn" data-toggle="modal"><img class="icon" src="/Content/images/bell-20.png" />Edit alerts</a>   
+   
+      <div id="edit-alerts-modal<%= Id %>" class="modal hide fade">
          <div class="modal-header">
-            <button type="button" class="close-modal-btn close close-answers-modal-btn" data-dismiss="modal" aria-hidden="true">x</button>
-            <h3> Configure answers </h3>
+            <button type="button" class="close-modal-btn close close-alerts-modal-btn" data-dismiss="modal" aria-hidden="true">x</button>
+            <h3>Edit alerts</h3>
          </div>
          <div class="modal-body">
-            <table class="table table-striped table-bordered answers-table">
-               
-             </table>
-             <a class="btn btn-primary add-answer-btn">Add answer</a>
+            <div class="alerts-modal-content">
+            </div>
+            <button class="btn btn-primary add-alert-btn">Add alert</button>                 
          </div>
-      </div>
-   <% } else if (Type == "Rating") { %>
-      <a href="#" role="button" class="open-modal-btn btn" data-toggle="modal">Edit rating</a>   
-   <% } %>
-   <a href="#edit-alerts-modal<%= Id %>" role="button" class="open-modal-btn btn edit-alerts-btn" data-toggle="modal"><img class="icon" src="/Content/images/bell-20.png" />Edit alerts</a>   
-   
-   <div id="edit-alerts-modal<%= Id %>" class="modal hide">
-      <div class="modal-header">
-         <button type="button" class="close-modal-btn close close-alerts-modal-btn" data-dismiss="modal" aria-hidden="true">x</button>
-         <h3>Edit alerts</h3>
-      </div>
-      <div class="modal-body">
-         <div class="alerts-modal-content">
-         </div>
-         <button class="btn btn-primary add-alert-btn">Add alert</button>                 
       </div>
    </div>
+   <div class="clear"></div>
 </script>
 
 <script type="text/template" id="alert-template">
    <div class="alert-entry">
       <span><strong>Description:</span>
-      <input type="text" class="alert-description-input" placeholder="Ex: Insert description ..." value="<%= alert.Description %>" />
+      <input type="text" class="alert-description-input" placeholder="Ex: Insert description ..." value="<%= Description %>" />
       <select class="alert-operator-select">
+                  <option value="noValue">Select operator</option>
          <% _.each(AlertOperators, function(alertOperator, index) { 
-               if (alertOperator == alert.Operator) { %>
+               if (alertOperator == Operator) { %>
                   <option value="<%= alertOperator %>" selected="selected"><%= alertOperator %></option>
                <% } else { %>         
                   <option value="<%= alertOperator %>"><%= alertOperator %></option>
                <% }
             });%>			
       </select>
-      <input type="text" class="alert-value-input" value="<%= alert.TriggerAnswer %>" />
+      <input type="text" class="alert-trigger-answer-input" value="<%= TriggerAnswer %>" placeholder="Insert trigger value" />
       <button class="btn btn-danger delete-alert-btn"><img src="/Content/images/close_20.png" /></button><br/>
       <span>Send mail to:</span>
-      
+      <input type="text" class="alert-distribution-list-input" value="<%= AlertNotification.DistributionList %>" placeholder="Ex: address1@domain.net;address2@domain.net"/>
   </div>
+</script>
+
+<script type="text/template" id="no-alerts-template">
+   <div class="alert-entry">
+      <span>No alerts</span>
+   </div>
 </script>
 
 <script id="preview-sms-template" type="text/template">
@@ -210,12 +221,17 @@
    </tr>     
 </script>
 
+<script type="text/template" id="no-answers-template">
+   <tr>
+      <td>No answers</td>
+   </tr>
+</script>
+
 <div id="survey">
    <div id="survey-notification hide">
       <p class="notification-text"></p>
    </div>
    <div id="survey-info">
-      
    </div>
    <div id="survey-builder">
       <div class="survey-builder-title-wrapper section-title">

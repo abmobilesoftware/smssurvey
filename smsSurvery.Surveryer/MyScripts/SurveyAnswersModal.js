@@ -5,6 +5,7 @@ SurveyModals.AnswersModalView = Backbone.View.extend({
    },
    initialize: function () {
       _.bindAll(this, "render", "addAnswer", "deleteAnswer");
+      this.template = _.template($("#no-answers-template").html());
       this.dom = {
          $ANSWERS_TABLE: $(".answers-table", this.$el)
       };
@@ -19,16 +20,37 @@ SurveyModals.AnswersModalView = Backbone.View.extend({
    },
    render: function () {
       this.dom.$ANSWERS_TABLE.empty();
-      _.each(this.answersCollection.models, function (answer, index) {
-         var answerView = new SurveyModals.AnswerView({ model: answer });
-         this.dom.$ANSWERS_TABLE.append(answerView.render());
-      }, this);
+      if (this.answersCollection.models.length > 0) {
+         _.each(this.answersCollection.models, function (answer, index) {
+            var answerView = new SurveyModals.AnswerView({ model: answer });
+            this.dom.$ANSWERS_TABLE.append(answerView.render());
+         }, this);
+      } else {
+         this.dom.$ANSWERS_TABLE.append(this.template());
+      }
    },
    addAnswer: function () {
       this.answersCollection.add(new SurveyModals.AnswerModel());
    },
    deleteAnswer: function (answer) {
       this.answersCollection.remove(answer);
+   },
+   getAnswers: function () {
+      var answers = this.answersCollection.models;
+      var answersLabelAsString = "";
+      var answersIdentifierAsString = "";
+      if (answers.length > 0) {
+         answersLabelAsString = answers[0].get("AnswerLabel");
+         answersIdentifierAsString = answers[0].get("AnswerIdentifier");
+      }
+      for (var i = 1; i < answers.length; ++i) {
+         answersLabelAsString += ";" + answers[i].get("AnswerLabel");
+         answersIdentifierAsString += ";" + answers[i].get("AnswerIdentifier");
+      }
+      return {
+         "ValidAnswers": answersIdentifierAsString,
+         "ValidAnswersDetails": answersLabelAsString
+      };
    }
 });
 
