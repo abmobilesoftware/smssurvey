@@ -7,7 +7,7 @@ SurveyPreview.QuestionPreviewWebsiteView = Backbone.View.extend({
    render: function () {
       this.$el.html(this.questionPreviewTemplate(this.model.toJSON()));
       if (this.model.get("Type") == this.questionConstants.TYPE_RATING) {
-         var starBarView = new SurveyElements.StarBarView({ el: $(".answerArea", this.$el) });
+         var starBarView = new SurveyElements.StarBarView({ el: $(".website-answer-area-preview", this.$el) });
       }
       return this.$el;
    }
@@ -49,7 +49,7 @@ SurveyPreview.SurveyPreviewWebsiteView = Backbone.View.extend({
    render: function () {
       this.$el.html(this.surveyPreviewTemplate());
       this.dom = {
-         $PREVIEW_CONTENT: $(".preview-content2", this.$el)
+         $PREVIEW_CONTENT: $(".preview-content", this.$el)
       }
       _.each(this.model.getQuestionSetCollection(), function (question, index) {
          var questionPreviewView = new SurveyPreview.QuestionPreviewWebsiteView({ model: question });
@@ -69,7 +69,7 @@ SurveyPreview.SurveyPreviewView = Backbone.View.extend({
       this.surveyPreviewModel = this.options.surveyPreviewModel;
       this.surveyPreviewModel.on("change:PreviewType", this.render);
       this.dom = {
-         $SURVEY_PREVIEW_CONTENT: $("#questions", this.$el)
+         $SURVEY_PREVIEW_CONTENT: $("#preview-content-modal", this.$el)
       }
       this.surveyConstants = SurveyUtilities.Utilities.CONSTANTS_SURVEY;
    },
