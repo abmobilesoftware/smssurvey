@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 
-namespace smsSurvery.Surveryer.DbModels
+namespace smsSurvery.Surveryer.ClientModels
 {
-   public class SurveyPlan
+   public class ClientSurveyPlan
    {
       public int Id { get; set; }
       public string Description { get; set; }
@@ -13,18 +13,18 @@ namespace smsSurvery.Surveryer.DbModels
       public Nullable<DateTime> DateStarted { get; set; }
       public Nullable<DateTime> DateEnded { get; set; }
       public bool IsRunning { get; set; }
-      public List<Question> QuestionSet { get; set; }
+      public List<ClientQuestion> QuestionSet { get; set; }
 
-      public SurveyPlan() { }
+      public ClientSurveyPlan() { }
 
-      public SurveyPlan(
+      public ClientSurveyPlan(
          int iId,
          string iDescription,
          string iThankYouMessage,
          Nullable<DateTime> iDateStarted,
          Nullable<DateTime> iDateEnded,
          bool iIsRunning,
-         List<Question> iQuestionSet)
+         List<ClientQuestion> iQuestionSet)
       {
          Id = iId;
          Description = iDescription;

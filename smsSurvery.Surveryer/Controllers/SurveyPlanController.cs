@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using smsSurvey.dbInterface;
+using smsSurvery.Surveryer.ClientModels;
 
 namespace smsSurvery.Surveryer.Controllers
 {
@@ -128,35 +129,35 @@ namespace smsSurvery.Surveryer.Controllers
             {
                return Json("resource not found", JsonRequestBehavior.AllowGet);
             }
-            List<smsSurvery.Surveryer.DbModels.Question> questions =
-               new List<smsSurvery.Surveryer.DbModels.Question>();
+            List<ClientQuestion> questions =
+               new List<ClientQuestion>();
             foreach (var question in surveyplan.QuestionSet)
             {
-               List<smsSurvery.Surveryer.DbModels.QuestionAlert> questionAlertSet =
-                  new List<smsSurvery.Surveryer.DbModels.QuestionAlert>();
+               List<ClientQuestionAlert> questionAlertSet =
+                  new List<ClientQuestionAlert>();
                foreach (var questionAlert in question.QuestionAlertSet)
                {
                   var efAlertNotification = (questionAlert.AlertNotificationSet.Count() > 0)
                                               ? questionAlert.AlertNotificationSet.ElementAt(0)
                                               : null;
                   var dbAlertNotification = (efAlertNotification != null) ?
-                     new smsSurvery.Surveryer.DbModels.AlertNotification(efAlertNotification.Id,
+                     new ClientAlertNotification(efAlertNotification.Id,
                         efAlertNotification.Type, efAlertNotification.DistributionList) : null;
-                  smsSurvery.Surveryer.DbModels.QuestionAlert qa =
-                   new smsSurvery.Surveryer.DbModels.QuestionAlert(questionAlert.Id,
+                  ClientQuestionAlert qa =
+                   new ClientQuestionAlert(questionAlert.Id,
                       questionAlert.Description, questionAlert.Operator,
                       questionAlert.TriggerAnswer, dbAlertNotification);
                   questionAlertSet.Add(qa);
                }
-               smsSurvery.Surveryer.DbModels.Question q =
-                  new smsSurvery.Surveryer.DbModels.Question(question.Id,
+               ClientQuestion q =
+                  new ClientQuestion(question.Id,
                      question.Text, question.Order, question.Type,
                      question.ValidAnswers, question.ValidAnswersDetails,
                      questionAlertSet);
                questions.Add(q);
             }
-            smsSurvery.Surveryer.DbModels.SurveyPlan surveyPlan =
-               new smsSurvery.Surveryer.DbModels.SurveyPlan(
+            ClientSurveyPlan surveyPlan =
+               new ClientSurveyPlan(
                   surveyplan.Id, surveyplan.Description,
                   surveyplan.ThankYouMessage, surveyplan.DateStarted,
                   surveyplan.DateEnded, surveyplan.IsRunning, questions);
@@ -170,7 +171,7 @@ namespace smsSurvery.Surveryer.Controllers
 
       [HttpPut]
       public JsonResult SaveSurvey(
-         SurveyPlan clientSurveyPlan)
+         ClientSurveyPlan clientSurveyPlan)
       {
          try
          {
@@ -183,19 +184,170 @@ namespace smsSurvery.Surveryer.Controllers
                }
                dbSurveyPlan.ThankYouMessage = clientSurveyPlan.ThankYouMessage;
                dbSurveyPlan.Description = clientSurveyPlan.Description;
-               dbSurveyPlan.QuestionSet = clientSurveyPlan.QuestionSet;
+               var dbQuestions = dbSurveyPlan.QuestionSet;
+               var clientQuestions = clientSurveyPlan.QuestionSet;
+               if (clientQuestions != null)
+               {
+                  foreach (var clientQuestion in clientQuestions)
+                  {
+                     var dbQuestionResult = dbQuestions.Where(x => x.Id.Equals(clientQuestion.Id));
+                     if (dbQuestionResult.Count() > 0)
+                     {
+
+                        var dbQuestion = dbQuestionResult.First();
+                        // Update questions
+                        var dbQuestionAlerts = dbQuestion.QuestionAlertSet;
+                        var clientQuestionAlerts = clientQuestion.QuestionAlertSet;
+                        if (clientQuestionAlerts != null)
+                        {
+                           foreach (var clientQuestionAlert in clientQuestionAlerts)
+                           {
+                              var dbQuestionAlertResult = dbQuestionAlerts.Where(x => x.Id.Equals(clientQuestionAlert.Id));
+                              if (dbQuestionAlertResult.Count() > 0)
+                              {
+                                 // Update question alert
+                                 var dbQuestionAlert = dbQuestionAlertResult.First();
+                                 dbQuestionAlert.Operator = clientQuestionAlert.Operator;
+                                 dbQuestionAlert.TriggerAnswer = clientQuestionAlert.TriggerAnswer;
+                                 dbQuestionAlert.Description = clientQuestionAlert.Description;
+                                 var clientAlertNotification = clientQuestionAlert.AlertNotification;
+                                 var dbAlertNotificationSet = dbQuestionAlert.AlertNotificationSet;
+                                 if (dbAlertNotificationSet.Count > 0)
+                                 {
+                                    var dbAlertNotification = dbAlertNotificationSet.First();
+                                    dbAlertNotification.DistributionList = clientAlertNotification.DistributionList;
+                                    dbAlertNotification.Type = clientAlertNotification.Type;
+                                 }
+                                 dbQuestionAlert.AlertNotificationSet = dbAlertNotificationSet;
+                              }
+                              else
+                              {
+                                 // Add question alert
+                                 var dbQuestionAlert = new QuestionAlertSet();
+                                 dbQuestionAlert.Description = clientQuestionAlert.Description;
+                                 dbQuestionAlert.Operator = clientQuestionAlert.Operator;
+                                 dbQuestionAlert.TriggerAnswer = clientQuestionAlert.TriggerAnswer;
+                                 var clientAlertNotification = clientQuestionAlert.AlertNotification;
+                                 ICollection<AlertNotificationSet> dbAlertNotificationSet = new
+                                 List<AlertNotificationSet>();
+                                 var dbAlertNotification = new AlertNotificationSet();
+                                 dbAlertNotification.Type = clientAlertNotification.Type;
+                                 dbAlertNotification.DistributionList = clientAlertNotification.DistributionList;
+                                 dbAlertNotificationSet.Add(dbAlertNotification);
+                                 dbQuestionAlert.AlertNotificationSet = dbAlertNotificationSet;
+                                 dbQuestionAlerts.Add(dbQuestionAlert);
+                              }                              
+                           }
+                           // Delete question alert
+                           for (var i = dbQuestionAlerts.Count() - 1; i > -1; --i)
+                           {
+                              var clientQuestionAlertResult = clientQuestionAlerts.Where(
+                                 x => x.Id.Equals(dbQuestionAlerts.ElementAt(i).Id));
+                              if (clientQuestionAlertResult.Count() == 0)
+                              {
+                                 db.QuestionAlertSet.Remove(dbQuestionAlerts.ElementAt(i));
+                              }
+                           }
+                        }
+                        dbQuestion.Order = clientQuestion.Order;
+                        dbQuestion.Text = clientQuestion.Text;
+                        dbQuestion.Type = clientQuestion.Type;
+                        dbQuestion.ValidAnswers = clientQuestion.ValidAnswers;
+                        dbQuestion.ValidAnswersDetails = clientQuestion.ValidAnswersDetails;
+                     }
+                     else
+                     {
+                        // Add questions
+                        var dbQuestion = new Question();
+                        dbQuestion.Order = clientQuestion.Order;
+                        dbQuestion.Text = clientQuestion.Text;
+                        dbQuestion.Type = clientQuestion.Type;
+                        dbQuestion.ValidAnswers = clientQuestion.ValidAnswers;
+                        dbQuestion.ValidAnswersDetails = clientQuestion.ValidAnswersDetails;
+                        var clientQuestionAlerts = clientQuestion.QuestionAlertSet;
+                        ICollection<QuestionAlertSet> dbQuestionAlerts = new List<QuestionAlertSet>();
+                        foreach (var clientQuestionAlert in clientQuestionAlerts)
+                        {
+                           var dbQuestionAlert = new QuestionAlertSet();
+                           dbQuestionAlert.Description = clientQuestionAlert.Description;
+                           dbQuestionAlert.Operator = clientQuestionAlert.Operator;
+                           dbQuestionAlert.TriggerAnswer = clientQuestionAlert.TriggerAnswer;
+                           var clientAlertNotification = clientQuestionAlert.AlertNotification;
+                           ICollection<AlertNotificationSet> dbAlertNotificationSet = new
+                           List<AlertNotificationSet>();
+                           var dbAlertNotification = new AlertNotificationSet();
+                           dbAlertNotification.Type = clientAlertNotification.Type;
+                           dbAlertNotification.DistributionList = clientAlertNotification.DistributionList;
+                           dbAlertNotificationSet.Add(dbAlertNotification);
+                           dbQuestionAlert.AlertNotificationSet = dbAlertNotificationSet;
+                           dbQuestionAlerts.Add(dbQuestionAlert);
+                        }
+                        dbQuestion.QuestionAlertSet = dbQuestionAlerts;
+                        dbQuestions.Add(dbQuestion);
+                     }
+                  }
+                  // Delete questions
+                  for (var i = dbQuestions.Count - 1; i > -1; --i)
+                  {
+                     var clientQuestionResult = clientQuestions.Where(x => x.Id.Equals(dbQuestions.ElementAt(i).Id));
+                     if (clientQuestionResult.Count() == 0)
+                     {
+                        db.QuestionSet.Remove(dbQuestions.ElementAt(i));
+                     }
+                  }
+               }
                db.SaveChanges();
                return Json(new smsSurvery.Surveryer.Models.RequestResult("success",
                   "update"), JsonRequestBehavior.AllowGet);
             }
             else
             {
+               SurveyPlan dbSurveyPlan = new SurveyPlan();
                UserProfile user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-               db.SurveyPlanSet.Add(clientSurveyPlan);
-               user.SurveyPlanSet.Add(clientSurveyPlan);
+               dbSurveyPlan.Provider = user.DefaultProvider;
+               dbSurveyPlan.Description = clientSurveyPlan.Description;
+               dbSurveyPlan.ThankYouMessage = clientSurveyPlan.ThankYouMessage;
+               // Add questions
+               ICollection<Question> dbQuestions = new List<Question>();
+               foreach (var clientQuestion in clientSurveyPlan.QuestionSet)
+               {
+                  ICollection<QuestionAlertSet> dbQuestionAlertSet =
+                  new List<QuestionAlertSet>();
+                  foreach (var clientQuestionAlert in clientQuestion.QuestionAlertSet)
+                  {
+                     ICollection<AlertNotificationSet> dbAlertNotificationSet =
+                        new List<AlertNotificationSet>();
+                     var clientAlertNotification = clientQuestionAlert.AlertNotification;
+                     AlertNotificationSet dbAlertNotification = new AlertNotificationSet();
+                     dbAlertNotification.DistributionList = clientAlertNotification.DistributionList;
+                     dbAlertNotification.Type = clientAlertNotification.Type;
+                     db.AlertNotificationSet.Add(dbAlertNotification);
+                     dbAlertNotificationSet.Add(dbAlertNotification);
+
+                     QuestionAlertSet dbQuestionAlert = new QuestionAlertSet();
+                     dbQuestionAlert.AlertNotificationSet = dbAlertNotificationSet;
+                     dbQuestionAlert.Operator = clientQuestionAlert.Operator;
+                     dbQuestionAlert.TriggerAnswer = clientQuestionAlert.TriggerAnswer;
+                     dbQuestionAlert.Description = clientQuestionAlert.Description;
+                     db.QuestionAlertSet.Add(dbQuestionAlert);
+                     dbQuestionAlertSet.Add(dbQuestionAlert);
+                  }
+                  var dbQuestion = new Question();
+                  dbQuestion.Order = clientQuestion.Order;
+                  dbQuestion.Text = clientQuestion.Text;
+                  dbQuestion.Type = clientQuestion.Type;
+                  dbQuestion.ValidAnswers = clientQuestion.ValidAnswers;
+                  dbQuestion.ValidAnswersDetails = clientQuestion.ValidAnswersDetails;
+                  dbQuestion.QuestionAlertSet = dbQuestionAlertSet;
+                  db.QuestionSet.Add(dbQuestion);
+                  dbQuestions.Add(dbQuestion);
+               }
+               dbSurveyPlan.QuestionSet = dbQuestions;
+               db.SurveyPlanSet.Add(dbSurveyPlan);
+               user.SurveyPlanSet.Add(dbSurveyPlan);
                db.SaveChanges();
                return Json(new smsSurvery.Surveryer.Models.RequestResult("success",
-                  "create", clientSurveyPlan.Id.ToString()),
+                  "create", dbSurveyPlan.Id.ToString()),
                   JsonRequestBehavior.AllowGet);
             }
          }
