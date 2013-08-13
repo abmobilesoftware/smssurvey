@@ -14,7 +14,7 @@ SurveyBuilder.QuestionModel = Backbone.Model.extend({
       QuestionAlertSet: []
    },
    initialize: function () {
-      this.parseAttributes();      
+      this.parseAttributes();
    },
    parseAttributes: function () {
       var questionConstants = SurveyUtilities.Utilities.CONSTANTS_QUESTION;
@@ -30,7 +30,7 @@ SurveyBuilder.QuestionModel = Backbone.Model.extend({
             });
          }
          this.set("Answers", answers);
-      }      
+      }
    },
    deleteQuestion: function () {
       this.trigger("delete", this);
@@ -44,8 +44,8 @@ SurveyBuilder.QuestionModel = Backbone.Model.extend({
    updateQuestionType: function (newType) {
       this.set("Type", newType);
    },
-   setAnswersModalModel: function (answerModalModel) {
-      this.answerModalModel = answerModalModel;
+   setAnswersModalModel: function (answersModalModel) {
+      this.answersModalModel = answersModalModel;
    },
    setAlertsModalModel: function (alertsModalModel) {
       this.alertsModalModel = alertsModalModel;
@@ -53,6 +53,11 @@ SurveyBuilder.QuestionModel = Backbone.Model.extend({
    setQuestionAlertSet: function () {
       this.set("QuestionAlertSet",
          this.alertsModalModel.getQuestionAlertsAsJson());
+   },
+   setAnswers: function () {
+      var answersAsJson = this.answersModalModel.getAnswersAsJson();
+      this.set("ValidAnswers", answersAsJson.ValidAnswers);
+      this.set("ValidAnswersDetails", answersAsJson.ValidAnswersDetails)
    }
 });
 
@@ -62,7 +67,7 @@ SurveyBuilder.QuestionView = Backbone.View.extend({
    events: {
       "click .question-type": "selectQuestionType",
       "click .delete-btn": "deleteQuestion",
-      "keyup .question-input": "updateQuestion"  
+      "keyup .question-input": "updateQuestion"
    },
    initialize: function () {
       _.bindAll(this, "selectQuestionType", "deleteQuestion", "updateQuestion",
@@ -70,10 +75,16 @@ SurveyBuilder.QuestionView = Backbone.View.extend({
       this.questionTemplate = _.template($("#question-template").html());
       this.model.on(this.model.events.ANSWERS_CHANGED, this.render);
       this.model.on(this.model.events.ALERTS_CHANGED, this.render);
-      
-      this.answersModalModel = new SurveyModals.AnswersModalModel({ Answers: this.model.get("Answers") });
-      this.model.setAnswersModalModel(this.answersModalModel);
-      this.answersModalView = null;
+      if (this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY
+         || this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_MANY_FROM_MANY) {
+         this.answersModalModel = new SurveyModals.AnswersModalModel({ Answers: this.model.get("Answers") });
+         this.model.setAnswersModalModel(this.answersModalModel);
+         this.answersModalView = null;
+      }
+      if (this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_RATING) {
+         this.ratingsModalModel = new SurveyModals.RatingsModalModel();
+         this.ratingsModalView = null;
+      }
       this.alertsModalModel = new SurveyModals.AlertsModalModel({
          QuestionAlertSet: this.model.get("QuestionAlertSet"),
          QuestionType: this.model.get("Type")
@@ -90,22 +101,36 @@ SurveyBuilder.QuestionView = Backbone.View.extend({
          $QUESTION_INPUT: $(".question-input", this.$el),
          $ANSWERS_TABLE: $(".answers-table", this.$el),
          $MULTIPLE_ANSWERS_MODAL: $("#multiple-answer-modal" + this.model.get("Id"), this.$el),
-         $EDIT_ALERTS_MODAL: $("#edit-alerts-modal" + this.model.get("Id"), this.$el)
+         $EDIT_ALERTS_MODAL: $("#edit-alerts-modal" + this.model.get("Id"), this.$el),
+         $RATINGS_MODAL: $("#edit-rating-modal" + this.model.get("Id"), this.$el)
       };
-      if (this.answersModalView == null) {
-         this.answersModalView = new SurveyModals.AnswersModalView({
-            el: this.dom.$MULTIPLE_ANSWERS_MODAL,
-            model: this.answersModalModel
-         });
-      };
+      if (this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY
+         || this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_MANY_FROM_MANY) {
+         if (this.answersModalView == null) {
+            this.answersModalView = new SurveyModals.AnswersModalView({
+               el: this.dom.$MULTIPLE_ANSWERS_MODAL,
+               model: this.answersModalModel
+            });
+         };
+         this.answersModalView.render();
+      }
+      if (this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_RATING) {
+         if (this.ratingsModalView == null) {
+            this.ratingsModalView = new SurveyModals.RatingsModalView({
+               el: this.dom.$RATINGS_MODAL,
+               model: this.ratingsModalModel
+            })
+         }
+         this.ratingsModalView.render();
+      }
       if (this.alertsModalView == null) {
          this.alertsModalView = new SurveyModals.AlertsModalView({
             el: this.dom.$EDIT_ALERTS_MODAL,
             model: this.alertsModalModel
          });
-      };
-      this.answersModalView.render();
+      };      
       this.alertsModalView.render();
+      
       return this.$el;
    },
    selectQuestionType: function (event) {
@@ -375,6 +400,7 @@ SurveyBuilder.QuestionSetModel = Backbone.Model.extend({
       for (var i = 0; i < this.questionSetCollection.models.length; ++i) {
          // set the last alerts changes
          this.questionSetCollection.models[i].setQuestionAlertSet();
+         this.questionSetCollection.models[i].setAnswers();
          // set the last answers changes
          collectionAsJson.push(this.questionSetCollection.models[i].toJSON());
       }

@@ -4,24 +4,18 @@ SurveyModals.AnswersModalView = Backbone.View.extend({
       "click .add-answer-btn": "addAnswer"
    },
    initialize: function () {
-      _.bindAll(this, "render", "addAnswer", "deleteAnswer");
+      _.bindAll(this, "render", "addAnswer");
       this.template = _.template($("#no-answers-template").html());
       this.dom = {
          $ANSWERS_TABLE: $(".answers-table", this.$el)
       };
-      this.answersCollection = new SurveyModals.AnswersCollection();
-      _.each(this.model.get("Answers"), function (answer, index) {
-         var answerModel = new SurveyModals.AnswerModel(answer);
-         this.answersCollection.add(answer);
-      }, this);
-      this.answersCollection.on("add remove", this.render);
-      this.answersCollection.on("deleteAnswerEvent", this.deleteAnswer)
+      this.model.on(this.model.events.UPDATE_VIEW, this.render);
       this.render();
    },
    render: function () {
       this.dom.$ANSWERS_TABLE.empty();
-      if (this.answersCollection.models.length > 0) {
-         _.each(this.answersCollection.models, function (answer, index) {
+      if (this.model.getAnswers().length > 0) {
+         _.each(this.model.getAnswers(), function (answer, index) {
             var answerView = new SurveyModals.AnswerView({ model: answer });
             this.dom.$ANSWERS_TABLE.append(answerView.render());
          }, this);
@@ -30,12 +24,31 @@ SurveyModals.AnswersModalView = Backbone.View.extend({
       }
    },
    addAnswer: function () {
-      this.answersCollection.add(new SurveyModals.AnswerModel());
+      this.model.addAnswer();
+   }
+});
+
+SurveyModals.AnswersModalModel = Backbone.Model.extend({
+   events: {
+      UPDATE_VIEW: "updateViewEvent"
    },
-   deleteAnswer: function (answer) {
-      this.answersCollection.remove(answer);
+   defaults: {
+      Answers: []
+   },
+   initialize: function () {
+      this.answersCollection = new SurveyModals.AnswersCollection();
+      _.each(this.get("Answers"), function (answer, index) {
+         var answerModel = new SurveyModals.AnswerModel(answer);
+         this.answersCollection.add(answer);
+      }, this);
+      this.answersCollection.on("add remove", function () {
+         this.trigger(this.events.UPDATE_VIEW);
+      }, this);
    },
    getAnswers: function () {
+      return this.answersCollection.models;
+   },
+   getAnswersAsJson: function () {
       var answers = this.answersCollection.models;
       var answersLabelAsString = "";
       var answersIdentifierAsString = "";
@@ -51,12 +64,9 @@ SurveyModals.AnswersModalView = Backbone.View.extend({
          "ValidAnswers": answersIdentifierAsString,
          "ValidAnswersDetails": answersLabelAsString
       };
-   }
-});
-
-SurveyModals.AnswersModalModel = Backbone.Model.extend({
-   defaults: {
-      Answers: []
+   },
+   addAnswer: function () {
+      this.answersCollection.add(new SurveyModals.AnswerModel());
    }
 });
 
@@ -78,7 +88,7 @@ SurveyModals.AnswerView = Backbone.View.extend({
       this.model.trigger("deleteAnswerEvent", this.model);
    },
    updateAnswer: function (event) {
-      this.set("AnswerLabel", event.currentTarget.value);
+      this.model.set("AnswerLabel", event.currentTarget.value);
    }
 });
 
@@ -89,5 +99,12 @@ SurveyModals.AnswerModel = Backbone.Model.extend({
    }
 });
 SurveyModals.AnswersCollection = Backbone.Collection.extend({
-   model: SurveyModals.AnswerModel
+   model: SurveyModals.AnswerModel,
+   initialize: function () {
+      _.bindAll(this, "deleteAnswer");
+      this.on("deleteAnswerEvent", this.deleteAnswer);
+   },
+   deleteAnswer: function (answer) {
+      this.remove(answer);
+   }
 });
