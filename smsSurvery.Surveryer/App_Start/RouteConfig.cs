@@ -12,7 +12,11 @@ namespace smsSurvery.Surveryer
       public static void RegisterRoutes(RouteCollection routes)
       {
          routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
-
+         routes.MapRoute(
+                "MobileSurvey",                                           // Route name
+                "MobileSurvey/{id}",                            // URL with parameters
+                new { controller = "MobileSurvey", action = "Index" }  // Parameter defaults
+            );
          routes.MapRoute(
              name: "Default",
              url: "{controller}/{action}/{id}",
