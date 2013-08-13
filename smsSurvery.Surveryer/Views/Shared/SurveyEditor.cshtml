@@ -52,7 +52,16 @@
             </div>
          </div>
       <% } else if (Type == "Rating") { %>
-         <a href="#" role="button" class="open-modal-btn btn" data-toggle="modal">Edit rating</a>   
+         <a href="#edit-rating-modal<%=Id %>" role="button" class="open-modal-btn btn" data-toggle="modal">Edit rating</a>   
+         <div id="edit-rating-modal<%= Id %>" class="modal hide fade">
+            <div class="modal-header">
+               <button type="button" class="close-modal-btn close close-rating-modal-btn" data-dismiss="modal" aria-hidden="true">x</button>
+               <h3>Edit rating</h3>
+            </div>
+            <div class="modal-body">
+                                        
+            </div>
+         </div>
       <% } %>
       <a href="#edit-alerts-modal<%= Id %>" role="button" class="open-modal-btn btn edit-alerts-btn" data-toggle="modal"><img class="icon" src="/Content/images/bell-20.png" />Edit alerts</a>   
    
@@ -224,6 +233,25 @@
 <script type="text/template" id="no-answers-template">
    <tr>
       <td>No answers</td>
+   </tr>
+</script>
+
+<script type="text/template" id="rating-modal-content-template">
+   <select id="rating-select"> 
+      <option value="noValue">Select scale size</option>
+      <option value="3" <% if (ScaleSize == 3) { %> selected="selected" <% } %>>Scale 1 to 3</option>
+      <option value="5" <% if (ScaleSize == 5) { %> selected="selected" <% } %>>Scale 1 to 5</option>
+   </select>
+   <div class="rating-modal-content">
+      <table class="rating-table">
+      </table>
+   </div>       
+</script>
+
+<script type="text/template" id="rating-template">
+   <tr>
+      <td><%=RatingIdentifier %></td>
+      <td><input class="rating-label-input" type="text" value="<%=RatingLabel %>" placeholder="Rating value"/></td>
    </tr>
 </script>
 
