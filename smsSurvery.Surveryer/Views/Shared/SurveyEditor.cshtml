@@ -138,11 +138,17 @@
                %>
                 
                <%
-               } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY) { 
+               } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_MANY_FROM_MANY) { 
                   _.each(Answers, function(answer, index) {  %>
                      <input type="checkbox" name="multiple-answers" value="<%= answer.AnswerLabel %>" /> <%=answer.AnswerLabel %> <br/>
                <% });
-               } %>           
+               } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY) { %>
+                     <select>    
+                     <% _.each(Answers, function(answer, index) {  %>
+                        <option value="<%= answer.AnswerLabel %>"><%= answer.AnswerLabel %></option>   
+                     <% });  %>
+                     </select>   
+               <% } %>          
             </div>
         </div>
 </script>
