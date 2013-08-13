@@ -93,7 +93,7 @@ SurveyBuilder.QuestionView = Backbone.View.extend({
          $EDIT_ALERTS_MODAL: $("#edit-alerts-modal" + this.model.get("Id"), this.$el)
       };
       if (this.answersModalView == null) {
-         this.answersModalView = new SurveyModals.AnswersModalView({
+         this.answersModalView = new SurveyModals.AnswersModalView({ 
             el: this.dom.$MULTIPLE_ANSWERS_MODAL,
             model: this.answersModalModel
          });

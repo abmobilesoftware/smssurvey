@@ -8,7 +8,7 @@
         <EntityTypeShape EntityType="smsSurveyModel.Question" Width="1.5" PointX="12.875" PointY="1.875" />
         <EntityTypeShape EntityType="smsSurveyModel.SurveyPlan" Width="1.75" PointX="8" PointY="1.875" />
         <EntityTypeShape EntityType="smsSurveyModel.Customer" Width="1.5" PointX="5.25" PointY="7.5" />
-        <EntityTypeShape EntityType="smsSurveyModel.SurveyResult" Width="1.5" PointX="9.625" PointY="6.5" />
+        <EntityTypeShape EntityType="smsSurveyModel.SurveyResult" Width="2.125" PointX="10.125" PointY="5.875" />
         <AssociationConnector Association="smsSurveyModel.CustomerSurveyResult" />
         <AssociationConnector Association="smsSurveyModel.SurveyPlanSurveyResult" />
         <EntityTypeShape EntityType="smsSurveyModel.Result" Width="1.5" PointX="15.5" PointY="7" />

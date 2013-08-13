@@ -1,0 +1,199 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>MobileSurvey</title>   
+   <link rel="stylesheet" href="~/Content/bootstrap.css"/>
+  <link rel="stylesheet" href="~/Content/survey.css"/>
+   
+<script id="preview-website-template" type="text/template">   
+   <div class="preview-content2">
+
+   </div>
+</script>
+
+<script id="question-preview-website-template" type="text/template">
+        <div class="question">
+            <h4 class="questionTitle"> <%= Text %> </h4>            
+            <div class="answerArea">
+               <%
+               if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_YES_NO) { %>
+                   <input type="radio" name="yes-no-answer" value="Yes" /> Yes <br/>
+                   <input type="radio" name="yes-no-answer" value="No" /> No  
+               <% 
+               } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_FREE_TEXT) {
+               %>
+                   <textarea class="answer comment"></textarea>
+               <%
+               } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_RATING) {
+               %>
+                
+               <%
+               } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY) { 
+                  _.each(Answers, function(answer, index) {  %>
+                     <input type="checkbox" name="multiple-answers" value="<%= answer.AnswerLabel %>" /> <%=answer.AnswerLabel %> <br/>
+               <% });
+               } %>           
+            </div>
+        </div>
+</script>
+
+<script type="text/template" id="star-template">
+        <% if (Active) { %>
+            <a href="#"><img class="starImg" src="/Content/images/star50.png" /></a>
+            <% } else { %>
+            <a href="#"><img class="starImg" src="/Content/images/star50_inactive.png" /></a>
+            <% } %>
+</script>
+
+<script type="text/template" id="star-bar-template">
+   <fieldset class='additionalInfo invisibleByDefault'>
+      <legend class='stars-additional-info'>Why?</legend><textarea  class='comment'></textarea>
+   </fieldset>
+ 
+</script>
+
+<script type="text/template" id="survey-info-template">
+   <div id="survey-info-title" class="section-title">
+      <h4 class="section-title-text">
+         <a class="edit-survey" href="#">
+         <% if (DisplayInfoTable) { %>
+            <img src="/Content/images/arrow_down_dblue_16.png" />           
+         <% } else { %>
+            <img src="/Content/images/arrow_up_dblue_16.png" />
+         <% } %>
+         </a>
+         <span class="survey-info-title-text"><%= Description %></span> 
+      </h4> 
+      <a class="btn btn-success save-btn section-title-button" role="button" data-toggle="modal" href="#">Save</a>
+   </div>
+   <% if (DisplayInfoTable) { %> 
+   <table class="table table-striped table-bordered survey-info-data">
+      <tr>
+         <td>Description</td>
+         <td><input type="text" placeholder="Insert survey description" id="survey-description" value="<%= Description %>"/></td>
+      </tr>
+      <tr>
+         <td>Thank you message & follow up</td>
+         <td><input type="text" placeholder="Insert thank you message" id="survey-thank-you-message" value="<%= ThankYouMessage %>"/></td>
+      </tr>
+      <tr>
+         <% var idRepresentation = Id == -1 ? "No id" : Id; %>
+         <td>ID</td>
+         <td><%= idRepresentation %></td>
+      </tr>
+      <tr>
+         <td>ShortID</td>
+         <td>bogus short id</td>
+      </tr>
+      </table>
+   <% } %>
+</script>
+
+<script type="text/template" id="answer-template">
+   <tr>
+      <td></td>
+       <td><input class="answer-label-input" type="text" value="<%= AnswerLabel %>" placeholder="Input answer..." /></td>
+       <td><button class="btn btn-danger delete-answer">Delete answer</button></td>
+   </tr>     
+</script>
+
+<script type="text/template" id="no-answers-template">
+   <tr>
+      <td>No answers</td>
+   </tr>
+</script>
+    @Scripts.Render("~/bundles/jquery")
+   <script type="text/javascript" src="~/MyScripts/SurveyUtilities.js"></script>
+   
+   <script type="text/javascript" src="~/MyScripts/SurveyElements.js"></script>
+   <script type="text/javascript" src="~/MyScripts/SurveyPreview.js"></script>
+   <script type="text/javascript" src="~/MyScripts/SurveyAnswersModal.js"></script>
+   <script type="text/javascript" src="~/MyScripts/SurveyAlertsModal.js"></script>   
+   <script type="text/javascript" src="~/MyScripts/SurveyBuilder.js"></script>   
+   <script type="text/javascript">
+      $(function () {
+         //initialize mobile survey given the id of the survey plan
+         var surveyId = $("#surveyPlanId").val();
+         var surveyModel = new SurveyBuilder.SurveyModel({
+            Id: surveyId,
+            Description: "",
+            ThankYouMessage: "",
+            StartDate: "15/6/2013",
+            EndDate: "17/7/2013",
+            IsRunning: false           
+         });
+         surveyModel.fetch({
+            data: { Id: surveyId
+            },
+            success: function (model, response, options) {
+               var x = new SurveyBuilder.QuestionSetModel({ jsonQuestions: model.get("QuestionSet") });              
+               var surveyPreviewModel = new SurveyPreview.SurveyPreviewModel(
+                  {
+                     PreviewType: SurveyUtilities.Utilities.CONSTANTS_SURVEY.TYPE_MOBILE_WEBSITE
+                  });
+               var qView = new SurveyPreview.SurveyMobileView({
+                  el: $("#survey"),
+                  model: x,
+                  surveyPreviewModel: surveyPreviewModel
+               });
+               qView.render();
+            },
+            error: function (model, response, options) {
+               alert(response)
+            }
+         });
+      });
+   </script>
+</head>
+
+
+<body>
+     <input type="hidden" value="@ViewBag.Id" id="surveyPlanId"/>
+     <section id="survey">
+        <section id="questionsPage" class="page">
+            <header>
+                <img id="pageIcon" src="/Content/images/small-icon.png" />
+                <h3 id="pageTitle"></h3>
+                <div class="clear" />
+            </header>
+            <section id="questions">
+            </section>
+            <div id="doneBtnWrapper">
+                <button id="doneBtn"></button>
+            </div>
+            <footer>
+                <span>Powered by 
+                  <a href="http://www.txtfeedback.net">TxtFeedback
+                  </a>
+                </span>
+            </footer>
+            <input type="hidden" value="Submit" id="doneBtnTitle" />
+        </section>
+        <section id="thankYouPage" class="page invisible">
+            <div id="thankYouMessage"><strong>Thank you!</strong></div>
+            <div id="userInfo">
+                <fieldset>
+                    <label for="email">
+                        Enter your e-mail address to receive the voucher:
+                    </label>
+                    <input id="email" type="email" /><br />
+                    <button id="sendBtn" class="enabled small" />Send</button>
+                </fieldset>
+            </div>
+        </section>
+        <div class="clear" />
+    </section>
+   @* <div id="surveyContent">
+        
+         <div id="preview-content-modal" >
+         </div>
+    
+    </div>*@
+</body>
+</html>

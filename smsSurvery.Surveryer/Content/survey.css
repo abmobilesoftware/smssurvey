@@ -1,0 +1,205 @@
+﻿/* QUESTIONS PAGE */
+@media (max-width:320px) {
+    #survey {
+        font-size: 12pt;
+    }
+}
+
+@media (max-width: 480px) {
+    #survey {
+        font-size: 10pt;
+    }
+}
+
+@media screen {
+    #survey {
+        font-size: 12pt;
+    }
+}
+
+#survey {
+    text-indent: 1em;
+    position:relative;
+}
+
+/* HEADER */
+header {
+    font-size: 1.3em;
+    padding-bottom: 0.2em;
+    padding-top: 0.3em;
+    padding-left: 1em;
+}
+
+#pageTitle {
+    font-weight: bold;
+    float:left;
+    position:relative;
+    display:inline;
+    top:0.8em;
+}
+
+#pageIcon {
+    float:left;
+    display:inline;
+    width:2.5em;
+    height:2.5em;
+}
+
+button {
+    padding: 0.4em;
+    font-size: 1.2em;
+    width: 100%;
+    cursor: pointer;
+}
+
+    button.align-right {
+        float: right;
+    }
+
+    button.enabled {
+        background: #FF5B00;
+        border: 0.1em solid #F54928;
+        color: #ffffff;
+    }
+
+    button.disabled {
+        background: #bbb;
+        color: #ffffff;
+    }
+
+    button.small {
+        width:auto;
+        font-size:1em;
+        padding:0.3em;
+    }
+/* END HEADER */
+
+/* QUESTION */
+div.question {
+    font-size: 1.2em;
+    margin-bottom: 0.5em;
+    background: #F4F7F8;
+    border-bottom: 1px solid #D6DEE3;
+}
+
+        div.question h4.questionTitle {
+            /*background: #327CCB;*/
+            background: #009FE3;
+            color: #FFFFFF;
+            padding: 10px 7px;
+            border-top: 0.1em solid #0A6DF6;
+            line-height: 1.2em;
+            display:block;
+        }
+
+div.invalidAnswer h4.questionTitle {
+    background: #E60064;
+    border-top: 0.1em solid #990042;
+}
+
+div.question div.answerArea {
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+    padding-left: 1em;
+    padding-right: 1em;
+    text-indent: 0;
+}
+/* END QUESTION */
+
+textarea.comment {
+    color: #000;
+    font: 1em sans-serif;
+    width: 100%;
+}
+
+.additionalInfo {
+    margin-top:0.5em;
+}
+
+.additionalInfo legend {
+    font-size: 1em;
+}
+
+    .additionalInfo textarea {
+        margin-top:0.3em;
+    }
+
+select.list {
+    width: 100%;
+    font-size: 1em;
+    padding: 5px;
+}
+
+#doneBtnWrapper {
+    margin-bottom: 0.6em;
+    text-indent: 0px;
+    padding-left: 1em;
+    padding-right: 1em;
+}
+
+footer {
+    font-size: 0.8em;
+    border-top: 0.1em dotted #132E4B;
+    padding-top: 8px;
+    padding-bottom: 5px;
+}
+
+/* UTILITIES */
+.clear {
+    clear: both;
+}
+
+.page {
+   float:left;
+   width: 100%;
+   font-family:sans-serif;
+}
+
+/* STAR */
+.star {
+    display: inline;
+}
+
+.starImg {
+    width: 1.5em;
+    height: 1.5em;
+}
+
+.invisibleByDefault {
+    display: none;
+}
+/* END STAR */
+
+/* END UTILITIES */
+
+/* END QUESTIONS PAGE */
+
+/* THANK YOU PAGE */
+#thankYouPage {
+text-indent: 0px;
+position:relative;
+font-family: sans-serif;
+}
+
+#thankYouMessage {
+    padding-left:1em;
+    padding-top:0.5em;
+    padding-bottom:0.5em;
+    font-size:1.3em;
+}
+
+#userInfo {
+    padding: 1em;
+    background: #F4F7F8;
+    border: 1px solid #D6DEE3;
+    font-size: 1.1em;
+}
+
+#userInfo label {
+line-height: 1.2em;
+}
+
+    #userInfo input {
+        font-size:1.1em;
+        height:1.2em;
+    }

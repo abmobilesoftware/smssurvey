@@ -209,6 +209,7 @@
     <Compile Include="Controllers\AnswerController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MobileSurveyController.cs" />
     <Compile Include="Controllers\QuestionController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Mailers\AlertMailer.cs" />
@@ -253,6 +254,7 @@
     <Content Include="Content\images\logo1.png" />
     <Content Include="Content\jquery-ui-1.8.23.custom.css" />
     <Content Include="Content\jquery.tagsinput.css" />
+    <Content Include="Content\survey.css" />
     <Content Include="Content\SurveyPlan\questionSet.css" />
     <Content Include="Content\WordCloud.css" />
     <Content Include="MyScripts\SurveyAlertsModal.js" />
@@ -445,6 +447,7 @@
     <Content Include="Views\AlertMailer\_Layout.cshtml" />
     <Content Include="Views\AlertMailer\SendAlert.cshtml" />
     <Content Include="Views\Shared\SurveyEditor.cshtml" />
+    <Content Include="Views\MobileSurvey\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

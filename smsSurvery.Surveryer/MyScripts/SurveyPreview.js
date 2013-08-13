@@ -7,7 +7,7 @@ SurveyPreview.QuestionPreviewWebsiteView = Backbone.View.extend({
    render: function () {
       this.$el.html(this.questionPreviewTemplate(this.model.toJSON()));
       if (this.model.get("Type") == this.questionConstants.TYPE_RATING) {
-         var starBarView = new SurveyElements.StarBarView({ el: $(".website-answer-area-preview", this.$el) });
+         var starBarView = new SurveyElements.StarBarView({ el: $(".answerArea", this.$el) });
       }
       return this.$el;
    }
@@ -49,7 +49,7 @@ SurveyPreview.SurveyPreviewWebsiteView = Backbone.View.extend({
    render: function () {
       this.$el.html(this.surveyPreviewTemplate());
       this.dom = {
-         $PREVIEW_CONTENT: $(".preview-content", this.$el)
+         $PREVIEW_CONTENT: $(".preview-content2", this.$el)
       }
       _.each(this.model.getQuestionSetCollection(), function (question, index) {
          var questionPreviewView = new SurveyPreview.QuestionPreviewWebsiteView({ model: question });
@@ -69,7 +69,7 @@ SurveyPreview.SurveyPreviewView = Backbone.View.extend({
       this.surveyPreviewModel = this.options.surveyPreviewModel;
       this.surveyPreviewModel.on("change:PreviewType", this.render);
       this.dom = {
-         $SURVEY_PREVIEW_CONTENT: $("#preview-content-modal", this.$el)
+         $SURVEY_PREVIEW_CONTENT: $("#questions", this.$el)
       }
       this.surveyConstants = SurveyUtilities.Utilities.CONSTANTS_SURVEY;
    },
@@ -92,4 +92,94 @@ SurveyPreview.SurveyPreviewModel = Backbone.Model.extend({
    defaults: {
       PreviewType: SurveyUtilities.Utilities.CONSTANTS_SURVEY.TYPE_SMS
    }
+});
+
+
+SurveyPreview.ButtonView = Backbone.View.extend({
+   events: {
+      "click": "click"
+   },
+   initialize: function () {
+      _.bindAll(this, "click");
+      this.constants = {
+         PROP_DISABLED: "disabled",
+         CLASS_DISABLED: "disabled",
+         CLASS_ENABLED: "enabled",
+         EVENT_CLICK: "click"
+      }
+      this.on(this.constants.EVENT_DISABLE, this.disableBtn);
+      this.on(this.constants.EVENT_ENABLE, this.enableBtn);
+   },
+   enable: function () {
+      this.$el.prop(this.constants.PROP_DISABLED, false);
+      if (this.$el.hasClass(this.constants.CLASS_DISABLED)) {
+         this.$el.removeClass(this.constants.CLASS_DISABLED);
+      }
+      this.$el.addClass(this.constants.CLASS_ENABLED);
+   },
+   disable: function () {
+      this.$el.prop(this.constants.PROP_DISABLED, true);
+      if (this.$el.hasClass(this.constants.CLASS_ENABLED)) {
+         this.$el.removeClass(this.constants.CLASS_ENABLED);
+      }
+      this.$el.addClass(this.constants.CLASS_DISABLED);
+   },
+   click: function (event) {
+      event.preventDefault();
+      this.trigger(this.constants.EVENT_CLICK);
+   },
+   getTitle: function () {
+      return this.$el.html();
+   },
+   setTitle: function (title) {
+      this.$el.html(title);
+   }
+});
+SurveyPreview.SurveyMobileView = Backbone.View.extend({
+   events: {      
+     
+   },   
+   initialize: function () {
+      _.bindAll(this,"render");
+      this.surveyPreviewModel = this.options.surveyPreviewModel;
+      this.el = $("#questions");
+      //this.dom = {
+      //   $SURVEY_PREVIEW_CONTENT: $("#questions", this.$el)
+      //}
+      this.surveyConstants = SurveyUtilities.Utilities.CONSTANTS_SURVEY;
+
+      var self = this;
+      //_.bindAll(this, "render", "saveSurvey",
+      //    "hide", "getHeight");
+      this.pageElements = {
+         $DONE_BTN: $("#doneBtn", this.$el),
+         $QUESTIONS_AREA: $("#questions", this.$el),
+         $PAGE_TITLE: $("#pageTitle", this.$el)
+      };
+      this.pageEvents = {
+         THANK_YOU_PAGE: "goToThankYouPageEvent"
+      };    
+      this.doneBtn = new SurveyPreview.ButtonView({
+         el: this.pageElements.$DONE_BTN
+      });
+      this.doneBtnTitle = $("#doneBtnTitle").val();
+      this.doneBtn.enable();
+      this.doneBtn.setTitle(this.doneBtnTitle);
+      //this.questionSet.on("change:PickedAnswer", function () {
+      //   if (self.isSurveyComplete()) {
+      //      self.doneBtn.enable();
+      //   } else {
+      //      self.doneBtn.disable();
+      //   }
+      //});
+      this.doneBtn.on("click", this.saveSurvey);
+      this.render();
+
+     
+   },   
+   render: function () {
+      
+      var surveyPreviewView = new SurveyPreview.SurveyPreviewWebsiteView({ model: this.model });
+      this.el.append(surveyPreviewView.render());
+   }  
 });
