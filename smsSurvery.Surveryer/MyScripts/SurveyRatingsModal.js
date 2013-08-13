@@ -26,25 +26,40 @@
 
 SurveyModals.RatingsModalModel = Backbone.Model.extend({
    defaults: {
-      Ratings: ""
+      Ratings: "",
+      ScaleSize: "",
    },
    initialize: function () {
       this.initializeRatingScale(this.get("ScaleSize"));
    },
    changeScaleSize: function (size) {
-      this.initializeRatingScale(size);
+      this.set("Ratings", "");
+      this.initializeRatingScale(size);      
       this.set("ScaleSize", size);
    },
    initializeRatingScale: function (scaleSize) {
       var ratingsSplitted = this.get("Ratings").split(";");
       var ratingsCollection = [];
-      for (var i = 0; i < ratingsSplitted.length; ++i) {
-         ratingsCollection.push(new SurveyModals.RatingModel({ RatingIdentifier: i, RatingLabel: ratingsSplitted[i]}));
+      for (var i = 0; i < scaleSize; ++i) {
+         ratingsCollection.push(new SurveyModals.RatingModel({
+            RatingIdentifier: i,
+            RatingLabel: i < ratingsSplitted.length ? ratingsSplitted[i] : ""
+         }));
       }
       this.surveyRatingsCollection = new SurveyModals.RatingsCollection(ratingsCollection);
    },
    getRatings: function () {
       return this.surveyRatingsCollection.models;
+   },
+   getRatingsAsString: function () {
+      var ratingsAsString = "";
+      if (this.surveyRatingsCollection.models.length > 1) {
+         ratingsAsString += this.surveyRatingsCollection.models[0].get("RatingLabel");
+         for (var i = 1; i < this.surveyRatingsCollection.models.length; ++i) {
+            ratingsAsString += ";" + this.surveyRatingsCollection.models[i].get("RatingLabel");
+         }
+      }
+      return ratingsAsString;
    }
 });
 

@@ -261,6 +261,7 @@
     <Content Include="MyScripts\SurveyBuilder.js" />
     <Content Include="MyScripts\SurveyMain.js" />
     <Content Include="MyScripts\SurveyPreview.js" />
+    <Content Include="MyScripts\SurveyRatingsModal.js" />
     <Content Include="MyScripts\SurveyUtilities.js" />
     <Content Include="Scripts\backbone.js" />
     <Content Include="Scripts\bootstrap.js" />

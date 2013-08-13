@@ -44,20 +44,33 @@ SurveyBuilder.QuestionModel = Backbone.Model.extend({
    updateQuestionType: function (newType) {
       this.set("Type", newType);
    },
+   emptyValidAnswersDetails: function() {
+      this.set("ValidAnswersDetails", "");
+   },
    setAnswersModalModel: function (answersModalModel) {
       this.answersModalModel = answersModalModel;
    },
    setAlertsModalModel: function (alertsModalModel) {
       this.alertsModalModel = alertsModalModel;
    },
+   setRatingsModalModel: function(ratingsModalModel) {
+      this.ratingsModalModel = ratingsModalModel;
+   },
    setQuestionAlertSet: function () {
       this.set("QuestionAlertSet",
          this.alertsModalModel.getQuestionAlertsAsJson());
    },
    setAnswers: function () {
-      var answersAsJson = this.answersModalModel.getAnswersAsJson();
-      this.set("ValidAnswers", answersAsJson.ValidAnswers);
-      this.set("ValidAnswersDetails", answersAsJson.ValidAnswersDetails)
+      if (this.answersModalModel != null) {
+         var answersAsJson = this.answersModalModel.getAnswersAsJson();
+         this.set("ValidAnswers", answersAsJson.ValidAnswers);
+         this.set("ValidAnswersDetails", answersAsJson.ValidAnswersDetails);
+      }
+   },
+   setRatings: function () {
+      if (this.ratingsModalModel != null) {
+         this.set("ValidAnswersDetails", this.ratingsModalModel.getRatingsAsString());
+      }
    }
 });
 
@@ -82,7 +95,11 @@ SurveyBuilder.QuestionView = Backbone.View.extend({
          this.answersModalView = null;
       }
       if (this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_RATING) {
-         this.ratingsModalModel = new SurveyModals.RatingsModalModel();
+         this.ratingsModalModel = new SurveyModals.RatingsModalModel({
+            Ratings: this.model.get("ValidAnswersDetails") == null ? "" : this.model.get("ValidAnswersDetails"),
+            ScaleSize: this.model.get("ValidAnswersDetails") == null ? 0 : this.model.get("ValidAnswersDetails").split(";").length
+         });
+         this.model.setRatingsModalModel(this.ratingsModalModel);
          this.ratingsModalView = null;
       }
       this.alertsModalModel = new SurveyModals.AlertsModalModel({
@@ -136,6 +153,7 @@ SurveyBuilder.QuestionView = Backbone.View.extend({
    selectQuestionType: function (event) {
       event.preventDefault();
       var newQuestionType = $(event.currentTarget).attr("value");
+      this.model.emptyValidAnswersDetails();
       this.model.updateQuestionType(newQuestionType);
    },
    deleteQuestion: function (event) {
@@ -401,6 +419,8 @@ SurveyBuilder.QuestionSetModel = Backbone.Model.extend({
          // set the last alerts changes
          this.questionSetCollection.models[i].setQuestionAlertSet();
          this.questionSetCollection.models[i].setAnswers();
+         this.questionSetCollection.models[i].setRatings();
+         
          // set the last answers changes
          collectionAsJson.push(this.questionSetCollection.models[i].toJSON());
       }
