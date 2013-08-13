@@ -11,7 +11,9 @@ SurveyBuilder.QuestionModel = Backbone.Model.extend({
       Order: 0,
       Answers: [],
       AlertOperators: [],
-      QuestionAlertSet: []
+      QuestionAlertSet: [],
+      PickedAnswer: "noValue",
+      ValidAnswer : true
    },
    initialize: function () {
       this.parseAttributes();      
@@ -53,6 +55,13 @@ SurveyBuilder.QuestionModel = Backbone.Model.extend({
    setQuestionAlertSet: function () {
       this.set("QuestionAlertSet",
          this.alertsModalModel.getQuestionAlertsAsJson());
+   },
+   validate: function (attributes, options) {
+      if (attributes.PickedAnswer === "noValue" || attributes.PickedAnswer === "") {
+         this.set({ "ValidAnswer": false }, { silent: false });
+      } else {
+         this.set({ "ValidAnswer": true }, { silent: false});
+      }
    }
 });
 
@@ -369,6 +378,9 @@ SurveyBuilder.QuestionSetModel = Backbone.Model.extend({
    },
    getQuestionSetCollection: function () {
       return this.questionSetCollection.models;
+   },
+   getQuestionSet: function () {
+      return this.questionSetCollection;
    },
    getQuestionSetCollectionAsJson: function () {
       var collectionAsJson = [];

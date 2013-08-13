@@ -36,6 +36,7 @@ namespace smsSurvery.Surveryer.Controllers
               
            }
            ViewBag.Id = idToUse;
+           ViewBag.SurveyTitle = "Customer satisfaction survey";
            return View();
         }
         protected override void Dispose(bool disposing)

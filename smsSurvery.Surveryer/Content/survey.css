@@ -36,6 +36,9 @@ header {
     position:relative;
     display:inline;
     top:0.8em;
+    vertical-align: baseline;
+   margin: 0;
+   line-height: 20px;
 }
 
 #pageIcon {
@@ -83,6 +86,7 @@ div.question {
 }
 
         div.question h4.questionTitle {
+           margin: 0;
             /*background: #327CCB;*/
             background: #009FE3;
             color: #FFFFFF;
@@ -118,6 +122,9 @@ textarea.comment {
 
 .additionalInfo legend {
     font-size: 1em;
+    margin: 0;
+    border-bottom: 0;
+    line-height: 19px;
 }
 
     .additionalInfo textarea {
