@@ -258,6 +258,7 @@
     <Content Include="Content\survey.css" />
     <Content Include="Content\SurveyPlan\questionSet.css" />
     <Content Include="Content\WordCloud.css" />
+    <Content Include="MyScripts\MobileSurvey.js" />
     <Content Include="MyScripts\Question.js" />
     <Content Include="MyScripts\SurveyAlertsModal.js" />
     <Content Include="MyScripts\SurveyAnswersModal.js" />

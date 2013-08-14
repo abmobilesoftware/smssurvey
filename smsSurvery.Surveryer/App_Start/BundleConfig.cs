@@ -18,7 +18,7 @@ namespace smsSurvery.Surveryer
          bundles.Add(new ScriptBundle("~/bundles/mobilesurvey").Include(
             "~/MyScripts/SurveyUtilities.js",
             "~/MyScripts/SurveyElements.js",
-            "~/MyScripts/SurveyPreview.js",
+            "~/MyScripts/MobileSurvey.js",
             "~/MyScripts/SurveyAnswersModal.js",
             "~/MyScripts/SurveyAlertsModal.js",
             "~/MyScripts/Question.js",

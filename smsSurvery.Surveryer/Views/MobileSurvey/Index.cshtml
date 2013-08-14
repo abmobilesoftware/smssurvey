@@ -121,7 +121,7 @@
             success: function (model, response, options) {
                var surveyModel = new Question.QuestionSetModel({ jsonQuestions: model.get("QuestionSet") });
                //DA sure they are ordered
-               var surveyView = new SurveyPreview.SurveyMobileView({
+               var surveyView = new MobileSurvey.SurveyMobileView({
                   el: $("#survey"),
                   model: surveyModel
                });
