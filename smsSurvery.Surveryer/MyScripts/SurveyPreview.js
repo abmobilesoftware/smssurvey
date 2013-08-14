@@ -179,6 +179,7 @@ SurveyPreview.QuestionMobileView = Backbone.View.extend({
           });
    }
 });
+
 SurveyPreview.SurveyMobileView = Backbone.View.extend({
    events: {      
      

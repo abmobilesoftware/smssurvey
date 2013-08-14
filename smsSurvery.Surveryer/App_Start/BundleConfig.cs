@@ -21,6 +21,7 @@ namespace smsSurvery.Surveryer
             "~/MyScripts/SurveyPreview.js",
             "~/MyScripts/SurveyAnswersModal.js",
             "~/MyScripts/SurveyAlertsModal.js",
+            "~/MyScripts/Question.js",
             "~/MyScripts/SurveyBuilder.js"
             ));
          bundles.Add(new ScriptBundle("~/bundles/myscripts").Include(
@@ -29,6 +30,7 @@ namespace smsSurvery.Surveryer
                      "~/MyScripts/SurveyPreview.js",
                      "~/MyScripts/SurveyAnswersModal.js",
                      "~/MyScripts/SurveyAlertsModal.js",
+                     "~/MyScripts/Question.js",
                      "~/MyScripts/SurveyBuilder.js",
                      "~/MyScripts/SurveyMain.js"
             ));

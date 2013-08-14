@@ -119,7 +119,7 @@
                Id: surveyId
             },
             success: function (model, response, options) {
-               var surveyModel = new SurveyBuilder.QuestionSetModel({ jsonQuestions: model.get("QuestionSet") });
+               var surveyModel = new Question.QuestionSetModel({ jsonQuestions: model.get("QuestionSet") });
                //DA sure they are ordered
                var surveyView = new SurveyPreview.SurveyMobileView({
                   el: $("#survey"),
