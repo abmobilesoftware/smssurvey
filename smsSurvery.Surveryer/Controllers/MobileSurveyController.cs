@@ -23,7 +23,7 @@ namespace smsSurvery.Surveryer.Controllers
               if (res.Terminated != true)
               {
                  ViewBag.Id = idToUse;
-                 ViewBag.SurveyTitle = "Mobile survey?";
+                 ViewBag.SurveyTitle = "Mobile survey";
                  return View();
               }
               else

@@ -113,14 +113,14 @@
             StartDate: "15/6/2013",
             EndDate: "17/7/2013",
             IsRunning: false
-         });
-         qOrderIndex = 1;
+         });         
          surveyModel.fetch({
             data: {
                Id: surveyId
             },
             success: function (model, response, options) {
                var surveyModel = new SurveyBuilder.QuestionSetModel({ jsonQuestions: model.get("QuestionSet") });
+               //DA sure they are ordered
                var surveyView = new SurveyPreview.SurveyMobileView({
                   el: $("#survey"),
                   model: surveyModel

@@ -208,10 +208,12 @@ SurveyPreview.SurveyMobileView = Backbone.View.extend({
       var self = this;
       this.el.append(this.surveyMobileTemplate());
       var areaToAddContentTo = $(".questionsArea", this.$el);
-            _.each(this.model.getQuestionSetCollection(), function (question, index) {
-               var questionPreviewView = new SurveyPreview.QuestionMobileView({ model: question });
-               this.questionsViews.push(questionPreviewView);
-               areaToAddContentTo.append(questionPreviewView.render());
+      _.each(this.model.getQuestionSetCollection(), function (question, index) {
+         //DA now that the collection is sorted (due to the comparator on the collection) we can correctly set the QuestionNumber
+         question.set("QuestionNumber", index + 1);
+         var questionPreviewView = new SurveyPreview.QuestionMobileView({ model: question });
+         this.questionsViews.push(questionPreviewView);
+         areaToAddContentTo.append(questionPreviewView.render());
       }, this);
       return this.$el;
    },

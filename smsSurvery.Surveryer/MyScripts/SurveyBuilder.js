@@ -9,6 +9,7 @@ SurveyBuilder.QuestionModel = Backbone.Model.extend({
       Text: "",
       Type: SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_FREE_TEXT,
       Order: 0,
+      QuestionNumber: 1,
       Answers: [],
       AlertOperators: [],
       QuestionAlertSet: [],
@@ -20,7 +21,7 @@ SurveyBuilder.QuestionModel = Backbone.Model.extend({
    },
    parseAttributes: function () {
       var questionConstants = SurveyUtilities.Utilities.CONSTANTS_QUESTION;
-      var miscConstants = SurveyUtilities.Utilities.CONSTANTS_MISC;
+      var miscConstants = SurveyUtilities.Utilities.CONSTANTS_MISC;      
       if (this.get("Type") == questionConstants.TYPE_SELECT_ONE_FROM_MANY) {
          var answersIdentifier = this.get("ValidAnswers").split(miscConstants.SEPARATOR_ANSWERS);
          var answersLabel = this.get("ValidAnswersDetails").split(miscConstants.SEPARATOR_ANSWERS);
@@ -362,10 +363,11 @@ SurveyBuilder.QuestionSetModel = Backbone.Model.extend({
    initialize: function () {
       _.bindAll(this, "getQuestionSetCollection");
       this.jsonQuestions = this.get("jsonQuestions");
+
       this.questionModels = [];
       if (this.jsonQuestions != undefined) {
          for (var i = 0; i < this.jsonQuestions.length; ++i) {
-            var question = new SurveyBuilder.QuestionModel(this.jsonQuestions[i]);
+            var question = new SurveyBuilder.QuestionModel(this.jsonQuestions[i]);           
             this.questionModels.push(question);
          }
       }
@@ -396,8 +398,5 @@ SurveyBuilder.QuestionSetModel = Backbone.Model.extend({
       var questionModel = new SurveyBuilder.QuestionModel();
       questionModel.updateOrder(this.questionSetCollection.models.length);
       this.questionSetCollection.add(questionModel);
-   },
-   sortQuestionCollection: function () {
-      this.questionSetCollection.sort();
    }
 });
