@@ -85,7 +85,7 @@
             </footer>
             <input type="hidden" value="Submit" id="doneBtnTitle" />
         </section>
-        <section id="thankYouPage" class="page invisible">
+        <section id="thankYouPage" class="page" style="display:none">
             <div id="thankYouMessage"><strong>Thank you!</strong></div>
             <div id="userInfo">
                 <fieldset>
@@ -121,7 +121,7 @@
             success: function (model, response, options) {
                var surveyModel = new Question.QuestionSetModel({ jsonQuestions: model.get("QuestionSet") });
                //DA sure they are ordered
-               var surveyView = new MobileSurvey.SurveyMobileView({
+               var surveyView = new SurveyView({
                   el: $("#survey"),
                   model: surveyModel
                });

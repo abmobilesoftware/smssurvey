@@ -84,6 +84,8 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
    }
 });
 
+
+
 MobileSurvey.SurveyMobileView = Backbone.View.extend({
    events: {
 
@@ -99,6 +101,9 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
          $QUESTIONS_AREA: $("#questions", this.$el),
          $PAGE_TITLE: $("#pageTitle", this.$el)
       };
+      this.pageEvents = {
+         THANK_YOU_PAGE: "goToThankYouPageEvent"
+      };
       this.doneBtn = new MobileSurvey.ButtonView({
          el: this.pageElements.$DONE_BTN
       });
@@ -106,8 +111,7 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
       this.doneBtn.enable();
       this.doneBtn.setTitle(this.doneBtnTitle);
       this.doneBtn.on("click", this.saveSurvey);
-      this.questionsViews = [];
-      this.thankYouPage = new MobileSurvey.ThankYouPageView({ el: $("#thankYouPage") });
+      this.questionsViews = [];     
    },
    render: function () {
       var self = this;
@@ -145,6 +149,7 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
                  surveyStatus.status +
              ")"
              );
+         this.trigger(this.pageEvents.THANK_YOU_PAGE);
       } else {
          this.doneBtn.setTitle(
              this.doneBtnTitle + " (" +
@@ -152,9 +157,23 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
              ")"
              );
       }
+   },
+   getWidth: function () {
+      return this.$el.outerWidth();
+   },
+   setWidth: function (value) {
+      this.$el.css("width", value);
+   },
+   hide: function () {
+      this.$el.hide();
+   },
+   show: function () {
+      this.$el.show();
+   },
+   getHeight: function () {
+      return this.$el.outerHeight();
    }
 });
-
 MobileSurvey.ThankYouPageView = Backbone.View.extend({
    events: {
       "click button": "sendEmail"
@@ -187,5 +206,50 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
    },
    setTop: function (value) {
       this.$el.css("top", value);
+   }
+});
+
+var SurveyView = Backbone.View.extend({
+   initialize: function () {
+      _.bindAll(this, "goToThankYouPage");
+      this.questionsPage = new MobileSurvey.SurveyMobileView({ el: $("#questionsPage"), model: this.model });
+      this.thankYouPage = new MobileSurvey.ThankYouPageView({ el: $("#thankYouPage") });      
+      this.questionsPage.on(this.questionsPage.pageEvents.THANK_YOU_PAGE,
+          this.goToThankYouPage);
+   },
+   goToThankYouPage: function () {
+      var self = this;
+      var pageWidthInPixels = this.questionsPage.getWidth() + "px";
+      var expandedWidthPercent = "200%"; // width of two pages side by side
+      var normalWidthPercent = "100%";
+      this.questionsPage.setWidth(pageWidthInPixels);
+      this.setWidth(expandedWidthPercent);
+      this.thankYouPage.show();
+      this.thankYouPage.setWidth(pageWidthInPixels);
+      /*
+          thankYouPage.setTop - make thank you page visible during the transition.
+          For devices with small display, where the survey doesn't fit entirely 
+          on the screen and you have to scroll down.
+      */
+      var topPadding = this.questionsPage.getHeight() - window.innerHeight;
+      this.thankYouPage.setTop(topPadding > 0 ? topPadding + "px" : 0);
+      this.$el.animate({
+         right: this.questionsPage.getWidth()
+      }, {
+         duration: 600,
+         complete: function () {
+            self.questionsPage.hide();
+            self.thankYouPage.setTop(0);
+            self.$el.css("right", "0px");
+            self.thankYouPage.setWidth(normalWidthPercent);
+            self.setWidth(normalWidthPercent);
+         }
+      });
+   },
+   setWidth: function (value) {
+      this.$el.css("width", value);
+   },
+   render: function () {
+      this.questionsPage.render();
    }
 });
