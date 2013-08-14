@@ -1,10 +1,11 @@
 ﻿var SurveyModals = SurveyModals || {};
 SurveyModals.AnswersModalView = Backbone.View.extend({
    events: {
-      "click .add-answer-btn": "addAnswer"
+      "click .add-answer-btn": "addAnswer",
+      "click .close-answers-modal-btn": "closeModal"
    },
    initialize: function () {
-      _.bindAll(this, "render", "addAnswer");
+      _.bindAll(this, "render", "addAnswer", "closeModal");
       this.template = _.template($("#no-answers-template").html());
       this.dom = {
          $ANSWERS_TABLE: $(".answers-table", this.$el)
@@ -25,6 +26,9 @@ SurveyModals.AnswersModalView = Backbone.View.extend({
    },
    addAnswer: function () {
       this.model.addAnswer();
+   },
+   closeModal: function () {
+      this.model.emptyAnswersCollection();
    }
 });
 
@@ -67,6 +71,11 @@ SurveyModals.AnswersModalModel = Backbone.Model.extend({
    },
    addAnswer: function () {
       this.answersCollection.add(new SurveyModals.AnswerModel());
+   },
+   emptyAnswersCollection: function() {
+      for (var i=this.answersCollection.models.length - 1; i>-1; --i) {
+         this.answersCollection.remove(this.answersCollection.models[i]);
+      }
    }
 });
 

@@ -1,6 +1,7 @@
 ﻿SurveyModals.AlertsModalView = Backbone.View.extend({
    events: {
-      "click .add-alert-btn": "addAlert"
+      "click .add-alert-btn": "addAlert",
+      "click .close-alerts-modal-btn": "closeModal"
    },
    initialize: function () {
       _.bindAll(this, "render");
@@ -8,7 +9,7 @@
       this.dom = {
          $ALERTS_MODAL_CONTENT: $(".alerts-modal-content", this.$el)
       };
-      this.model.on(this.model.events.UPDATE_VIEW, this.render);      
+      this.model.on(this.model.events.UPDATE_VIEW, this.render);
    },
    render: function () {
       this.dom.$ALERTS_MODAL_CONTENT.empty();
@@ -24,6 +25,9 @@
    addAlert: function (event) {
       event.preventDefault();
       this.model.addAlert();
+   },
+   closeModal: function (event) {
+      this.model.emptyAlertsCollection();
    }
 });
 
@@ -44,7 +48,7 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
          var alertModel = new SurveyModals.AlertModel(alert);
          this.alertsCollection.add(alertModel);
       }, this);
-      this.alertsCollection.on("add remove", function() {
+      this.alertsCollection.on("add remove", function () {
          this.trigger(this.events.UPDATE_VIEW);
       }, this);
       this.alertClientId = -1300;
@@ -95,6 +99,11 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
          alertsAsJson.push(alert.toJSON());
       });
       return alertsAsJson;
+   },
+   emptyAlertsCollection: function () {
+      for (var i = this.alertsCollection.models.length - 1; i > -1; i = i - 1) {
+         this.alertsCollection.remove(this.alertsCollection.models[i]);
+      }
    }
 });
 

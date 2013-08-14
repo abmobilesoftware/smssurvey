@@ -1,9 +1,10 @@
 ﻿SurveyModals.RatingsModalView = Backbone.View.extend({
    events: {
-      "change #rating-select": "changeScaleSize"
+      "change #rating-select": "changeScaleSize",
+      "click .close-rating-modal-btn": "closeModal"
    },
    initialize: function () {
-      _.bindAll(this, "changeScaleSize", "render");
+      _.bindAll(this, "changeScaleSize", "render", "closeModal");
       this.template = _.template($("#rating-modal-content-template").html());
       this.dom = {
          $RATING_MODAL_BODY: $(".modal-body", this.$el)
@@ -21,6 +22,9 @@
    },
    changeScaleSize: function (event) {
       this.model.changeScaleSize(event.currentTarget.value);
+   },
+   closeModal: function () {
+      this.model.emptyRatingsCollection();
    }
 });
 
@@ -60,6 +64,12 @@ SurveyModals.RatingsModalModel = Backbone.Model.extend({
          }
       }
       return ratingsAsString;
+   },
+   emptyRatingsCollection: function () {
+      for (var i = this.surveyRatingsCollection.models.length - 1; i > -1; --i) {
+         this.surveyRatingsCollection.remove(this.surveyRatingsCollection.models[i]);
+      }
+      this.set("ScaleSize", 0);
    }
 });
 

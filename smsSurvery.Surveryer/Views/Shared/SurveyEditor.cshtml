@@ -16,7 +16,7 @@
       }
    %>
       <div class="grip">
-         <img src="/Content/images/grip.png"/>
+         Click and drag
       </div>
       <div class="question-content">
          <div class="input-append">
@@ -40,7 +40,7 @@
       <% if (Type == "SelectOneFromMany" || Type == "SelectManyFromMany") { %>
          <a href="#multiple-answer-modal<%= Id %>" role="button" class="open-modal-btn btn edit-answers-btn" data-toggle="modal"><img class="icon" src="/Content/images/edit_20.png" />Edit answers</a>   
          <div id="multiple-answer-modal<%= Id %>" class="modal hide fade">
-            <div class="modal-header">
+            <div class="modal-header">               
                <button type="button" class="close-modal-btn close close-answers-modal-btn" data-dismiss="modal" aria-hidden="true">x</button>
                <h3> Configure answers </h3>
             </div>
@@ -49,6 +49,9 @@
                
                 </table>
                 <a class="btn btn-primary add-answer-btn">Add answer</a>
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-success save-answers" data-dismiss="modal">Save</button>
             </div>
          </div>
       <% } else if (Type == "Rating") { %>
@@ -60,6 +63,9 @@
             </div>
             <div class="modal-body">
                                         
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-success save-rating" data-dismiss="modal">Save</button>
             </div>
          </div>
       <% } %>
@@ -75,6 +81,9 @@
             </div>
             <button class="btn btn-primary add-alert-btn">Add alert</button>                 
          </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-success save-alerts" data-dismiss="modal">Save</button>
+         </div>
       </div>
    </div>
    <div class="clear"></div>
@@ -83,7 +92,7 @@
 <script type="text/template" id="alert-template">
    <div class="alert-entry">
       <span><strong>Description:</span>
-      <input type="text" class="alert-description-input" placeholder="Ex: Insert description ..." value="<%= Description %>" />
+      <input type="text" class="alert-description-input" placeholder="Ex: Insert description ..." value="<%= Description %>" /><br/>
       <select class="alert-operator-select">
                   <option value="noValue">Select operator</option>
          <% _.each(AlertOperators, function(alertOperator, index) { 
@@ -97,7 +106,7 @@
       <input type="text" class="alert-trigger-answer-input" value="<%= TriggerAnswer %>" placeholder="Insert trigger value" />
       <button class="btn btn-danger delete-alert-btn"><img src="/Content/images/close_20.png" /></button><br/>
       <span>Send mail to:</span>
-      <input type="text" class="alert-distribution-list-input" value="<%= AlertNotification.DistributionList %>" placeholder="Ex: address1@domain.net;address2@domain.net"/>
+      <input type="text" class="alert-distribution-list-input" value="<%= AlertNotification.DistributionList %>" placeholder="Ex: address1@domain.net,address2@domain.net"/>
   </div>
 </script>
 
@@ -157,13 +166,15 @@
    <% 
    var questionText = Text;
    if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_YES_NO) {
-      questionText += " If your answer is Yes reply with 1, else reply with 2.";
+      questionText += " 1 for yes. 2 for no";
    } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_RATING) {
-      questionText += " Reply with a rating from 1 (worse) to 5 (best).";
+      var answersDetailsSplitted = ValidAnswersDetails.split(";") 
+      var scaleSize = answersDetailsSplitted.length;   
+      questionText += " Reply with a rating from 1 (" + answersDetailsSplitted[0] + ") to " + scaleSize + "(" + answersDetailsSplitted[scaleSize-1] + ").";
    } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY) {
       questionText += " Reply with the corresponding number.";
       _.each(Answers, function(answer, index) {
-         questionText += index + "-" + answer.AnswerLabel + ", ";
+         questionText += (index + 1) + "-" + answer.AnswerLabel + ", ";
       });
    }
    %>
@@ -287,3 +298,4 @@
       </div>
    </div>
 </div>
+<a href="/SurveyPlan">Back to survey list</a>
