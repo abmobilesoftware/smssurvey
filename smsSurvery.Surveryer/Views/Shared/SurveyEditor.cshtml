@@ -37,7 +37,7 @@
          </div>         
          <a href="#" class="btn btn-danger delete-btn">Delete</a>
     
-      <% if (Type == "SelectOneFromMany") { %>
+      <% if (Type == "SelectOneFromMany" || Type == "SelectManyFromMany") { %>
          <a href="#multiple-answer-modal<%= Id %>" role="button" class="open-modal-btn btn edit-answers-btn" data-toggle="modal"><img class="icon" src="/Content/images/edit_20.png" />Edit answers</a>   
          <div id="multiple-answer-modal<%= Id %>" class="modal hide fade">
             <div class="modal-header">
@@ -229,11 +229,9 @@
 </script>
 
 <script type="text/template" id="answer-template">
-   <tr>
-      <td></td>
-       <td><input class="answer-label-input" type="text" value="<%= AnswerLabel %>" placeholder="Input answer..." /></td>
-       <td><button class="btn btn-danger delete-answer">Delete answer</button></td>
-   </tr>     
+   <td></td>
+   <td><input class="answer-label-input" type="text" value="<%= AnswerLabel %>" placeholder="Input answer..." /></td>
+   <td><button class="btn btn-danger delete-answer">Delete answer</button></td>   
 </script>
 
 <script type="text/template" id="no-answers-template">
@@ -249,16 +247,14 @@
       <option value="5" <% if (ScaleSize == 5) { %> selected="selected" <% } %>>Scale 1 to 5</option>
    </select>
    <div class="rating-modal-content">
-      <table class="rating-table">
+      <table class="table table-striped table-bordered rating-table">
       </table>
    </div>       
 </script>
 
 <script type="text/template" id="rating-template">
-   <tr>
-      <td><%=RatingIdentifier %></td>
-      <td><input class="rating-label-input" type="text" value="<%=RatingLabel %>" placeholder="Rating value"/></td>
-   </tr>
+   <td><%=RatingIdentifier %></td>
+   <td><input class="rating-label-input" type="text" value="<%=RatingLabel %>" placeholder="Rating value"/></td>
 </script>
 
 <div id="survey">

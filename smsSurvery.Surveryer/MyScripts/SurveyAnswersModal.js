@@ -71,6 +71,7 @@ SurveyModals.AnswersModalModel = Backbone.Model.extend({
 });
 
 SurveyModals.AnswerView = Backbone.View.extend({
+   tagName: "tr",
    events: {
       "click .delete-answer": "deleteAnswer",
       "keyup .answer-label-input": "updateAnswer"

@@ -19,9 +19,12 @@ SurveyBuilder.QuestionModel = Backbone.Model.extend({
    parseAttributes: function () {
       var questionConstants = SurveyUtilities.Utilities.CONSTANTS_QUESTION;
       var miscConstants = SurveyUtilities.Utilities.CONSTANTS_MISC;
-      if (this.get("Type") == questionConstants.TYPE_SELECT_ONE_FROM_MANY) {
-         var answersIdentifier = this.get("ValidAnswers").split(miscConstants.SEPARATOR_ANSWERS);
-         var answersLabel = this.get("ValidAnswersDetails").split(miscConstants.SEPARATOR_ANSWERS);
+      if (this.get("Type") == questionConstants.TYPE_SELECT_ONE_FROM_MANY ||
+         this.get("Type") == questionConstants.TYPE_SELECT_MANY_FROM_MANY) {
+         var answersIdentifier = this.get("ValidAnswers") != null ?
+            this.get("ValidAnswers").split(miscConstants.SEPARATOR_ANSWERS) : [];
+         var answersLabel = this.get("ValidAnswersDetails") != null ?
+            this.get("ValidAnswersDetails").split(miscConstants.SEPARATOR_ANSWERS) : [];
          var answers = [];
          for (var i = 0; i < answersLabel.length; ++i) {
             answers.push({
@@ -44,7 +47,7 @@ SurveyBuilder.QuestionModel = Backbone.Model.extend({
    updateQuestionType: function (newType) {
       this.set("Type", newType);
    },
-   emptyValidAnswersDetails: function() {
+   emptyValidAnswersDetails: function () {
       this.set("ValidAnswersDetails", "");
    },
    setAnswersModalModel: function (answersModalModel) {
@@ -53,7 +56,7 @@ SurveyBuilder.QuestionModel = Backbone.Model.extend({
    setAlertsModalModel: function (alertsModalModel) {
       this.alertsModalModel = alertsModalModel;
    },
-   setRatingsModalModel: function(ratingsModalModel) {
+   setRatingsModalModel: function (ratingsModalModel) {
       this.ratingsModalModel = ratingsModalModel;
    },
    setQuestionAlertSet: function () {
@@ -84,31 +87,12 @@ SurveyBuilder.QuestionView = Backbone.View.extend({
    },
    initialize: function () {
       _.bindAll(this, "selectQuestionType", "deleteQuestion", "updateQuestion",
-         "render");
+         "render", "initializeModals");
       this.questionTemplate = _.template($("#question-template").html());
       this.model.on(this.model.events.ANSWERS_CHANGED, this.render);
       this.model.on(this.model.events.ALERTS_CHANGED, this.render);
-      if (this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY
-         || this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_MANY_FROM_MANY) {
-         this.answersModalModel = new SurveyModals.AnswersModalModel({ Answers: this.model.get("Answers") });
-         this.model.setAnswersModalModel(this.answersModalModel);
-         this.answersModalView = null;
-      }
-      if (this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_RATING) {
-         this.ratingsModalModel = new SurveyModals.RatingsModalModel({
-            Ratings: this.model.get("ValidAnswersDetails") == null ? "" : this.model.get("ValidAnswersDetails"),
-            ScaleSize: this.model.get("ValidAnswersDetails") == null ? 0 : this.model.get("ValidAnswersDetails").split(";").length
-         });
-         this.model.setRatingsModalModel(this.ratingsModalModel);
-         this.ratingsModalView = null;
-      }
-      this.alertsModalModel = new SurveyModals.AlertsModalModel({
-         QuestionAlertSet: this.model.get("QuestionAlertSet"),
-         QuestionType: this.model.get("Type")
-      });
-      this.model.setAlertsModalModel(this.alertsModalModel);
-      this.alertsModalView = null;
-      this.model.on("change:Type", this.alertsModalModel.updateAlertOperators);
+      this.initializeModals();
+      this.model.on("change:Type", this.initializeModals);
       this.model.on("change:Type", this.render);
    },
    render: function () {
@@ -123,32 +107,52 @@ SurveyBuilder.QuestionView = Backbone.View.extend({
       };
       if (this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY
          || this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_MANY_FROM_MANY) {
-         if (this.answersModalView == null) {
-            this.answersModalView = new SurveyModals.AnswersModalView({
-               el: this.dom.$MULTIPLE_ANSWERS_MODAL,
-               model: this.answersModalModel
-            });
-         };
+         this.answersModalView = new SurveyModals.AnswersModalView({
+            el: this.dom.$MULTIPLE_ANSWERS_MODAL,
+            model: this.answersModalModel
+         });
          this.answersModalView.render();
-      }
+      };
       if (this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_RATING) {
-         if (this.ratingsModalView == null) {
-            this.ratingsModalView = new SurveyModals.RatingsModalView({
-               el: this.dom.$RATINGS_MODAL,
-               model: this.ratingsModalModel
-            })
-         }
+         this.ratingsModalView = new SurveyModals.RatingsModalView({
+            el: this.dom.$RATINGS_MODAL,
+            model: this.ratingsModalModel
+         })
          this.ratingsModalView.render();
-      }
+      };
       if (this.alertsModalView == null) {
          this.alertsModalView = new SurveyModals.AlertsModalView({
             el: this.dom.$EDIT_ALERTS_MODAL,
             model: this.alertsModalModel
          });
-      };      
+      };
       this.alertsModalView.render();
-      
+
       return this.$el;
+   },
+   initializeModals: function () {
+      if (this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY
+         || this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_MANY_FROM_MANY) {
+         this.answersModalModel = new SurveyModals.AnswersModalModel({ Answers: this.model.get("Answers") });
+         this.model.setAnswersModalModel(this.answersModalModel);
+         this.answersModalView = null;
+      }
+      if (this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_RATING) {
+         this.ratingsModalModel = new SurveyModals.RatingsModalModel({
+            Ratings: this.model.get("ValidAnswersDetails") == null ? "" : this.model.get("ValidAnswersDetails"),
+            ScaleSize: this.model.get("ValidAnswersDetails") == null ? 0 : this.model.get("ValidAnswersDetails").split(";").length == 1 ? 0 :
+               this.model.get("ValidAnswersDetails").split(";").length
+         });
+         this.model.setRatingsModalModel(this.ratingsModalModel);
+         this.ratingsModalView = null;
+      }
+      this.alertsModalModel = new SurveyModals.AlertsModalModel({
+         QuestionAlertSet: this.model.get("QuestionAlertSet"),
+         QuestionType: this.model.get("Type")
+      });
+      this.model.setAlertsModalModel(this.alertsModalModel);
+      this.alertsModalView = null;
+      this.alertsModalModel.updateAlertOperators(this.model.get("Type"));
    },
    selectQuestionType: function (event) {
       event.preventDefault();
@@ -409,6 +413,7 @@ SurveyBuilder.QuestionSetModel = Backbone.Model.extend({
          function () {
             this.trigger(this.events.UPDATE_VIEW);
          }, this);
+      this.questionId = 15000;
    },
    getQuestionSetCollection: function () {
       return this.questionSetCollection.models;
@@ -420,14 +425,15 @@ SurveyBuilder.QuestionSetModel = Backbone.Model.extend({
          this.questionSetCollection.models[i].setQuestionAlertSet();
          this.questionSetCollection.models[i].setAnswers();
          this.questionSetCollection.models[i].setRatings();
-         
+
          // set the last answers changes
          collectionAsJson.push(this.questionSetCollection.models[i].toJSON());
       }
       return collectionAsJson;
    },
    addQuestion: function () {
-      var questionModel = new SurveyBuilder.QuestionModel();
+      ++this.questionId;
+      var questionModel = new SurveyBuilder.QuestionModel({ Id: this.questionId });
       questionModel.updateOrder(this.questionSetCollection.models.length);
       this.questionSetCollection.add(questionModel);
    },

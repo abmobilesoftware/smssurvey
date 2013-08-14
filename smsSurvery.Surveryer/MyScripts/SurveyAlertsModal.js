@@ -47,6 +47,7 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
       this.alertsCollection.on("add remove", function() {
          this.trigger(this.events.UPDATE_VIEW);
       }, this);
+      this.alertClientId = -1300;
    },
    getAlertOperators: function (type) {
       var questionConstants = SurveyUtilities.Utilities.CONSTANTS_QUESTION;
@@ -65,8 +66,9 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
       }
    },
    addAlert: function () {
+      ++this.alertClientId;
       this.alertsCollection.add(new SurveyModals.AlertModel({
-         Id: "",
+         Id: this.alertClientId,
          Description: "",
          TriggerAnswer: "",
          Operator: "",
@@ -78,8 +80,7 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
          }
       }));
    },
-   updateAlertOperators: function (model) {
-      var type = model.get("Type");
+   updateAlertOperators: function (type) {
       this.set("QuestionType", type);
       _.each(this.alertsCollection.models, function (alert) {
          alert.set("AlertOperators", this.getAlertOperators(type));

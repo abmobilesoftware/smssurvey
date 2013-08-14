@@ -42,7 +42,7 @@ SurveyModals.RatingsModalModel = Backbone.Model.extend({
       var ratingsCollection = [];
       for (var i = 0; i < scaleSize; ++i) {
          ratingsCollection.push(new SurveyModals.RatingModel({
-            RatingIdentifier: i,
+            RatingIdentifier: i+1,
             RatingLabel: i < ratingsSplitted.length ? ratingsSplitted[i] : ""
          }));
       }
@@ -71,6 +71,7 @@ SurveyModals.RatingModel = Backbone.Model.extend({
 });
 
 SurveyModals.RatingView = Backbone.View.extend({
+   tagName: "tr",
    events: {
       "keyup .rating-label-input": "updateRatingLabel"
    },
