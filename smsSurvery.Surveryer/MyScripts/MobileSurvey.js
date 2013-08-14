@@ -180,10 +180,12 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
    },
    initialize: function () {
       _.bindAll(this, "setWidth", "show",
-          "getHeight");
+          "getHeight", "render");
+      this.template = _.template($("#thankyoupage-template").html());
       this.sendBtn = new MobileSurvey.ButtonView({ el: $("#sendBtn", this.$el) });
       this.sendBtn.setTitle("Send");
       this.sendBtn.enable();
+      this.render();
    },
    setWidth: function (value) {
       this.$el.css("width", value);
@@ -206,6 +208,10 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
    },
    setTop: function (value) {
       this.$el.css("top", value);
+   },
+   render: function () {
+      this.$el.append(this.template());
+      return this.$el;
    }
 });
 

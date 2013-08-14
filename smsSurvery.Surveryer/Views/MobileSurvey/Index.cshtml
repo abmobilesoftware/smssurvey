@@ -57,7 +57,18 @@
   <input type='hidden' class='answer' value='noValue' />
 </script>
 
-   
+<script type="text/template" id="thankyoupage-template">
+      <div id="thankYouMessage"><strong>Thank you!</strong></div>
+         <div id="userInfo">
+               <fieldset>
+                  <label for="email">
+                     Enter your e-mail address to receive the voucher:
+                  </label>
+                  <input id="email" type="email" /><br />
+                  <button id="sendBtn" class="enabled small">Send</button>
+               </fieldset>
+      </div>
+</script>   
 </head>
 
 
@@ -86,16 +97,7 @@
             <input type="hidden" value="Submit" id="doneBtnTitle" />
         </section>
         <section id="thankYouPage" class="page" style="display:none">
-            <div id="thankYouMessage"><strong>Thank you!</strong></div>
-            <div id="userInfo">
-                <fieldset>
-                    <label for="email">
-                        Enter your e-mail address to receive the voucher:
-                    </label>
-                    <input id="email" type="email" /><br />
-                    <button id="sendBtn" class="enabled small" />Send</button>
-                </fieldset>
-            </div>
+          
         </section>
         <div class="clear" />
     </section>
