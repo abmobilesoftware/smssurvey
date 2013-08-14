@@ -20,9 +20,11 @@
 #survey {
     text-indent: 1em;
     position:relative;
-    padding: 0 0 0 10px;
 }
 
+#survey p {
+  padding: 0 0 0 10px;
+}
 /* HEADER */
 header {
     font-size: 1.3em;    
