@@ -348,6 +348,7 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <None Include="Properties\PublishProfiles\smssurvey.pubxml" />
+    <None Include="Properties\PublishProfiles\smssurveytest.pubxml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-ui-1.8.24.js" />
     <Content Include="Scripts\jquery-ui-1.8.24.min.js" />
@@ -449,6 +450,7 @@
     <Content Include="Views\AlertMailer\SendAlert.cshtml" />
     <Content Include="Views\Shared\SurveyEditor.cshtml" />
     <Content Include="Views\MobileSurvey\Index.cshtml" />
+    <Content Include="Views\MobileSurvey\SurveyAlreadyCompleted.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
