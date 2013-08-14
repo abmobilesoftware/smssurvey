@@ -25,18 +25,20 @@
 #survey p {
   padding: 0 0 0 10px;
 }
+
 /* HEADER */
 header {
     font-size: 1.3em;    
     padding: 0.3em 0 0.2em 4px;
 }
 
+.headerContainer {
+   width: 100%;
+   display:inline-block;
+}
 #pageTitle {
-    font-weight: bold;
-    float:left;
-    position:relative;
-    /*margin-top: 0.4em;*/
-    display:inline;  
+    font-weight: bold;    
+    margin: 0.4em 0 0 0 !important;    
     vertical-align: middle;     
     line-height: 20px;
 }
