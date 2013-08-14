@@ -8,8 +8,7 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>MobileSurvey</title>   
-   <link rel="stylesheet" href="~/Content/bootstrap.css"/>
-  <link rel="stylesheet" href="~/Content/survey.css"/>
+    @Styles.Render("~/bundles/MobileSurveyCss")
    
 <script id="mobileSurveyTemplate" type="text/template">   
    <div class="questionsArea">
@@ -19,7 +18,7 @@
 
 <script id="question-mobile-template" type="text/template">
         <div class="question">
-            <h4 class="questionTitle"> <%= Text %> </h4>            
+            <h4 class="questionTitle"> <%= QuestionNumber %>. <%= Text %> </h4>            
             <div class="answerArea">
                <%
                if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_YES_NO) { %>
@@ -58,48 +57,7 @@
   <input type='hidden' class='answer' value='noValue' />
 </script>
 
-    @Scripts.Render("~/bundles/jquery")
-   <script type="text/javascript" src="~/MyScripts/SurveyUtilities.js"></script>
    
-   <script type="text/javascript" src="~/MyScripts/SurveyElements.js"></script>
-   <script type="text/javascript" src="~/MyScripts/SurveyPreview.js"></script>
-   <script type="text/javascript" src="~/MyScripts/SurveyAnswersModal.js"></script>
-   <script type="text/javascript" src="~/MyScripts/SurveyAlertsModal.js"></script>   
-   <script type="text/javascript" src="~/MyScripts/SurveyBuilder.js"></script>   
-   <script type="text/javascript">
-      $(function () {
-         //initialize mobile survey given the id of the survey plan
-         var surveyId = $("#surveyPlanId").val();
-         var surveyModel = new SurveyBuilder.SurveyModel({
-            Id: surveyId,
-            Description: "",
-            ThankYouMessage: "",
-            StartDate: "15/6/2013",
-            EndDate: "17/7/2013",
-            IsRunning: false           
-         });
-         surveyModel.fetch({
-            data: { Id: surveyId
-            },
-            success: function (model, response, options) {
-               var x = new SurveyBuilder.QuestionSetModel({ jsonQuestions: model.get("QuestionSet") });              
-               var surveyPreviewModel = new SurveyPreview.SurveyPreviewModel(
-                  {
-                     PreviewType: SurveyUtilities.Utilities.CONSTANTS_SURVEY.TYPE_MOBILE_WEBSITE
-                  });
-               var qView = new SurveyPreview.SurveyMobileView({
-                  el: $("#survey"),
-                  model: x,
-                  surveyPreviewModel: surveyPreviewModel
-               });
-               qView.render();
-            },
-            error: function (model, response, options) {
-               alert(response)
-            }
-         });
-      });
-   </script>
 </head>
 
 
@@ -108,10 +66,12 @@
      <section id="survey">
         <section id="questionsPage" class="page">
             <header>
-                <img id="pageIcon" src="/Content/images/small-icon.png" />
-                <h3 id="pageTitle">@ViewBag.SurveyTitle</h3>
-                <div class="clear" />
+                <div class="headerContainer">
+                  <img id="pageIcon" src="/Content/images/small-icon.png" />
+                  <h3 id="pageTitle">@ViewBag.SurveyTitle</h3>
+                </div>                       
             </header>
+           <div class="clear" />
             <section id="questions">
             </section>
             <div id="doneBtnWrapper">
@@ -140,4 +100,37 @@
         <div class="clear" />
     </section>
 </body>
+    @Scripts.Render("~/bundles/jquery")
+   @Scripts.Render("~/bundles/mobilesurvey")  
+   <script type="text/javascript">
+      $(function () {
+         //initialize mobile survey given the id of the survey plan
+         var surveyId = $("#surveyPlanId").val();
+         var surveyModel = new SurveyBuilder.SurveyModel({
+            Id: surveyId,
+            Description: "",
+            ThankYouMessage: "",
+            StartDate: "15/6/2013",
+            EndDate: "17/7/2013",
+            IsRunning: false
+         });
+         qOrderIndex = 1;
+         surveyModel.fetch({
+            data: {
+               Id: surveyId
+            },
+            success: function (model, response, options) {
+               var surveyModel = new SurveyBuilder.QuestionSetModel({ jsonQuestions: model.get("QuestionSet") });
+               var surveyView = new SurveyPreview.SurveyMobileView({
+                  el: $("#survey"),
+                  model: surveyModel
+               });
+               surveyView.render();
+            },
+            error: function (model, response, options) {
+               alert(response)
+            }
+         });
+      });
+   </script>
 </html>

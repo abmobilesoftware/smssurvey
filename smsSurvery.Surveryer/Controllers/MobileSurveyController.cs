@@ -22,23 +22,23 @@ namespace smsSurvery.Surveryer.Controllers
               idToUse = res.SurveyPlan.Id;
               if (res.Terminated != true)
               {
-                 
+                 ViewBag.Id = idToUse;
+                 ViewBag.SurveyTitle = "Mobile survey?";
+                 return View();
               }
               else
               {
                  //we already submitted the results - > thank the user for participating
-                 
+                 return View("SurveyAlreadyCompleted");
               }
            }
            else
            {
               //invalid survey -> no bueno
-              
-           }
-           ViewBag.Id = idToUse;
-           ViewBag.SurveyTitle = "Customer satisfaction survey";
-           return View();
+              return View();
+           }          
         }
+
         protected override void Dispose(bool disposing)
         {
            db.Dispose();

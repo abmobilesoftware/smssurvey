@@ -20,32 +20,31 @@
 #survey {
     text-indent: 1em;
     position:relative;
+    padding: 0 0 0 10px;
 }
 
 /* HEADER */
 header {
-    font-size: 1.3em;
-    padding-bottom: 0.2em;
-    padding-top: 0.3em;
-    padding-left: 1em;
+    font-size: 1.3em;    
+    padding: 0.3em 0 0.2em 4px;
 }
 
 #pageTitle {
     font-weight: bold;
     float:left;
     position:relative;
-    display:inline;
-    top:0.8em;
-    vertical-align: baseline;
-   margin: 0;
-   line-height: 20px;
+    /*margin-top: 0.4em;*/
+    display:inline;  
+    vertical-align: middle;     
+    line-height: 20px;
 }
 
 #pageIcon {
     float:left;
     display:inline;
-    width:2.5em;
-    height:2.5em;
+    width:45px;
+    height:45px;
+    vertical-align: middle;
 }
 
 button {
@@ -147,8 +146,7 @@ select.list {
 footer {
     font-size: 0.8em;
     border-top: 0.1em dotted #132E4B;
-    padding-top: 8px;
-    padding-bottom: 5px;
+    padding: 0px 9px 5px 10px;
 }
 
 /* UTILITIES */
