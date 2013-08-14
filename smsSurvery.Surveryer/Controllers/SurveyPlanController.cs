@@ -186,6 +186,16 @@ namespace smsSurvery.Surveryer.Controllers
                dbSurveyPlan.Description = clientSurveyPlan.Description;
                var dbQuestions = dbSurveyPlan.QuestionSet;
                var clientQuestions = clientSurveyPlan.QuestionSet;
+              
+               // Delete old questions
+               for (var i = dbQuestions.Count - 1; i > -1; --i)
+               {
+                  var clientQuestionResult = clientQuestions.Where(x => x.Id.Equals(dbQuestions.ElementAt(i).Id));
+                  if (clientQuestionResult.Count() == 0)
+                  {
+                     db.QuestionSet.Remove(dbQuestions.ElementAt(i));
+                  }
+               }
                if (clientQuestions != null)
                {
                   foreach (var clientQuestion in clientQuestions)
@@ -193,13 +203,23 @@ namespace smsSurvery.Surveryer.Controllers
                      var dbQuestionResult = dbQuestions.Where(x => x.Id.Equals(clientQuestion.Id));
                      if (dbQuestionResult.Count() > 0)
                      {
-
                         var dbQuestion = dbQuestionResult.First();
                         // Update questions
                         var dbQuestionAlerts = dbQuestion.QuestionAlertSet;
                         var clientQuestionAlerts = clientQuestion.QuestionAlertSet;
+
                         if (clientQuestionAlerts != null)
                         {
+                           // Delete question alert
+                           for (var i = dbQuestionAlerts.Count() - 1; i > -1; --i)
+                           {
+                              var clientQuestionAlertResult = clientQuestionAlerts.Where(
+                                 x => x.Id.Equals(dbQuestionAlerts.ElementAt(i).Id));
+                              if (clientQuestionAlertResult.Count() == 0)
+                              {
+                                 db.QuestionAlertSet.Remove(dbQuestionAlerts.ElementAt(i));
+                              }
+                           }
                            foreach (var clientQuestionAlert in clientQuestionAlerts)
                            {
                               var dbQuestionAlertResult = dbQuestionAlerts.Where(x => x.Id.Equals(clientQuestionAlert.Id));
@@ -237,17 +257,7 @@ namespace smsSurvery.Surveryer.Controllers
                                  dbQuestionAlert.AlertNotificationSet = dbAlertNotificationSet;
                                  dbQuestionAlerts.Add(dbQuestionAlert);
                               }                              
-                           }
-                           // Delete question alert
-                           for (var i = dbQuestionAlerts.Count() - 1; i > -1; --i)
-                           {
-                              var clientQuestionAlertResult = clientQuestionAlerts.Where(
-                                 x => x.Id.Equals(dbQuestionAlerts.ElementAt(i).Id));
-                              if (clientQuestionAlertResult.Count() == 0)
-                              {
-                                 db.QuestionAlertSet.Remove(dbQuestionAlerts.ElementAt(i));
-                              }
-                           }
+                           }                           
                         }
                         dbQuestion.Order = clientQuestion.Order;
                         dbQuestion.Text = clientQuestion.Text;
@@ -266,35 +276,29 @@ namespace smsSurvery.Surveryer.Controllers
                         dbQuestion.ValidAnswersDetails = clientQuestion.ValidAnswersDetails;
                         var clientQuestionAlerts = clientQuestion.QuestionAlertSet;
                         ICollection<QuestionAlertSet> dbQuestionAlerts = new List<QuestionAlertSet>();
-                        foreach (var clientQuestionAlert in clientQuestionAlerts)
+                        if (clientQuestionAlerts != null)
                         {
-                           var dbQuestionAlert = new QuestionAlertSet();
-                           dbQuestionAlert.Description = clientQuestionAlert.Description;
-                           dbQuestionAlert.Operator = clientQuestionAlert.Operator;
-                           dbQuestionAlert.TriggerAnswer = clientQuestionAlert.TriggerAnswer;
-                           var clientAlertNotification = clientQuestionAlert.AlertNotification;
-                           ICollection<AlertNotificationSet> dbAlertNotificationSet = new
-                           List<AlertNotificationSet>();
-                           var dbAlertNotification = new AlertNotificationSet();
-                           dbAlertNotification.Type = clientAlertNotification.Type;
-                           dbAlertNotification.DistributionList = clientAlertNotification.DistributionList;
-                           dbAlertNotificationSet.Add(dbAlertNotification);
-                           dbQuestionAlert.AlertNotificationSet = dbAlertNotificationSet;
-                           dbQuestionAlerts.Add(dbQuestionAlert);
+                           foreach (var clientQuestionAlert in clientQuestionAlerts)
+                           {
+                              var dbQuestionAlert = new QuestionAlertSet();
+                              dbQuestionAlert.Description = clientQuestionAlert.Description;
+                              dbQuestionAlert.Operator = clientQuestionAlert.Operator;
+                              dbQuestionAlert.TriggerAnswer = clientQuestionAlert.TriggerAnswer;
+                              var clientAlertNotification = clientQuestionAlert.AlertNotification;
+                              ICollection<AlertNotificationSet> dbAlertNotificationSet = new
+                              List<AlertNotificationSet>();
+                              var dbAlertNotification = new AlertNotificationSet();
+                              dbAlertNotification.Type = clientAlertNotification.Type;
+                              dbAlertNotification.DistributionList = clientAlertNotification.DistributionList;
+                              dbAlertNotificationSet.Add(dbAlertNotification);
+                              dbQuestionAlert.AlertNotificationSet = dbAlertNotificationSet;
+                              dbQuestionAlerts.Add(dbQuestionAlert);
+                           }
                         }
                         dbQuestion.QuestionAlertSet = dbQuestionAlerts;
                         dbQuestions.Add(dbQuestion);
                      }
-                  }
-                  // Delete questions
-                  for (var i = dbQuestions.Count - 1; i > -1; --i)
-                  {
-                     var clientQuestionResult = clientQuestions.Where(x => x.Id.Equals(dbQuestions.ElementAt(i).Id));
-                     if (clientQuestionResult.Count() == 0)
-                     {
-                        db.QuestionSet.Remove(dbQuestions.ElementAt(i));
-                     }
-                  }
+                  }                  
                }
                db.SaveChanges();
                return Json(new smsSurvery.Surveryer.Models.RequestResult("success",
@@ -309,38 +313,44 @@ namespace smsSurvery.Surveryer.Controllers
                dbSurveyPlan.ThankYouMessage = clientSurveyPlan.ThankYouMessage;
                // Add questions
                ICollection<Question> dbQuestions = new List<Question>();
-               foreach (var clientQuestion in clientSurveyPlan.QuestionSet)
+               if (clientSurveyPlan.QuestionSet != null)
                {
-                  ICollection<QuestionAlertSet> dbQuestionAlertSet =
-                  new List<QuestionAlertSet>();
-                  foreach (var clientQuestionAlert in clientQuestion.QuestionAlertSet)
+                  foreach (var clientQuestion in clientSurveyPlan.QuestionSet)
                   {
-                     ICollection<AlertNotificationSet> dbAlertNotificationSet =
-                        new List<AlertNotificationSet>();
-                     var clientAlertNotification = clientQuestionAlert.AlertNotification;
-                     AlertNotificationSet dbAlertNotification = new AlertNotificationSet();
-                     dbAlertNotification.DistributionList = clientAlertNotification.DistributionList;
-                     dbAlertNotification.Type = clientAlertNotification.Type;
-                     db.AlertNotificationSet.Add(dbAlertNotification);
-                     dbAlertNotificationSet.Add(dbAlertNotification);
+                     ICollection<QuestionAlertSet> dbQuestionAlertSet =
+                     new List<QuestionAlertSet>();
+                     if (clientQuestion.QuestionAlertSet != null)
+                     {
+                        foreach (var clientQuestionAlert in clientQuestion.QuestionAlertSet)
+                        {
+                           ICollection<AlertNotificationSet> dbAlertNotificationSet =
+                              new List<AlertNotificationSet>();
+                           var clientAlertNotification = clientQuestionAlert.AlertNotification;
+                           AlertNotificationSet dbAlertNotification = new AlertNotificationSet();
+                           dbAlertNotification.DistributionList = clientAlertNotification.DistributionList;
+                           dbAlertNotification.Type = clientAlertNotification.Type;
+                           db.AlertNotificationSet.Add(dbAlertNotification);
+                           dbAlertNotificationSet.Add(dbAlertNotification);
 
-                     QuestionAlertSet dbQuestionAlert = new QuestionAlertSet();
-                     dbQuestionAlert.AlertNotificationSet = dbAlertNotificationSet;
-                     dbQuestionAlert.Operator = clientQuestionAlert.Operator;
-                     dbQuestionAlert.TriggerAnswer = clientQuestionAlert.TriggerAnswer;
-                     dbQuestionAlert.Description = clientQuestionAlert.Description;
-                     db.QuestionAlertSet.Add(dbQuestionAlert);
-                     dbQuestionAlertSet.Add(dbQuestionAlert);
+                           QuestionAlertSet dbQuestionAlert = new QuestionAlertSet();
+                           dbQuestionAlert.AlertNotificationSet = dbAlertNotificationSet;
+                           dbQuestionAlert.Operator = clientQuestionAlert.Operator;
+                           dbQuestionAlert.TriggerAnswer = clientQuestionAlert.TriggerAnswer;
+                           dbQuestionAlert.Description = clientQuestionAlert.Description;
+                           db.QuestionAlertSet.Add(dbQuestionAlert);
+                           dbQuestionAlertSet.Add(dbQuestionAlert);
+                        }
+                     }
+                     var dbQuestion = new Question();
+                     dbQuestion.Order = clientQuestion.Order;
+                     dbQuestion.Text = clientQuestion.Text;
+                     dbQuestion.Type = clientQuestion.Type;
+                     dbQuestion.ValidAnswers = clientQuestion.ValidAnswers;
+                     dbQuestion.ValidAnswersDetails = clientQuestion.ValidAnswersDetails;
+                     dbQuestion.QuestionAlertSet = dbQuestionAlertSet;
+                     db.QuestionSet.Add(dbQuestion);
+                     dbQuestions.Add(dbQuestion);
                   }
-                  var dbQuestion = new Question();
-                  dbQuestion.Order = clientQuestion.Order;
-                  dbQuestion.Text = clientQuestion.Text;
-                  dbQuestion.Type = clientQuestion.Type;
-                  dbQuestion.ValidAnswers = clientQuestion.ValidAnswers;
-                  dbQuestion.ValidAnswersDetails = clientQuestion.ValidAnswersDetails;
-                  dbQuestion.QuestionAlertSet = dbQuestionAlertSet;
-                  db.QuestionSet.Add(dbQuestion);
-                  dbQuestions.Add(dbQuestion);
                }
                dbSurveyPlan.QuestionSet = dbQuestions;
                db.SurveyPlanSet.Add(dbSurveyPlan);
@@ -353,7 +363,8 @@ namespace smsSurvery.Surveryer.Controllers
          }
          catch (Exception e)
          {
-            return Json("error", JsonRequestBehavior.AllowGet);
+            return Json(new smsSurvery.Surveryer.Models.RequestResult("error", "save", e.Message),
+            JsonRequestBehavior.AllowGet);
          }
       }
       //
