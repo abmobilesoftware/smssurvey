@@ -71,7 +71,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       this.model.updateThankYouMessage(event.currentTarget.value);
    },
    updateQuestionSet: function () {
-      this.model.set("QuestionSet", this.questionSetModel.getQuestionSetCollectionAsJson());
+      this.model.set("QuestionSet", this.questionSetModel.getQuestionSetCollectionAsJson(true));
    },
    saveSurvey: function (event) {
       event.preventDefault();

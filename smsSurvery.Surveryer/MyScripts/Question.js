@@ -238,11 +238,13 @@ Question.QuestionSetModel = Backbone.Model.extend({
    getQuestionSet: function () {
       return this.questionSetCollection;
    },
-   getQuestionSetCollectionAsJson: function () {
+   getQuestionSetCollectionAsJson: function (saveAlerts) {
       var collectionAsJson = [];
       for (var i = 0; i < this.questionSetCollection.models.length; ++i) {
          // set the last alerts changes
-         this.questionSetCollection.models[i].setQuestionAlertSet();
+         if (saveAlerts) {
+            this.questionSetCollection.models[i].setQuestionAlertSet();
+         }
          // set the last answers changes
          collectionAsJson.push(this.questionSetCollection.models[i].toJSON());
       }

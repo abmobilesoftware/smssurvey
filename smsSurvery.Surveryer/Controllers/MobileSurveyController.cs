@@ -11,6 +11,7 @@ namespace smsSurvery.Surveryer.Controllers
     {
         private smsSurveyEntities db = new smsSurveyEntities();
 
+        [HttpGet]
         public ActionResult Index(int id)
         {
         

@@ -71,7 +71,6 @@
 </script>   
 </head>
 
-
 <body>
      <input type="hidden" value="@ViewBag.Id" id="surveyPlanId"/>
      <section id="survey">
@@ -123,7 +122,7 @@
             success: function (model, response, options) {
                var surveyModel = new Question.QuestionSetModel({ jsonQuestions: model.get("QuestionSet") });
                //DA sure they are ordered
-               var surveyView = new SurveyView({
+               var surveyView = new MobileSurvey.SurveyView({
                   el: $("#survey"),
                   model: surveyModel
                });

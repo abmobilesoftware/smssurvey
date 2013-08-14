@@ -150,6 +150,8 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
              ")"
              );
          this.trigger(this.pageEvents.THANK_YOU_PAGE);
+         //DA and now we should save in the database
+
       } else {
          this.doneBtn.setTitle(
              this.doneBtnTitle + " (" +
@@ -215,13 +217,15 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
    }
 });
 
-var SurveyView = Backbone.View.extend({
+MobileSurvey.SurveyView = Backbone.View.extend({
    initialize: function () {
-      _.bindAll(this, "goToThankYouPage");
+      _.bindAll(this, "goToThankYouPage","saveSurvey","updateQuestionSet", "render");
       this.questionsPage = new MobileSurvey.SurveyMobileView({ el: $("#questionsPage"), model: this.model });
       this.thankYouPage = new MobileSurvey.ThankYouPageView({ el: $("#thankYouPage") });      
       this.questionsPage.on(this.questionsPage.pageEvents.THANK_YOU_PAGE,
           this.goToThankYouPage);
+      this.questionsPage.on(this.questionsPage.pageEvents.THANK_YOU_PAGE,
+         this.saveSurvey);
    },
    goToThankYouPage: function () {
       var self = this;
@@ -257,5 +261,31 @@ var SurveyView = Backbone.View.extend({
    },
    render: function () {
       this.questionsPage.render();
+   },
+   updateQuestionSet: function () {
+      this.model.set("QuestionSet", this.model.getQuestionSetCollectionAsJson(false));
+   },
+   saveSurvey: function (event) {     
+      var self = this;
+      this.updateQuestionSet();
+      //this.model.save(this.model.toJSON(),
+      //   {
+      //      success: function (model, response, options) {
+      //         if (response.Result == "success") {
+      //            self.dom.$NOTIFICATION_TEXT.text("Changes saved successfully.");
+      //            self.dom.$NOTIFICATION_TEXT.
+      //               removeClass("notification-success notification-error").addClass("notification-success");
+      //            if (response.Operation == "create") {
+      //               self.model.set("Id", response.Details);
+      //            }
+      //            self.model.set("DataChanged", false);
+      //         } else if (response.Result == "error") {
+      //            self.dom.$NOTIFICATION_TEXT.text("Errors while saving.");
+      //            self.dom.$NOTIFICATION_TEXT.
+      //               removeClass("notification-success notification-error").addClass("notification-error");
+      //         }
+      //         self.dom.$NOTIFICATION.show();
+      //      }
+      //   });
    }
 });
