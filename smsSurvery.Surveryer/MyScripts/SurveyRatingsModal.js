@@ -28,7 +28,7 @@
       this.model.emptyRatingsCollection();
    },
    saveModal: function () {
-      var areRatingsValid = this.model.validateRatings();
+      var areRatingsValid = this.model.validate();
       if (areRatingsValid) {
          this.$el.modal("hide");
       }
@@ -78,7 +78,7 @@ SurveyModals.RatingsModalModel = Backbone.Model.extend({
       }
       this.set("ScaleSize", 0);
    },
-   validateRatings: function () {
+   validate: function () {
       var isValid = true;
       _.each(this.surveyRatingsCollection.models, function (rating) {
          var ratingValidity = rating.validate();
@@ -119,9 +119,9 @@ SurveyModals.RatingView = Backbone.View.extend({
       "keyup .rating-label-input": "updateRatingLabel"
    },
    initialize: function () {
-      _.bindAll(this, "validateResult");
+      _.bindAll(this, "validationResult");
       this.template = _.template($("#rating-template").html());
-      this.model.on(this.model.events.VALIDATE, this.validateResult);
+      this.model.on(this.model.events.VALIDATE, this.validationResult);
    },
    render: function () {
       this.$el.html(this.template(this.model.toJSON()));
@@ -133,11 +133,12 @@ SurveyModals.RatingView = Backbone.View.extend({
    updateRatingLabel: function (event) {
       this.model.set("RatingLabel", event.currentTarget.value);
    },
-   validateResult: function (result) {
+   validationResult: function (result) {
+      var invalidFieldClass = SurveyUtilities.Utilities.CONSTANTS_CLASS.INVALID_FIELD;
       if (result == this.model.errors.INVALID_RATING_LABEL) {
-         this.dom.$RATING_LABEL_INPUT.addClass("invalidField");
+         this.dom.$RATING_LABEL_INPUT.addClass(invalidFieldClass);
       } else if (result == this.model.errors.VALID) {
-         this.dom.$RATING_LABEL_INPUT.removeClass("invalidField");
+         this.dom.$RATING_LABEL_INPUT.removeClass(invalidFieldClass);
       }
    }
 })

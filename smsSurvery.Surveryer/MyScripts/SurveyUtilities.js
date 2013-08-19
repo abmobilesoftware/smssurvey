@@ -7,7 +7,7 @@ SurveyUtilities.Utilities = (function () {
          return v.toString(16);
       });
       return uuid;
-   }
+   },
    innerClass.CONSTANTS_SURVEY = {
       TYPE_SMS: "sms",
       TYPE_MOBILE_WEBSITE: "mobile website"
@@ -18,10 +18,13 @@ SurveyUtilities.Utilities = (function () {
       TYPE_SELECT_ONE_FROM_MANY: "SelectOneFromMany",
       TYPE_SELECT_MANY_FROM_MANY: "SelectManyFromMany",
       TYPE_YES_NO: "YesNo"
-   }
+   },
    innerClass.CONSTANTS_MISC = {
       SEPARATOR_ANSWERS: ";",
       NEW_SURVEY: "new_survey"
+   }
+   innerClass.CONSTANTS_CLASS = {
+      INVALID_FIELD: "invalidField"
    }
    return innerClass;
 })();

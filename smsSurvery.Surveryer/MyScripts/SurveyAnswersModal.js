@@ -33,7 +33,7 @@ SurveyModals.AnswersModalView = Backbone.View.extend({
       this.$el.modal("hide");
    },
    saveModal: function () {
-      if (this.model.validateAnswers()) {
+      if (this.model.validate()) {
          this.$el.modal("hide");
       }
    }
@@ -84,7 +84,7 @@ SurveyModals.AnswersModalModel = Backbone.Model.extend({
          this.answersCollection.remove(this.answersCollection.models[i]);
       }
    },
-   validateAnswers: function () {
+   validate: function () {
       var isValid = true;
       _.each(this.answersCollection.models, function (answer) {
          var answerValidity = answer.validate();
@@ -103,9 +103,9 @@ SurveyModals.AnswerView = Backbone.View.extend({
       "keyup .answer-label-input": "updateAnswer"
    },
    initialize: function () {
-      _.bindAll(this, "deleteAnswer", "updateAnswer", "validateResult");
+      _.bindAll(this, "deleteAnswer", "updateAnswer", "validationResult");
       this.template = _.template($("#answer-template").html());
-      this.model.on(this.model.events.VALIDATE, this.validateResult)
+      this.model.on(this.model.events.VALIDATE, this.validationResult)
    },
    render: function () {
       this.$el.html(this.template(this.model.toJSON()));
@@ -121,11 +121,12 @@ SurveyModals.AnswerView = Backbone.View.extend({
    updateAnswer: function (event) {
       this.model.set("AnswerLabel", event.currentTarget.value);
    },
-   validateResult: function(result) {
+   validationResult: function (result) {
+      var invalidFieldClass = SurveyUtilities.Utilities.CONSTANTS_CLASS.INVALID_FIELD;
       if (result == this.model.errors.INVALID_ANSWER_LABEL) {
-         this.dom.$ANSWER_LABEL_INPUT.addClass("invalidField");
+         this.dom.$ANSWER_LABEL_INPUT.addClass(invalidFieldClass);
       } else if (result == this.model.errors.VALID) {
-         this.dom.$ANSWER_LABEL_INPUT.removeClass("invalidField");
+         this.dom.$ANSWER_LABEL_INPUT.removeClass(invalidFieldClass);
       }
    }
 });
