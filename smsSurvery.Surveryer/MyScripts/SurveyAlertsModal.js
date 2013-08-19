@@ -123,7 +123,10 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
    validateAlerts: function () {
       var isValid = true;
       _.each(this.alertsCollection.models, function (alert) {
-         isValid = alert.validate();
+         var isValidAlert = alert.validate();
+         if (!isValidAlert) {
+            isValid = isValidAlert;
+         }
       });
       return isValid;
       //this.trigger(this.events.VALIDATE, isValid);

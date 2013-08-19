@@ -1,7 +1,8 @@
 ﻿SurveyModals.RatingsModalView = Backbone.View.extend({
    events: {
       "change #rating-select": "changeScaleSize",
-      "click .close-rating-modal-btn": "closeModal"
+      "click .close-rating-modal-btn": "closeModal",
+      "click .save-rating": "saveModal"
    },
    initialize: function () {
       _.bindAll(this, "changeScaleSize", "render", "closeModal");
@@ -25,6 +26,12 @@
    },
    closeModal: function () {
       this.model.emptyRatingsCollection();
+   },
+   saveModal: function () {
+      var areRatingsValid = this.model.validateRatings();
+      if (areRatingsValid) {
+         this.$el.modal("hide");
+      }
    }
 });
 
@@ -70,14 +77,40 @@ SurveyModals.RatingsModalModel = Backbone.Model.extend({
          this.surveyRatingsCollection.remove(this.surveyRatingsCollection.models[i]);
       }
       this.set("ScaleSize", 0);
+   },
+   validateRatings: function () {
+      var isValid = true;
+      _.each(this.surveyRatingsCollection.models, function (rating) {
+         var ratingValidity = rating.validate();
+         if (!ratingValidity) {
+            isValid = ratingValidity;
+         }
+      });
+      return isValid;
    }
 });
 
 SurveyModals.RatingModel = Backbone.Model.extend({
+   events: {
+      VALIDATE: "validateEvent"
+   },
+   errors: {
+      INVALID_RATING_LABEL: "invalid rating label",
+      VALID: "valid"
+   },
    defaults: {
       RatingIdentifier: "",
       RatingLabel: ""
+   },
+   validate: function () {
+      if (this.get("RatingLabel").length == 0) {
+         this.trigger(this.events.VALIDATE, this.errors.INVALID_RATING_LABEL);
+         return false;
+      }
+      this.trigger(this.events.VALIDATE, this.errors.VALID);
+      return true;
    }
+
 });
 
 SurveyModals.RatingView = Backbone.View.extend({
@@ -86,14 +119,26 @@ SurveyModals.RatingView = Backbone.View.extend({
       "keyup .rating-label-input": "updateRatingLabel"
    },
    initialize: function () {
+      _.bindAll(this, "validateResult");
       this.template = _.template($("#rating-template").html());
+      this.model.on(this.model.events.VALIDATE, this.validateResult);
    },
    render: function () {
       this.$el.html(this.template(this.model.toJSON()));
+      this.dom = {
+         $RATING_LABEL_INPUT: $(".rating-label-input", this.$el)
+      };
       return this.$el;
    },
    updateRatingLabel: function (event) {
       this.model.set("RatingLabel", event.currentTarget.value);
+   },
+   validateResult: function (result) {
+      if (result == this.model.errors.INVALID_RATING_LABEL) {
+         this.dom.$RATING_LABEL_INPUT.addClass("invalidField");
+      } else if (result == this.model.errors.VALID) {
+         this.dom.$RATING_LABEL_INPUT.removeClass("invalidField");
+      }
    }
 })
 
