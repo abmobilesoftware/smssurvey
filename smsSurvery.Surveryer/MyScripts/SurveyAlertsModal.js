@@ -32,9 +32,13 @@
    },
    closeModal: function (event) {
       this.model.emptyAlertsCollection();
+      this.$el.modal("hide");
    },
    saveModal: function (event) {
-      this.model.validateAlerts();
+      var isDataValid = this.model.validateAlerts();
+      if (isDataValid) {
+         this.$el.modal("hide");
+      }
    }
 });
 
@@ -121,6 +125,7 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
       _.each(this.alertsCollection.models, function (alert) {
          isValid = alert.validate();
       });
+      return isValid;
       //this.trigger(this.events.VALIDATE, isValid);
    }
 });
@@ -144,7 +149,9 @@ SurveyModals.AlertView = Backbone.View.extend({
       this.$el.html(this.template(this.model.toJSON()));
       this.dom = {
          $ALERT_DESCRIPTION_INPUT: $(".alert-description-input", this.$el),
-         $ALERT_TRIGGER_ANSWER_INPUT: $(".alert-trigger-answer-input", this.$el)
+         $ALERT_TRIGGER_ANSWER_INPUT: $(".alert-trigger-answer-input", this.$el),
+         $ALERT_DISTRIBUTION_LIST_INPUT: $(".alert-distribution-list-input", this.$el),
+         $ALERT_OPERATOR_SELECT: $(".alert-operator-select", this.$el)
       }
       return this.$el;
    },
@@ -165,12 +172,19 @@ SurveyModals.AlertView = Backbone.View.extend({
       this.model.updateOperator(event.currentTarget.value);
    },
    validateResult: function (validateResult) {
+      this.dom.$ALERT_DESCRIPTION_INPUT.removeClass("invalidField");
+      this.dom.$ALERT_TRIGGER_ANSWER_INPUT.removeClass("invalidField");
+      this.dom.$ALERT_DISTRIBUTION_LIST_INPUT.removeClass("invalidField");
       if (validateResult != "valid") {
          for (var i = 0; i < validateResult.length; ++i) {
             if (validateResult[i] == this.model.errors.INVALID_DESCRIPTION) {
                this.dom.$ALERT_DESCRIPTION_INPUT.addClass("invalidField");
             } else if (validateResult[i] == this.model.errors.INVALID_TRIGGER_ANSWER) {
                this.dom.$ALERT_TRIGGER_ANSWER_INPUT.addClass("invalidField");
+            } else if (validateResult[i] == this.model.errors.INVALID_DISTRIBUTION_LIST) {
+               this.dom.$ALERT_DISTRIBUTION_LIST_INPUT.addClass("invalidField");
+            } else if (validateResult[i] == this.model.errors.INVALID_OPERATOR) {
+               this.dom.$ALERT_OPERATOR_SELECT.addClass("invalidField");
             }
          }
       }
@@ -181,6 +195,8 @@ SurveyModals.AlertModel = Backbone.Model.extend({
    errors: {
       INVALID_DESCRIPTION: "invalid description",
       INVALID_TRIGGER_ANSWER: "invalid trigger answer",
+      INVALID_DISTRIBUTION_LIST: "invalid distribution list",
+      INVALID_OPERATOR: "invalid operator",
       VALID: "valid"
    },
    events: {
@@ -220,8 +236,22 @@ SurveyModals.AlertModel = Backbone.Model.extend({
          hasErrors = true;
          errors.push(this.errors.INVALID_DESCRIPTION);
       }
+      var areEmailsValid = true;
       var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-      //if 
+      var emailAddresses = this.get("AlertNotification").DistributionList.split(";");
+      for (var i = 0; i < emailAddresses.length; ++i) {
+         if (!filter.test(emailAddresses[i])) {
+            areEmailsValid = false;
+         }
+      }
+      if (this.get("Operator") == "" || this.get("Operator") == "noValue") {
+         hasErrors = true;
+         errors.push(this.errors.INVALID_OPERATOR);
+      }
+      if (!areEmailsValid) {
+         hasErrors = true;
+         errors.push(this.errors.INVALID_DISTRIBUTION_LIST);
+      }
       if (hasErrors) {
          this.trigger(this.events.VALIDATE, errors);
          return false;
