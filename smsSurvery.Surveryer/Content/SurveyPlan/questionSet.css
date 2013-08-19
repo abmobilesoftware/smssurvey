@@ -294,7 +294,19 @@ div#preview-content-modal {
    width: 94%;
 }
 
-.save-alerts, .save-answers, 
-.save-rating {
-
+.alert-description-input,
+.alert-trigger-answer-input {
+   outline: none;
+   -webkit-transition: all 0.25s ease-in-out;
+   -moz-transition: all 0.25s ease-in-out;
+   transition: all 0.25s ease-in-out;
+   -o-transition: all 0.25s ease-in-out;
 }
+
+input.invalidField {
+   -webkit-box-shadow: 0 0 5px rgba(255, 0 ,0, 1);
+   -moz-box-shadow: 0 0 5px rgba(255, 0, 0, 1);
+   box-shadow: 0 0 5px rgba(255, 0, 0, 1);
+   border: 1px solid rgba(255, 0, 0, 1);
+}
+

@@ -38,7 +38,7 @@
          <a href="#" class="btn btn-danger delete-btn">Delete</a>
     
       <% if (Type == "SelectOneFromMany" || Type == "SelectManyFromMany") { %>
-         <a href="#multiple-answer-modal<%= Id %>" role="button" class="open-modal-btn btn edit-answers-btn" data-toggle="modal"><img class="icon" src="/Content/images/edit_20.png" />Edit answers</a>   
+         <a href="#multiple-answer-modal<%= Id %>" role="button" class="open-modal-btn btn edit-answers-btn" data-backdrop="static" data-toggle="modal"><img class="icon" src="/Content/images/edit_20.png" />Edit answers</a>   
          <div id="multiple-answer-modal<%= Id %>" class="modal hide fade">
             <div class="modal-header">               
                <button type="button" class="close-modal-btn close close-answers-modal-btn" data-dismiss="modal" aria-hidden="true">x</button>
@@ -55,7 +55,7 @@
             </div>
          </div>
       <% } else if (Type == "Rating") { %>
-         <a href="#edit-rating-modal<%=Id %>" role="button" class="open-modal-btn btn" data-toggle="modal">Edit rating</a>   
+         <a href="#edit-rating-modal<%=Id %>" role="button" data-backdrop="static" class="open-modal-btn btn" data-toggle="modal">Edit rating</a>   
          <div id="edit-rating-modal<%= Id %>" class="modal hide fade">
             <div class="modal-header">
                <button type="button" class="close-modal-btn close close-rating-modal-btn" data-dismiss="modal" aria-hidden="true">x</button>
@@ -69,11 +69,11 @@
             </div>
          </div>
       <% } %>
-      <a href="#edit-alerts-modal<%= Id %>" role="button" class="open-modal-btn btn edit-alerts-btn" data-toggle="modal"><img class="icon" src="/Content/images/bell-20.png" />Edit alerts</a>   
+      <a href="#edit-alerts-modal<%= Id %>" data-backdrop="static" role="button" class="open-modal-btn btn edit-alerts-btn" data-toggle="modal"><img class="icon" src="/Content/images/bell-20.png" />Edit alerts</a>   
    
       <div id="edit-alerts-modal<%= Id %>" class="modal hide fade">
          <div class="modal-header">
-            <button type="button" class="close-modal-btn close close-alerts-modal-btn" data-dismiss="modal" aria-hidden="true">x</button>
+            <button type="button" class="close-modal-btn close close-alerts-modal-btn" aria-hidden="true">x</button>
             <h3>Edit alerts</h3>
          </div>
          <div class="modal-body">
@@ -82,7 +82,7 @@
             <button class="btn btn-primary add-alert-btn">Add alert</button>                 
          </div>
          <div class="modal-footer">
-            <button type="button" class="btn btn-success save-alerts" data-dismiss="modal">Save</button>
+            <button type="button" class="btn btn-success save-alerts">Save</button>
          </div>
       </div>
    </div>

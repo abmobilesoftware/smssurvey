@@ -242,6 +242,7 @@ SurveyBuilder.QuestionSetView = Backbone.View.extend({
       this.model.sortQuestionCollection();
    },
    previewSurvey: function () {
+      this.model.getQuestionSetCollectionAsJson();
       this.surveyPreviewView.render();
    }
 });
@@ -278,8 +279,10 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
                   el: dom.$SURVEY_BUILDER,
                   model: self.questionSetModel
                });
-               self.render();
-
+               setTimeout(function () {
+                  self.model.set({ "DataChanged": false }, { silent: true });
+               }, 1000);
+               self.render();               
             },
             error: function (model, response, options) {
                alert(response)
@@ -333,7 +336,9 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
                   if (response.Operation == "create") {
                      self.model.set("Id", response.Details);
                   }
-                  self.model.set("DataChanged", false);
+                  setTimeout(function () {
+                     self.model.set("DataChanged", false);
+                  }, 1000);                  
                } else if (response.Result == "error") {
                   self.dom.$NOTIFICATION_TEXT.text("Errors while saving.");
                   self.dom.$NOTIFICATION_TEXT.
@@ -344,8 +349,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
          });
    },
    confirmPageLeaving: function () {
-      this.updateQuestionSet();
-      if (this.model.get("DataChanged")) {
+     if (this.model.get("DataChanged")) {
          return "On the page are unsaved fields and " +
             "this changes will be lost when you will leave the" +
             "page. Are you sure you want to do this?";
