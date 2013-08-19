@@ -1,7 +1,8 @@
 ﻿SurveyModals.AlertsModalView = Backbone.View.extend({
    events: {
       "click .add-alert-btn": "addAlert",
-      "click .close-alerts-modal-btn": "closeModal"
+      "click .close-alerts-modal-btn": "closeModal",
+      "click .save-alerts": "saveModal"
    },
    initialize: function () {
       _.bindAll(this, "render");
@@ -10,6 +11,9 @@
          $ALERTS_MODAL_CONTENT: $(".alerts-modal-content", this.$el)
       };
       this.model.on(this.model.events.UPDATE_VIEW, this.render);
+      this.model.on(this.model.events.VALIDATE, function () {
+         alert("Now close");
+      });
    },
    render: function () {
       this.dom.$ALERTS_MODAL_CONTENT.empty();
@@ -28,12 +32,16 @@
    },
    closeModal: function (event) {
       this.model.emptyAlertsCollection();
+   },
+   saveModal: function (event) {
+      this.model.validateAlerts();
    }
 });
 
 SurveyModals.AlertsModalModel = Backbone.Model.extend({
    events: {
-      UPDATE_VIEW: "updateViewEvent"
+      UPDATE_VIEW: "updateViewEvent",
+      VALIDATE: "validateEvent"
    },
    defaults: {
       QuestionAlertSet: [],
@@ -66,6 +74,9 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
          return alertOperators;
       } else if (type == questionConstants.TYPE_YES_NO) {
          var alertOperators = new Array("==");
+         return alertOperators;
+      } else if (type == questionConstants.TYPE_SELECT_MANY_FROM_MANY) {
+         var alertOperators = new Array("ANY", "ALL");
          return alertOperators;
       }
    },
@@ -104,6 +115,13 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
       for (var i = this.alertsCollection.models.length - 1; i > -1; i = i - 1) {
          this.alertsCollection.remove(this.alertsCollection.models[i]);
       }
+   },
+   validateAlerts: function () {
+      var isValid = true;
+      _.each(this.alertsCollection.models, function (alert) {
+         isValid = alert.validate();
+      });
+      //this.trigger(this.events.VALIDATE, isValid);
    }
 });
 
@@ -116,13 +134,18 @@ SurveyModals.AlertView = Backbone.View.extend({
       "keyup .alert-description-input": "updateDescription"
    },
    initialize: function () {
-      _.bindAll(this, "render", "deleteAlert");
+      _.bindAll(this, "render", "deleteAlert", "validateResult");
       this.template = _.template($("#alert-template").html());
       this.model.on(this.model.events.UPDATE_VIEW,
          this.render);
+      this.model.on(this.model.events.VALIDATE, this.validateResult)
    },
    render: function () {
       this.$el.html(this.template(this.model.toJSON()));
+      this.dom = {
+         $ALERT_DESCRIPTION_INPUT: $(".alert-description-input", this.$el),
+         $ALERT_TRIGGER_ANSWER_INPUT: $(".alert-trigger-answer-input", this.$el)
+      }
       return this.$el;
    },
    deleteAlert: function (event) {
@@ -140,13 +163,30 @@ SurveyModals.AlertView = Backbone.View.extend({
    },
    updateOperator: function (event) {
       this.model.updateOperator(event.currentTarget.value);
+   },
+   validateResult: function (validateResult) {
+      if (validateResult != "valid") {
+         for (var i = 0; i < validateResult.length; ++i) {
+            if (validateResult[i] == this.model.errors.INVALID_DESCRIPTION) {
+               this.dom.$ALERT_DESCRIPTION_INPUT.addClass("invalidField");
+            } else if (validateResult[i] == this.model.errors.INVALID_TRIGGER_ANSWER) {
+               this.dom.$ALERT_TRIGGER_ANSWER_INPUT.addClass("invalidField");
+            }
+         }
+      }
    }
 });
 
 SurveyModals.AlertModel = Backbone.Model.extend({
+   errors: {
+      INVALID_DESCRIPTION: "invalid description",
+      INVALID_TRIGGER_ANSWER: "invalid trigger answer",
+      VALID: "valid"
+   },
    events: {
       UPDATE_VIEW: "updateViewEvent",
-      DELETE_ALERT: "deleteAlertEvent"
+      DELETE_ALERT: "deleteAlertEvent",
+      VALIDATE: "validateEvent"
    },
    defaults: {
       Id: "",
@@ -168,6 +208,28 @@ SurveyModals.AlertModel = Backbone.Model.extend({
    },
    updateOperator: function (newOperator) {
       this.set("Operator", newOperator);
+   },
+   validate: function () {
+      var errors = [];
+      var hasErrors = false;
+      if (this.get("TriggerAnswer").length == 0) {
+         hasErrors = true;
+         errors.push(this.errors.INVALID_TRIGGER_ANSWER);
+      }
+      if (this.get("Description").length == 0) {
+         hasErrors = true;
+         errors.push(this.errors.INVALID_DESCRIPTION);
+      }
+      var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+      //if 
+      if (hasErrors) {
+         this.trigger(this.events.VALIDATE, errors);
+         return false;
+      } else {
+         this.trigger(this.events.VALIDATE, "valid");
+         return true;
+      }
+      
    }
 });
 
