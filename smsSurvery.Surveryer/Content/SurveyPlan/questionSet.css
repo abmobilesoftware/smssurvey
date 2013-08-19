@@ -1,4 +1,8 @@
-﻿.question {
+﻿#survey-builder {
+   margin-bottom: 1em;
+}
+
+.question {
    text-decoration: none;
    background: #eee;
    padding: 0.4em;
@@ -19,7 +23,7 @@
 }
 
 .input-append {
-   width: 90%;
+   width: 86%;
    margin: 0;
 }
 
@@ -278,9 +282,19 @@ div#preview-content-modal {
    float: left;
    width:5%;
    cursor: move;
+   margin-right: 0.5em;
+   background:#333;
+   color: #fff;
+   height: 68px;
+   text-align: center;
 }
 
 .question-content {
    float:left;
    width: 94%;
+}
+
+.save-alerts, .save-answers, 
+.save-rating {
+
 }

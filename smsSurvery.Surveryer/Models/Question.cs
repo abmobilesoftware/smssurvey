@@ -4,9 +4,9 @@ using System.Linq;
 using System.Web;
 using smsSurvey.dbInterface;
 
-namespace smsSurvery.Surveryer.DbModels
+namespace smsSurvery.Surveryer.ClientModels
 {
-   public class Question
+   public class ClientQuestion
    {
       public int Id {get; set;}
       public string Text { get; set; }
@@ -14,16 +14,16 @@ namespace smsSurvery.Surveryer.DbModels
       public string Type { get; set; }
       public string ValidAnswers { get; set; }
       public string ValidAnswersDetails { get; set; }
-      public List<QuestionAlert> QuestionAlertSet { get; set; }
-      public Question() { }
+      public List<ClientQuestionAlert> QuestionAlertSet { get; set; }
+      public ClientQuestion() { }
 
-      public Question(int iId,
+      public ClientQuestion(int iId,
          string iText,
          int iOrder,
          string iType,
          string iValidAnswers,
          string iValidAnswersDetails,
-         List<QuestionAlert> iQuestionAlertSet)
+         List<ClientQuestionAlert> iQuestionAlertSet)
       {
          Id = iId;
          Text = iText;

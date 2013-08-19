@@ -31,6 +31,7 @@ namespace smsSurvery.Surveryer
                      "~/MyScripts/SurveyAnswersModal.js",
                      "~/MyScripts/SurveyAlertsModal.js",
                      "~/MyScripts/Question.js",
+                     "~/MyScripts/SurveyRatingsModal.js",
                      "~/MyScripts/SurveyBuilder.js",
                      "~/MyScripts/SurveyMain.js"
             ));
