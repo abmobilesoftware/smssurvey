@@ -14,7 +14,8 @@ Question.QuestionModel = Backbone.Model.extend({
       Answers: [],
       AlertOperators: [],
       QuestionAlertSet: [],
-      PickedAnswer: "noValue",      
+      PickedAnswer: "noValue",
+      AdditionalInfo: "",
       ValidAnswer: true
    },
    initialize: function () {
@@ -184,6 +185,10 @@ Question.QuestionView = Backbone.View.extend({
 Question.QuestionSetCollection = Backbone.Collection.extend({
    events: {
       COLLECTION_CHANGED: "collectionChanged"
+   },
+   defaults: {
+      SurveyResultId: "",
+      SurveyPlanId: ""
    },
    model: Question.QuestionModel,
    initialize: function () {

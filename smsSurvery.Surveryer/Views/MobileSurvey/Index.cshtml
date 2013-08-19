@@ -107,20 +107,27 @@
       $(function () {
          //initialize mobile survey given the id of the survey plan
          var surveyId = $("#surveyPlanId").val();
-         var surveyModel = new SurveyBuilder.SurveyModel({
+         var survey = new SurveyBuilder.SurveyModel({
             Id: surveyId,
             Description: "",
             ThankYouMessage: "",
             StartDate: "15/6/2013",
             EndDate: "17/7/2013",
             IsRunning: false
-         });         
-         surveyModel.fetch({
+         });
+         var urlParts = document.URL.split("/");
+         var urlLastPart = urlParts[urlParts.length - 1];
+         survey.fetch({
             data: {
                Id: surveyId
             },
             success: function (model, response, options) {
-               var surveyModel = new Question.QuestionSetModel({ jsonQuestions: model.get("QuestionSet") });
+               var surveyModel = new Question.QuestionSetModel(
+                  {
+                     jsonQuestions: model.get("QuestionSet"),
+                     SurveyResultId: urlLastPart,
+                     SurveyPlanId: surveyId
+                  });
                //DA sure they are ordered
                var surveyView = new MobileSurvey.SurveyView({
                   el: $("#survey"),

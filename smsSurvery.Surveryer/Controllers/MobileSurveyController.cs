@@ -48,12 +48,14 @@ namespace smsSurvery.Surveryer.Controllers
            }       
            public int Id { get; set; }
            public string Type { get; set; }
-           public string PickedAnswer { get; set; }           
+           public string PickedAnswer { get; set; }
+           public string AdditionalInfo { get; set; }
         }      
 
         [HttpPost]
-        public JsonResult SaveSurvey(List<QuestionResponse> questions, int surveyResult)
+        public JsonResult SaveSurvey(List<QuestionResponse> questions, int surveyResultId, int surveyPlanId)
         {
+           //DA take all the responses and save the to the corresponding surveyResult
            var x = 1;
            return null;
         }

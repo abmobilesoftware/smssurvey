@@ -76,7 +76,8 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
    updateAnswer: function () {
       this.model.set(
           {
-             "PickedAnswer": $(".answer", this.$el).val()
+             "PickedAnswer": $(".answer", this.$el).val(),
+             "AdditionalInfo": $(".additionalInfo", this.$el)!=undefined ? $(".additionalInfo", this.$el).val() : ""
           },
           {
              validate: true
@@ -270,7 +271,8 @@ MobileSurvey.SurveyView = Backbone.View.extend({
       var infoToUpload = this.model.getQuestionSetCollectionAsJson(false);
       var sendData = JSON.stringify({
          questions: infoToUpload,
-         surveyResult: 121
+         surveyResultId: this.model.get("SurveyResultId"),
+         surveyPlanId: this.model.get("SurveyPlanId")
       });
       $.ajax({
          url: "/MobileSurvey/SaveSurvey",        
