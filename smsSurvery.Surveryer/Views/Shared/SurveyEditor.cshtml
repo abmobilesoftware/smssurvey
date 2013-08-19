@@ -41,7 +41,7 @@
          <a href="#multiple-answer-modal<%= Id %>" role="button" class="open-modal-btn btn edit-answers-btn" data-backdrop="static" data-toggle="modal"><img class="icon" src="/Content/images/edit_20.png" />Edit answers</a>   
          <div id="multiple-answer-modal<%= Id %>" class="modal hide fade">
             <div class="modal-header">               
-               <button type="button" class="close-modal-btn close close-answers-modal-btn" data-dismiss="modal" aria-hidden="true">x</button>
+               <button type="button" class="close-modal-btn close close-answers-modal-btn" aria-hidden="true">x</button>
                <h3> Configure answers </h3>
             </div>
             <div class="modal-body">
@@ -51,21 +51,21 @@
                 <a class="btn btn-primary add-answer-btn">Add answer</a>
             </div>
             <div class="modal-footer">
-               <button type="button" class="btn btn-success save-answers" data-dismiss="modal">Save</button>
+               <button type="button" class="btn btn-success save-answers">Save</button>
             </div>
          </div>
       <% } else if (Type == "Rating") { %>
          <a href="#edit-rating-modal<%=Id %>" role="button" data-backdrop="static" class="open-modal-btn btn" data-toggle="modal">Edit rating</a>   
          <div id="edit-rating-modal<%= Id %>" class="modal hide fade">
             <div class="modal-header">
-               <button type="button" class="close-modal-btn close close-rating-modal-btn" data-dismiss="modal" aria-hidden="true">x</button>
+               <button type="button" class="close-modal-btn close close-rating-modal-btn" aria-hidden="true">x</button>
                <h3>Edit rating</h3>
             </div>
             <div class="modal-body">
                                         
             </div>
             <div class="modal-footer">
-               <button type="button" class="btn btn-success save-rating" data-dismiss="modal">Save</button>
+               <button type="button" class="btn btn-success save-rating">Save</button>
             </div>
          </div>
       <% } %>

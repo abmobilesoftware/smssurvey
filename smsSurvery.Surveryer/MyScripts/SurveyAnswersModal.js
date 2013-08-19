@@ -2,10 +2,11 @@
 SurveyModals.AnswersModalView = Backbone.View.extend({
    events: {
       "click .add-answer-btn": "addAnswer",
-      "click .close-answers-modal-btn": "closeModal"
+      "click .close-answers-modal-btn": "closeModal",
+      "click .save-answers": "saveModal"
    },
    initialize: function () {
-      _.bindAll(this, "render", "addAnswer", "closeModal");
+      _.bindAll(this, "render", "addAnswer", "closeModal", "saveModal");
       this.template = _.template($("#no-answers-template").html());
       this.dom = {
          $ANSWERS_TABLE: $(".answers-table", this.$el)
@@ -29,6 +30,12 @@ SurveyModals.AnswersModalView = Backbone.View.extend({
    },
    closeModal: function () {
       this.model.emptyAnswersCollection();
+      this.$el.modal("hide");
+   },
+   saveModal: function () {
+      if (this.model.validate()) {
+         this.$el.modal("hide");
+      }
    }
 });
 
@@ -76,6 +83,16 @@ SurveyModals.AnswersModalModel = Backbone.Model.extend({
       for (var i=this.answersCollection.models.length - 1; i>-1; --i) {
          this.answersCollection.remove(this.answersCollection.models[i]);
       }
+   },
+   validate: function () {
+      var isValid = true;
+      _.each(this.answersCollection.models, function (answer) {
+         var answerValidity = answer.validate();
+         if (!answerValidity) {
+            isValid = answerValidity;
+         }
+      });
+      return isValid;
    }
 });
 
@@ -86,11 +103,15 @@ SurveyModals.AnswerView = Backbone.View.extend({
       "keyup .answer-label-input": "updateAnswer"
    },
    initialize: function () {
-      _.bindAll(this, "deleteAnswer", "updateAnswer");
+      _.bindAll(this, "deleteAnswer", "updateAnswer", "validationResult");
       this.template = _.template($("#answer-template").html());
+      this.model.on(this.model.events.VALIDATE, this.validationResult)
    },
    render: function () {
       this.$el.html(this.template(this.model.toJSON()));
+      this.dom = {
+         $ANSWER_LABEL_INPUT : $(".answer-label-input", this.$el)
+      }
       return this.$el;
    },
    deleteAnswer: function (event) {
@@ -99,13 +120,37 @@ SurveyModals.AnswerView = Backbone.View.extend({
    },
    updateAnswer: function (event) {
       this.model.set("AnswerLabel", event.currentTarget.value);
+   },
+   validationResult: function (result) {
+      var invalidFieldClass = SurveyUtilities.Utilities.CONSTANTS_CLASS.INVALID_FIELD;
+      if (result == this.model.errors.INVALID_ANSWER_LABEL) {
+         this.dom.$ANSWER_LABEL_INPUT.addClass(invalidFieldClass);
+      } else if (result == this.model.errors.VALID) {
+         this.dom.$ANSWER_LABEL_INPUT.removeClass(invalidFieldClass);
+      }
    }
 });
 
 SurveyModals.AnswerModel = Backbone.Model.extend({
+   events: {
+      VALIDATE: "validateEvent"
+   },
+   errors: {
+      INVALID_ANSWER_LABEL: "invalid answer label",
+      VALID: "valid"
+   },
    defaults: {
       AnswerIdentifier: "",
       AnswerLabel: ""
+   },
+   validate: function () {
+      if (this.get("AnswerLabel").length == 0) {
+         this.trigger(this.events.VALIDATE, this.errors.INVALID_ANSWER_LABEL)
+         return false;
+      } else {
+         this.trigger(this.events.VALIDATE, this.errors.VALID);
+         return true;
+      }
    }
 });
 SurveyModals.AnswersCollection = Backbone.Collection.extend({

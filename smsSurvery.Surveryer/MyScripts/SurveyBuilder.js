@@ -1,4 +1,30 @@
 ﻿var SurveyBuilder = SurveyBuilder || {};
+   errors: {
+      INVALID_TEXT: "invalid text",
+      VALID: "valid"
+   },
+      ANSWERS_CHANGED: "answersChangedEvent",
+      ALERTS_CHANGED: "alertsChangedEvent",
+      VALIDATE: "validateEvent"
+   },
+   validate: function () {
+      if (this.get("Text").length == 0 || this.get("Text").length > 160) {
+         this.trigger(this.events.VALIDATE, this.errors.INVALID_TEXT);
+         return false;
+      } else {
+         this.trigger(this.events.VALIDATE, this.errors.VALID);
+         return true;
+      }
+         "render", "initializeModals", "validateResult");
+      this.model.on(this.model.events.VALIDATE, this.validateResult)
+   },
+   validateResult: function (result) {
+      var invalidFieldClass = SurveyUtilities.Utilities.CONSTANTS_CLASS.INVALID_FIELD;
+      if (result == this.model.errors.INVALID_TEXT) {
+         this.dom.$QUESTION_INPUT.addClass(invalidFieldClass);
+      } else if (result == this.model.errors.VALID) {
+         this.dom.$QUESTION_INPUT.removeClass(invalidFieldClass);
+      }
 SurveyBuilder.SurveyView = Backbone.View.extend({
    events: {
       "click .edit-survey": "editSurveyInfo",
@@ -9,7 +35,8 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
    initialize: function () {
       var self = this;
       _.bindAll(this, "editSurveyInfo", "render", "updateDescription",
-         "updateThankYouMessage", "saveSurvey", "confirmPageLeaving");
+         "updateThankYouMessage", "saveSurvey", "confirmPageLeaving",
+         "surveyLoaded", "validationResult");
       this.template = _.template($("#survey-info-template").html());
       this.dom = {
          $SURVEY_INFO: $("#survey-info", this.$el),
@@ -17,44 +44,20 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
          $NOTIFICATION_TEXT: $(".notification-text", this.$el),
          $NOTIFICATION: $("#survey-notification", this.$el)
       }
-      var dom = this.dom;
       this.model.on("change:DisplayInfoTable", this.render);
       this.model.on("change:Id", this.render);
       window.onbeforeunload = this.confirmPageLeaving;
-
-      if (this.model.get("Id") != SurveyUtilities.Utilities.CONSTANTS_MISC.NEW_SURVEY) {
-         this.model.fetch({
-            data: "Id=" + this.model.get("Id"),
-            success: function (model, response, options) {
-               self.questionSetModel = new Question.QuestionSetModel({ jsonQuestions: model.get("QuestionSet") });
-               self.questionSetView = new Question.QuestionSetView({
-                  el: dom.$SURVEY_BUILDER,
-                  model: self.questionSetModel
-               });
-               setTimeout(function () {
-                  self.model.set({ "DataChanged": false }, { silent: true });
-               }, 1000);
-               self.render();               
-            },
-            error: function (model, response, options) {
-               alert(response)
-            }
-         });
-      } else {
-         this.model.set("Id", -1);
-         this.questionSetModel = new Question.QuestionSetModel();
-         this.questionSetView = new Question.QuestionSetView({
-            el: dom.$SURVEY_BUILDER,
-            model: this.questionSetModel
-         });
-         this.render();
-      }
+      this.model.on(this.model.events.SURVEY_LOADED, this.surveyLoaded);
+      this.model.on(this.model.events.VALIDATE, this.validationResult);
+      this.model.loadSurvey();
    },
    render: function () {
       this.dom.$SURVEY_INFO.html(this.template(this.model.toJSON()));
       this.dom.$EDIT_SURVEY_INFO = $(".edit-survey", this.$el);
       this.dom.$INFO_TABLE = $(".survey-info-data", this.$el);
       this.dom.$SURVEY_INFO_TITLE_TEXT = $(".survey-info-title-text", this.$el);
+      this.dom.$SURVEY_DESCRIPTION_INPUT = $("#survey-description", this.$el);
+      this.dom.$SURVEY_THANK_YOU_MESSAGE_INPUT = $("#survey-thank-you-message", this.$el);
    },
    editSurveyInfo: function (event) {
       event.preventDefault();
@@ -72,51 +75,79 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       this.model.updateThankYouMessage(event.currentTarget.value);
    },
    updateQuestionSet: function () {
-      this.model.set("QuestionSet", this.questionSetModel.getQuestionSetCollectionAsJson());
+      this.model.set("QuestionSet", this.model.getQuestionSetModel().getQuestionSetCollectionAsJson());
    },
    saveSurvey: function (event) {
       event.preventDefault();
-      var self = this;
-      this.updateQuestionSet();
-      this.model.save(this.model.toJSON(),
-         {
-            success: function (model, response, options) {
-               if (response.Result == "success") {
-                  self.dom.$NOTIFICATION_TEXT.text("Changes saved successfully.");
-                  self.dom.$NOTIFICATION_TEXT.
-                     removeClass("notification-success notification-error").addClass("notification-success");
-                  if (response.Operation == "create") {
-                     self.model.set("Id", response.Details);
+      if (this.model.validate()) {
+         var self = this;
+         this.updateQuestionSet();
+         this.model.save(this.model.toJSON(),
+            {
+               success: function (model, response, options) {
+                  if (response.Result == "success") {
+                     self.dom.$NOTIFICATION_TEXT.text("Changes saved successfully.");
+                     self.dom.$NOTIFICATION_TEXT.
+                        removeClass("notification-success notification-error").addClass("notification-success");
+                     if (response.Operation == "create") {
+                        self.model.set("Id", response.Details);
+                     }
+                     setTimeout(function () {
+                        self.model.set("DataChanged", false);
+                     }, 1000);
+                  } else if (response.Result == "error") {
+                     self.dom.$NOTIFICATION_TEXT.text("Errors while saving.");
+                     self.dom.$NOTIFICATION_TEXT.
+                        removeClass("notification-success notification-error").addClass("notification-error");
                   }
-                  setTimeout(function () {
-                     self.model.set("DataChanged", false);
-                  }, 1000);                  
-               } else if (response.Result == "error") {
-                  self.dom.$NOTIFICATION_TEXT.text("Errors while saving.");
-                  self.dom.$NOTIFICATION_TEXT.
-                     removeClass("notification-success notification-error").addClass("notification-error");
+                  self.dom.$NOTIFICATION.show();
                }
-               self.dom.$NOTIFICATION.show();
-            }
-         });
+            });
+      }
    },
    confirmPageLeaving: function () {
-     if (this.model.get("DataChanged")) {
+      if (this.model.get("DataChanged")) {
          return "On the page are unsaved fields and " +
             "this changes will be lost when you will leave the" +
             "page. Are you sure you want to do this?";
       }
+   },
+   surveyLoaded: function () {
+      this.questionSetView = new SurveyBuilder.QuestionSetView({
+         el: this.dom.$SURVEY_BUILDER,
+         model: this.model.getQuestionSetModel()
+      });
+      this.render();
+   },
+   validationResult: function (result) {
+      var invalidFieldClass = SurveyUtilities.Utilities.CONSTANTS_CLASS.INVALID_FIELD;
+      this.dom.$SURVEY_DESCRIPTION_INPUT.removeClass(invalidFieldClass);
+      this.dom.$SURVEY_THANK_YOU_MESSAGE_INPUT.removeClass(invalidFieldClass);
+
+      for (var i = 0; i < result.length; ++i) {
+         if (result[i] == this.model.errors.INVALID_DESCRIPTION) {
+            this.dom.$SURVEY_DESCRIPTION_INPUT.addClass(invalidFieldClass);
+         } else if (result[i] == this.model.errors.INVALID_THANK_YOU_MESSAGE) {
+            this.dom.$SURVEY_THANK_YOU_MESSAGE_INPUT.addClass(invalidFieldClass);
+         }
+      }
+
    }
 });
 
 SurveyBuilder.SurveyModel = Backbone.Model.extend({
+   events: {
+      SURVEY_LOADED: "surveyLoadedEvent",
+      VALIDATE: "validateEvent"
+   },
+   errors: {
+      INVALID_DESCRIPTION: "invalid description",
+      INVALID_THANK_YOU_MESSAGE: "invalid thank you message"
+   },
    defaults: {
       Id: 7,
       Description: "no description",
       ThankYouMessage: "no thank you message",
-      StartDate: "no start date",
-      EndDate: "no end date",
-      IsRunning: false,
       DisplayInfoTable: false,
       HasChanged: false
    },
@@ -146,5 +177,57 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
    },
    modelSynced: function () {
       this.set("DataChanged", false);
+   },
+   validate: function () {
+      var questionSetModelValidity = this.questionSetModel.validate();
+      var descriptionValidity = true;
+      var thankYouMessageValidity = true;
+      this.result = [];
+      if (this.get("Description").length == 0 || this.get("Description").length > 100) {
+         this.result.push(this.errors.INVALID_DESCRIPTION)
+         descriptionValidity = false;
+      }
+      if (this.get("ThankYouMessage").length == 0 || this.get("ThankYouMessage").length > 160) {
+         this.result.push(this.errors.INVALID_THANK_YOU_MESSAGE);
+         thankYouMessageValidity = false;
+      }
+      if (!descriptionValidity || !thankYouMessageValidity) {
+         this.trigger(this.events.VALIDATE, this.result);
+      } else {
+         this.trigger(this.events.VALIDATE, [])
+      }
+      return questionSetModelValidity && descriptionValidity && thankYouMessageValidity;
+   },
+   loadSurvey: function () {
+      self = this;
+      if (this.get("Id") != SurveyUtilities.Utilities.CONSTANTS_MISC.NEW_SURVEY) {
+         this.fetch({
+            data: "Id=" + this.get("Id"),
+            success: function (model, response, options) {
+               self.questionSetModel = new SurveyBuilder.QuestionSetModel({ jsonQuestions: model.get("QuestionSet") });
+               self.trigger(self.events.SURVEY_LOADED);
+            },
+            error: function (model, response, options) {
+               alert(response)
+            }
+         });
+      } else {
+         this.model.set("Id", -1);
+         this.questionSetModel = new SurveyBuilder.QuestionSetModel();
+         self.trigger(self.events.SURVEY_LOADED);
+      }
+   },
+   getQuestionSetModel: function () {
+      return this.questionSetModel;
+   },
+   validate: function () {
+      var isValid = true;
+      _.each(this.questionSetCollection.models, function (question) {
+         var questionValidity = question.validate();
+         if (!questionValidity) {
+            isValid = questionValidity;
+         }
+      });
+      return isValid;
    }
 });
