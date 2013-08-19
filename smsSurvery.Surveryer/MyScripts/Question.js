@@ -14,7 +14,7 @@ Question.QuestionModel = Backbone.Model.extend({
       Answers: [],
       AlertOperators: [],
       QuestionAlertSet: [],
-      PickedAnswer: "noValue",
+      PickedAnswer: "noValue",      
       ValidAnswer: true
    },
    initialize: function () {
@@ -249,6 +249,7 @@ Question.QuestionSetView = Backbone.View.extend({
       this.model.sortQuestionCollection();
    },
    previewSurvey: function () {
+      this.model.getQuestionSetCollectionAsJson(true);
       this.surveyPreviewView.render();
    }
 });
@@ -287,7 +288,10 @@ Question.QuestionSetModel = Backbone.Model.extend({
          // set the last alerts changes
          if (saveAlerts) {
             this.questionSetCollection.models[i].setQuestionAlertSet();
+            
          }
+         this.questionSetCollection.models[i].setAnswers();
+         this.questionSetCollection.models[i].setRatings();
          // set the last answers changes
          collectionAsJson.push(this.questionSetCollection.models[i].toJSON());
       }

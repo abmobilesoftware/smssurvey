@@ -40,6 +40,23 @@ namespace smsSurvery.Surveryer.Controllers
            }          
         }
 
+        public class QuestionResponse
+        {
+           public QuestionResponse()
+           {
+
+           }       
+           public int Id { get; set; }
+           public string Type { get; set; }
+           public string PickedAnswer { get; set; }           
+        }      
+
+        [HttpPost]
+        public JsonResult SaveSurvey(List<QuestionResponse> questions, int surveyResult)
+        {
+           var x = 1;
+           return null;
+        }
         protected override void Dispose(bool disposing)
         {
            db.Dispose();
