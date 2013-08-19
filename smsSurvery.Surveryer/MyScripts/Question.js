@@ -1,9 +1,14 @@
 ﻿var Question = Question || {};
 
 Question.QuestionModel = Backbone.Model.extend({
+   errors: {
+      INVALID_TEXT: "invalid text",
+      VALID: "valid"
+   },
    events: {
-      ANSWERS_CHANGED: "answers changed",
-      ALERTS_CHANGED: "alerts changed"
+      ANSWERS_CHANGED: "answersChanged",
+      ALERTS_CHANGED: "alertsChanged",
+      VALIDATE: "validateEvent"
    },
    defaults: {
       Id: SurveyUtilities.Utilities.generateUUID(),
@@ -52,8 +57,8 @@ Question.QuestionModel = Backbone.Model.extend({
    updateQuestionType: function (newType) {
       this.set("Type", newType);
    },
-   setAnswersModalModel: function (answerModalModel) {
-      this.answerModalModel = answerModalModel;
+   setAnswersModalModel: function (answersModalModel) {
+      this.answersModalModel = answersModalModel;
    },
    setAlertsModalModel: function (alertsModalModel) {
       this.alertsModalModel = alertsModalModel;
@@ -77,6 +82,17 @@ Question.QuestionModel = Backbone.Model.extend({
          this.set("ValidAnswersDetails", this.ratingsModalModel.getRatingsAsString());
       }
    },
+   // Used for validation when building the survey
+   validateQuestion: function () {
+      if (this.get("Text").length == 0 || this.get("Text").length > 160) {
+         this.trigger(this.events.VALIDATE, this.errors.INVALID_TEXT);
+         return false;
+      } else {
+         this.trigger(this.events.VALIDATE, this.errors.VALID);
+         return true;
+      }
+   },
+   // Used for validation when taking the survey
    validate: function (attributes, options) {
       if (attributes.PickedAnswer === "noValue" || attributes.PickedAnswer === "") {
          this.set({ "ValidAnswer": false }, { silent: false });
@@ -96,13 +112,14 @@ Question.QuestionView = Backbone.View.extend({
    },
    initialize: function () {
       _.bindAll(this, "selectQuestionType", "deleteQuestion", "updateQuestion",
-         "render", "initializeModals");
+         "render", "initializeModals", "validationResult");
       this.questionTemplate = _.template($("#question-template").html());
       this.model.on(this.model.events.ANSWERS_CHANGED, this.render);
       this.model.on(this.model.events.ALERTS_CHANGED, this.render);
       this.initializeModals();
       this.model.on("change:Type", this.initializeModals);
       this.model.on("change:Type", this.render);
+      this.model.on(this.model.events.VALIDATE, this.validationResult)
    },
    render: function () {
       this.$el.html(this.questionTemplate(this.model.toJSON()));
@@ -179,6 +196,14 @@ Question.QuestionView = Backbone.View.extend({
    },
    updateQuestion: function (event) {
       this.model.updateQuestionText(event.currentTarget.value)
+   },
+   validationResult: function (result) {
+      var invalidFieldClass = SurveyUtilities.Utilities.CONSTANTS_CLASS.INVALID_FIELD;
+      if (result == this.model.errors.INVALID_TEXT) {
+         this.dom.$QUESTION_INPUT.addClass(invalidFieldClass);
+      } else if (result == this.model.errors.VALID) {
+         this.dom.$QUESTION_INPUT.removeClass(invalidFieldClass);
+      }
    }
 });
 
@@ -293,7 +318,7 @@ Question.QuestionSetModel = Backbone.Model.extend({
          // set the last alerts changes
          if (saveAlerts) {
             this.questionSetCollection.models[i].setQuestionAlertSet();
-            
+
          }
          this.questionSetCollection.models[i].setAnswers();
          this.questionSetCollection.models[i].setRatings();
@@ -306,5 +331,18 @@ Question.QuestionSetModel = Backbone.Model.extend({
       var questionModel = new Question.QuestionModel();
       questionModel.updateOrder(this.questionSetCollection.models.length);
       this.questionSetCollection.add(questionModel);
+   },
+   sortQuestionCollection: function () {
+      this.questionSetCollection.sort();
+   },
+   validateQuestionSetModel: function () {
+      var isValid = true;
+      _.each(this.questionSetCollection.models, function (question) {
+         var questionValidity = question.validateQuestion();
+         if (!questionValidity) {
+            isValid = questionValidity;
+         }
+      });
+      return isValid;
    }
 });

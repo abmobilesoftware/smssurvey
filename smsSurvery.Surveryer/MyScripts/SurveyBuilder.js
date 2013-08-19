@@ -1,30 +1,5 @@
 ﻿var SurveyBuilder = SurveyBuilder || {};
-   errors: {
-      INVALID_TEXT: "invalid text",
-      VALID: "valid"
-   },
-      ANSWERS_CHANGED: "answersChangedEvent",
-      ALERTS_CHANGED: "alertsChangedEvent",
-      VALIDATE: "validateEvent"
-   },
-   validate: function () {
-      if (this.get("Text").length == 0 || this.get("Text").length > 160) {
-         this.trigger(this.events.VALIDATE, this.errors.INVALID_TEXT);
-         return false;
-      } else {
-         this.trigger(this.events.VALIDATE, this.errors.VALID);
-         return true;
-      }
-         "render", "initializeModals", "validateResult");
-      this.model.on(this.model.events.VALIDATE, this.validateResult)
-   },
-   validateResult: function (result) {
-      var invalidFieldClass = SurveyUtilities.Utilities.CONSTANTS_CLASS.INVALID_FIELD;
-      if (result == this.model.errors.INVALID_TEXT) {
-         this.dom.$QUESTION_INPUT.addClass(invalidFieldClass);
-      } else if (result == this.model.errors.VALID) {
-         this.dom.$QUESTION_INPUT.removeClass(invalidFieldClass);
-      }
+
 SurveyBuilder.SurveyView = Backbone.View.extend({
    events: {
       "click .edit-survey": "editSurveyInfo",
@@ -75,11 +50,11 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       this.model.updateThankYouMessage(event.currentTarget.value);
    },
    updateQuestionSet: function () {
-      this.model.set("QuestionSet", this.model.getQuestionSetModel().getQuestionSetCollectionAsJson());
+      this.model.set("QuestionSet", this.model.getQuestionSetModel().getQuestionSetCollectionAsJson(true));
    },
    saveSurvey: function (event) {
       event.preventDefault();
-      if (this.model.validate()) {
+      if (this.model.validateSurvey()) {
          var self = this;
          this.updateQuestionSet();
          this.model.save(this.model.toJSON(),
@@ -113,7 +88,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       }
    },
    surveyLoaded: function () {
-      this.questionSetView = new SurveyBuilder.QuestionSetView({
+      this.questionSetView = new Question.QuestionSetView({
          el: this.dom.$SURVEY_BUILDER,
          model: this.model.getQuestionSetModel()
       });
@@ -178,8 +153,8 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
    modelSynced: function () {
       this.set("DataChanged", false);
    },
-   validate: function () {
-      var questionSetModelValidity = this.questionSetModel.validate();
+   validateSurvey: function () {
+      var questionSetModelValidity = this.questionSetModel.validateQuestionSetModel();
       var descriptionValidity = true;
       var thankYouMessageValidity = true;
       this.result = [];
@@ -204,7 +179,7 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
          this.fetch({
             data: "Id=" + this.get("Id"),
             success: function (model, response, options) {
-               self.questionSetModel = new SurveyBuilder.QuestionSetModel({ jsonQuestions: model.get("QuestionSet") });
+               self.questionSetModel = new Question.QuestionSetModel({ jsonQuestions: model.get("QuestionSet") });
                self.trigger(self.events.SURVEY_LOADED);
             },
             error: function (model, response, options) {
@@ -219,15 +194,5 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
    },
    getQuestionSetModel: function () {
       return this.questionSetModel;
-   },
-   validate: function () {
-      var isValid = true;
-      _.each(this.questionSetCollection.models, function (question) {
-         var questionValidity = question.validate();
-         if (!questionValidity) {
-            isValid = questionValidity;
-         }
-      });
-      return isValid;
    }
 });
