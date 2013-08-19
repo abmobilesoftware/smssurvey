@@ -26,6 +26,7 @@
    },
    closeModal: function () {
       this.model.emptyRatingsCollection();
+      this.$el.modal("hide");
    },
    saveModal: function () {
       var areRatingsValid = this.model.validate();
