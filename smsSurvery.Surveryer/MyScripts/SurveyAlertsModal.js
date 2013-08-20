@@ -69,7 +69,7 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
          var alertOperators = new Array("==", "!=");
          return alertOperators;
       } else if (type == questionConstants.TYPE_RATING) {
-         var alertOperators = new Array("==", "!=", "<", "<=", ">", ">=");
+         var alertOperators = new Array("=", "NOT EQUAL", "<", "<=", ">", ">=");
          return alertOperators;
       } else if (type == questionConstants.TYPE_FREE_TEXT) {
          var alertOperators = new Array("CONTAINS");
