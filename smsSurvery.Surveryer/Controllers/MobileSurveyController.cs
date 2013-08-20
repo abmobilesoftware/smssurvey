@@ -67,6 +67,7 @@ namespace smsSurvery.Surveryer.Controllers
         [HttpPost]
         public JsonResult SaveSurvey(List<QuestionResponse> questions, int surveyResultId, int surveyPlanId)
         {
+           return null;
            //DA take all the responses and save the to the corresponding surveyResult
            if (surveyResultId < 0)
            {
@@ -93,7 +94,7 @@ namespace smsSurvery.Surveryer.Controllers
               if (!surveyToFill.Terminated)
               {
                  //we are not handling a survey that was already filled in
-                 surveyToFill.Terminated = true;
+                 surveyToFill.Terminated = true;                 
                  surveyToFill.PercentageComplete = 1;
                  foreach (var q in questions)
                  {

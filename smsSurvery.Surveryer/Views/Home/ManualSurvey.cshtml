@@ -57,6 +57,8 @@
       <div>
          @Html.DropDownList("ID", "Choose a survey")      
       </div>
+      <input id="sendMobileSurvey" class="css-checkbox" type="checkbox" value="type" />
+      <label for="sendMobileSurvey" name="dsurveyType"  class="css-label">Send mobile survey</label>     
       <p>
           <button id="run" class="btn btn-primary"> Run</button> 
       </p>
@@ -131,6 +133,7 @@
             data: {
                surveyid: selSurveyId,
                customerNumbers: numbers,
+               sendMobile: $('#sendMobileSurvey').is(':checked'),
                tags: tags
             },
             url: "/Home/RunSurveyForNumbers",

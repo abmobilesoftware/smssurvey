@@ -58,8 +58,10 @@
 </script>
 
 <script type="text/template" id="thankyoupage-template">
-      <div id="thankYouMessage"><strong>Thank you!</strong></div>
-         <div id="userInfo">
+      <div id="thankYouMessage"><strong>Thank you</strong> for filling in this survey</div>
+   @if ((int) @ViewBag.IsFeedback != 0)
+   {
+      <div id="userInfo">
                <fieldset>
                   <label for="email">
                      Enter your e-mail address to receive the voucher:
@@ -68,6 +70,8 @@
                   <button id="sendBtn" class="enabled small">Send</button>
                </fieldset>
       </div>
+   }
+         
 </script>   
 </head>
 

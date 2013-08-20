@@ -468,16 +468,17 @@ namespace smsSurvery.Surveryer.Controllers
               //TODO DA sanity check - only one active survey at a time          
               if (surveyToRun != null)
               {
-                 StartSmsSurveyInternal(numberToSendFrom, customerPhoneNumber, surveyToRun,user,tags, db);
+                 StartSmsSurveyInternal(numberToSendFrom, customerPhoneNumber, surveyToRun,user,false, tags, db);
               }
            }           
         }
 
-       public static void StartSmsSurveyInternal(
+       public void StartSmsSurveyInternal(
           string numberToSendFrom,
           string customerPhoneNumber,
           SurveyPlan surveyToRun,
           smsSurvey.dbInterface.UserProfile authenticatedUser,
+          bool sendMobile,
           string[] tags,
           smsSurveyEntities db)
        {
@@ -518,7 +519,14 @@ namespace smsSurvery.Surveryer.Controllers
                   }
                }
                db.SaveChanges();
-               //SendQuestionToCustomer(customer, numberToSendFrom, currentQuestion, db);
+               if (sendMobile)
+               {
+                  SendMobileSurveyToCustomer(customer, numberToSendFrom, newSurvey);
+               }
+               else
+               {
+                  SendQuestionToCustomer(customer, numberToSendFrom, currentQuestion, db);
+               }
             }
             else
             {
@@ -532,6 +540,15 @@ namespace smsSurvery.Surveryer.Controllers
            logger.DebugFormat("question id: {0}, to customer: {1}, from number: {2}", q.Id, c.PhoneNumber, numberToSendFrom);
            var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyPlan(q.SurveyPlanSet);
            smsinterface.SendMessage(numberToSendFrom, c.PhoneNumber, q.Text);
+        }
+
+        private  void SendMobileSurveyToCustomer(Customer c, string numberToSendFrom, SurveyResult surveyResult)
+        {
+           var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyPlan(surveyResult.SurveyPlan);
+           UrlHelper u = new UrlHelper(this.ControllerContext.RequestContext);
+           string mobileSurveyLocation = HttpContext.Request.Url.Scheme + "://" + HttpContext.Request.Url.Authority + u.Action("Fill", "MobileSurvey", new { id = surveyResult.Id });       
+           string text = String.Format("Please fill in the survey at {0}", mobileSurveyLocation);
+           smsinterface.SendMessage(numberToSendFrom, c.PhoneNumber, text);
         }
         private void SendThankYouToCustomer(Customer c,string numberToSendFrom, SurveyPlan survey)
         {
