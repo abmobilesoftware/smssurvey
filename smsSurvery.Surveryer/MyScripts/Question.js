@@ -46,10 +46,10 @@ Question.QuestionModel = Backbone.Model.extend({
       }
    },
    deleteQuestion: function () {
-      this.trigger("delete", this);      
+      this.trigger("delete", this);
    },
    updateOrder: function (newOrder) {
-      this.set("Order", newOrder);
+      this.set("Order", (newOrder + 1));
       var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
       Backbone.trigger(attributeChangedEvent);
    },
@@ -61,7 +61,7 @@ Question.QuestionModel = Backbone.Model.extend({
    updateQuestionType: function (newType) {
       this.set("ValidAnswersDetails", "");
       this.set("Answers", []);
-      this.set("Type", newType);      
+      this.set("Type", newType);
       var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
       Backbone.trigger(attributeChangedEvent);
    },
@@ -79,7 +79,7 @@ Question.QuestionModel = Backbone.Model.extend({
          this.alertsModalModel.getQuestionAlertsAsJson());
    },
    setAnswers: function () {
-      if (this.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_MANY_FROM_MANY || 
+      if (this.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_MANY_FROM_MANY ||
          this.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY) {
          if (this.answersModalModel != null) {
             var answersAsJson = this.answersModalModel.getAnswersAsJson();
@@ -97,24 +97,24 @@ Question.QuestionModel = Backbone.Model.extend({
          }
       }
    },
-// Used for validation when building the survey
-validateQuestion: function () {
-   if (this.get("Text").length == 0 || this.get("Text").length > 160) {
-      this.trigger(this.events.VALIDATE, this.errors.INVALID_TEXT);
-      return false;
-   } else {
-      this.trigger(this.events.VALIDATE, this.errors.VALID);
-      return true;
+   // Used for validation when building the survey
+   validateQuestion: function () {
+      if (this.get("Text").length == 0 || this.get("Text").length > 160) {
+         this.trigger(this.events.VALIDATE, this.errors.INVALID_TEXT);
+         return false;
+      } else {
+         this.trigger(this.events.VALIDATE, this.errors.VALID);
+         return true;
+      }
+   },
+   // Used for validation when taking the survey
+   validate: function (attributes, options) {
+      if (attributes.PickedAnswer === "noValue" || attributes.PickedAnswer === "") {
+         this.set({ "ValidAnswer": false }, { silent: false });
+      } else {
+         this.set({ "ValidAnswer": true }, { silent: false });
+      }
    }
-},
-// Used for validation when taking the survey
-validate: function (attributes, options) {
-   if (attributes.PickedAnswer === "noValue" || attributes.PickedAnswer === "") {
-      this.set({ "ValidAnswer": false }, { silent: false });
-   } else {
-      this.set({ "ValidAnswer": true }, { silent: false });
-   }
-}
 });
 
 Question.QuestionView = Backbone.View.extend({
@@ -327,6 +327,7 @@ Question.QuestionSetModel = Backbone.Model.extend({
             var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
             Backbone.trigger(attributeChangedEvent);
          }, this);
+      this.questionTemporaryId = -10000;
    },
    getQuestionSetCollection: function () {
       return this.questionSetCollection.models;
@@ -350,7 +351,8 @@ Question.QuestionSetModel = Backbone.Model.extend({
       return collectionAsJson;
    },
    addQuestion: function () {
-      var questionModel = new Question.QuestionModel();
+      ++this.questionTemporaryId;
+      var questionModel = new Question.QuestionModel({ Id: this.questionTemporaryId });
       questionModel.updateOrder(this.questionSetCollection.models.length);
       this.questionSetCollection.add(questionModel);
    },

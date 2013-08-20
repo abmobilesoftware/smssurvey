@@ -198,14 +198,24 @@ namespace smsSurvery.Surveryer.Controllers
                dbSurveyPlan.Description = clientSurveyPlan.Description;
                var dbQuestions = dbSurveyPlan.QuestionSet;
                var clientQuestions = clientSurveyPlan.QuestionSet;
-              
+
                // Delete old questions
-               for (var i = dbQuestions.Count - 1; i > -1; --i)
-               {
-                  var clientQuestionResult = clientQuestions.Where(x => x.Id.Equals(dbQuestions.ElementAt(i).Id));
-                  if (clientQuestionResult.Count() == 0)
+               if (clientQuestions != null)
+                  for (var i = dbQuestions.Count - 1; i > -1; --i)
                   {
-                     db.QuestionSet.Remove(dbQuestions.ElementAt(i));
+                     {
+                        var clientQuestionResult = clientQuestions.Where(x => x.Id.Equals(dbQuestions.ElementAt(i).Id));
+                        if (clientQuestionResult.Count() == 0)
+                        {
+                           db.QuestionSet.Remove(dbQuestions.ElementAt(i));
+                        }
+                     }
+                  }
+               else
+               {
+                  for (var j = dbQuestions.Count - 1; j > -1; --j)
+                  {
+                     db.QuestionSet.Remove(dbQuestions.ElementAt(j));
                   }
                }
                if (clientQuestions != null)
@@ -268,8 +278,8 @@ namespace smsSurvery.Surveryer.Controllers
                                  dbAlertNotificationSet.Add(dbAlertNotification);
                                  dbQuestionAlert.AlertNotificationSet = dbAlertNotificationSet;
                                  dbQuestionAlerts.Add(dbQuestionAlert);
-                              }                              
-                           }                           
+                              }
+                           }
                         }
                         dbQuestion.Order = clientQuestion.Order;
                         dbQuestion.Text = clientQuestion.Text;
@@ -310,7 +320,7 @@ namespace smsSurvery.Surveryer.Controllers
                         dbQuestion.QuestionAlertSet = dbQuestionAlerts;
                         dbQuestions.Add(dbQuestion);
                      }
-                  }                  
+                  }
                }
                db.SaveChanges();               
                return Json(new smsSurvery.Surveryer.Models.RequestResult("success",
@@ -412,30 +422,30 @@ namespace smsSurvery.Surveryer.Controllers
       //
       // POST: /SurveyPlan/Delete/5
 
-        [HttpPost, ActionName("Delete")]        
+      [HttpPost, ActionName("Delete")]
       [ValidateAntiForgeryToken]
       public ActionResult DeleteConfirmed(int id)
       {
-           //DA we have to manually break the SurveyResults <-> Tags association
+         //DA we have to manually break the SurveyResults <-> Tags association
          SurveyPlan surveyplan = db.SurveyPlanSet.Find(id);
-            foreach (var result in surveyplan.SurveyResult)
+         foreach (var result in surveyplan.SurveyResult)
+         {
+            var tagsPerResult = result.Tags.ToList();
+            foreach (var tag in tagsPerResult)
             {
-               var tagsPerResult = result.Tags.ToList();
-               foreach (var tag in tagsPerResult)
-               {
-                  result.Tags.Remove(tag);
-               }
+               result.Tags.Remove(tag);
             }
-           //DA deal with customer - running survey reference before deleting
-            var customersWithSurveyUnderDeleteRunning = db.CustomerSet.Where(x => x.RunningSurvey.Id == surveyplan.Id);
-            foreach (var customer in customersWithSurveyUnderDeleteRunning)
-            {
-               customer.SurveyInProgress = false;
-               customer.RunningSurvey = null;
-            }
+         }
+         //DA deal with customer - running survey reference before deleting
+         var customersWithSurveyUnderDeleteRunning = db.CustomerSet.Where(x => x.RunningSurvey.Id == surveyplan.Id);
+         foreach (var customer in customersWithSurveyUnderDeleteRunning)
+         {
+            customer.SurveyInProgress = false;
+            customer.RunningSurvey = null;
+         }
          db.SurveyPlanSet.Remove(surveyplan);
-            var connectedUser = db.UserProfile.Where(u=> u.UserName == User.Identity.Name).FirstOrDefault();
-            connectedUser.SurveyPlanSet.Remove(surveyplan);
+         var connectedUser = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+         connectedUser.SurveyPlanSet.Remove(surveyplan);
          db.SaveChanges();
          return RedirectToAction("Index");
       }

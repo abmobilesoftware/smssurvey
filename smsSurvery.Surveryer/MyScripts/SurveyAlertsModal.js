@@ -61,7 +61,7 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
          var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
          Backbone.trigger(attributeChangedEvent);
       }, this);
-      this.alertClientId = -1300;
+      this.alertClientId = -10000;
    },
    getAlertOperators: function (type) {
       var questionConstants = SurveyUtilities.Utilities.CONSTANTS_QUESTION;
