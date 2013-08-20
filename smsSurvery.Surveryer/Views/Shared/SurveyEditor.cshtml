@@ -41,7 +41,6 @@
          <a href="#multiple-answer-modal<%= Id %>" role="button" class="open-modal-btn btn edit-answers-btn" data-backdrop="static" data-toggle="modal"><img class="icon" src="/Content/images/edit_20.png" />Edit answers</a>   
          <div id="multiple-answer-modal<%= Id %>" class="modal hide fade">
             <div class="modal-header">               
-               <button type="button" class="close-modal-btn close close-answers-modal-btn" aria-hidden="true">x</button>
                <h3> Configure answers </h3>
             </div>
             <div class="modal-body">
@@ -52,13 +51,13 @@
             </div>
             <div class="modal-footer">
                <button type="button" class="btn btn-success save-answers">Save</button>
+               <button type="button" class="btn btn-danger close-answers-modal-btn" aria-hidden="true">Discard</button>
             </div>
          </div>
       <% } else if (Type == "Rating") { %>
          <a href="#edit-rating-modal<%=Id %>" role="button" data-backdrop="static" class="open-modal-btn btn" data-toggle="modal">Edit rating</a>   
          <div id="edit-rating-modal<%= Id %>" class="modal hide fade">
             <div class="modal-header">
-               <button type="button" class="close-modal-btn close close-rating-modal-btn" aria-hidden="true">x</button>
                <h3>Edit rating</h3>
             </div>
             <div class="modal-body">
@@ -66,6 +65,7 @@
             </div>
             <div class="modal-footer">
                <button type="button" class="btn btn-success save-rating">Save</button>
+               <button type="button" class="btn btn-danger close-rating-modal-btn" aria-hidden="true">Discard</button>
             </div>
          </div>
       <% } %>
@@ -73,7 +73,6 @@
    
       <div id="edit-alerts-modal<%= Id %>" class="modal hide fade">
          <div class="modal-header">
-            <button type="button" class="close-modal-btn close close-alerts-modal-btn" aria-hidden="true">x</button>
             <h3>Edit alerts</h3>
          </div>
          <div class="modal-body">
@@ -83,6 +82,7 @@
          </div>
          <div class="modal-footer">
             <button type="button" class="btn btn-success save-alerts">Save</button>
+            <button type="button" class="btn btn-danger close-alerts-modal-btn" aria-hidden="true">Discard</button>
          </div>
       </div>
    </div>
@@ -173,6 +173,11 @@
       questionText += " Reply with a rating from 1 (" + answersDetailsSplitted[0] + ") to " + scaleSize + "(" + answersDetailsSplitted[scaleSize-1] + ").";
    } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY) {
       questionText += " Reply with the corresponding number.";
+      _.each(Answers, function(answer, index) {
+         questionText += (index + 1) + "-" + answer.AnswerLabel + ", ";
+      });
+   } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_MANY_FROM_MANY) {
+      questionText += " Reply with the corresponding numbers.";
       _.each(Answers, function(answer, index) {
          questionText += (index + 1) + "-" + answer.AnswerLabel + ", ";
       });
