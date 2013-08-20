@@ -133,7 +133,7 @@ namespace smsSurvery.Surveryer.Controllers
         {
            //for the given survey (if allowed access) show messages with given stem
            Question question = db.QuestionSet.Find(questionId);
-           if (question != null && question.Type == "Rating")
+           if (question != null && question.Type == ReportsController.cRatingsTypeQuestion)
            {
               List<FreeTextAnswer> messages = new List<FreeTextAnswer>();
               var results = question.Result.OrderByDescending(x => x.SurveyResult.DateRan);
@@ -172,7 +172,7 @@ namespace smsSurvery.Surveryer.Controllers
         {
            //for the given survey (if allowed access) show messages with given stem
            Question question = db.QuestionSet.Find(questionId);
-           if (question != null && question.Type == "FreeText")
+           if (question != null && question.Type == ReportsController.cFreeTextTypeQuestion)
            {
               List<FreeTextAnswer> messages = new List<FreeTextAnswer>();
               foreach (var result in question.Result)
@@ -288,7 +288,7 @@ namespace smsSurvery.Surveryer.Controllers
                     {
                        currentSurvey.CurrentQuestion = nextQuestion;
                        db.SaveChanges();
-                       SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion, db);                      
+                       SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion, currentSurvey.SurveyPlan.QuestionSet.Count(), db);                      
                     }
                  }
                  else
@@ -525,7 +525,7 @@ namespace smsSurvery.Surveryer.Controllers
                }
                else
                {
-                  SendQuestionToCustomer(customer, numberToSendFrom, currentQuestion, db);
+                  SendQuestionToCustomer(customer, numberToSendFrom, currentQuestion,surveyToRun.QuestionSet.Count(), db);
                }
             }
             else
@@ -535,11 +535,35 @@ namespace smsSurvery.Surveryer.Controllers
          }          
        }
 
-        private static void SendQuestionToCustomer(Customer c, string numberToSendFrom, Question q, smsSurveyEntities db)
+       private static void SendQuestionToCustomer(Customer c, string numberToSendFrom, Question q, int totalNumberOfQuestions, smsSurveyEntities db)
         {
            logger.DebugFormat("question id: {0}, to customer: {1}, from number: {2}", q.Id, c.PhoneNumber, numberToSendFrom);
            var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyPlan(q.SurveyPlanSet);
-           smsinterface.SendMessage(numberToSendFrom, c.PhoneNumber, q.Text);
+           //DA before we send the SMS question we must prepare it - add the expected answers to it
+           string smsText = PrepareSMSTextForQuestion(q, totalNumberOfQuestions);
+           smsinterface.SendMessage(numberToSendFrom, c.PhoneNumber, smsText);
+        }
+
+        private static string PrepareSMSTextForQuestion(Question q, int totalNumberOfQuestions)
+        {
+           string prefix = String.Format("Q{0}/{1}: ", q.Order, totalNumberOfQuestions);
+           switch (q.Type)
+           {
+              case ReportsController.cFreeTextTypeQuestion:
+                 return prefix + q.Text;                 
+              case ReportsController.cRatingsTypeQuestion:                
+                 var validAnswer = q.ValidAnswers.Split(';');
+                 var validAnswerDetails = q.ValidAnswersDetails.Split(';');                
+                 return prefix + q.Text + String.Format(" Reply with a rating from {0} ({1}) to {2} ({3})", validAnswer[0], validAnswerDetails[0], validAnswer.Last(), validAnswerDetails.Last());                 
+              case ReportsController.cYesNoTypeQuestion:
+                 return prefix+ q.Text + " Reply with 1 for Yes, 2 for No";
+              case ReportsController.cSelectManyFromManyTypeQuestion:
+                 return "";
+              case ReportsController.cSelectOneFromManyTypeQuestion:
+                 return "";
+              default:
+                 return prefix + q.Text;
+           }
         }
 
         private  void SendMobileSurveyToCustomer(Customer c, string numberToSendFrom, SurveyResult surveyResult)

@@ -13,8 +13,12 @@ namespace smsSurvery.Surveryer.Controllers
 {
    public class ReportsController : Controller
    {
-      private const string cRatingsTypeQuestion = "Rating";
-      private const string cFreeTextTypeQuestion = "FreeText";
+      public const string cRatingsTypeQuestion = "Rating";
+      public const string cFreeTextTypeQuestion = "FreeText";
+      public const string cYesNoTypeQuestion = "YesNo";
+      public const string cSelectManyFromManyTypeQuestion = "SelectManyFromMany";
+      public const string cSelectOneFromManyTypeQuestion = "SelectOneFromMany";
+
       private smsSurveyEntities db = new smsSurveyEntities();
 
       public const string STRING_COLUMN_TYPE = "string";
@@ -290,7 +294,7 @@ namespace smsSurvery.Surveryer.Controllers
          //assuming that the question and valid
          Question question = db.QuestionSet.Find(questionId);
          tags = tags ?? new string[0];
-         if (question != null && question.Type == "FreeText")
+         if (question != null && question.Type == ReportsController.cFreeTextTypeQuestion)
          {         
             return PartialView(GetTagCloudData(question,tags));
          }         
