@@ -89,6 +89,10 @@
    <div class="clear"></div>
 </script>
 
+<script type="text/template" id="no-questions-template">
+   <div class="question">No questions. Use the button below to add questions.</div>   
+</script>
+
 <script type="text/template" id="alert-template">
    <div class="alert-entry">
       <span class="input-label"><strong>Description:</strong></span>
@@ -234,21 +238,20 @@
          <td><input type="text" placeholder="Insert thank you message" id="survey-thank-you-message" value="<%= ThankYouMessage %>"/></td>
       </tr>
       <tr>
-         <% var idRepresentation = Id == -1 ? "No id" : Id; %>
+         <% var idRepresentation = Id == -1 ? "-" : Id; %>
          <td>ID</td>
          <td><%= idRepresentation %></td>
       </tr>
       <tr>
          <td>ShortID</td>
-         <td>bogus short id</td>
+         <td>-</td>
       </tr>
       </table>
    <% } %>
 </script>
 
 <script type="text/template" id="answer-template">
-   <td></td>
-   <td><input class="answer-label-input" type="text" value="<%= AnswerLabel %>" placeholder="Input answer..." /></td>
+   <td><input class="answer-label-input bottom-input" type="text" value="<%= AnswerLabel %>" placeholder="Input answer..." /></td>
    <td><button class="btn btn-danger delete-answer">Delete answer</button></td>   
 </script>
 
@@ -272,7 +275,7 @@
 
 <script type="text/template" id="rating-template">
    <td><%=RatingIdentifier %></td>
-   <td><input class="rating-label-input" type="text" value="<%=RatingLabel %>" placeholder="Rating value"/></td>
+   <td><input class="rating-label-input bottom-input" type="text" value="<%=RatingLabel %>" placeholder="Rating value"/></td>
 </script>
 
 <div id="survey">

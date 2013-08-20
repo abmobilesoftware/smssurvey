@@ -161,7 +161,8 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
    sync: function (method, model, options) {
       options = options || {};
       options.url = this.urlByMethod[method];
-      Backbone.sync(method, model, options);
+      parsedMethod = method == "update" ? "create" : method;
+      Backbone.sync(parsedMethod, model, options);
    },
    attributeChanged: function () {
       this.set("DataChanged", true);

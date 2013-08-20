@@ -65,15 +65,21 @@ SurveyModals.RatingsModalModel = Backbone.Model.extend({
    getRatings: function () {
       return this.surveyRatingsCollection.models;
    },
-   getRatingsAsString: function () {
-      var ratingsAsString = "";
+   getRatingsAsJson: function () {
+      var ratingsLabels = "";
+      var ratingsIdentifiers = "";
       if (this.surveyRatingsCollection.models.length > 1) {
-         ratingsAsString += this.surveyRatingsCollection.models[0].get("RatingLabel");
+         ratingsLabels += this.surveyRatingsCollection.models[0].get("RatingLabel");
+         ratingsIdentifiers += 1;
          for (var i = 1; i < this.surveyRatingsCollection.models.length; ++i) {
-            ratingsAsString += ";" + this.surveyRatingsCollection.models[i].get("RatingLabel");
+            ratingsLabels += ";" + this.surveyRatingsCollection.models[i].get("RatingLabel");
+            ratingsIdentifiers += ";" + (i + 1);
          }
       }
-      return ratingsAsString;
+      return {
+         ValidAnswersDetails: ratingsLabels,
+         ValidAnswers: ratingsIdentifiers
+      };
    },
    emptyRatingsCollection: function () {
       for (var i = this.surveyRatingsCollection.models.length - 1; i > -1; --i) {
