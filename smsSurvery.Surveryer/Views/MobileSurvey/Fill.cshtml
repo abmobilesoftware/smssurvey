@@ -73,6 +73,7 @@
 
 <body>
      <input type="hidden" value="@ViewBag.Id" id="surveyPlanId"/>
+     <input type="hidden" value="@ViewBag.IsFeedback" id="isFeedback"/>
      <section id="survey">
         <section id="questionsPage" class="page">
             <header>
@@ -117,6 +118,7 @@
          });
          var urlParts = document.URL.split("/");
          var urlLastPart = urlParts[urlParts.length - 1];
+         var surveyResultID = parseInt($("#isFeedback").val()) === 1 ? -1 : urlLastPart;
          survey.fetch({
             data: {
                Id: surveyId
@@ -125,7 +127,7 @@
                var surveyModel = new Question.QuestionSetModel(
                   {
                      jsonQuestions: model.get("QuestionSet"),
-                     SurveyResultId: urlLastPart,
+                     SurveyResultId: surveyResultID,
                      SurveyPlanId: surveyId
                   });
                //DA sure they are ordered

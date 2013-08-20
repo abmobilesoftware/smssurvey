@@ -452,7 +452,7 @@
     <Content Include="Views\AlertMailer\_Layout.cshtml" />
     <Content Include="Views\AlertMailer\SendAlert.cshtml" />
     <Content Include="Views\Shared\SurveyEditor.cshtml" />
-    <Content Include="Views\MobileSurvey\Index.cshtml" />
+    <Content Include="Views\MobileSurvey\Fill.cshtml" />
     <Content Include="Views\MobileSurvey\SurveyAlreadyCompleted.cshtml" />
   </ItemGroup>
   <ItemGroup>
