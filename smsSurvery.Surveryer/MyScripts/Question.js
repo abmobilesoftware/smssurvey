@@ -327,6 +327,7 @@ Question.QuestionSetModel = Backbone.Model.extend({
             var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
             Backbone.trigger(attributeChangedEvent);
          }, this);
+      this.questionTemporaryId = -10000;
    },
    getQuestionSetCollection: function () {
       return this.questionSetCollection.models;
@@ -350,7 +351,8 @@ Question.QuestionSetModel = Backbone.Model.extend({
       return collectionAsJson;
    },
    addQuestion: function () {
-      var questionModel = new Question.QuestionModel();
+      ++this.questionTemporaryId;
+      var questionModel = new Question.QuestionModel({ Id: this.questionTemporaryId });
       questionModel.updateOrder(this.questionSetCollection.models.length);
       this.questionSetCollection.add(questionModel);
    },
