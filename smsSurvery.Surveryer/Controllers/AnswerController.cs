@@ -569,11 +569,19 @@ namespace smsSurvery.Surveryer.Controllers
         private  void SendMobileSurveyToCustomer(Customer c, string numberToSendFrom, SurveyResult surveyResult)
         {
            var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyPlan(surveyResult.SurveyPlan);
-           UrlHelper u = new UrlHelper(this.ControllerContext.RequestContext);
-           string mobileSurveyLocation = HttpContext.Request.Url.Scheme + "://" + HttpContext.Request.Url.Authority + u.Action("Fill", "MobileSurvey", new { id = surveyResult.Id });       
+           string mobileSurveyLocation = GetTargetedMobileSurveyLocation(surveyResult, this.ControllerContext.RequestContext);
            string text = String.Format("Please fill in the survey at {0}", mobileSurveyLocation);
            smsinterface.SendMessage(numberToSendFrom, c.PhoneNumber, text);
         }
+
+       //TODO refactor to 1 method
+        private string GetTargetedMobileSurveyLocation(SurveyResult surveyResult, System.Web.Routing.RequestContext  rc)
+        {
+           UrlHelper u = new UrlHelper(rc);
+           string mobileSurveyLocation = HttpContext.Request.Url.Scheme + "://" + HttpContext.Request.Url.Authority + u.Action("Fill", "MobileSurvey", new { id = surveyResult.Id });
+           return mobileSurveyLocation;
+        }
+      
         private void SendThankYouToCustomer(Customer c,string numberToSendFrom, SurveyPlan survey)
         {
            logger.DebugFormat("Send thank you to customer {0}, from number {1}, for surveyId {2}", c.PhoneNumber, numberToSendFrom, survey.Id);

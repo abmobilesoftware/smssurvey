@@ -11,6 +11,9 @@ namespace smsSurvey.dbInterface
    [MetadataType(typeof(SurveyPlan_Validation))]
    public partial class SurveyPlan
    {
+      #region Calculated properties
+      
+      #endregion
    }
 
    #region Validation

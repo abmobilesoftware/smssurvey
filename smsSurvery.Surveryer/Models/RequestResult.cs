@@ -10,12 +10,13 @@ namespace smsSurvery.Surveryer.Models
       public string Result { get; set; }
       public string Operation { get; set; }
       public string Details { get; set; }
-
-      public RequestResult(string iResult, string iOperation, string iDetails="no details")
+      public string MobileWebsiteLocation { get; set; }
+      public RequestResult(string iResult, string iOperation, string iDetails = "no details", string iMobileWebsiteLocation = "")
       {
          Result = iResult;
          Operation = iOperation;
          Details = iDetails;
+         MobileWebsiteLocation = iMobileWebsiteLocation;
       }
    }
 

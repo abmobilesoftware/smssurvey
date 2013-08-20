@@ -20,7 +20,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
          $NOTIFICATION: $("#survey-notification", this.$el)
       }
       this.model.on("change:DisplayInfoTable", this.render);
-      this.model.on("change:Id", this.render);
+      this.model.on("change:Id change:MobileWebsiteLocation", this.render);
       window.onbeforeunload = this.confirmPageLeaving;
       this.model.on(this.model.events.SURVEY_LOADED, this.surveyLoaded);
       this.model.on(this.model.events.VALIDATE, this.validationResult);
@@ -68,6 +68,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
                         removeClass("notification-success notification-error").addClass("notification-success");
                      if (response.Operation == "create") {
                         self.model.set("Id", response.Details);
+                        self.model.set("MobileWebsiteLocation", response.MobileWebsiteLocation);
                      }
                      setTimeout(function () {
                         self.model.set("DataChanged", false);
@@ -137,7 +138,8 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
       Description: "no description",
       ThankYouMessage: "no thank you message",
       DisplayInfoTable: false,
-      HasChanged: false
+      HasChanged: false,
+      MobileWebsiteLocation: ""
    },
    initialize: function () {
       _.bindAll(this, "attributeChanged", "modelSynced");

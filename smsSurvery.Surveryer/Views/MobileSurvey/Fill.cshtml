@@ -140,6 +140,15 @@
                   model: surveyModel
                });
                surveyView.render();
+               //location code
+               //if (navigator.geolocation)
+               //{
+               //   navigator.geolocation.getCurrentPosition(function (position) {
+               //      alert("Latitude: " + position.coords.latitude + " Longitude: " + position.coords.longitude);
+               //   });
+               //}
+               //else
+               //{ alert("no location available") }
             },
             error: function (model, response, options) {
                alert(response)
