@@ -167,7 +167,7 @@ namespace smsSurvery.Surveryer.Controllers
             }
             ClientSurveyPlan surveyPlan =
                new ClientSurveyPlan(
-                  surveyplan.Id, surveyplan.Description,
+                  surveyplan.Id, surveyplan.Description, surveyplan.IntroMessage,
                   surveyplan.ThankYouMessage, surveyplan.DateStarted,
                   surveyplan.DateEnded, surveyplan.IsRunning, questions);
 
@@ -196,6 +196,7 @@ namespace smsSurvery.Surveryer.Controllers
                }
                dbSurveyPlan.ThankYouMessage = clientSurveyPlan.ThankYouMessage;
                dbSurveyPlan.Description = clientSurveyPlan.Description;
+               dbSurveyPlan.IntroMessage = clientSurveyPlan.IntroMessage;
                var dbQuestions = dbSurveyPlan.QuestionSet;
                var clientQuestions = clientSurveyPlan.QuestionSet;
 

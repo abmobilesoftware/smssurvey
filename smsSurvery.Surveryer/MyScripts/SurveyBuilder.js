@@ -4,6 +4,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
    events: {
       "click .edit-survey": "editSurveyInfo",
       "keyup #survey-description": "updateDescription",
+      "keyup #survey-intro": "updateIntroMessage",
       "keyup #survey-thank-you-message": "updateThankYouMessage",
       "click .save-btn": "saveSurvey"
    },
@@ -11,7 +12,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       var self = this;
       _.bindAll(this, "editSurveyInfo", "render", "updateDescription",
          "updateThankYouMessage", "saveSurvey", "confirmPageLeaving",
-         "surveyLoaded", "validationResult", "updateSaveButton");
+         "surveyLoaded", "validationResult", "updateSaveButton", "updateIntroMessage");
       this.template = _.template($("#survey-info-template").html());
       this.dom = {
          $SURVEY_INFO: $("#survey-info", this.$el),
@@ -31,9 +32,10 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       this.dom.$SURVEY_INFO.html(this.template(this.model.toJSON()));
       this.dom.$EDIT_SURVEY_INFO = $(".edit-survey", this.$el);
       this.dom.$INFO_TABLE = $(".survey-info-data", this.$el);
-      this.dom.$SURVEY_INFO_TITLE_TEXT = $(".survey-info-title-text", this.$el);
+      this.dom.$SURVEY_INFO_TITLE_TEXT = $(".survey-info-title-text", this.$el);      
       this.dom.$SURVEY_DESCRIPTION_INPUT = $("#survey-description", this.$el);
       this.dom.$SURVEY_THANK_YOU_MESSAGE_INPUT = $("#survey-thank-you-message", this.$el);
+      this.dom.$SURVEY_INTRO_MESSAGE_INPUT = $("#survey-intro", this.$el);
       this.dom.$SAVE_SURVEY_BTN = $(".save-btn", this.$el);
    },
    editSurveyInfo: function (event) {
@@ -43,6 +45,9 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       } else {
          this.model.set("DisplayInfoTable", true);
       }
+   },
+   updateIntroMessage: function (event) {
+      this.model.updateIntroMessage(event.currentTarget.value);      
    },
    updateDescription: function (event) {
       this.model.updateDescription(event.currentTarget.value);
@@ -101,12 +106,15 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       var invalidFieldClass = SurveyUtilities.Utilities.CONSTANTS_CLASS.INVALID_FIELD;
       this.dom.$SURVEY_DESCRIPTION_INPUT.removeClass(invalidFieldClass);
       this.dom.$SURVEY_THANK_YOU_MESSAGE_INPUT.removeClass(invalidFieldClass);
+      this.dom.$SURVEY_INTRO_MESSAGE_INPUT.removeClass(invalidFieldClass);
 
       for (var i = 0; i < result.length; ++i) {
          if (result[i] == this.model.errors.INVALID_DESCRIPTION) {
             this.dom.$SURVEY_DESCRIPTION_INPUT.addClass(invalidFieldClass);
          } else if (result[i] == this.model.errors.INVALID_THANK_YOU_MESSAGE) {
             this.dom.$SURVEY_THANK_YOU_MESSAGE_INPUT.addClass(invalidFieldClass);
+         } else if (result[i] == this.model.errors.INVALID_INTRO_MESSAGE) {
+            this.dom.$SURVEY_INTRO_MESSAGE_INPUT.addClass(invalidFieldClass);
          }
       }
    },
@@ -131,11 +139,13 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
    },
    errors: {
       INVALID_DESCRIPTION: "invalid description",
-      INVALID_THANK_YOU_MESSAGE: "invalid thank you message"
+      INVALID_THANK_YOU_MESSAGE: "invalid thank you message",
+      INVALID_INTRO_MESSAGE: "invalid intro message"
    },
    defaults: {
       Id: 7,
       Description: "no description",
+      IntroMessage: "no intro message",
       ThankYouMessage: "no thank you message",
       DisplayInfoTable: false,
       HasChanged: false,
@@ -144,7 +154,7 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
    initialize: function () {
       _.bindAll(this, "attributeChanged", "modelSynced");
       var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
-      this.on("change:Description change:ThankYouMessage", this.attributeChanged);
+      this.on("change:Description change:ThankYouMessage change:IntroMessage", this.attributeChanged);
       this.on("sync", this.modelSynced);
       Backbone.on(attributeChangedEvent, this.attributeChanged);
       this.noOfAttributesChanged = 0;
@@ -156,6 +166,9 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
    idAttribute: "Id",
    updateThankYouMessage: function (thankYouMessage) {
       this.set("ThankYouMessage", thankYouMessage);
+   },
+   updateIntroMessage: function (introMessage) {
+      this.set("IntroMessage", introMessage);
    },
    updateDescription: function (description) {
       this.set("Description", description);
@@ -180,21 +193,26 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
       var questionSetModelValidity = this.questionSetModel.validateQuestionSetModel();
       var descriptionValidity = true;
       var thankYouMessageValidity = true;
+      var introMessageValidity = true;
       this.result = [];
       if (this.get("Description").length == 0 || this.get("Description").length > 100) {
          this.result.push(this.errors.INVALID_DESCRIPTION)
          descriptionValidity = false;
       }
+      if (this.get("IntroMessage").length == 0 || this.get("IntroMessage").length > 160) {
+         this.result.push(this.errors.INVALID_INTRO_MESSAGE);
+         introMessageValidity = false;
+      }
       if (this.get("ThankYouMessage").length == 0 || this.get("ThankYouMessage").length > 160) {
          this.result.push(this.errors.INVALID_THANK_YOU_MESSAGE);
          thankYouMessageValidity = false;
       }
-      if (!descriptionValidity || !thankYouMessageValidity) {
+      if (!descriptionValidity || !introMessageValidity || !thankYouMessageValidity) {
          this.trigger(this.events.VALIDATE, this.result);
       } else {
          this.trigger(this.events.VALIDATE, [])
       }
-      return questionSetModelValidity && descriptionValidity && thankYouMessageValidity;
+      return questionSetModelValidity && descriptionValidity && introMessageValidity  && thankYouMessageValidity;
    },
    loadSurvey: function () {
       self = this;
