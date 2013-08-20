@@ -91,8 +91,10 @@
 
 <script type="text/template" id="alert-template">
    <div class="alert-entry">
-      <span><strong>Description:</span>
-      <input type="text" class="alert-description-input" placeholder="Ex: Insert description ..." value="<%= Description %>" /><br/>
+      <span class="input-label"><strong>Description:</strong></span>
+      <input type="text" class="alert-description-input" placeholder="Ex: Insert description ..." value="<%= Description %>" />
+      <button class="btn btn-danger delete-alert-btn"><img src="/Content/images/close_20.png" /></button>
+      <br/>
       <select class="alert-operator-select">
                   <option value="noValue">Select operator</option>
          <% _.each(AlertOperators, function(alertOperator, index) { 
@@ -104,9 +106,9 @@
             });%>			
       </select>
       <input type="text" class="alert-trigger-answer-input" value="<%= TriggerAnswer %>" placeholder="Insert trigger value" />
-      <button class="btn btn-danger delete-alert-btn"><img src="/Content/images/close_20.png" /></button><br/>
-      <span>Send mail to:</span>
-      <input type="text" class="alert-distribution-list-input" value="<%= AlertNotification.DistributionList %>" placeholder="Ex: address1@domain.net,address2@domain.net"/>
+      <br/>
+      <span class="bottom-input-label"><strong>Send mail to:</strong></span>
+      <input type="text" class="alert-distribution-list-input bottom-input" value="<%= AlertNotification.DistributionList %>" placeholder="Ex: address1@domain.net,address2@domain.net"/>
   </div>
 </script>
 

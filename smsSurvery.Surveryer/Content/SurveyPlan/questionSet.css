@@ -262,8 +262,7 @@ div#preview-content-modal {
 }
 
 .delete-alert-btn {
-   position: relative;
-   top: -5px;
+   float:right;
 }
 
 .alert-mail-to-label{
@@ -312,3 +311,15 @@ input.invalidField {
    border: 1px solid rgba(255, 0, 0, 1);
 }
 
+.input-label {
+   position:relative;
+   bottom: 3px;
+}
+
+.bottom-input-label {
+   top: 3px;
+}
+
+input.bottom-input {
+   margin-bottom: 0;
+}
