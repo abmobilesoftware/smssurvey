@@ -91,7 +91,9 @@ Question.QuestionModel = Backbone.Model.extend({
    setRatings: function () {
       if (this.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_RATING) {
          if (this.ratingsModalModel != null) {
-            this.set("ValidAnswersDetails", this.ratingsModalModel.getRatingsAsString());
+            var ratingsAsJson = this.ratingsModalModel.getRatingsAsJson();
+            this.set("ValidAnswers", ratingsAsJson.ValidAnswers);
+            this.set("ValidAnswersDetails", ratingsAsJson.ValidAnswersDetails);
          }
       }
    },
