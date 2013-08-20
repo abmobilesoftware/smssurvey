@@ -169,7 +169,7 @@ namespace smsSurvery.Surveryer.Controllers
          }
       }
 
-      [HttpPut]
+      [HttpPost]
       public JsonResult SaveSurvey(
          ClientSurveyPlan clientSurveyPlan)
       {
