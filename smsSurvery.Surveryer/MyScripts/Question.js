@@ -261,6 +261,7 @@ Question.QuestionSetView = Backbone.View.extend({
          model: this.model,
          surveyPreviewModel: this.surveyPreviewModel
       });
+      this.noQuestionsTemplate = _.template($("#no-questions-template").html());
       this.dom.$QUESTION_SET_CONTENT.on("sortupdate", this.listSorted);
       this.questionViewCollection = [];
       this.render();
@@ -269,16 +270,20 @@ Question.QuestionSetView = Backbone.View.extend({
       this.dom.$QUESTION_SET_CONTENT.empty();
       this.questionViewCollection.length = 0;
       var questionSetModels = this.model.getQuestionSetCollection();
-      _.each(questionSetModels, function (question) {
-         var questionView = new Question.QuestionView({ model: question });
-         this.questionViewCollection.push(questionView);
-         this.dom.$QUESTION_SET_CONTENT.append(questionView.render());
-      }, this);
-      this.dom.$QUESTION_SET_CONTENT.sortable({ axis: "y", handle: ".grip", cursor: "move" });
-      if (questionSetModels.length < 5) {
-         this.dom.$ADD_QUESTION_BTN.show();
+      if (questionSetModels.length > 0) {
+         _.each(questionSetModels, function (question) {
+            var questionView = new Question.QuestionView({ model: question });
+            this.questionViewCollection.push(questionView);
+            this.dom.$QUESTION_SET_CONTENT.append(questionView.render());
+         }, this);
+         this.dom.$QUESTION_SET_CONTENT.sortable({ axis: "y", handle: ".grip", cursor: "move" });
+         if (questionSetModels.length < 5) {
+            this.dom.$ADD_QUESTION_BTN.show();
+         } else {
+            this.dom.$ADD_QUESTION_BTN.hide();
+         }
       } else {
-         this.dom.$ADD_QUESTION_BTN.hide();
+         this.dom.$QUESTION_SET_CONTENT.append(this.noQuestionsTemplate());
       }
    },
    addQuestion: function (event) {

@@ -89,6 +89,10 @@
    <div class="clear"></div>
 </script>
 
+<script type="text/template" id="no-questions-template">
+   <div class="question">No questions. Use the button below to add questions.</div>   
+</script>
+
 <script type="text/template" id="alert-template">
    <div class="alert-entry">
       <span class="input-label"><strong>Description:</strong></span>
@@ -234,13 +238,13 @@
          <td><input type="text" placeholder="Insert thank you message" id="survey-thank-you-message" value="<%= ThankYouMessage %>"/></td>
       </tr>
       <tr>
-         <% var idRepresentation = Id == -1 ? "No id" : Id; %>
+         <% var idRepresentation = Id == -1 ? "-" : Id; %>
          <td>ID</td>
          <td><%= idRepresentation %></td>
       </tr>
       <tr>
          <td>ShortID</td>
-         <td>bogus short id</td>
+         <td>-</td>
       </tr>
       </table>
    <% } %>
