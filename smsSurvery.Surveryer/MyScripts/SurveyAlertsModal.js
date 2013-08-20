@@ -130,8 +130,7 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
             isValid = isValidAlert;
          }
       });
-      return isValid;
-      //this.trigger(this.events.VALIDATE, isValid);
+      return isValid;     
    }
 });
 
@@ -252,9 +251,9 @@ SurveyModals.AlertModel = Backbone.Model.extend({
       }
       var areEmailsValid = true;
       var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-      var emailAddresses = this.get("AlertNotification").DistributionList.split(";");
+      var emailAddresses = this.get("AlertNotification").DistributionList.split(",");
       for (var i = 0; i < emailAddresses.length; ++i) {
-         if (!filter.test(emailAddresses[i])) {
+         if (!filter.test(SurveyUtilities.Utilities.trim(emailAddresses[i]))) {
             areEmailsValid = false;
          }
       }
