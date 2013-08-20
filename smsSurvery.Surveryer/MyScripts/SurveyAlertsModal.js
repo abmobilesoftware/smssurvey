@@ -10,10 +10,7 @@
       this.dom = {
          $ALERTS_MODAL_CONTENT: $(".alerts-modal-content", this.$el)
       };
-      this.model.on(this.model.events.UPDATE_VIEW, this.render);
-      this.model.on(this.model.events.VALIDATE, function () {
-         alert("Now close");
-      });
+      this.model.on(this.model.events.UPDATE_VIEW, this.render);      
    },
    render: function () {
       this.dom.$ALERTS_MODAL_CONTENT.empty();
@@ -35,7 +32,7 @@
       this.$el.modal("hide");
    },
    saveModal: function (event) {
-      var isDataValid = this.model.validate();
+      var isDataValid = this.model.validateAlerts();
       if (isDataValid) {
          this.$el.modal("hide");
       }
@@ -44,8 +41,7 @@
 
 SurveyModals.AlertsModalModel = Backbone.Model.extend({
    events: {
-      UPDATE_VIEW: "updateViewEvent",
-      VALIDATE: "validateEvent"
+      UPDATE_VIEW: "updateViewEvent"      
    },
    defaults: {
       QuestionAlertSet: [],
@@ -122,10 +118,10 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
          this.alertsCollection.remove(this.alertsCollection.models[i]);
       }
    },
-   validate: function () {
+   validateAlerts: function () {
       var isValid = true;
       _.each(this.alertsCollection.models, function (alert) {
-         var isValidAlert = alert.validate();
+         var isValidAlert = alert.validateAlert();
          if (!isValidAlert) {
             isValid = isValidAlert;
          }
@@ -238,7 +234,7 @@ SurveyModals.AlertModel = Backbone.Model.extend({
       var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
       Backbone.trigger(attributeChangedEvent);
    },
-   validate: function () {
+   validateAlert: function () {
       var errors = [];
       var hasErrors = false;
       if (this.get("TriggerAnswer").length == 0) {
@@ -271,8 +267,7 @@ SurveyModals.AlertModel = Backbone.Model.extend({
       } else {
          this.trigger(this.events.VALIDATE, "valid");
          return true;
-      }
-      
+      }      
    }
 });
 
