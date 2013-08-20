@@ -65,14 +65,13 @@ namespace smsSurvery.Surveryer.Controllers
         }      
 
         [HttpPost]
-        public JsonResult SaveSurvey(List<QuestionResponse> questions, int surveyResultId, int surveyPlanId)
-        {
-           return null;
+        public void SaveSurvey(List<QuestionResponse> questions, int surveyResultId, int surveyPlanId)
+        {         
            //DA take all the responses and save the to the corresponding surveyResult
            if (surveyResultId < 0)
            {
               //we are dealing with a new survey result
-              //we have to create a new, bogus customer
+              //we have to create a new, unique customer
               var uniqueCustomerID = Guid.NewGuid().ToString();
               var surveyToRun = db.SurveyPlanSet.Find(surveyPlanId);
               var customer = new Customer() { PhoneNumber = uniqueCustomerID, Name = uniqueCustomerID, Surname = uniqueCustomerID };
@@ -104,9 +103,7 @@ namespace smsSurvery.Surveryer.Controllers
                  }
                  db.SaveChanges();
               }
-           }
-
-           return null;
+           }         
         }
         protected override void Dispose(bool disposing)
         {
