@@ -323,3 +323,7 @@ input.invalidField {
 input.bottom-input {
    margin-bottom: 0;
 }
+
+table.answers-table {
+   margin-bottom: 8px;
+}
