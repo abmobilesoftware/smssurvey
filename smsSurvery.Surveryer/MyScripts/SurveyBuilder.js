@@ -11,7 +11,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       var self = this;
       _.bindAll(this, "editSurveyInfo", "render", "updateDescription",
          "updateThankYouMessage", "saveSurvey", "confirmPageLeaving",
-         "surveyLoaded", "validationResult");
+         "surveyLoaded", "validationResult", "updateSaveButton");
       this.template = _.template($("#survey-info-template").html());
       this.dom = {
          $SURVEY_INFO: $("#survey-info", this.$el),
@@ -24,6 +24,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       window.onbeforeunload = this.confirmPageLeaving;
       this.model.on(this.model.events.SURVEY_LOADED, this.surveyLoaded);
       this.model.on(this.model.events.VALIDATE, this.validationResult);
+      this.model.on(this.model.events.UPDATE_SAVE_BUTTON, this.updateSaveButton);
       this.model.loadSurvey();
    },
    render: function () {
@@ -33,6 +34,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       this.dom.$SURVEY_INFO_TITLE_TEXT = $(".survey-info-title-text", this.$el);
       this.dom.$SURVEY_DESCRIPTION_INPUT = $("#survey-description", this.$el);
       this.dom.$SURVEY_THANK_YOU_MESSAGE_INPUT = $("#survey-thank-you-message", this.$el);
+      this.dom.$SAVE_SURVEY_BTN = $(".save-btn", this.$el);
    },
    editSurveyInfo: function (event) {
       event.preventDefault();
@@ -106,14 +108,25 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
             this.dom.$SURVEY_THANK_YOU_MESSAGE_INPUT.addClass(invalidFieldClass);
          }
       }
-
+   },
+   updateSaveButton: function (noOfChanges) {
+      if (noOfChanges == 0) {
+         this.dom.$SAVE_SURVEY_BTN.prop('disabled', true);
+         this.dom.$SAVE_SURVEY_BTN.addClass("disabled");
+         this.dom.$SAVE_SURVEY_BTN.text("Save ( no changes )");
+      } else {
+         this.dom.$SAVE_SURVEY_BTN.prop('disabled', false);
+         this.dom.$SAVE_SURVEY_BTN.text("Save ( unsaved changes )");
+         this.dom.$SAVE_SURVEY_BTN.removeClass("disabled");
+      }
    }
 });
 
 SurveyBuilder.SurveyModel = Backbone.Model.extend({
    events: {
       SURVEY_LOADED: "surveyLoadedEvent",
-      VALIDATE: "validateEvent"
+      VALIDATE: "validateEvent",
+      UPDATE_SAVE_BUTTON: "updateSaveButtonEvent"
    },
    errors: {
       INVALID_DESCRIPTION: "invalid description",
@@ -128,8 +141,11 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
    },
    initialize: function () {
       _.bindAll(this, "attributeChanged", "modelSynced");
-      this.on("change", this.attributeChanged);
+      var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
+      this.on("change:Description change:ThankYouMessage", this.attributeChanged);
       this.on("sync", this.modelSynced);
+      Backbone.on(attributeChangedEvent, this.attributeChanged);
+      this.noOfAttributesChanged = 0;
    },
    urlByMethod: {
       "read": "/SurveyPlan/GetSurvey",
@@ -149,9 +165,13 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
    },
    attributeChanged: function () {
       this.set("DataChanged", true);
+      ++this.noOfAttributesChanged;
+      this.trigger(this.events.UPDATE_SAVE_BUTTON, this.noOfAttributesChanged);
    },
    modelSynced: function () {
-      this.set("DataChanged", false);
+      this.set({ "DataChanged": false }, { silent: true });
+      this.noOfAttributesChanged = 0;
+      this.trigger(this.events.UPDATE_SAVE_BUTTON, this.noOfAttributesChanged);
    },
    validateSurvey: function () {
       var questionSetModelValidity = this.questionSetModel.validateQuestionSetModel();
@@ -177,6 +197,7 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
       self = this;
       if (this.get("Id") != SurveyUtilities.Utilities.CONSTANTS_MISC.NEW_SURVEY) {
          this.fetch({
+            silent: true,
             data: "Id=" + this.get("Id"),
             success: function (model, response, options) {
                self.questionSetModel = new Question.QuestionSetModel({ jsonQuestions: model.get("QuestionSet") });
@@ -184,11 +205,11 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
             },
             error: function (model, response, options) {
                alert(response)
-            }
+            }            
          });
       } else {
-         this.model.set("Id", -1);
-         this.questionSetModel = new SurveyBuilder.QuestionSetModel();
+         this.set("Id", -1);
+         this.questionSetModel = new Question.QuestionSetModel();
          self.trigger(self.events.SURVEY_LOADED);
       }
    },

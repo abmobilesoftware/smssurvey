@@ -10,10 +10,7 @@
       this.dom = {
          $ALERTS_MODAL_CONTENT: $(".alerts-modal-content", this.$el)
       };
-      this.model.on(this.model.events.UPDATE_VIEW, this.render);
-      this.model.on(this.model.events.VALIDATE, function () {
-         alert("Now close");
-      });
+      this.model.on(this.model.events.UPDATE_VIEW, this.render);      
    },
    render: function () {
       this.dom.$ALERTS_MODAL_CONTENT.empty();
@@ -35,7 +32,7 @@
       this.$el.modal("hide");
    },
    saveModal: function (event) {
-      var isDataValid = this.model.validate();
+      var isDataValid = this.model.validateAlerts();
       if (isDataValid) {
          this.$el.modal("hide");
       }
@@ -44,8 +41,7 @@
 
 SurveyModals.AlertsModalModel = Backbone.Model.extend({
    events: {
-      UPDATE_VIEW: "updateViewEvent",
-      VALIDATE: "validateEvent"
+      UPDATE_VIEW: "updateViewEvent"      
    },
    defaults: {
       QuestionAlertSet: [],
@@ -62,6 +58,8 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
       }, this);
       this.alertsCollection.on("add remove", function () {
          this.trigger(this.events.UPDATE_VIEW);
+         var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
+         Backbone.trigger(attributeChangedEvent);
       }, this);
       this.alertClientId = -1300;
    },
@@ -71,7 +69,7 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
          var alertOperators = new Array("==", "!=");
          return alertOperators;
       } else if (type == questionConstants.TYPE_RATING) {
-         var alertOperators = new Array("==", "!=", "<", "<=", ">", ">=");
+         var alertOperators = new Array("=", "NOT EQUAL", "<", "<=", ">", ">=");
          return alertOperators;
       } else if (type == questionConstants.TYPE_FREE_TEXT) {
          var alertOperators = new Array("CONTAINS");
@@ -120,16 +118,15 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
          this.alertsCollection.remove(this.alertsCollection.models[i]);
       }
    },
-   validate: function () {
+   validateAlerts: function () {
       var isValid = true;
       _.each(this.alertsCollection.models, function (alert) {
-         var isValidAlert = alert.validate();
+         var isValidAlert = alert.validateAlert();
          if (!isValidAlert) {
             isValid = isValidAlert;
          }
       });
-      return isValid;
-      //this.trigger(this.events.VALIDATE, isValid);
+      return isValid;     
    }
 });
 
@@ -217,19 +214,27 @@ SurveyModals.AlertModel = Backbone.Model.extend({
    },
    updateTriggerAnswer: function (newTriggerAnswer) {
       this.set("TriggerAnswer", newTriggerAnswer);
+      var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
+      Backbone.trigger(attributeChangedEvent);
    },
    updateDistributionList: function (newDistributionList) {
       var alertNotification = this.get("AlertNotification");
       alertNotification.DistributionList = newDistributionList;
       this.set("AlertNotification", alertNotification);
+      var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
+      Backbone.trigger(attributeChangedEvent);
    },
    updateDescription: function (newDescription) {
       this.set("Description", newDescription);
+      var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
+      Backbone.trigger(attributeChangedEvent);
    },
    updateOperator: function (newOperator) {
       this.set("Operator", newOperator);
+      var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
+      Backbone.trigger(attributeChangedEvent);
    },
-   validate: function () {
+   validateAlert: function () {
       var errors = [];
       var hasErrors = false;
       if (this.get("TriggerAnswer").length == 0) {
@@ -242,9 +247,9 @@ SurveyModals.AlertModel = Backbone.Model.extend({
       }
       var areEmailsValid = true;
       var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-      var emailAddresses = this.get("AlertNotification").DistributionList.split(";");
+      var emailAddresses = this.get("AlertNotification").DistributionList.split(",");
       for (var i = 0; i < emailAddresses.length; ++i) {
-         if (!filter.test(emailAddresses[i])) {
+         if (!filter.test(SurveyUtilities.Utilities.trim(emailAddresses[i]))) {
             areEmailsValid = false;
          }
       }
@@ -262,8 +267,7 @@ SurveyModals.AlertModel = Backbone.Model.extend({
       } else {
          this.trigger(this.events.VALIDATE, "valid");
          return true;
-      }
-      
+      }      
    }
 });
 
