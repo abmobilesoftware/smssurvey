@@ -288,7 +288,7 @@ namespace smsSurvery.Surveryer.Controllers
                     {
                        currentSurvey.CurrentQuestion = nextQuestion;
                        db.SaveChanges();
-                       SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion, currentSurvey.SurveyPlan.QuestionSet.Count(), db);                      
+                       SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion, currentSurvey.SurveyPlan.QuestionSet.Count(),false, db);                      
                     }
                  }
                  else
@@ -525,7 +525,7 @@ namespace smsSurvery.Surveryer.Controllers
                }
                else
                {
-                  SendQuestionToCustomer(customer, numberToSendFrom, currentQuestion,surveyToRun.QuestionSet.Count(), db);
+                  SendQuestionToCustomer(customer, numberToSendFrom, currentQuestion,surveyToRun.QuestionSet.Count(),true, db, surveyToRun.IntroMessage);
                }
             }
             else
@@ -535,18 +535,22 @@ namespace smsSurvery.Surveryer.Controllers
          }          
        }
 
-       private static void SendQuestionToCustomer(Customer c, string numberToSendFrom, Question q, int totalNumberOfQuestions, smsSurveyEntities db)
+       private static void SendQuestionToCustomer(Customer c, string numberToSendFrom, Question q, int totalNumberOfQuestions, bool isFirstQuestion, smsSurveyEntities db, string introMessage ="")
         {
            logger.DebugFormat("question id: {0}, to customer: {1}, from number: {2}", q.Id, c.PhoneNumber, numberToSendFrom);
            var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyPlan(q.SurveyPlanSet);
            //DA before we send the SMS question we must prepare it - add the expected answers to it
-           string smsText = PrepareSMSTextForQuestion(q, totalNumberOfQuestions);
+           string smsText = PrepareSMSTextForQuestion(q, totalNumberOfQuestions, isFirstQuestion, introMessage);
            smsinterface.SendMessage(numberToSendFrom, c.PhoneNumber, smsText);
         }
 
-        private static string PrepareSMSTextForQuestion(Question q, int totalNumberOfQuestions)
+        private static string PrepareSMSTextForQuestion(Question q, int totalNumberOfQuestions, bool isFirstQuestion, string introMessage)
         {
            string prefix = String.Format("Q{0}/{1}: ", q.Order, totalNumberOfQuestions);
+           if (isFirstQuestion)
+           {
+              prefix = introMessage + System.Environment.NewLine + prefix;
+           }
            switch (q.Type)
            {
               case ReportsController.cFreeTextTypeQuestion:
@@ -554,6 +558,7 @@ namespace smsSurvery.Surveryer.Controllers
               case ReportsController.cRatingsTypeQuestion:                
                  var validAnswer = q.ValidAnswers.Split(';');
                  var validAnswerDetails = q.ValidAnswersDetails.Split(';');                
+
                  return prefix + q.Text + String.Format(" Reply with a rating from {0} ({1}) to {2} ({3})", validAnswer[0], validAnswerDetails[0], validAnswer.Last(), validAnswerDetails.Last());                 
               case ReportsController.cYesNoTypeQuestion:
                  return prefix+ q.Text + " Reply with 1 for Yes, 2 for No";
