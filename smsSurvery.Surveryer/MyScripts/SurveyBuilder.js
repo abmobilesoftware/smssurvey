@@ -32,7 +32,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       this.dom.$INFO_TABLE = $(".survey-info-data", this.$el);
       this.dom.$SURVEY_INFO_TITLE_TEXT = $(".survey-info-title-text", this.$el);
       this.dom.$SURVEY_DESCRIPTION_INPUT = $("#survey-description", this.$el);
-      this.dom.$SURVEY_THANK_YOU_MESSAGE_INPUT = $("#survey-thank-you-message", this.$el);
+      this.dom.$SURVEY_THANK_YOU_MESSAGE_INPUT = $("#survey-thank-you-message", this.$el);      
    },
    editSurveyInfo: function (event) {
       event.preventDefault();
@@ -128,8 +128,10 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
    },
    initialize: function () {
       _.bindAll(this, "attributeChanged", "modelSynced");
-      this.on("change", this.attributeChanged);
+      var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
+      this.on("change:Description change:ThankYouMessage", this.attributeChanged);
       this.on("sync", this.modelSynced);
+      Backbone.on(attributeChangedEvent, this.attributeChanged);
    },
    urlByMethod: {
       "read": "/SurveyPlan/GetSurvey",
@@ -151,7 +153,7 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
       this.set("DataChanged", true);
    },
    modelSynced: function () {
-      this.set("DataChanged", false);
+      this.set({ "DataChanged": false }, { silent: true });
    },
    validateSurvey: function () {
       var questionSetModelValidity = this.questionSetModel.validateQuestionSetModel();
@@ -177,6 +179,7 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
       self = this;
       if (this.get("Id") != SurveyUtilities.Utilities.CONSTANTS_MISC.NEW_SURVEY) {
          this.fetch({
+            silent: true,
             data: "Id=" + this.get("Id"),
             success: function (model, response, options) {
                self.questionSetModel = new Question.QuestionSetModel({ jsonQuestions: model.get("QuestionSet") });
@@ -184,7 +187,7 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
             },
             error: function (model, response, options) {
                alert(response)
-            }
+            }            
          });
       } else {
          this.model.set("Id", -1);

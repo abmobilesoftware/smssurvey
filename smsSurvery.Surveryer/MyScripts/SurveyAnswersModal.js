@@ -54,6 +54,8 @@ SurveyModals.AnswersModalModel = Backbone.Model.extend({
       }, this);
       this.answersCollection.on("add remove", function () {
          this.trigger(this.events.UPDATE_VIEW);
+         var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
+         Backbone.trigger(attributeChangedEvent);
       }, this);
    },
    getAnswers: function () {
@@ -119,7 +121,7 @@ SurveyModals.AnswerView = Backbone.View.extend({
       this.model.trigger("deleteAnswerEvent", this.model);
    },
    updateAnswer: function (event) {
-      this.model.set("AnswerLabel", event.currentTarget.value);
+      this.model.updateAnswer(event.currentTarget.value);
    },
    validationResult: function (result) {
       var invalidFieldClass = SurveyUtilities.Utilities.CONSTANTS_CLASS.INVALID_FIELD;
@@ -151,6 +153,11 @@ SurveyModals.AnswerModel = Backbone.Model.extend({
          this.trigger(this.events.VALIDATE, this.errors.VALID);
          return true;
       }
+   },
+   updateAnswer: function (newAnswerLabel) {
+      this.set("AnswerLabel", newAnswerLabel);
+      var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
+      Backbone.trigger(attributeChangedEvent);
    }
 });
 SurveyModals.AnswersCollection = Backbone.Collection.extend({

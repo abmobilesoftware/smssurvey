@@ -25,6 +25,9 @@ SurveyUtilities.Utilities = (function () {
    }
    innerClass.CONSTANTS_CLASS = {
       INVALID_FIELD: "invalidField"
+   },
+   innerClass.GLOBAL_EVENTS = {
+      ATTRIBUTE_CHANGED: "attributeChanged"
    }
    return innerClass;
 })();

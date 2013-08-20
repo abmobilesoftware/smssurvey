@@ -48,6 +48,8 @@ SurveyModals.RatingsModalModel = Backbone.Model.extend({
       this.set("Ratings", "");
       this.initializeRatingScale(size);      
       this.set("ScaleSize", size);
+      var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
+      Backbone.trigger(attributeChangedEvent);
    },
    initializeRatingScale: function (scaleSize) {
       var ratingsSplitted = this.get("Ratings").split(";");
@@ -133,6 +135,8 @@ SurveyModals.RatingView = Backbone.View.extend({
    },
    updateRatingLabel: function (event) {
       this.model.set("RatingLabel", event.currentTarget.value);
+      var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
+      Backbone.trigger(attributeChangedEvent);
    },
    validationResult: function (result) {
       var invalidFieldClass = SurveyUtilities.Utilities.CONSTANTS_CLASS.INVALID_FIELD;

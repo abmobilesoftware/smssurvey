@@ -62,6 +62,8 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
       }, this);
       this.alertsCollection.on("add remove", function () {
          this.trigger(this.events.UPDATE_VIEW);
+         var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
+         Backbone.trigger(attributeChangedEvent);
       }, this);
       this.alertClientId = -1300;
    },
@@ -217,17 +219,25 @@ SurveyModals.AlertModel = Backbone.Model.extend({
    },
    updateTriggerAnswer: function (newTriggerAnswer) {
       this.set("TriggerAnswer", newTriggerAnswer);
+      var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
+      Backbone.trigger(attributeChangedEvent);
    },
    updateDistributionList: function (newDistributionList) {
       var alertNotification = this.get("AlertNotification");
       alertNotification.DistributionList = newDistributionList;
       this.set("AlertNotification", alertNotification);
+      var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
+      Backbone.trigger(attributeChangedEvent);
    },
    updateDescription: function (newDescription) {
       this.set("Description", newDescription);
+      var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
+      Backbone.trigger(attributeChangedEvent);
    },
    updateOperator: function (newOperator) {
       this.set("Operator", newOperator);
+      var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
+      Backbone.trigger(attributeChangedEvent);
    },
    validate: function () {
       var errors = [];

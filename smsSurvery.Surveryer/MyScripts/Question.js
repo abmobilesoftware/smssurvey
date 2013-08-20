@@ -46,16 +46,22 @@ Question.QuestionModel = Backbone.Model.extend({
       }
    },
    deleteQuestion: function () {
-      this.trigger("delete", this);
+      this.trigger("delete", this);      
    },
    updateOrder: function (newOrder) {
       this.set("Order", newOrder);
+      var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
+      Backbone.trigger(attributeChangedEvent);
    },
    updateQuestionText: function (newText) {
       this.set("Text", newText);
+      var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
+      Backbone.trigger(attributeChangedEvent);
    },
    updateQuestionType: function (newType) {
       this.set("Type", newType);
+      var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
+      Backbone.trigger(attributeChangedEvent);
    },
    setAnswersModalModel: function (answersModalModel) {
       this.answersModalModel = answersModalModel;
@@ -304,6 +310,8 @@ Question.QuestionSetModel = Backbone.Model.extend({
       this.questionSetCollection.on("remove add",
          function () {
             this.trigger(this.events.UPDATE_VIEW);
+            var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
+            Backbone.trigger(attributeChangedEvent);
          }, this);
    },
    getQuestionSetCollection: function () {
