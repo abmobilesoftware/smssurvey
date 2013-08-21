@@ -66,7 +66,8 @@ namespace smsSurvery.Surveryer.Controllers
 
         [HttpPost]
         public void SaveSurvey(List<QuestionResponse> questions, int surveyResultId, int surveyPlanId)
-        {         
+        {
+           SurveyResult surveyToAnalyze = null;
            //DA take all the responses and save the to the corresponding surveyResult
            if (surveyResultId < 0)
            {
@@ -80,10 +81,14 @@ namespace smsSurvery.Surveryer.Controllers
               foreach (var q in questions)
               {
                  var currentQuestion = db.QuestionSet.Find(q.Id);
-                 var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion };
+                 
+                 var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion };                
                  newSurvey.Result.Add(res);
               }
               db.SaveChanges();
+              db.Entry(newSurvey).Reload();
+              surveyToAnalyze = newSurvey;
+             
            }
            else
            {
@@ -102,8 +107,16 @@ namespace smsSurvery.Surveryer.Controllers
                     surveyToFill.Result.Add(res);
                  }
                  db.SaveChanges();
+                 surveyToAnalyze = surveyToFill;
               }
-           }         
+           }          
+           foreach (var q in questions)
+           {
+              var currentQuestion = db.QuestionSet.Find(q.Id);
+
+              var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion };
+              AnswerController.HandleAlertsForQuestion(currentQuestion, q.PickedAnswer, surveyToAnalyze.Id);             
+           }
         }
         protected override void Dispose(bool disposing)
         {

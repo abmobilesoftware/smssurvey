@@ -314,7 +314,7 @@ namespace smsSurvery.Surveryer.Controllers
            }
         }
 
-        private void HandleAlertsForQuestion(Question currentQuestion, String answerText, int surveyResultId)
+        public static void HandleAlertsForQuestion(Question currentQuestion, String answerText, int surveyResultId)
         {
            //triggerAnswer, when containing more values, should be ; separated
            foreach (var alert in currentQuestion.QuestionAlertSet)
@@ -383,6 +383,7 @@ namespace smsSurvery.Surveryer.Controllers
                     }
                     break;
                  case "any":
+                 case "ANY":
                     //find out if the received answer contains any of the trigger values
                     //get the expected values                  
                     var triggerValues = alert.TriggerAnswer.Split(separator);
@@ -397,6 +398,7 @@ namespace smsSurvery.Surveryer.Controllers
                     }                    
                     break;
                  case "all":
+                 case "ALL":
                     //find out if the received answer contains all of the trigger values
                     //get the expected values               
                     var tValues = alert.TriggerAnswer.Split(separator);
@@ -409,7 +411,8 @@ namespace smsSurvery.Surveryer.Controllers
                        alertCause = String.Format("Keywords '{0}' detected'", string.Join(", ", tValues));
                     }
                     break;
-                 case "contains":                    
+                 case "contains":    
+                 case "CONTAINS":
                     if (answerText.Contains(alert.TriggerAnswer))
                     {
                        notificationRequired = true;
@@ -430,7 +433,7 @@ namespace smsSurvery.Surveryer.Controllers
            }
         }
 
-        private void SendNotificationForAlert(AlertNotificationSet alert, String answerText, String alertCause, int surveyResultId)
+        public static void SendNotificationForAlert(AlertNotificationSet alert, String answerText, String alertCause, int surveyResultId)
         {
            switch (alert.Type)
            {
