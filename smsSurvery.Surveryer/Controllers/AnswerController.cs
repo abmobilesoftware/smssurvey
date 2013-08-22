@@ -576,10 +576,12 @@ namespace smsSurvery.Surveryer.Controllers
 
         private  void SendMobileSurveyToCustomer(Customer c, string numberToSendFrom, SurveyResult surveyResult)
         {
+           var prefix = surveyResult.SurveyPlan.IntroMessage + System.Environment.NewLine;
            var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyPlan(surveyResult.SurveyPlan);
            string mobileSurveyLocation = GetTargetedMobileSurveyLocation(surveyResult, this.ControllerContext.RequestContext);
+
            string text = String.Format("Please fill in the survey at {0}", mobileSurveyLocation);
-           smsinterface.SendMessage(numberToSendFrom, c.PhoneNumber, text);
+           smsinterface.SendMessage(numberToSendFrom, c.PhoneNumber, prefix + text);
         }
 
        //TODO refactor to 1 method

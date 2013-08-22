@@ -26,6 +26,7 @@ namespace smsSurvery.Surveryer.Controllers
                  ViewBag.Id = idToUse;
                  ViewBag.SurveyTitle = "Mobile survey";
                  ViewBag.IsFeedback = 0;
+                 ViewBag.IntroMessage = res.SurveyPlan.IntroMessage;
                  return View();
               }
               else
@@ -45,11 +46,22 @@ namespace smsSurvery.Surveryer.Controllers
         [HttpGet]
         public ActionResult Feedback(int id)
         {
-           //the id is a the SurveyPlanId
-           ViewBag.Id = id;
-           ViewBag.SurveyTitle = "Feedback";
-           ViewBag.IsFeedback = 1;
-           return View("Fill");
+           SurveyPlan survey = db.SurveyPlanSet.Find(id);
+           if (survey != null)
+           {
+              //the id is a the SurveyPlanId
+              ViewBag.Id = id;
+              ViewBag.SurveyTitle = "Feedback";
+              ViewBag.IntroMessage = survey.IntroMessage;
+              ViewBag.IsFeedback = 1;
+              return View("Fill");
+           }
+           else
+           {
+              //invalid survey plan
+              //TODO return a "the survey you are looking for is no longer available
+              return null;
+           }
         }
 
         public class QuestionResponse
