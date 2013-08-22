@@ -554,20 +554,21 @@ namespace smsSurvery.Surveryer.Controllers
            {
               prefix = introMessage + System.Environment.NewLine + prefix;
            }
+           var validAnswer = q.ValidAnswers.Split(';');
+           var validAnswerDetails = q.ValidAnswersDetails.Split(';');                
            switch (q.Type)
            {
               case ReportsController.cFreeTextTypeQuestion:
                  return prefix + q.Text;                 
               case ReportsController.cRatingsTypeQuestion:                
-                 var validAnswer = q.ValidAnswers.Split(';');
-                 var validAnswerDetails = q.ValidAnswersDetails.Split(';');                
-
                  return prefix + q.Text + String.Format(" Reply with a rating from {0} ({1}) to {2} ({3})", validAnswer[0], validAnswerDetails[0], validAnswer.Last(), validAnswerDetails.Last());                 
               case ReportsController.cYesNoTypeQuestion:
-                 return prefix+ q.Text + " Reply with 1 for Yes, 2 for No";
+                 return prefix+ q.Text + " Reply 1 for Yes, 2 for No";
               case ReportsController.cSelectManyFromManyTypeQuestion:
+                //DA TODO
                  return "";
               case ReportsController.cSelectOneFromManyTypeQuestion:
+                                   
                  return "";
               default:
                  return prefix + q.Text;
