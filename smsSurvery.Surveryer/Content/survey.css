@@ -136,7 +136,7 @@ textarea.comment {
 
 select.list {
     width: 100%;
-    font-size: 1em;
+    /*font-size: 1em;*/
     padding: 5px;
 }
 
@@ -220,3 +220,5 @@ line-height: 1.2em;
    font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
    font-size: 20px;
 }
+
+input[type=checkbox].css-checkbox { position: absolute;  overflow: hidden;  clip: rect(0 0 0 0);  height:1px;  width:1px;  margin:-1px;  padding:0; border:0; }  input[type=checkbox].css-checkbox + label.css-label { padding-left:20px; height:17px;  display:inline-block; line-height:17px; background-repeat:no-repeat; background-position: 0 0; font-size:15px; vertical-align:middle; cursor:pointer; }  input[type=checkbox].css-checkbox:checked + label.css-label { background-position: 0 -17px; }  .css-label{ background-image:url(http://csscheckbox.com/checkboxes/elegant.png); }

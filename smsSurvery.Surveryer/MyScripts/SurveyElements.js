@@ -66,7 +66,7 @@ SurveyElements.StarBarView = Backbone.View.extend({
          $ADDITIONAL_INFO: $(".additionalInfo", this.$el),
          $ANSWER: $(".answer", this.$el)
       };
-      if (this.dom.$ANSWER.val() == "noValue") {
+      if (this.dom.$ANSWER.val() == Question.noValueAnswer) {
          this.dom.$ADDITIONAL_INFO.hide();
       }
    },

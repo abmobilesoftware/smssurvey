@@ -253,7 +253,7 @@ SurveyModals.AlertModel = Backbone.Model.extend({
             areEmailsValid = false;
          }
       }
-      if (this.get("Operator") == "" || this.get("Operator") == "noValue") {
+      if (this.get("Operator") == "" || this.get("Operator") == Question.noValueAnswer) {
          hasErrors = true;
          errors.push(this.errors.INVALID_OPERATOR);
       }
