@@ -7,13 +7,15 @@ using System.Web;
 using System.Web.Mvc;
 using smsSurvey.dbInterface;
 using smsSurvery.Surveryer.ClientModels;
+using System.Data.Entity.Validation;
+using System.Text;
 
 namespace smsSurvery.Surveryer.Controllers
 {
    public class SurveyPlanController : Controller
    {
       private smsSurveyEntities db = new smsSurveyEntities();
-
+      private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
       //
       // GET: /SurveyPlan/
 
@@ -333,7 +335,9 @@ namespace smsSurvery.Surveryer.Controllers
                UserProfile user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
                dbSurveyPlan.Provider = user.DefaultProvider;
                dbSurveyPlan.Description = clientSurveyPlan.Description;
+               dbSurveyPlan.IntroMessage = clientSurveyPlan.IntroMessage;
                dbSurveyPlan.ThankYouMessage = clientSurveyPlan.ThankYouMessage;
+
                // Add questions
                ICollection<Question> dbQuestions = new List<Question>();
                if (clientSurveyPlan.QuestionSet != null)
@@ -378,7 +382,25 @@ namespace smsSurvery.Surveryer.Controllers
                dbSurveyPlan.QuestionSet = dbQuestions;
                db.SurveyPlanSet.Add(dbSurveyPlan);
                user.SurveyPlanSet.Add(dbSurveyPlan);
-               db.SaveChanges();
+               try
+               {
+                  db.SaveChanges();
+               }
+               catch (DbEntityValidationException ex)
+               {
+                  StringBuilder sb = new StringBuilder();
+                  foreach (var failure in ex.EntityValidationErrors)
+                  {
+                     sb.AppendFormat("{0} failed validation\n", failure.Entry.Entity.GetType());
+                     foreach (var error in failure.ValidationErrors)
+                     {
+                        sb.AppendFormat("- {0} : {1}", error.PropertyName, error.ErrorMessage);
+                        sb.AppendLine();
+                     }
+                  }
+                  logger.Error(sb.ToString());
+                  return Json(new smsSurvery.Surveryer.Models.RequestResult("error", "save", sb.ToString()),JsonRequestBehavior.AllowGet);
+               }
                var mobileWebsiteLocation = GetAnonymousMobileSurveyLocation(dbSurveyPlan, this.ControllerContext.RequestContext);
                return Json(new smsSurvery.Surveryer.Models.RequestResult("success",
                   "create", dbSurveyPlan.Id.ToString(), mobileWebsiteLocation),
