@@ -60,9 +60,6 @@
     <Reference Include="Nexmo-CSharp-lib">
       <HintPath>ExternalReferences\Nexmo-CSharp-lib.dll</HintPath>
     </Reference>
-    <Reference Include="OneApi">
-      <HintPath>..\..\Compatel\oneapi-dot-net\OneApi\bin\Release\OneApi\OneApi.dll</HintPath>
-    </Reference>
     <Reference Include="RestSharp">
       <HintPath>..\packages\RestSharp.104.1\lib\net4\RestSharp.dll</HintPath>
     </Reference>
@@ -243,16 +240,22 @@
     <Content Include="App_Readme\Elmah.SqlServer.txt" />
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\images\arrow_down_dblue_16.png" />
+    <Content Include="Content\images\arrow_up_dblue_16.png" />
     <Content Include="Content\images\bell-20.png" />
     <Content Include="Content\images\Bullet-Blue-32.png" />
     <Content Include="Content\images\close_20.png" />
     <Content Include="Content\images\edit_20.png" />
+    <Content Include="Content\images\edit_25.png" />
+    <Content Include="Content\images\edit_30.png" />
     <Content Include="Content\images\error2_24.png" />
     <Content Include="Content\images\glyphicons-halflings-white.png" />
     <Content Include="Content\images\glyphicons-halflings.png" />
     <Content Include="Content\images\iphone_frame.png" />
     <Content Include="Content\images\logo1.png" />
     <Content Include="Content\images\small-icon.png" />
+    <Content Include="Content\images\star50.png" />
+    <Content Include="Content\images\star50_inactive.png" />
     <Content Include="Content\jquery-ui-1.8.23.custom.css" />
     <Content Include="Content\jquery.tagsinput.css" />
     <Content Include="Content\survey.css" />
@@ -270,6 +273,7 @@
     <Content Include="MyScripts\SurveyUtilities.js" />
     <Content Include="Scripts\backbone.js" />
     <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\jquery-ui-1.10.3.js" />
     <Content Include="Scripts\reportsTags.js" />
     <Content Include="Scripts\jquery-1.10.1.js" />
     <Content Include="Scripts\jquery-1.10.1.min.js" />
@@ -462,6 +466,10 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Compatel\oneapi-dot-net\OneApi\OneApi.csproj">
+      <Project>{bb105549-1799-4601-9d24-652773a187f5}</Project>
+      <Name>OneApi</Name>
+    </ProjectReference>
     <ProjectReference Include="..\smsSurvey.dbInterface\smsSurvey.dbInterface.csproj">
       <Project>{ce8ff7ed-dfb9-4908-bf2e-a3699a3512ff}</Project>
       <Name>smsSurvey.dbInterface</Name>

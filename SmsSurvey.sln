@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "smsSurvery.Surveryer", "sms
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "smsSurvery.Surveryer.Tests", "smsSurvery.Surveryer.Tests\smsSurvery.Surveryer.Tests.csproj", "{D68552A7-3C35-4AA8-ABDC-CCBFB18B9FB2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneApi", "..\Compatel\oneapi-dot-net\OneApi\OneApi.csproj", "{BB105549-1799-4601-9D24-652773A187F5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{D68552A7-3C35-4AA8-ABDC-CCBFB18B9FB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D68552A7-3C35-4AA8-ABDC-CCBFB18B9FB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D68552A7-3C35-4AA8-ABDC-CCBFB18B9FB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB105549-1799-4601-9D24-652773A187F5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB105549-1799-4601-9D24-652773A187F5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB105549-1799-4601-9D24-652773A187F5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB105549-1799-4601-9D24-652773A187F5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
