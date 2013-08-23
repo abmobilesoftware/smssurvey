@@ -326,8 +326,9 @@ namespace smsSurvery.Surveryer.Controllers
                   }
                }
                db.SaveChanges();               
+               var mobileWebsiteLocation = GetAnonymousMobileSurveyLocation(dbSurveyPlan, this.ControllerContext.RequestContext);               
                return Json(new smsSurvery.Surveryer.Models.RequestResult("success",
-                  "update"), JsonRequestBehavior.AllowGet);
+                  "update",iMobileWebsiteLocation:mobileWebsiteLocation), JsonRequestBehavior.AllowGet);
             }
             else
             {
