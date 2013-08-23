@@ -127,7 +127,7 @@ namespace smsSurvery.Surveryer.Controllers
               var currentQuestion = db.QuestionSet.Find(q.Id);
 
               var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion };
-              AnswerController.HandleAlertsForQuestion(currentQuestion, q.PickedAnswer, surveyToAnalyze.Id);             
+              AnswerController.HandleAlertsForQuestion(currentQuestion, q.PickedAnswer, surveyToAnalyze.Id, this);             
            }
         }
         protected override void Dispose(bool disposing)

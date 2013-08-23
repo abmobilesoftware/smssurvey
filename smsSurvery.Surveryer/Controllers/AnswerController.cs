@@ -301,7 +301,7 @@ namespace smsSurvery.Surveryer.Controllers
                     //send ThankYouMessage
                     SendThankYouToCustomer(customer, numberToSendFrom, surveyToRun);                    
                  }
-                 HandleAlertsForQuestion(currentQuestion, text, currentSurvey.Id);
+                 HandleAlertsForQuestion(currentQuestion, text, currentSurvey.Id, this);
               }
               else
               {
@@ -314,7 +314,7 @@ namespace smsSurvery.Surveryer.Controllers
            }
         }
 
-        public static void HandleAlertsForQuestion(Question currentQuestion, String answerText, int surveyResultId)
+        public static void HandleAlertsForQuestion(Question currentQuestion, String answerText, int surveyResultId, Controller ctrl)
         {
            //triggerAnswer, when containing more values, should be ; separated
            foreach (var alert in currentQuestion.QuestionAlertSet)
@@ -427,13 +427,13 @@ namespace smsSurvery.Surveryer.Controllers
               {
                  foreach (var notification in alert.AlertNotificationSet)
                  {
-                    SendNotificationForAlert(notification, answerText, alertCause, surveyResultId);
+                    SendNotificationForAlert(notification, answerText, alertCause, surveyResultId, ctrl);
                  }
               }
            }
         }
 
-        public static void SendNotificationForAlert(AlertNotificationSet alert, String answerText, String alertCause, int surveyResultId)
+        public static void SendNotificationForAlert(AlertNotificationSet alert, String answerText, String alertCause, int surveyResultId, Controller ctrl)
         {
            switch (alert.Type)
            {
@@ -442,7 +442,9 @@ namespace smsSurvery.Surveryer.Controllers
                  //DA here we compose the email Subject & message
                  var emailSubject = String.Format("Alert '{0}' triggered for question '{1}' ", alert.QuestionAlertSet.Description, alert.QuestionAlertSet.QuestionSet.Text);
                  var message = "";
-                 string linkToSurveyResults = String.Format("http://localhost:3288/SurveyResult/Details/{0}", surveyResultId);
+                 //string linkToSurveyResults = String.Format("http://localhost:3288/SurveyResult/Details/{0}", surveyResultId);
+                 UrlHelper u = new UrlHelper(ctrl.ControllerContext.RequestContext);
+                 string linkToSurveyResults = ctrl.HttpContext.Request.Url.Scheme + "://" + ctrl.HttpContext.Request.Url.Authority + u.Action("Details", "SurveyResult", new { id = surveyResultId });
                  var mail = mailer.SendAlert(emailSubject, alert.DistributionList, message, alertCause,linkToSurveyResults);
                  mail.SendAsync();
                  break;
