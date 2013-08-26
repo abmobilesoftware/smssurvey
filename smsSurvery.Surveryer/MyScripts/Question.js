@@ -296,6 +296,7 @@ Question.QuestionSetView = Backbone.View.extend({
    },
    addQuestion: function (event) {
       event.preventDefault();
+     
       this.model.addQuestion();
    },
    listSorted: function (event, ui) {
@@ -359,6 +360,14 @@ Question.QuestionSetModel = Backbone.Model.extend({
    },
    addQuestion: function () {
       ++this.questionTemporaryId;
+      //DA before this, make sure that the changes are saved
+      for (var i = 0; i < this.questionSetCollection.models.length; ++i) {
+         // set the last alerts changes         
+         this.questionSetCollection.models[i].setQuestionAlertSet();
+         this.questionSetCollection.models[i].setAnswers();
+         this.questionSetCollection.models[i].setRatings();
+         this.questionSetCollection.models[i].setYesNo();
+      }
       var questionModel = new Question.QuestionModel({ Id: this.questionTemporaryId });
       questionModel.updateOrder(this.questionSetCollection.models.length);
       this.questionSetCollection.add(questionModel);
