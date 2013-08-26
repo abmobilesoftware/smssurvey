@@ -574,9 +574,14 @@ namespace smsSurvery.Surveryer.Controllers
               case ReportsController.cSelectManyFromManyTypeQuestion:
                 //DA TODO
                  return "";
-              case ReportsController.cSelectOneFromManyTypeQuestion:
-                                   
-                 return "";
+              case ReportsController.cSelectOneFromManyTypeQuestion:                
+                 List<string> pairs = new List<string>();
+                 for (int i = 0; i < validAnswer.Length; i++)
+                 {
+                   pairs.Add(String.Format("{0} for {1}", validAnswer[i], validAnswerDetails[i]));
+                 }
+                 string suffix = " Reply with: " + String.Join(", ",pairs);
+                 return prefix + q.Text + suffix;
               default:
                  return prefix + q.Text;
            }
