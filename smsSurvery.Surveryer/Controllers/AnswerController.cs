@@ -129,11 +129,11 @@ namespace smsSurvery.Surveryer.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetRatingMessagesWithAnswer(int questionId, int answer)
+        public ActionResult GetMessagesWithOnePredefinedAnswer(int questionId, int answer)
         {
            //for the given survey (if allowed access) show messages with given stem
            Question question = db.QuestionSet.Find(questionId);
-           if (question != null && question.Type == ReportsController.cRatingsTypeQuestion)
+           if (question != null &&  (question.Type == ReportsController.cRatingsTypeQuestion || question.Type == ReportsController.cYesNoTypeQuestion) )
            {
               List<FreeTextAnswer> messages = new List<FreeTextAnswer>();
               var results = question.Result.OrderByDescending(x => x.SurveyResult.DateRan);
@@ -144,7 +144,11 @@ namespace smsSurvery.Surveryer.Controllers
                     messages.Add(new FreeTextAnswer() { Text = result.Answer, SurveyResult = result.SurveyResult, Customer = result.SurveyResult.Customer });
                  }
               }
-              @ViewBag.Answer = answer;
+              //DA get the human friendly version (from answer details)
+              string[] humanFriendlyAnswers = question.ValidAnswersDetails.Split(';');
+              var index = answer;
+              index = question.Type == ReportsController.cYesNoTypeQuestion ? index : index - 1;
+              @ViewBag.Answer = humanFriendlyAnswers[index];
               @ViewBag.QuestionText = question.Text;
               return View(messages);
            }

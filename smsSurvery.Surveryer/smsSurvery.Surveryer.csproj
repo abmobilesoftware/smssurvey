@@ -274,11 +274,11 @@
     <Content Include="Scripts\backbone.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.js" />
-    <Content Include="Scripts\reportsTags.js" />
+    <Content Include="MyScripts\reportsTags.js" />
     <Content Include="Scripts\jquery-1.10.1.js" />
     <Content Include="Scripts\jquery-1.10.1.min.js" />
     <Content Include="Scripts\jquery.tagsinput.js" />
-    <Content Include="Scripts\reports.js" />
+    <Content Include="MyScripts\reports.js" />
     <Content Include="Scripts\underscore.js" />
     <Content Include="WordCloud\CustomBlacklist.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -440,7 +440,7 @@
     <Content Include="Views\SurveyPlan\Report.cshtml" />
     <Content Include="Views\Shared\SurveyResultsDetails.cshtml" />
     <Content Include="Views\SurveyPlan\Responses.cshtml" />
-    <Content Include="Views\Answer\GetRatingMessagesWithAnswer.cshtml" />
+    <Content Include="Views\Answer\GetMessagesWithOnePredefinedAnswer.cshtml" />
     <Content Include="Views\Home\ManualSurvey.cshtml" />
     <Content Include="Views\Shared\SurveyResultOverview.cshtml" />
     <Content Include="Views\Answer\GetCustomerWhichAnsweredXQuestions.cshtml" />

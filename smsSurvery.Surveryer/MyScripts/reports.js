@@ -1,5 +1,6 @@
 ﻿window.app = window.app || {};
 window.app.piedata = {};
+window.app.yesnopiedata = {};
 window.app.overviewPieData = {};
 window.app.tags = [];
 window.app.displayReportsForRatingQ = function (questionId) {
@@ -26,7 +27,7 @@ window.app.displayReportsForRatingQ = function (questionId) {
          google.visualization.events.addListener(piechart, 'select', function (e) {
             var sel = piechart.getSelection();            
             var selectedValue = window.app.piedata[questionId].getValue(sel[0].row, 0);            
-            var url = "/Answer/GetRatingMessagesWithAnswer?questionId=" + questionId + "&answer=" + selectedValue;
+            var url = "/Answer/GetMessagesWithOnePredefinedAnswer?questionId=" + questionId + "&answer=" + selectedValue;
             //window.location.href = url;
             var win = window.open(url, "_blank");
             win.focus();
@@ -43,6 +44,46 @@ window.app.displayReportsForRatingQ = function (questionId) {
    });
 };
 
+window.app.displayReportForYesNoQ = function (questionId) {
+   $.ajax({
+      data: {
+         questionId: questionId,
+         tags: window.app.tags
+      },
+      traditional: true,
+      url: "/Reports/GetSurveyQuestionResults",
+      dataType: "json",
+      async: true,
+      success: function (jsonData) {
+         var options = {
+            backgroundColor: '#F5F8FA',
+            sliceVisibilityThreshold: 0,
+            'width': 'auto',
+            'height': 350
+         };
+         var yesNoPiechart = new google.visualization.PieChart(document.getElementById('yesNoChart_div' + questionId));
+         var yesNoPiedata = new google.visualization.DataTable(jsonData.pie);
+         window.app.yesnopiedata[questionId] = yesNoPiedata;
+         piechart.draw(yesNoPiedata, options);
+         google.visualization.events.addListener(yesNoPiechart, 'select', function (e) {
+            var sel = yesNoPiechart.getSelection();
+            var selectedValue = window.app.yesnopiedata[questionId].getValue(sel[0].row, 0);
+            var url = "/Answer/GetRatingMessagesWithAnswer?questionId=" + questionId + "&answer=" + selectedValue;
+            //window.location.href = url;
+            var win = window.open(url, "_blank");
+            win.focus();
+         });
+         var yesNoTablechart = new google.visualization.Table(document.getElementById('yesNoTableChart_div' + questionId));
+         yesNoTabledata = new google.visualization.DataTable(jsonData.table);
+         var tableOptions = {
+            backgroundColor: '#F5F8FA',
+            sliceVisibilityThreshold: 0,
+            cssClassNames: { tableCell: "tCell" }
+         };
+         yesNoTablechart.draw(yesNoTabledata, tableOptions);
+      }
+   });
+};
 window.app.displayReportsForFreeTextQ = function (questionId) {
    $.ajax({
       data: {
@@ -106,7 +147,7 @@ window.app.displayReportOverview = function (surveyPlanId) {
 window.app.runrunrun = function () {
    window.app.displayReportOverview($("#surveyId").text());
    $('input[qid]').each(function (index) {
-      if ($(this).attr('qtype') === "Rating") {
+      if ($(this).attr('qtype') === "Rating" || $(this).attr('qtype') === "YesNo") {
          window.app.displayReportsForRatingQ($(this).attr('qid'));
       } else if ($(this).attr('qtype') === "FreeText") {
          window.app.displayReportsForFreeTextQ($(this).attr('qid'));
