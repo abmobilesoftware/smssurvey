@@ -93,6 +93,7 @@ namespace smsSurvery.Surveryer.Controllers
          {
             case cRatingsTypeQuestion:
             case cYesNoTypeQuestion:
+            case cSelectOneFromManyTypeQuestion:
                {
                   string[] optionDef = question.ValidAnswersDetails.Split(';');
                   res = GenerateResultForRatingQuestion(question,tags);

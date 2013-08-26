@@ -147,7 +147,7 @@ window.app.displayReportOverview = function (surveyPlanId) {
 window.app.runrunrun = function () {
    window.app.displayReportOverview($("#surveyId").text());
    $('input[qid]').each(function (index) {
-      if ($(this).attr('qtype') === "Rating" || $(this).attr('qtype') === "YesNo") {
+      if ($(this).attr('qtype') === "Rating" || $(this).attr('qtype') === "YesNo" || $(this).attr('qtype') === "SelectOneFromMany" ) {
          window.app.displayReportsForRatingQ($(this).attr('qid'));
       } else if ($(this).attr('qtype') === "FreeText") {
          window.app.displayReportsForFreeTextQ($(this).attr('qid'));
