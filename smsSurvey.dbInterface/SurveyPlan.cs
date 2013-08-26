@@ -16,6 +16,7 @@ namespace smsSurvey.dbInterface
     {
         public SurveyPlan()
         {
+            this.DefaultLanguage = "en-US";
             this.SurveyResult = new HashSet<SurveyResult>();
             this.UserProfile = new HashSet<UserProfile>();
             this.QuestionSet = new HashSet<Question>();
@@ -30,6 +31,7 @@ namespace smsSurvey.dbInterface
         public bool IsRunning { get; set; }
         public string Provider { get; set; }
         public string IntroMessage { get; set; }
+        public string DefaultLanguage { get; set; }
     
         public virtual ICollection<SurveyResult> SurveyResult { get; set; }
         public virtual ICollection<UserProfile> UserProfile { get; set; }

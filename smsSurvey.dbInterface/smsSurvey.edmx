@@ -177,7 +177,8 @@
           <Property Name="DateEnded" Type="datetime" />
           <Property Name="IsRunning" Type="bit" Nullable="false" />
           <Property Name="Provider" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="IntroMessage" Type="nchar" Nullable="false" MaxLength="160" />
+          <Property Name="IntroMessage" Type="nvarchar" Nullable="false" MaxLength="160" />
+          <Property Name="DefaultLanguage" Type="nvarchar" Nullable="false" MaxLength="10" />
         </EntityType>
         <EntityType Name="SurveyResultSet">
           <Key>
@@ -190,6 +191,7 @@
           <Property Name="Complete" Type="bit" Nullable="false" />
           <Property Name="PercentageComplete" Type="float" Nullable="false" />
           <Property Name="CurrentQuestion_Id" Type="int" />
+          <Property Name="LanguageChosenForSurvey" Type="nvarchar" MaxLength="10" />
         </EntityType>
         <EntityType Name="SurveyResultTags">
           <Key>
@@ -648,6 +650,7 @@
           <NavigationProperty Name="CustomerSet" Relationship="smsSurveyModel.FK_RunningSurvey" FromRole="SurveyPlan" ToRole="Customer" />
           <Property Type="String" Name="Provider" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="IntroMessage" Nullable="false" MaxLength="160" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="DefaultLanguage" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" DefaultValue="en-US" />
           </EntityType>
         <EntityType Name="Customer">
           <Key>
@@ -677,6 +680,7 @@
           <NavigationProperty Name="CurrentQuestion" Relationship="smsSurveyModel.FK_SurveyResultQuestion" FromRole="SurveyResult" ToRole="Question" />
           <Property Type="Double" Name="PercentageComplete" Nullable="false" DefaultValue="0" />
           <NavigationProperty Name="Tags" Relationship="smsSurveyModel.SurveyResultTags" FromRole="SurveyResult" ToRole="Tags" />
+          <Property Type="String" Name="LanguageChosenForSurvey" MaxLength="10" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="CustomerSurveyResult">
           <End Type="smsSurveyModel.Customer" Role="Customer" Multiplicity="1" />
@@ -1012,6 +1016,7 @@
     <EntitySetMapping Name="SurveyPlanSet">
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.SurveyPlan)">
         <MappingFragment StoreEntitySet="SurveyPlanSet">
+                <ScalarProperty Name="DefaultLanguage" ColumnName="DefaultLanguage" />
                 <ScalarProperty Name="IntroMessage" ColumnName="IntroMessage" />
                 <ScalarProperty Name="Provider" ColumnName="Provider" />
                 <ScalarProperty Name="IsRunning" ColumnName="IsRunning" />
@@ -1037,6 +1042,7 @@
     <EntitySetMapping Name="SurveyResultSet">
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.SurveyResult)">
         <MappingFragment StoreEntitySet="SurveyResultSet">
+                <ScalarProperty Name="LanguageChosenForSurvey" ColumnName="LanguageChosenForSurvey" />
                 <ScalarProperty Name="PercentageComplete" ColumnName="PercentageComplete" />
                 <ScalarProperty Name="CurrentQuestion_Id" ColumnName="CurrentQuestion_Id" />
                 <ScalarProperty Name="Terminated" ColumnName="Complete" />

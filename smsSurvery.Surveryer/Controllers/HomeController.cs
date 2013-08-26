@@ -129,7 +129,7 @@ namespace smsSurvery.Surveryer.Controllers
       }
 
       [Authorize]
-      public JsonResult RunSurveyForNumbers(int surveyid, string[] customerNumbers,bool sendMobile, string[] tags = null)
+      public JsonResult RunSurveyForNumbers(int surveyid, string[] customerNumbers,bool sendMobile, string[] tags = null, string surveyLanguage="")
       {
          var userName = User.Identity.Name;
          var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();         
@@ -138,10 +138,11 @@ namespace smsSurvery.Surveryer.Controllers
          var selectedTags = tags != null ? tags : new string[0];
          var answersController = new AnswerController();
          answersController.ControllerContext = this.ControllerContext;
+         surveyLanguage = String.IsNullOrEmpty(surveyLanguage) ? surveyToRun.DefaultLanguage : surveyLanguage;
          if(surveyToRun != null) {
             foreach (var nr in customerNumbers)
             {
-               answersController.StartSmsSurveyInternal(user.DefaultTelNo, nr, surveyToRun, user, sendMobile, selectedTags, db);
+               answersController.StartSmsSurveyInternal(user.DefaultTelNo, nr, surveyToRun, user, sendMobile, selectedTags, surveyLanguage, db);
             }
          }
          return Json("Survey started successfully", JsonRequestBehavior.AllowGet);

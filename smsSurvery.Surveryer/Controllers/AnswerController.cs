@@ -240,7 +240,7 @@ namespace smsSurvery.Surveryer.Controllers
                  //the where clause should solve it
                  latestSurveyResult = customer.SurveyResult.Where(s=>s.SurveyPlanId == surveyToRun.Id).OrderByDescending(x => x.DateRan).First();                 
               }
-              SurveyResult currentSurvey = latestSurveyResult;
+              SurveyResult runningSurvey = latestSurveyResult;
               Question currentQuestion = null;
               var numberOfQuestionsInSurvey = surveyToRun.QuestionSet.Count();
               bool receivedMultipleAnswersToSameQuestion = false;          
@@ -255,15 +255,15 @@ namespace smsSurvery.Surveryer.Controllers
               {
                  logger.DebugFormat("Received another answer for a running survey");
                
-                 int currentQuestionPosition = currentSurvey.Result.Count + 1;
-                 currentQuestion = currentSurvey.CurrentQuestion;
+                 int currentQuestionPosition = runningSurvey.Result.Count + 1;
+                 currentQuestion = runningSurvey.CurrentQuestion;
                  //TODO DA - sanity check - what to do if the user answered twice to the same question?
                  //Answer- update the already existing answer
                  if (currentQuestionPosition > currentQuestion.Order)
                  {
                     //very unlikely
                     logger.DebugFormat("Received another answer of the same question {0}, updating answer", currentQuestion.Id);
-                    var resultToUpdate = currentSurvey.Result.Where(r => r.Question.Order == currentQuestionPosition).FirstOrDefault();
+                    var resultToUpdate = runningSurvey.Result.Where(r => r.Question.Order == currentQuestionPosition).FirstOrDefault();
                     if (resultToUpdate != null)
                     {
                        resultToUpdate.Answer = text;
@@ -275,9 +275,9 @@ namespace smsSurvery.Surveryer.Controllers
                  {
                     //compute the completed percentage - based on the total number of questions and the received answers
                     double newPercentageCompleted = (double) currentQuestion.Order / numberOfQuestionsInSurvey ;
-                    currentSurvey.PercentageComplete = newPercentageCompleted;                  
+                    runningSurvey.PercentageComplete = newPercentageCompleted;                  
                     var res = new Result() { Answer = text, Question = currentQuestion };
-                    currentSurvey.Result.Add(res);
+                    runningSurvey.Result.Add(res);
                     db.SaveChanges();                   
                  }
                  
@@ -291,14 +291,19 @@ namespace smsSurvery.Surveryer.Controllers
                     //TODO fix logic errors if no next question
                     if (nextQuestion != null)
                     {
-                       currentSurvey.CurrentQuestion = nextQuestion;
+                       runningSurvey.CurrentQuestion = nextQuestion;
                        db.SaveChanges();
-                       SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion, currentSurvey.SurveyPlan.QuestionSet.Count(),false, db);                      
+                       //DA for compatibility with the old versions make sure that we have a valid survey language
+                       var surveyLanguage = runningSurvey.LanguageChosenForSurvey;
+                       surveyLanguage = !String.IsNullOrEmpty(surveyLanguage) ? surveyLanguage : runningSurvey.SurveyPlan.DefaultLanguage;
+                       //DA choose the appropriate language for the survey
+                       System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture(surveyLanguage);
+                       SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion, runningSurvey.SurveyPlan.QuestionSet.Count(),false, db);                      
                     }
                  }
                  else
                  {
-                    //mark survey as  complete
+                    //mark survey as complete
                     latestSurveyResult.Terminated = true;
                     customer.RunningSurvey = null;
                     customer.SurveyInProgress = false;
@@ -306,7 +311,7 @@ namespace smsSurvery.Surveryer.Controllers
                     //send ThankYouMessage
                     SendThankYouToCustomer(customer, numberToSendFrom, surveyToRun);                    
                  }
-                 HandleAlertsForQuestion(currentQuestion, text, currentSurvey.Id, this);
+                 HandleAlertsForQuestion(currentQuestion, text, runningSurvey.Id, this);
               }
               else
               {
@@ -478,7 +483,7 @@ namespace smsSurvery.Surveryer.Controllers
               //TODO DA sanity check - only one active survey at a time          
               if (surveyToRun != null)
               {
-                 StartSmsSurveyInternal(numberToSendFrom, customerPhoneNumber, surveyToRun,user,false, tags, db);
+                 StartSmsSurveyInternal(numberToSendFrom, customerPhoneNumber, surveyToRun,user,false, tags, "en-US", db);
               }
            }           
         }
@@ -490,8 +495,12 @@ namespace smsSurvery.Surveryer.Controllers
           smsSurvey.dbInterface.UserProfile authenticatedUser,
           bool sendMobile,
           string[] tags,
+          string surveyLanguage,
           smsSurveyEntities db)
        {
+          //DA choose the appropriate language for the survey
+          System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture(surveyLanguage);
+          
           var customer = db.CustomerSet.Find(customerPhoneNumber);
           if (customer == null)
           {
@@ -508,7 +517,7 @@ namespace smsSurvery.Surveryer.Controllers
           //TODO DA sanity check - only one active survey at a time          
          if (surveyToRun != null)
          {
-            SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyPlan = surveyToRun, Terminated = false, PercentageComplete= 0 };            
+            SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyPlan = surveyToRun, Terminated = false, PercentageComplete= 0, LanguageChosenForSurvey= surveyLanguage };            
             db.SurveyResultSet.Add(newSurvey);
             //mark that we have started a new survey for the current user
             customer.SurveyInProgress = true;
@@ -545,9 +554,10 @@ namespace smsSurvery.Surveryer.Controllers
          }          
        }
 
-       private static void SendQuestionToCustomer(Customer c, string numberToSendFrom, Question q, int totalNumberOfQuestions, bool isFirstQuestion, smsSurveyEntities db, string introMessage ="")
+       private static void SendQuestionToCustomer(Customer c, string numberToSendFrom, Question q, int totalNumberOfQuestions, bool isFirstQuestion,  smsSurveyEntities db, string introMessage ="")
         {
            logger.DebugFormat("question id: {0}, to customer: {1}, from number: {2}", q.Id, c.PhoneNumber, numberToSendFrom);
+           
            var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyPlan(q.SurveyPlanSet);
            //DA before we send the SMS question we must prepare it - add the expected answers to it
            string smsText = PrepareSMSTextForQuestion(q, totalNumberOfQuestions, isFirstQuestion, introMessage);
@@ -556,7 +566,7 @@ namespace smsSurvery.Surveryer.Controllers
 
         private static string PrepareSMSTextForQuestion(Question q, int totalNumberOfQuestions, bool isFirstQuestion, string introMessage)
         {
-           string prefix = String.Format("Q{0}/{1}: ", q.Order, totalNumberOfQuestions);
+           string prefix = String.Format(GlobalResources.Global.SmsQuestionIndexTemplate, q.Order, totalNumberOfQuestions);
            if (isFirstQuestion)
            {
               prefix = introMessage + System.Environment.NewLine + prefix;
@@ -567,10 +577,10 @@ namespace smsSurvery.Surveryer.Controllers
            {
               case ReportsController.cFreeTextTypeQuestion:
                  return prefix + q.Text;                 
-              case ReportsController.cRatingsTypeQuestion:                
-                 return prefix + q.Text + String.Format(" Reply with a rating from {0} ({1}) to {2} ({3})", validAnswer[0], validAnswerDetails[0], validAnswer.Last(), validAnswerDetails.Last());                 
+              case ReportsController.cRatingsTypeQuestion:
+                 return prefix + q.Text + String.Format(GlobalResources.Global.SmsQuestionRatingSuffixTemplate, validAnswer[0], validAnswerDetails[0], validAnswer.Last(), validAnswerDetails.Last());                 
               case ReportsController.cYesNoTypeQuestion:
-                 return prefix+ q.Text + " Reply 1 for Yes, 2 for No";
+                 return prefix + q.Text + GlobalResources.Global.SmsQuestionYesNoSuffixTemplate;
               case ReportsController.cSelectManyFromManyTypeQuestion:
                 //DA TODO
                  return "";
@@ -578,9 +588,9 @@ namespace smsSurvery.Surveryer.Controllers
                  List<string> pairs = new List<string>();
                  for (int i = 0; i < validAnswer.Length; i++)
                  {
-                   pairs.Add(String.Format("{0} for {1}", validAnswer[i], validAnswerDetails[i]));
+                    pairs.Add(String.Format(GlobalResources.Global.SmsQuestionSelectOneFromManyMemberSuffixTemplate, validAnswer[i], validAnswerDetails[i]));
                  }
-                 string suffix = " Reply with: " + String.Join(", ",pairs);
+                 string suffix = String.Format(GlobalResources.Global.SmsQuestionSelectOneFromManySuffixTemplate, String.Join(", ", pairs));
                  return prefix + q.Text + suffix;
               default:
                  return prefix + q.Text;
@@ -593,7 +603,7 @@ namespace smsSurvery.Surveryer.Controllers
            var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyPlan(surveyResult.SurveyPlan);
            string mobileSurveyLocation = GetTargetedMobileSurveyLocation(surveyResult, this.ControllerContext.RequestContext);
 
-           string text = String.Format("Please fill in the survey at {0}", mobileSurveyLocation);
+           string text = String.Format(GlobalResources.Global.SmsMobileSurveyTemplate, mobileSurveyLocation);
            smsinterface.SendMessage(numberToSendFrom, c.PhoneNumber, prefix + text);
         }
 

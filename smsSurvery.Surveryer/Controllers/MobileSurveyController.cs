@@ -79,6 +79,7 @@ namespace smsSurvery.Surveryer.Controllers
         [HttpPost]
         public void SaveSurvey(List<QuestionResponse> questions, int surveyResultId, int surveyPlanId)
         {
+           //for mobile surveys the survey language is the default Survey definition language
            SurveyResult surveyToAnalyze = null;
            //DA take all the responses and save the to the corresponding surveyResult
            if (surveyResultId < 0)
@@ -88,7 +89,7 @@ namespace smsSurvery.Surveryer.Controllers
               var uniqueCustomerID = Guid.NewGuid().ToString();
               var surveyToRun = db.SurveyPlanSet.Find(surveyPlanId);
               var customer = new Customer() { PhoneNumber = uniqueCustomerID, Name = uniqueCustomerID, Surname = uniqueCustomerID };
-              SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyPlan = surveyToRun, Terminated = true, PercentageComplete = 1 };
+              SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyPlan = surveyToRun, Terminated = true, PercentageComplete = 1, LanguageChosenForSurvey = surveyToRun.DefaultLanguage };
               db.SurveyResultSet.Add(newSurvey);
               foreach (var q in questions)
               {
@@ -103,7 +104,7 @@ namespace smsSurvery.Surveryer.Controllers
              
            }
            else
-           {
+           {      
               //we are dealing with a "dedicated" survey
               var surveyToRun = db.SurveyPlanSet.Find(surveyPlanId);
               var surveyToFill = db.SurveyResultSet.Find(surveyResultId);
