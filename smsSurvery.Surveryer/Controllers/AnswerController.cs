@@ -148,8 +148,7 @@ namespace smsSurvery.Surveryer.Controllers
               }
               //DA get the human friendly version (from answer details)
               string[] humanFriendlyAnswers = question.ValidAnswersDetails.Split(';');
-              var index = answer;
-              index = question.Type == ReportsController.cYesNoTypeQuestion ? index : index - 1;
+              var index = answer -1;            
               @ViewBag.Answer = humanFriendlyAnswers[index];
               @ViewBag.QuestionText = question.Text;
               return View(messages);
