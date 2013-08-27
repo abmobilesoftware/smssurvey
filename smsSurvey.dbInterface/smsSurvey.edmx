@@ -134,6 +134,7 @@
           <Property Name="Surname" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="SurveyInProgress" Type="bit" Nullable="false" />
           <Property Name="SurveyPlan_Id" Type="int" />
+          <Property Name="Email" Type="nvarchar" MaxLength="100" />
         </EntityType>
         <EntityType Name="QuestionAlertSet">
           <Key>
@@ -663,6 +664,7 @@
           <Property Type="Boolean" Name="SurveyInProgress" Nullable="false" />
           <Property Type="Int32" Name="SurveyPlan_Id" />
           <NavigationProperty Name="RunningSurvey" Relationship="smsSurveyModel.FK_RunningSurvey" FromRole="Customer" ToRole="SurveyPlan" />
+          <Property Type="String" Name="Email" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="SurveyResult">
           <Key>
@@ -1031,7 +1033,8 @@
     <EntitySetMapping Name="CustomerSet">
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.Customer)">
         <MappingFragment StoreEntitySet="CustomerSet">
-          <ScalarProperty Name="SurveyPlan_Id" ColumnName="SurveyPlan_Id" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="SurveyPlan_Id" ColumnName="SurveyPlan_Id" />
                 <ScalarProperty Name="SurveyInProgress" ColumnName="SurveyInProgress" />
                 <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
           <ScalarProperty Name="Name" ColumnName="Name" />

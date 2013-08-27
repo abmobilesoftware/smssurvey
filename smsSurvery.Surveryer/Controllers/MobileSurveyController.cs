@@ -90,10 +90,12 @@ namespace smsSurvery.Surveryer.Controllers
         }      
 
         [HttpPost]
-        public void SaveSurvey(List<QuestionResponse> questions, int surveyResultId, int surveyPlanId)
-        {
+        public JsonResult SaveSurvey(List<QuestionResponse> questions, int surveyResultId, int surveyPlanId)
+        {       
            //for mobile surveys the survey language is the default Survey definition language
-           SurveyResult surveyToAnalyze = null;
+           //we return the Id of the save surveyResult
+           int savedSurveyResult = surveyResultId;
+           SurveyResult surveyToAnalyze = null;           
            //DA take all the responses and save the to the corresponding surveyResult
            if (surveyResultId < 0)
            {
@@ -114,7 +116,7 @@ namespace smsSurvery.Surveryer.Controllers
               db.SaveChanges();
               db.Entry(newSurvey).Reload();
               surveyToAnalyze = newSurvey;
-             
+              savedSurveyResult = newSurvey.Id;
            }
            else
            {      
@@ -143,6 +145,30 @@ namespace smsSurvery.Surveryer.Controllers
               var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion };
               AnswerController.HandleAlertsForQuestion(currentQuestion, q.PickedAnswer, surveyToAnalyze.Id, this);             
            }
+           return Json(savedSurveyResult, JsonRequestBehavior.AllowGet);
+        }
+
+        public class RespondentInfo
+        {
+           public string Name { get; set; }
+           public string Surname { get; set; }
+           public string Email { get; set; }
+           public string Telephone { get; set; }
+        }
+        [HttpPost]
+        public void SaveRespondentInfo(RespondentInfo info, int surveyResultId)
+        {
+           //get the customer corresponding to the survey result and update its info
+           var survey = db.SurveyResultSet.Find(surveyResultId);
+           if (survey != null)
+           {
+              var customer = survey.Customer;
+              customer.Name = info.Name;
+              customer.Surname = info.Surname;
+              customer.PhoneNumber = info.Telephone;
+              customer.Email = info.Email;
+              db.SaveChanges();
+           }           
         }
         protected override void Dispose(bool disposing)
         {

@@ -199,16 +199,20 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
    },
    initialize: function () {
       _.bindAll(this, "setWidth", "show",
-          "getHeight", "render","sendPersonalInfo");
+          "getHeight", "render","sendPersonalInfo",
+          "setSurveyResultId");
       this.template = _.template($("#thankyoupage-template").html());
     
       this.render();
+   },
+   setSurveyResultId: function(surveyResultId) {
+      this.surveyResultId = surveyResultId;
    },
    setWidth: function (value) {
       this.$el.css("width", value);
    },
    show: function () {
-      this.$el.show();
+      this.$el.show();   
    },
    enableSendBtn: function (event) {
       if (event.target.checked) {
@@ -221,6 +225,24 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
       $('#surveyUserInfo').slideToggle('slow');
       this.sendBtn.setTitle("Information submitted. Thank you!");
       this.sendBtn.disable();
+      var personalInfo = {};
+      personalInfo.Name = $('#name').val();
+      personalInfo.Surname = $('#surname').val();
+      personalInfo.Email = $('#email').val();
+      personalInfo.Telephone = $('#telephone').val();
+      var dataToSend = JSON.stringify({
+         info: personalInfo,
+         surveyResultId: this.surveyResultId         
+      });
+      $.ajax({
+         url: "/MobileSurvey/SaveRespondentInfo",
+         data: dataToSend,
+         type: 'post',
+         cache: false,
+         dataType: "json",
+         contentType: 'application/json',
+         traditional: true      
+      });
    },
    getHeight: function () {
       return this.$el.outerHeight();
@@ -242,18 +264,19 @@ MobileSurvey.SurveyView = Backbone.View.extend({
       _.bindAll(this, "goToThankYouPage","saveSurvey","updateQuestionSet", "render");
       this.questionsPage = new MobileSurvey.SurveyMobileView({ el: $("#questionsPage"), model: this.model });
       this.thankYouPage = new MobileSurvey.ThankYouPageView({ el: $("#thankYouPage") });      
-      this.questionsPage.on(this.questionsPage.pageEvents.THANK_YOU_PAGE,
-          this.goToThankYouPage);
       //this.questionsPage.on(this.questionsPage.pageEvents.THANK_YOU_PAGE,
-      //   this.saveSurvey);
+      //    this.goToThankYouPage);
+      this.questionsPage.on(this.questionsPage.pageEvents.THANK_YOU_PAGE,
+         this.saveSurvey);
    },
-   goToThankYouPage: function () {
+   goToThankYouPage: function (surveyResultId) {
       var self = this;
       var pageWidthInPixels = this.questionsPage.getWidth() + "px";
       var expandedWidthPercent = "200%"; // width of two pages side by side
       var normalWidthPercent = "100%";
       this.questionsPage.setWidth(pageWidthInPixels);
       this.setWidth(expandedWidthPercent);
+      this.thankYouPage.setSurveyResultId(surveyResultId);
       this.thankYouPage.show();
       this.thankYouPage.setWidth(pageWidthInPixels);
       /*
@@ -302,7 +325,10 @@ MobileSurvey.SurveyView = Backbone.View.extend({
          cache: false,
          dataType: "json",
          contentType: 'application/json',
-         traditional: true
+         traditional: true,
+         success: function (surveyResultId) {
+            self.goToThankYouPage(surveyResultId);
+         }
       });
       //this.model.save(this.model.toJSON(),
       //   {
