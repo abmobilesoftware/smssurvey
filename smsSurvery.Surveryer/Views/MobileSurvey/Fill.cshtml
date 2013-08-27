@@ -1,4 +1,5 @@
-﻿@{
+﻿@using smsSurvery.Surveryer.GlobalResources
+@{
     Layout = null;
 }
 
@@ -7,7 +8,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>MobileSurvey</title>   
+    <title>@Global.MobileSurveyPageTitle</title>   
     @Styles.Render("~/bundles/MobileSurveyCss")
    
 <script id="mobileSurveyTemplate" type="text/template">   
@@ -109,12 +110,12 @@
                 <button id="doneBtn"></button>
             </div>
             <footer>
-                <span>Powered by 
+                <span>@Global.MobileSurveyFooterCaption
                   <a href="http://www.txtfeedback.net">TxtFeedback
                   </a>
                 </span>
             </footer>
-            <input type="hidden" value="Submit" id="doneBtnTitle" />
+            <input type="hidden" value="@Global.MobileSurveySubmitButtonCaption" id="doneBtnTitle" />         
         </section>
         <section id="thankYouPage" class="page" style="display:none">
           

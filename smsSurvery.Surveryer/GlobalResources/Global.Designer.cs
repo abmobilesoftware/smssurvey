@@ -22,7 +22,7 @@ namespace smsSurvery.Surveryer.GlobalResources {
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    internal class Global {
+    public class Global {
         
         private static global::System.Resources.ResourceManager resourceMan;
         
@@ -36,7 +36,7 @@ namespace smsSurvery.Surveryer.GlobalResources {
         ///   Returns the cached ResourceManager instance used by this class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Resources.ResourceManager ResourceManager {
+        public static global::System.Resources.ResourceManager ResourceManager {
             get {
                 if (object.ReferenceEquals(resourceMan, null)) {
                     global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("smsSurvery.Surveryer.GlobalResources.Global", typeof(Global).Assembly);
@@ -51,7 +51,7 @@ namespace smsSurvery.Surveryer.GlobalResources {
         ///   resource lookups using this strongly typed resource class.
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
-        internal static global::System.Globalization.CultureInfo Culture {
+        public static global::System.Globalization.CultureInfo Culture {
             get {
                 return resourceCulture;
             }
@@ -61,9 +61,63 @@ namespace smsSurvery.Surveryer.GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Powered by.
+        /// </summary>
+        public static string MobileSurveyFooterCaption {
+            get {
+                return ResourceManager.GetString("MobileSurveyFooterCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Mobile Survey.
+        /// </summary>
+        public static string MobileSurveyPageTitle {
+            get {
+                return ResourceManager.GetString("MobileSurveyPageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Submit.
+        /// </summary>
+        public static string MobileSurveySubmitButtonCaption {
+            get {
+                return ResourceManager.GetString("MobileSurveySubmitButtonCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This survey has already been been submitted. Thank you!.
+        /// </summary>
+        public static string MobileSurveySubmittedMessage {
+            get {
+                return ResourceManager.GetString("MobileSurveySubmittedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Survey already submitted.
+        /// </summary>
+        public static string MobileSurveySubmittedPageTitle {
+            get {
+                return ResourceManager.GetString("MobileSurveySubmittedPageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Survey completed.
+        /// </summary>
+        public static string MobileSurveySubmittedTitle {
+            get {
+                return ResourceManager.GetString("MobileSurveySubmittedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please fill in the survey at {0}.
         /// </summary>
-        internal static string SmsMobileSurveyTemplate {
+        public static string SmsMobileSurveyTemplate {
             get {
                 return ResourceManager.GetString("SmsMobileSurveyTemplate", resourceCulture);
             }
@@ -72,7 +126,7 @@ namespace smsSurvery.Surveryer.GlobalResources {
         /// <summary>
         ///   Looks up a localized string similar to Q{0}/{1}: .
         /// </summary>
-        internal static string SmsQuestionIndexTemplate {
+        public static string SmsQuestionIndexTemplate {
             get {
                 return ResourceManager.GetString("SmsQuestionIndexTemplate", resourceCulture);
             }
@@ -81,7 +135,7 @@ namespace smsSurvery.Surveryer.GlobalResources {
         /// <summary>
         ///   Looks up a localized string similar to  Reply with a rating from {0} ({1}) to {2} ({3}).
         /// </summary>
-        internal static string SmsQuestionRatingSuffixTemplate {
+        public static string SmsQuestionRatingSuffixTemplate {
             get {
                 return ResourceManager.GetString("SmsQuestionRatingSuffixTemplate", resourceCulture);
             }
@@ -90,7 +144,7 @@ namespace smsSurvery.Surveryer.GlobalResources {
         /// <summary>
         ///   Looks up a localized string similar to {0} for {1}.
         /// </summary>
-        internal static string SmsQuestionSelectOneFromManyMemberSuffixTemplate {
+        public static string SmsQuestionSelectOneFromManyMemberSuffixTemplate {
             get {
                 return ResourceManager.GetString("SmsQuestionSelectOneFromManyMemberSuffixTemplate", resourceCulture);
             }
@@ -99,7 +153,7 @@ namespace smsSurvery.Surveryer.GlobalResources {
         /// <summary>
         ///   Looks up a localized string similar to  Reply with: {0}.
         /// </summary>
-        internal static string SmsQuestionSelectOneFromManySuffixTemplate {
+        public static string SmsQuestionSelectOneFromManySuffixTemplate {
             get {
                 return ResourceManager.GetString("SmsQuestionSelectOneFromManySuffixTemplate", resourceCulture);
             }
@@ -108,7 +162,7 @@ namespace smsSurvery.Surveryer.GlobalResources {
         /// <summary>
         ///   Looks up a localized string similar to  Reply 1 for Yes, 2 for No.
         /// </summary>
-        internal static string SmsQuestionYesNoSuffixTemplate {
+        public static string SmsQuestionYesNoSuffixTemplate {
             get {
                 return ResourceManager.GetString("SmsQuestionYesNoSuffixTemplate", resourceCulture);
             }

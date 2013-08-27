@@ -78,6 +78,10 @@ button {
         font-size:1em;
         padding:0.3em;
     }
+
+    #introMessage {
+       text-align: center;
+    }
 /* END HEADER */
 
 /* QUESTION */
@@ -86,6 +90,7 @@ div.question {
     margin-bottom: 0.5em;
     background: #F4F7F8;
     border-bottom: 1px solid #D6DEE3;
+    text-align: center;
 }
 
         div.question h4.questionTitle {

@@ -9,6 +9,11 @@ namespace smsSurvery.Surveryer.Controllers
 {
     public class MobileSurveyController : Controller
     {
+
+       public MobileSurveyController()
+       {
+        
+       }
         private smsSurveyEntities db = new smsSurveyEntities();
 
         [HttpGet]
@@ -16,17 +21,21 @@ namespace smsSurvery.Surveryer.Controllers
         {
         
            //should only be valid for survey result that is not yet terminated
-           SurveyResult res = db.SurveyResultSet.Find(id);
+           SurveyResult runningSurvey = db.SurveyResultSet.Find(id);
            int idToUse = 1;
-           if (res != null)
+           if (runningSurvey != null)
            {
-              idToUse = res.SurveyPlan.Id;
-              if (res.Terminated != true)
+              //DA for compatibility with the old versions make sure that we have a valid survey language
+              var surveyLanguage = runningSurvey.LanguageChosenForSurvey;
+              surveyLanguage = !String.IsNullOrEmpty(surveyLanguage) ? surveyLanguage : runningSurvey.SurveyPlan.DefaultLanguage;
+              System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture(surveyLanguage);
+              idToUse = runningSurvey.SurveyPlan.Id;
+              if (runningSurvey.Terminated != true)
               {
                  ViewBag.Id = idToUse;
                  ViewBag.SurveyTitle = "Mobile survey";
                  ViewBag.IsFeedback = 0;
-                 ViewBag.IntroMessage = res.SurveyPlan.IntroMessage;
+                 ViewBag.IntroMessage = runningSurvey.SurveyPlan.IntroMessage;
                  return View();
               }
               else

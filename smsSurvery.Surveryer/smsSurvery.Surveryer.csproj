@@ -488,11 +488,11 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="GlobalResources\Global.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Global.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="GlobalResources\Global.ro.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Global.ro.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>

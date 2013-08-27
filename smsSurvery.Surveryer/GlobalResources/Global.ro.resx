@@ -117,6 +117,24 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="MobileSurveyFooterCaption" xml:space="preserve">
+    <value>Dezvoltat de</value>
+  </data>
+  <data name="MobileSurveyPageTitle" xml:space="preserve">
+    <value>Chestionar</value>
+  </data>
+  <data name="MobileSurveySubmitButtonCaption" xml:space="preserve">
+    <value>Trimite</value>
+  </data>
+  <data name="MobileSurveySubmittedMessage" xml:space="preserve">
+    <value>Acest chestionar a fost deja completat. Va multumim pentru participare!</value>
+  </data>
+  <data name="MobileSurveySubmittedPageTitle" xml:space="preserve">
+    <value>Chestionar deja completat</value>
+  </data>
+  <data name="MobileSurveySubmittedTitle" xml:space="preserve">
+    <value>Chestionar deja completat</value>
+  </data>
   <data name="SmsMobileSurveyTemplate" xml:space="preserve">
     <value>Va rugam sa completati chestionarul de la {0}</value>
   </data>
