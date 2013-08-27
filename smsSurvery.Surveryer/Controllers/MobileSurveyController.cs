@@ -57,7 +57,9 @@ namespace smsSurvery.Surveryer.Controllers
         {
            SurveyPlan survey = db.SurveyPlanSet.Find(id);
            if (survey != null)
-           {
+           {             
+              var surveyLanguage = survey.DefaultLanguage;             
+              System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture(surveyLanguage);
               //the id is a the SurveyPlanId
               ViewBag.Id = id;
               ViewBag.SurveyTitle = "Feedback";

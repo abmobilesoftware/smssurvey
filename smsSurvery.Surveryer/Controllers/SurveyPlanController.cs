@@ -171,7 +171,7 @@ namespace smsSurvery.Surveryer.Controllers
                new ClientSurveyPlan(
                   surveyplan.Id, surveyplan.Description, surveyplan.IntroMessage,
                   surveyplan.ThankYouMessage, surveyplan.DateStarted,
-                  surveyplan.DateEnded, surveyplan.IsRunning, questions);
+                  surveyplan.DateEnded, surveyplan.IsRunning, questions, surveyplan.DefaultLanguage);
 
             surveyPlan.MobileWebsiteLocation = GetAnonymousMobileSurveyLocation(surveyplan, this.ControllerContext.RequestContext);
             return Json(surveyPlan, JsonRequestBehavior.AllowGet);
@@ -186,6 +186,7 @@ namespace smsSurvery.Surveryer.Controllers
       public JsonResult SaveSurvey(
          ClientSurveyPlan clientSurveyPlan)
       {
+         //DA TODO we should have some check that the new language is a valid language identifier ( global-LOCAL)
          try
          {
              SurveyPlan dbSurveyPlan = null;
@@ -198,7 +199,8 @@ namespace smsSurvery.Surveryer.Controllers
                }
                dbSurveyPlan.ThankYouMessage = clientSurveyPlan.ThankYouMessage;
                dbSurveyPlan.Description = clientSurveyPlan.Description;
-               dbSurveyPlan.IntroMessage = clientSurveyPlan.IntroMessage;
+               dbSurveyPlan.IntroMessage = clientSurveyPlan.IntroMessage;              
+               dbSurveyPlan.DefaultLanguage = clientSurveyPlan.DefaultLanguage;
                var dbQuestions = dbSurveyPlan.QuestionSet;
                var clientQuestions = clientSurveyPlan.QuestionSet;
 
@@ -338,6 +340,7 @@ namespace smsSurvery.Surveryer.Controllers
                dbSurveyPlan.Description = clientSurveyPlan.Description;
                dbSurveyPlan.IntroMessage = clientSurveyPlan.IntroMessage;
                dbSurveyPlan.ThankYouMessage = clientSurveyPlan.ThankYouMessage;
+               dbSurveyPlan.DefaultLanguage = clientSurveyPlan.DefaultLanguage;
 
                // Add questions
                ICollection<Question> dbQuestions = new List<Question>();

@@ -242,6 +242,28 @@
          <td>Thank you message & follow up</td>
          <td><input type="text" placeholder="Insert thank you message" id="survey-thank-you-message" value="<%= ThankYouMessage %>"/></td>
       </tr>
+       <tr>
+         <td>Survey language</td>
+          <%
+            var language = "";
+            if (DefaultLanguage == "en-US") {
+               language = "English" 
+            } else if (DefaultLanguage == "ro-RO") {
+               language = "Romanian";       
+            }     
+         %>
+         <td>
+            <div class="btn-group">
+             <button class="btn dropdown-toggle type-btn" data-toggle="dropdown">
+                  <span class="type-btn-text"><%= language %></span>
+                  <span class="caret"></span>
+               </button>
+            <ul class="dropdown-menu">            
+                  <li><a href="#" value="en-US" class="languageSelect">English</a></li>
+                  <li><a href="#" value="ro-RO" class="languageSelect">Romanian</a></li>                  
+            </ul>
+            </div>          
+      </tr>
       <tr>
          <% var idRepresentation = Id == -1 ? "-" : Id; %>
          <td>ID</td>

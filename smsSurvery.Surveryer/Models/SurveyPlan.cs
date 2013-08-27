@@ -11,6 +11,7 @@ namespace smsSurvery.Surveryer.ClientModels
       public string Description { get; set; }
       public string ThankYouMessage { get; set; }
       public string IntroMessage { get; set; }
+      public string DefaultLanguage { get; set; }
       public Nullable<DateTime> DateStarted { get; set; }
       public Nullable<DateTime> DateEnded { get; set; }
       public bool IsRunning { get; set; }
@@ -30,7 +31,8 @@ namespace smsSurvery.Surveryer.ClientModels
          Nullable<DateTime> iDateStarted,
          Nullable<DateTime> iDateEnded,
          bool iIsRunning,
-         List<ClientQuestion> iQuestionSet)
+         List<ClientQuestion> iQuestionSet,
+         String iDefaultLanguage)
       {
          Id = iId;
          Description = iDescription;
@@ -40,6 +42,7 @@ namespace smsSurvery.Surveryer.ClientModels
          DateEnded = iDateEnded;
          IsRunning = iIsRunning;
          QuestionSet = iQuestionSet;
+         DefaultLanguage = iDefaultLanguage;
       }     
    }
 }

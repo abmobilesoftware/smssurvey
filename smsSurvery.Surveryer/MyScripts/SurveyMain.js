@@ -17,7 +17,8 @@
       StartDate: "15/6/2013",
       EndDate: "17/7/2013",
       IsRunning: false,
-      DisplayInfoTable: displayInfoTable
+      DisplayInfoTable: displayInfoTable,
+      DefaultLanguage: "en-US"
    });
    var survey = new SurveyBuilder.SurveyView({
       el: $("#survey"),

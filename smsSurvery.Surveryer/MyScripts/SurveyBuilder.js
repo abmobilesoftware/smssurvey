@@ -6,13 +6,14 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       "keyup #survey-description": "updateDescription",
       "keyup #survey-intro": "updateIntroMessage",
       "keyup #survey-thank-you-message": "updateThankYouMessage",
-      "click .save-btn": "saveSurvey"
+      "click .save-btn": "saveSurvey",
+      "click .languageSelect": "updateSurveyLanguage"
    },
    initialize: function () {
       var self = this;
       _.bindAll(this, "editSurveyInfo", "render", "updateDescription",
          "updateThankYouMessage", "saveSurvey", "confirmPageLeaving",
-         "surveyLoaded", "validationResult", "updateSaveButton", "updateIntroMessage");
+         "surveyLoaded", "validationResult", "updateSaveButton", "updateIntroMessage", "updateSurveyLanguage");
       this.template = _.template($("#survey-info-template").html());
       this.dom = {
          $SURVEY_INFO: $("#survey-info", this.$el),
@@ -26,6 +27,8 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       this.model.on(this.model.events.SURVEY_LOADED, this.surveyLoaded);
       this.model.on(this.model.events.VALIDATE, this.validationResult);
       this.model.on(this.model.events.UPDATE_SAVE_BUTTON, this.updateSaveButton);
+      //TODO - this should actually be a renderLanguage
+      this.model.on("change:DefaultLanguage", this.render);
       this.model.loadSurvey();
    },
    render: function () {
@@ -37,7 +40,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       this.dom.$SURVEY_THANK_YOU_MESSAGE_INPUT = $("#survey-thank-you-message", this.$el);
       this.dom.$SURVEY_INTRO_MESSAGE_INPUT = $("#survey-intro", this.$el);
       this.dom.$SAVE_SURVEY_BTN = $(".save-btn", this.$el);
-   },
+   },   
    editSurveyInfo: function (event) {
       event.preventDefault();
       if (this.model.get("DisplayInfoTable")) {
@@ -58,6 +61,11 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
    },
    updateQuestionSet: function () {
       this.model.set("QuestionSet", this.model.getQuestionSetModel().getQuestionSetCollectionAsJson(true));
+   },
+   updateSurveyLanguage: function(event) {
+      event.preventDefault();
+      var newSurveyLanguage = $(event.currentTarget).attr("value");
+      this.model.updateSurveyLanguage(newSurveyLanguage);
    },
    saveSurvey: function (event) {
       event.preventDefault();
@@ -149,12 +157,14 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
       ThankYouMessage: "no thank you message",
       DisplayInfoTable: false,
       HasChanged: false,
-      MobileWebsiteLocation: ""
+      MobileWebsiteLocation: "",
+      DefaultLanguage: ""
    },
    initialize: function () {
-      _.bindAll(this, "attributeChanged", "modelSynced");
+      _.bindAll(this, "attributeChanged", "modelSynced", "updateSurveyLanguage");
       var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
-      this.on("change:Description change:ThankYouMessage change:IntroMessage", this.attributeChanged);
+      this.on("change:Description change:ThankYouMessage change:IntroMessage change:DefaultLanguage", this.attributeChanged);
+
       this.on("sync", this.modelSynced);
       Backbone.on(attributeChangedEvent, this.attributeChanged);
       this.noOfAttributesChanged = 0;
@@ -172,6 +182,9 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
    },
    updateDescription: function (description) {
       this.set("Description", description);
+   },
+   updateSurveyLanguage: function (language) {
+      this.set("DefaultLanguage", language);
    },
    sync: function (method, model, options) {
       options = options || {};
