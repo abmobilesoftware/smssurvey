@@ -68,21 +68,48 @@
   <input type='hidden' class='answer' value='noValue' />
 </script>
 
-<script type="text/template" id="thankyoupage-template">
-      <div id="thankYouMessage"><strong>Thank you</strong> for filling in this survey</div>
-   @if ((int) @ViewBag.IsFeedback != 0)
-   {
-      <div id="userInfo">
-               <fieldset>
-                  <label for="email">
-                     Enter your e-mail address to receive the voucher:
-                  </label>
-                  <input id="email" type="email" /><br />
-                  <button id="sendBtn" class="enabled small">Send</button>
-               </fieldset>
-      </div>
-   }
-         
+<script type="text/template" id="thankyoupage-template">  
+         <header>
+                   <div class="headerContainer">
+                     <img id="pageIcon" src="/Content/images/small-icon.png" />
+                     <h3 id="pageTitle">@ViewBag.SurveyTitle</h3>
+                 
+                   </div>                       
+        </header>
+         <section id="thankYouMessage" class="surveyMessage">
+            <p>
+            @ViewBag.ThankYouMessage
+            </p>
+         </section>
+      @if ((int) @ViewBag.IsFeedback != 0)
+      {
+         <div id="userInfo">
+                  <fieldset id="surveyUserInfo">
+                     <label class="followup">
+                        @* If you like to be informed about the steps taken by us to improve on your feedback please leave us some personal details *@
+                        @* If you would like to receive the results of this survey please provide us some personal details *@
+                        If you like to be informed about the steps taken by us to improve on your feedback please leave us some personal details:
+                     </label>
+                     <div>
+                        <label for="name">Name</label>
+                        <input id="name" type="text" /><br />
+                     </div>
+                     <div>
+                        <label for="surname">Surname</label>
+                        <input id="surname" type="text" /><br />
+                     </div>
+                     <div>
+                        <label for="email">Email</label>
+                        <input id="email" type="email" /><br />
+                     </div>
+                     <div>
+                        <label for="telephone">Telephone</label>
+                        <input id="telephone" type="tel" />
+                     </div>                    
+                  </fieldset>
+                  <button id="sendPersonalDetailsBtn" class="enabled">Submit personal info</button>
+         </div>
+      }    
 </script>   
 </head>
 
@@ -94,12 +121,11 @@
             <header>
                 <div class="headerContainer">
                   <img id="pageIcon" src="/Content/images/small-icon.png" />
-                  <h3 id="pageTitle">@ViewBag.SurveyTitle</h3>
-                 
+                  <h3 id="pageTitle">@ViewBag.SurveyTitle</h3>                 
                 </div>                       
             </header>
            <div class="clear" />
-           <section id="introMessage">
+           <section id="introMessage" class="surveyMessage">
                 <p>
                       @ViewBag.IntroMessage
                 </p>

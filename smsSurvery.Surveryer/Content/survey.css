@@ -79,9 +79,7 @@ button {
         padding:0.3em;
     }
 
-    #introMessage {
-       text-align: center;
-    }
+
 /* END HEADER */
 
 /* QUESTION */
@@ -188,37 +186,12 @@ footer {
 
 /* END QUESTIONS PAGE */
 
-/* THANK YOU PAGE */
-#thankYouPage {
-text-indent: 0px;
-position:relative;
-font-family: sans-serif;
-}
 
-#thankYouMessage {
-    padding-left:1em;
-    padding-top:0.5em;
-    padding-bottom:0.5em;
-    font-size:1.3em;
-}
 
-#userInfo {
-    padding: 1em;
-    background: #F4F7F8;
-    border: 1px solid #D6DEE3;
-    font-size: 1.1em;
-}
 
-#userInfo label {
-line-height: 1.2em;
-}
 
-    #userInfo input {
-        font-size:1.1em;
-        height:1.2em;
-    }
 
-#introMessage p{
+.surveyMessage p{
    background: #0C2639;
    line-height: 35px;
    color: #FFF;
@@ -226,4 +199,47 @@ line-height: 1.2em;
    font-size: 20px;
 }
 
-input[type=checkbox].css-checkbox { position: absolute;  overflow: hidden;  clip: rect(0 0 0 0);  height:1px;  width:1px;  margin:-1px;  padding:0; border:0; }  input[type=checkbox].css-checkbox + label.css-label { padding-left:20px; height:17px;  display:inline-block; line-height:17px; background-repeat:no-repeat; background-position: 0 0; font-size:15px; vertical-align:middle; cursor:pointer; }  input[type=checkbox].css-checkbox:checked + label.css-label { background-position: 0 -17px; }  .css-label{ background-image:url(http://csscheckbox.com/checkboxes/elegant.png); }
+.surveyMessage {
+   text-align: center;
+}
+
+input[type=checkbox].css-checkbox { position: absolute;  overflow: hidden;  clip: rect(0 0 0 0);  height:1px;  width:1px;  margin:-1px;  padding:0; border:0; }  
+input[type=checkbox].css-checkbox + label.css-label { padding-left:20px; height:17px;  display:inline-block; line-height:17px; background-repeat:no-repeat; background-position: 0 0; font-size:15px; vertical-align:middle; cursor:pointer; }  
+input[type=checkbox].css-checkbox:checked + label.css-label { background-position: 0 -17px; } 
+ .css-label{ background-image:url(http://csscheckbox.com/checkboxes/elegant.png); }
+
+ /* THANK YOU PAGE */
+#thankYouPage {
+
+}
+
+#thankYouMessage {
+  
+}
+
+#surveyUserInfo label {
+   text-indent: 0px;
+}
+
+.followup {
+   font-size: 20px;
+   color: #0C2639;
+   margin: 0px 0px 5px 0px;
+}
+
+#userInfo {
+    padding: 1em;
+    background: #F4F7F8;
+    border: 1px solid #D6DEE3;
+    font-size: 1.1em;
+    text-indent: 0px;
+}
+
+#userInfo label {
+line-height: 1.2em;
+}
+
+#userInfo input {
+   font-size:1.1em;
+   height:1.2em;
+}

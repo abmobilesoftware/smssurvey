@@ -36,6 +36,7 @@ namespace smsSurvery.Surveryer.Controllers
                  ViewBag.SurveyTitle = "Mobile survey";
                  ViewBag.IsFeedback = 0;
                  ViewBag.IntroMessage = runningSurvey.SurveyPlan.IntroMessage;
+                 ViewBag.ThankYouMessage = runningSurvey.SurveyPlan.ThankYouMessage;
                  return View();
               }
               else
@@ -64,6 +65,7 @@ namespace smsSurvery.Surveryer.Controllers
               ViewBag.Id = id;
               ViewBag.SurveyTitle = "Feedback";
               ViewBag.IntroMessage = survey.IntroMessage;
+              ViewBag.ThankYouMessage = survey.ThankYouMessage;
               ViewBag.IsFeedback = 1;
               return View("Fill");
            }
