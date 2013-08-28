@@ -99,8 +99,8 @@ Question.QuestionModel = Backbone.Model.extend({
    },
    setYesNo: function() {
       if (this.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_YES_NO) {
-         this.set("ValidAnswers", "0;1");
-         this.set("ValidAnswersDetails", "No;Yes");
+         this.set("ValidAnswers", "1;2");
+         this.set("ValidAnswersDetails", "Yes;No");
       }
    },
    // Used for validation when building the survey
