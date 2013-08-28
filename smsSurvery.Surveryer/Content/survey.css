@@ -173,8 +173,14 @@ footer {
 }
 
 .starImg {
-    /*width: 1.5em;
-    height: 1.5em;*/
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    background-position: 0px 0px;
+    background-image: url("/Content/images/stars.png");
+}
+.starActive {
+   background-position: 50px 0px;
 }
 
 .invisibleByDefault {
