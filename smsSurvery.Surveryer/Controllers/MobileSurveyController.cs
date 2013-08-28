@@ -162,12 +162,34 @@ namespace smsSurvery.Surveryer.Controllers
            var survey = db.SurveyResultSet.Find(surveyResultId);
            if (survey != null)
            {
-              var customer = survey.Customer;
-              customer.Name = info.Name;
-              customer.Surname = info.Surname;
-              customer.PhoneNumber = info.Telephone;
-              customer.Email = info.Email;
-              db.SaveChanges();
+              var customer = survey.Customer;              
+              //Since Telephone is the Primary Key
+              var existingCustomer = db.CustomerSet.Find(info.Telephone);
+              if (existingCustomer != null)
+              {
+                 //Should we update this info???
+                 //existingCustomer.Name = info.Name;
+                 //existingCustomer.Surname = info.Surname;
+                 //existingCustomer.Email = info.Email;
+              }
+              else
+              {
+                 //delete the bogus customer
+
+                 //and add a "realer" one
+                 var moreAccurateCustomer = new Customer()
+                 {
+                    PhoneNumber = info.Telephone,
+                    Name = info.Name,
+                    Surname = info.Surname,
+                    Email = info.Email
+                 };
+                 db.CustomerSet.Add(moreAccurateCustomer);
+                 
+                 survey.Customer = moreAccurateCustomer;
+                 db.CustomerSet.Remove(customer);
+                 db.SaveChanges();
+              }              
            }           
         }
         protected override void Dispose(bool disposing)
