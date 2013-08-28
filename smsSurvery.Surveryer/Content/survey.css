@@ -169,7 +169,7 @@ footer {
 
 /* STAR */
 .star {
-    display: inline;
+    display: inline-block;
 }
 
 .starImg {
