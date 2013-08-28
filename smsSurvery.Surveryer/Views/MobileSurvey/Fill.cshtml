@@ -23,8 +23,10 @@
             <div class="answerArea">
                <%
                if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_YES_NO) { %>
-                   <input type="radio" name="yes-no-answer" value="1" /> Yes <br/>
-                   <input type="radio" name="yes-no-answer" value="2" /> No  
+                   <input type="radio" id="y-<%= QuestionNumber %>" name="yes-no-answer" value="1">
+                   <label for="y-<%= QuestionNumber %>">Yes</label>
+                   <input type="radio" id="n-<%= QuestionNumber %>" name="yes-no-answer" value="2">
+                   <label for="n-<%= QuestionNumber %>">No</label>
                <% 
                } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_FREE_TEXT) {
                %>
@@ -62,6 +64,9 @@
 </script>
 
 <script type="text/template" id="star-bar-template">
+   <div class="starsArea">
+
+   </div>
    <fieldset class='additionalInfo invisibleByDefault'>
       <legend class='stars-additional-info'>Why?</legend><textarea  class='comment'></textarea>
    </fieldset>
