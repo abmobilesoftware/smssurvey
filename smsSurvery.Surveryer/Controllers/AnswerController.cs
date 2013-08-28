@@ -340,12 +340,14 @@ namespace smsSurvery.Surveryer.Controllers
                     if (answerText == alert.TriggerAnswer)
                     {
                        notificationRequired = true;
+                       alertCause = String.Format("Expected answer, '{0}', received ", answerText);
                     }
                     break;
                  case "!=":
                     if (answerText != alert.TriggerAnswer)
                     {
-                       notificationRequired = true; 
+                       notificationRequired = true;
+                       alertCause = String.Format("Expected answer, '{0}', not received ", answerText);
                     }
                     break;
                  case "<":
@@ -569,7 +571,7 @@ namespace smsSurvery.Surveryer.Controllers
            string prefix = String.Format(GlobalResources.Global.SmsQuestionIndexTemplate, q.Order, totalNumberOfQuestions);
            if (isFirstQuestion)
            {
-              prefix = introMessage + System.Environment.NewLine + prefix;
+              prefix = introMessage + System.Environment.NewLine + System.Environment.NewLine + prefix;
            }
            var validAnswer = q.ValidAnswers.Split(';');
            var validAnswerDetails = q.ValidAnswersDetails.Split(';');                
