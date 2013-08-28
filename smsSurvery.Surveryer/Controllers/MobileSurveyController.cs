@@ -109,8 +109,8 @@ namespace smsSurvery.Surveryer.Controllers
               foreach (var q in questions)
               {
                  var currentQuestion = db.QuestionSet.Find(q.Id);
-                 
-                 var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion };                
+
+                 var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion, AdditionalInfo = q.AdditionalInfo };                
                  newSurvey.Result.Add(res);
               }
               db.SaveChanges();

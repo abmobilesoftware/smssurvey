@@ -33,7 +33,18 @@
 
 <h2>Answers</h2>
 <table class="table table-striped table-bordered table-hover">
-@foreach (var item in Model.Result) {
+   <tr>
+        <th>
+            Question
+        </th>
+        <th>
+           Answer
+        </th>
+        <th>
+            Additional information
+        </th>        
+    </tr>
+@foreach (var item in Model.Result) {   
     <tr>
         <td>
             @Html.DisplayFor(modelItem => item.Question.Text)
@@ -41,7 +52,9 @@
         <td>
             @Html.DisplayFor(modelItem => item.Answer)
         </td>
-        
+         <td>
+            @Html.DisplayFor(modelItem => item.AdditionalInfo)
+        </td>
     </tr>
 }
 </table>

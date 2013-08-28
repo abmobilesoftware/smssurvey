@@ -18,6 +18,7 @@ namespace smsSurvey.dbInterface
         public string Answer { get; set; }
         public int QuestionId { get; set; }
         public int SurveyResultId { get; set; }
+        public string AdditionalInfo { get; set; }
     
         public virtual Question Question { get; set; }
         public virtual SurveyResult SurveyResult { get; set; }
