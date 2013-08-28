@@ -24,9 +24,9 @@
                <%
                if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_YES_NO) { %>
                    <input type="radio" id="y-<%= QuestionNumber %>" name="yes-no-answer" value="1">
-                   <label for="y-<%= QuestionNumber %>">Yes</label>
+                   <label for="y-<%= QuestionNumber %>">@Global.MobileSurveyYesLabel</label>
                    <input type="radio" id="n-<%= QuestionNumber %>" name="yes-no-answer" value="2">
-                   <label for="n-<%= QuestionNumber %>">No</label>
+                   <label for="n-<%= QuestionNumber %>">@Global.MobileSurveyNoLabel</label>
                <% 
                } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_FREE_TEXT) {
                %>
@@ -44,7 +44,7 @@
                } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY) {
                %>     
                      <select class="answer list" name="answer">
-                        <option value="noValue">Select an answer</option>
+                        <option value="noValue">@Global.MobileSurveySelectOneFromManyLabel</option>
                     <% _.each(Answers, function(value, key, list) { %>
                         <option value="<%= value.AnswerIdentifier %>"><%= value.AnswerLabel %></option>
                     <% }); %> 
@@ -68,7 +68,7 @@
 
    </div>
    <fieldset class='additionalInfo invisibleByDefault'>
-      <legend class='stars-additional-info'>Why?</legend><textarea  class='comment'></textarea>
+      <legend class='stars-additional-info'>@Global.MobileSurveyRatingAddionalInfoLabel</legend><textarea  class='comment'></textarea>
    </fieldset>
   <input type='hidden' class='answer' value='noValue' />
 </script>
@@ -93,26 +93,27 @@
                      <label class="followup">
                         @* If you like to be informed about the steps taken by us to improve on your feedback please leave us some personal details *@
                         @* If you would like to receive the results of this survey please provide us some personal details *@
-                        If you like to be informed about the steps taken by us to improve on your feedback please leave us some personal details:
+                       @Global.MobileSurveyLeavePersonalInfoLabel
                      </label>
                      <div>
-                        <label for="name">Name</label>
+                        <label for="name">@Global.MobileSurveyPersonalInfoNameLabel</label>
                         <input id="name" type="text" /><br />
                      </div>
                      <div>
-                        <label for="surname">Surname</label>
+                        <label for="surname">@Global.MobileSurveyPersonalInfoSurnameLabel</label>
                         <input id="surname" type="text" /><br />
                      </div>
                      <div>
-                        <label for="email">Email</label>
+                        <label for="email">@Global.MobileSurveyPersonalInfoEmailLabel</label>
                         <input id="email" type="email" /><br />
                      </div>
                      <div>
-                        <label for="telephone">Telephone</label>
+                        <label for="telephone">@Global.MobileSurveyPersonalInfoPhoneLabel</label>
                         <input id="telephone" type="tel" />
                      </div>                    
                   </fieldset>
-                  <button id="sendPersonalDetailsBtn" class="enabled">Submit personal info</button>
+                  <button id="sendPersonalDetailsBtn" class="enabled">@Global.MobileSurveyPersonalInfoSubmitBtnLabel</button>                 
+                  <input id="personalInfoSubmitted" type='hidden' value='@Global.MobileSurveyPersonalInfoSubmittedLabel' />
          </div>
       }    
 </script>   

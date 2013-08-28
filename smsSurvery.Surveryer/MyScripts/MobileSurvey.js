@@ -223,7 +223,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
    },
    sendPersonalInfo: function (event) {
       $('#surveyUserInfo').slideToggle('slow');
-      this.sendBtn.setTitle("Information submitted. Thank you!");
+      this.sendBtn.setTitle($("#personalInfoSubmitted", this.$el).val());
       this.sendBtn.disable();
       var personalInfo = {};
       personalInfo.Name = $('#name').val();
@@ -264,8 +264,6 @@ MobileSurvey.SurveyView = Backbone.View.extend({
       _.bindAll(this, "goToThankYouPage","saveSurvey","updateQuestionSet", "render");
       this.questionsPage = new MobileSurvey.SurveyMobileView({ el: $("#questionsPage"), model: this.model });
       this.thankYouPage = new MobileSurvey.ThankYouPageView({ el: $("#thankYouPage") });      
-      //this.questionsPage.on(this.questionsPage.pageEvents.THANK_YOU_PAGE,
-      //    this.goToThankYouPage);
       this.questionsPage.on(this.questionsPage.pageEvents.THANK_YOU_PAGE,
          this.saveSurvey);
    },
