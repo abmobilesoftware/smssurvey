@@ -88,7 +88,7 @@ div.question {
     margin-bottom: 0.5em;
     background: #F4F7F8;
     border-bottom: 1px solid #D6DEE3;
-    text-align: center;
+    /*text-align: center;*/
 }
 
         div.question h4.questionTitle {
@@ -200,7 +200,7 @@ footer {
 }
 
 .surveyMessage {
-   text-align: center;
+   /*text-align: center;*/
 }
 
 input[type=checkbox].css-checkbox { position: absolute;  overflow: hidden;  clip: rect(0 0 0 0);  height:1px;  width:1px;  margin:-1px;  padding:0; border:0; }  
