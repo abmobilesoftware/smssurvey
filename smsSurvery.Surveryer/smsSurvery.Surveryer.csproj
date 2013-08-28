@@ -266,6 +266,7 @@
     <Content Include="Content\images\small-icon.png" />
     <Content Include="Content\images\star50.png" />
     <Content Include="Content\images\star50_inactive.png" />
+    <Content Include="Content\images\stars.png" />
     <Content Include="Content\jquery-ui-1.8.23.custom.css" />
     <Content Include="Content\jquery.tagsinput.css" />
     <Content Include="Content\survey.css" />
