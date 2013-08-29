@@ -98,7 +98,7 @@ div.question {
             color: #FFFFFF;
             padding: 10px 7px;
             border-top: 0.1em solid #0A6DF6;
-            line-height: 1.2em;
+            /*line-height: 1.2em;*/
             display:block;
         }
 
@@ -118,7 +118,7 @@ div.question div.answerArea {
 
 textarea.comment {
     color: #000;
-    font: 1em sans-serif;
+    /*font: 1em sans-serif;*/
     width: 100%;
 }
 
@@ -164,7 +164,8 @@ footer {
 .page {
    float:left;
    width: 100%;
-   font-family:sans-serif;
+   /*font-family:sans-serif;*/
+   font-family: 'Arvo', serif;
 }
 
 /* STAR */
@@ -202,7 +203,7 @@ footer {
    line-height: 35px;
    color: #FFF;
    font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-   font-size: 20px;
+   /*font-size: 20px;*/
 }
 
 .surveyMessage {
@@ -299,4 +300,8 @@ input[type=radio]:checked + label {
    height:50px;
    margin-left: auto;
    margin-right: auto;
+}
+
+#survey h4 {
+   font-weight: normal;
 }
