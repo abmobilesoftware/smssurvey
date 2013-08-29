@@ -573,27 +573,34 @@ namespace smsSurvery.Surveryer.Controllers
            {
               prefix = introMessage + System.Environment.NewLine + System.Environment.NewLine + prefix;
            }
-           var validAnswer = q.ValidAnswers.Split(';');
-           var validAnswerDetails = q.ValidAnswersDetails.Split(';');                
+           
            switch (q.Type)
            {
               case ReportsController.cFreeTextTypeQuestion:
-                 return prefix + q.Text;                 
+                 return prefix + q.Text;
               case ReportsController.cRatingsTypeQuestion:
-                 return prefix + q.Text + String.Format(GlobalResources.Global.SmsQuestionRatingSuffixTemplate, validAnswer[0], validAnswerDetails[0], validAnswer.Last(), validAnswerDetails.Last());                 
+                 {
+                    var validAnswer = q.ValidAnswers.Split(';');
+                    var validAnswerDetails = q.ValidAnswersDetails.Split(';');                
+                    return prefix + q.Text + String.Format(GlobalResources.Global.SmsQuestionRatingSuffixTemplate, validAnswer[0], validAnswerDetails[0], validAnswer.Last(), validAnswerDetails.Last());
+                 }
               case ReportsController.cYesNoTypeQuestion:
                  return prefix + q.Text + GlobalResources.Global.SmsQuestionYesNoSuffixTemplate;
               case ReportsController.cSelectManyFromManyTypeQuestion:
                 //DA TODO
                  return "";
-              case ReportsController.cSelectOneFromManyTypeQuestion:                
-                 List<string> pairs = new List<string>();
-                 for (int i = 0; i < validAnswer.Length; i++)
+              case ReportsController.cSelectOneFromManyTypeQuestion:
                  {
-                    pairs.Add(String.Format(GlobalResources.Global.SmsQuestionSelectOneFromManyMemberSuffixTemplate, validAnswer[i], validAnswerDetails[i]));
+                    var validAnswer = q.ValidAnswers.Split(';');
+                    var validAnswerDetails = q.ValidAnswersDetails.Split(';');                
+                    List<string> pairs = new List<string>();
+                    for (int i = 0; i < validAnswer.Length; i++)
+                    {
+                       pairs.Add(String.Format(GlobalResources.Global.SmsQuestionSelectOneFromManyMemberSuffixTemplate, validAnswer[i], validAnswerDetails[i]));
+                    }
+                    string suffix = String.Format(GlobalResources.Global.SmsQuestionSelectOneFromManySuffixTemplate, String.Join(", ", pairs));
+                    return prefix + q.Text + suffix;
                  }
-                 string suffix = String.Format(GlobalResources.Global.SmsQuestionSelectOneFromManySuffixTemplate, String.Join(", ", pairs));
-                 return prefix + q.Text + suffix;
               default:
                  return prefix + q.Text;
            }
