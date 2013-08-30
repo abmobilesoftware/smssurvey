@@ -19,6 +19,7 @@ namespace smsSurvery.Surveryer.Controllers
       public IEnumerable<Customer> Customers { get; set; }
    }
 
+   
    public class HomeController : Controller
    {
       protected class CsvCustomer
@@ -125,7 +126,7 @@ namespace smsSurvery.Surveryer.Controllers
       [Authorize]
       public ActionResult ThrowError()
       {
-         throw new Exception("blablabla");
+         throw new Exception("This should be an unhandled error");
       }
 
       [Authorize]
