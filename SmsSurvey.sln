@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "smsSurvey.dbInterface", "smsSurvey.dbInterface\smsSurvey.dbInterface.csproj", "{CE8FF7ED-DFB9-4908-BF2E-A3699A3512FF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "smsSurvery.Surveryer", "smsSurvery.Surveryer\smsSurvery.Surveryer.csproj", "{F1735F5A-6122-4503-9FF9-031F1F6E78DC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "smsSurvery.Surveyer", "smsSurvery.Surveryer\smsSurvery.Surveyer.csproj", "{F1735F5A-6122-4503-9FF9-031F1F6E78DC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "smsSurvery.Surveryer.Tests", "smsSurvery.Surveryer.Tests\smsSurvery.Surveryer.Tests.csproj", "{D68552A7-3C35-4AA8-ABDC-CCBFB18B9FB2}"
 EndProject

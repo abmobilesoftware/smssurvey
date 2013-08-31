@@ -123,9 +123,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\smsSurvery.Surveryer\smsSurvery.Surveryer.csproj">
+    <ProjectReference Include="..\smsSurvery.Surveryer\smsSurvery.Surveyer.csproj">
       <Project>{F1735F5A-6122-4503-9FF9-031F1F6E78DC}</Project>
-      <Name>smsSurvery.Surveryer</Name>
+      <Name>smsSurvery.Surveyer</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

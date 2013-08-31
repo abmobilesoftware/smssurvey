@@ -37,20 +37,20 @@
     <ServiceConfiguration Include="ServiceConfiguration.Cloud.cscfg" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\smsSurvery.Surveryer\smsSurvery.Surveryer.csproj">
-      <Name>smsSurvery.Surveryer</Name>
-      <Project>{f1735f5a-6122-4503-9ff9-031f1f6e78dc}</Project>
-      <Private>True</Private>
-      <RoleType>Web</RoleType>
-      <RoleName>smsSurvery.Surveryer</RoleName>
-      <UpdateDiagnosticsConnectionStringOnPublish>True</UpdateDiagnosticsConnectionStringOnPublish>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Folder Include="Profiles" />
   </ItemGroup>
   <ItemGroup>
     <PublishProfile Include="Profiles\demoloyaltyinsightsProduction.azurePubxml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\smsSurvery.Surveryer\smsSurvery.Surveyer.csproj">
+      <Name>smsSurvery.Surveyer</Name>
+      <Project>{f1735f5a-6122-4503-9ff9-031f1f6e78dc}</Project>
+      <Private>True</Private>
+      <RoleType>Web</RoleType>
+      <RoleName>smsSurvery.Surveyer</RoleName>
+      <UpdateDiagnosticsConnectionStringOnPublish>True</UpdateDiagnosticsConnectionStringOnPublish>
+    </ProjectReference>
   </ItemGroup>
   <!-- Import the target files for this project template -->
   <PropertyGroup>
