@@ -159,6 +159,7 @@
                <% });
                } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY) { %>
                      <select>    
+                        <option value="noValue">Select option</option>
                      <% _.each(Answers, function(answer, index) {  %>
                         <option value="<%= answer.AnswerLabel %>"><%= answer.AnswerLabel %></option>   
                      <% });  %>
