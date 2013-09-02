@@ -300,6 +300,11 @@ Question.QuestionSetView = Backbone.View.extend({
    },
    previewSurvey: function () {
       this.model.getQuestionSetCollectionAsJson(true);
+      this.surveyPreviewView = new SurveyPreview.SurveyPreviewView({
+         el: this.dom.$PREVIEW_MODAL,
+         model: this.model,
+         surveyPreviewModel: this.surveyPreviewModel
+      });
       this.surveyPreviewView.render();
    }
 });
@@ -348,6 +353,7 @@ Question.QuestionSetModel = Backbone.Model.extend({
          // set the last answers changes
          collectionAsJson.push(this.questionSetCollection.models[i].toJSON());
       }
+      this.set("jsonQuestions", collectionAsJson);
       return collectionAsJson;
    },
    addQuestion: function () {
