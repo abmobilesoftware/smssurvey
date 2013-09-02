@@ -26,39 +26,43 @@ window.filterArea.initializeDateFilter = function () {
    var startDateString = startDay + "/" + startMonth + "/" + startYear;
    fromDatePicker.val(startDateString);
 
-   // Setup the calendar
-   fromDatePicker.datepicker({
-      defaultDate: "+1w",
-      changeMonth: true,
-      numberOfMonths: 3,
-      dateFormat: window.app.dateFormatForDatePicker,
-      onSelect: function (selectedDate) {
-         window.app.newStartDate = fromDatePicker.datepicker("getDate");
-         if (window.app.newStartDate !== window.app.startDate) {
-            window.app.startDate = window.app.newStartDate;            
-            var fromDateString = $.datepicker.formatDate(window.app.dateFormatForDatePicker, window.app.startDate);
-            toDatePicker.datepicker("option", "minDate", fromDateString);            
-         }
-      }
-   });
-
    var toDatePicker = $("#to");
    var endDay = (window.app.endDate.getDate() < 10) ? "0" + window.app.endDate.getDate() : window.app.endDate.getDate();
    var endMonth = (window.app.endDate.getMonth() + 1 < 10) ? "0" + (window.app.endDate.getMonth() + 1) : window.app.endDate.getMonth() + 1;
    var endYear = window.app.endDate.getFullYear();
    var endDateString = endDay + "/" + endMonth + "/" + endYear;
    toDatePicker.val(endDateString);
+
+   // Setup the calendar
+   fromDatePicker.datepicker({
+      defaultDate: "+1w",
+      changeMonth: true,
+      numberOfMonths: 3,
+      dateFormat: window.app.dateFormatForDatePicker,
+      maxDate: window.app.endDate,
+      onSelect: function (selectedDate) {
+         window.app.newStartDate = fromDatePicker.datepicker("getDate");
+         if (window.app.newStartDate !== window.app.startDate) {
+            window.app.startDate = window.app.newStartDate;            
+            var fromDateString = $.datepicker.formatDate(window.app.dateFormatForDatePicker, window.app.startDate);            
+            toDatePicker.datepicker("option", "minDate", window.app.startDate);
+         }
+      }
+   });
+
+ 
    toDatePicker.datepicker({
       defaultDate: "+1w",
       changeMonth: true,
       numberOfMonths: 3,
       dateFormat: window.app.dateFormatForDatePicker,
+      minDate: window.app.startDate,
       onSelect: function (selectedDate) {
          window.app.newEndDate = toDatePicker.datepicker("getDate");
          if (window.app.newEndDate !== window.app.endDate) {            
             window.app.endDate = window.app.newEndDate;
-            var endDateString = $.datepicker.formatDate(window.app.dateFormatForDatePicker, window.app.endDate);
-            fromDatePicker.datepicker("option", "maxDate", endDateString);            
+            var endDateString = $.datepicker.formatDate(window.app.dateFormatForDatePicker, window.app.endDate);            
+            fromDatePicker.datepicker("option", "maxDate", window.app.endDate);
          }
       }
    });
