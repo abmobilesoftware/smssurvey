@@ -6,7 +6,8 @@ SurveyModals.AnswersModalView = Backbone.View.extend({
       "click .save-answers": "saveModal"
    },
    initialize: function () {
-      _.bindAll(this, "render", "addAnswer", "closeModal", "saveModal");
+      _.bindAll(this, "render", "addAnswer", "closeModal",
+         "saveModal", "openModal");
       this.template = _.template($("#no-answers-template").html());
       this.dom = {
          $ANSWERS_TABLE: $(".answers-table", this.$el)
@@ -29,13 +30,16 @@ SurveyModals.AnswersModalView = Backbone.View.extend({
       this.model.addAnswer();
    },
    closeModal: function () {
-      this.model.emptyAnswersCollection();
+      this.model.restoreAnswersCollection();
       this.$el.modal("hide");
    },
    saveModal: function () {
       if (this.model.validate()) {
          this.$el.modal("hide");
       }
+   },
+   openModal: function () {
+      this.model.backupAnswersCollection();
    }
 });
 
@@ -95,6 +99,18 @@ SurveyModals.AnswersModalModel = Backbone.Model.extend({
          }
       });
       return isValid;
+   },
+   backupAnswersCollection: function () {
+      this.answersCollectionBackup = new SurveyModals.AnswersCollection();
+      _.each(this.answersCollection.models, function (answer) {
+         this.answersCollectionBackup.add(new SurveyModals.AnswerModel(answer.toJSON()));
+      }, this);         
+   },
+   restoreAnswersCollection: function () {
+      this.emptyAnswersCollection();
+      _.each(this.answersCollectionBackup.models, function (answer) {
+         this.answersCollection.add(new SurveyModals.AnswerModel(answer.toJSON()));
+      }, this);      
    }
 });
 

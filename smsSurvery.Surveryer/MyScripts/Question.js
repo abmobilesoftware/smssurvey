@@ -129,11 +129,15 @@ Question.QuestionView = Backbone.View.extend({
    events: {
       "click .question-type": "selectQuestionType",
       "click .delete-btn": "deleteQuestion",
-      "keyup .question-input": "updateQuestion"
+      "keyup .question-input": "updateQuestion",
+      "click .edit-answers-btn": "openAnswersModal",
+      "click .edit-alerts-btn": "openAlertsModal",
+      "click .edit-ratings-btn": "openRatingsModal"
    },
    initialize: function () {
       _.bindAll(this, "selectQuestionType", "deleteQuestion", "updateQuestion",
-         "render", "initializeModals", "validationResult");
+         "render", "initializeModals", "validationResult", "openAnswersModal",
+         "openAlertsModal", "openRatingsModal");
       this.questionTemplate = _.template($("#question-template").html());
       this.model.on(this.model.events.ANSWERS_CHANGED, this.render);
       this.model.on(this.model.events.ALERTS_CHANGED, this.render);
@@ -225,6 +229,18 @@ Question.QuestionView = Backbone.View.extend({
       } else if (result == this.model.errors.VALID) {
          this.dom.$QUESTION_INPUT.removeClass(invalidFieldClass);
       }
+   },
+   openAnswersModal: function () {
+      this.answersModalView.render();
+      this.answersModalView.openModal();
+   },
+   openAlertsModal: function () {
+      this.alertsModalView.render();
+      this.alertsModalView.openModal();
+   },
+   openRatingsModal: function () {
+      this.ratingsModalView.render();
+      this.ratingsModalView.openModal();
    }
 });
 

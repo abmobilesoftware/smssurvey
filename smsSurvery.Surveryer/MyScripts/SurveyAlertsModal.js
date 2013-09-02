@@ -28,7 +28,7 @@
       this.model.addAlert();
    },
    closeModal: function (event) {
-      this.model.emptyAlertsCollection();
+      this.model.restoreAlertsCollection();
       this.$el.modal("hide");
    },
    saveModal: function (event) {
@@ -36,6 +36,9 @@
       if (isDataValid) {
          this.$el.modal("hide");
       }
+   },
+   openModal: function () {
+      this.model.backupAlertsCollection();
    }
 });
 
@@ -127,6 +130,18 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
          }
       });
       return isValid;     
+   },
+   backupAlertsCollection: function () {
+      this.alertsCollectionBackup = new SurveyModals.AlertsCollection();
+      _.each(this.alertsCollection.models, function (alert) {
+         this.alertsCollectionBackup.add(new SurveyModals.AlertModel(alert.toJSON()));
+      }, this);
+   },
+   restoreAlertsCollection: function () {
+      this.emptyAlertsCollection();
+      _.each(this.alertsCollectionBackup.models, function (alert) {
+         this.alertsCollection.add(new SurveyModals.AlertModel(alert.toJSON()));
+      }, this);
    }
 });
 
