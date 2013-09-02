@@ -5,6 +5,21 @@ window.app.overviewPieData = {};
 
 
 window.app.displayComparisonReportsForRatingQ = function (questionId) {
+   var chartId = '#barChart_div' + questionId;
+   var chartElem = $(chartId);
+   var barchart = new google.visualization.ComboChart(chartElem[0]);
+   //show the loading indicator in the space of the chart
+   var loadingIndicatorId = "#loadingIndicator" + questionId;
+   var loadingIndicator = $(loadingIndicatorId);
+   var candidateHeight = chartElem.outerHeight();
+   candidateHeight = candidateHeight != 0 ? candidateHeight +"px" : "200px";
+   loadingIndicator.height(candidateHeight);
+   var graphsContainer = $("#graphsContainer" + questionId);
+   graphsContainer.height(candidateHeight);
+   loadingIndicator.width(chartElem.outerWidth());
+   loadingIndicator.css("line-height", candidateHeight);
+   loadingIndicator.show();
+
    $.ajax({
       data: {
          questionId: questionId,
@@ -27,11 +42,13 @@ window.app.displayComparisonReportsForRatingQ = function (questionId) {
             },
             hAxis: { title: "" },
             seriesType: "bars",
-            animation: { duration: 2, easing: "out" }
+            animation: {
+               duration: 2000,
+               easing: 'out'
+            }
          };
-
-         var barchart = new google.visualization.ComboChart(document.getElementById('barChart_div' + questionId));
          var bardata = new google.visualization.DataTable(jsonData);
+         loadingIndicator.hide();
          barchart.draw(bardata, options);
       }
    });
@@ -51,8 +68,7 @@ window.app.runrunrun = function (firstTime) {
             if ($(this).attr('qtype') === "Rating") {
                window.app.displayComparisonReportsForRatingQ($(this).attr('qid'));
             }
-         });
-         //var questionId = 1;
+         });         
          
          $("#noTags-error").fadeOut('fast');
       } else {
@@ -64,6 +80,7 @@ window.app.runrunrun = function (firstTime) {
 $(document).ready(function () {  
    window.filterArea.initialize();
    $("#refreshReport").click(function () {
+      $(".graphsContainer label").each(function (index, item) { $(item).hide() });
       window.app.runrunrun(false);
    });
    window.app.runrunrun(true);

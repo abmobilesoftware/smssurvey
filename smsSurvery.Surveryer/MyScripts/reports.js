@@ -4,6 +4,19 @@ window.app.yesnopiedata = {};
 window.app.overviewPieData = {};
 window.app.tags = [];
 window.app.displayReportsForRatingQ = function (questionId) {
+   var loadingIndicatorId = "#loadingIndicator" + questionId;
+   var reportChartID = "#pieChart_div" + questionId;
+   //var loadedReportChart = $(reportChartID)[0];
+   var piechart = new google.visualization.PieChart($(reportChartID)[0]);
+   google.visualization.events.addListener(piechart, 'select', function (e) {
+      var sel = piechart.getSelection();
+      var selectedValue = window.app.piedata[questionId].getValue(sel[0].row, 0);
+      var url = "/Answer/GetMessagesWithOnePredefinedAnswer?questionId=" + questionId + "&answer=" + selectedValue;
+      //window.location.href = url;
+      var win = window.open(url, "_blank");
+      win.focus();
+   });
+   //$(loadingIndicatorId).show();
    $.ajax({
       data: {
          questionId: questionId,
@@ -16,24 +29,21 @@ window.app.displayReportsForRatingQ = function (questionId) {
       dataType: "json",
       async: true,
       success: function (jsonData) {
+         //$(loadingIndicatorId).hide();
          var options = {
             backgroundColor: '#F5F8FA',
             sliceVisibilityThreshold: 0,
             'width': 'auto',
-            'height': 350
+            'height': 350,
+             animation: {
+               duration: 1000,
+               easing: 'out'
+            }
          };
-         var piechart = new google.visualization.PieChart(document.getElementById('pieChart_div' + questionId));
          var piedata = new google.visualization.DataTable(jsonData.pie);
          window.app.piedata[questionId] = piedata;
          piechart.draw(piedata, options);
-         google.visualization.events.addListener(piechart, 'select', function (e) {
-            var sel = piechart.getSelection();            
-            var selectedValue = window.app.piedata[questionId].getValue(sel[0].row, 0);            
-            var url = "/Answer/GetMessagesWithOnePredefinedAnswer?questionId=" + questionId + "&answer=" + selectedValue;
-            //window.location.href = url;
-            var win = window.open(url, "_blank");
-            win.focus();
-         });
+         
          var tablechart = new google.visualization.Table(document.getElementById('tableChart_div' + questionId));
          tabledata = new google.visualization.DataTable(jsonData.table);
          var tableOptions = {
