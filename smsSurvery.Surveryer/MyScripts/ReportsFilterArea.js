@@ -18,6 +18,8 @@ window.filterArea.initializeDateFilter = function () {
    startDate.setDate(endDate.getDate() - 31);
    window.app.startDate = startDate;
    window.app.endDate = endDate;
+   window.app.newStartDate = startDate;
+   window.app.newEndDate = endDate;
    var fromDatePicker = $("#from");
    // DA first set the default value using the same function as for DatePicker in In Store Customer Feedback
    var startDay = (window.app.startDate.getDate() < 10) ? "0" + window.app.startDate.getDate() : window.app.startDate.getDate();
