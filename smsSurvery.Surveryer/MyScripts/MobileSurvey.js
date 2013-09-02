@@ -52,7 +52,10 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
    render: function () {
       this.$el.html(this.questionMobileTemplate(this.model.toJSON()));
       if (this.model.get("Type") == this.questionConstants.TYPE_RATING) {
-         var starBarView = new SurveyElements.StarBarView({ el: $(".answerArea", this.$el) });
+         var ratingsSeparator = SurveyUtilities.Utilities.CONSTANTS_MISC.SEPARATOR_ANSWERS;
+         var noOfRatings = this.model.get("ValidAnswersDetails").split(ratingsSeparator).length;
+         noOfRatings = noOfRatings == 1 ? 0 : noOfRatings;
+         var starBarView = new SurveyElements.StarBarView({ el: $(".answerArea", this.$el), noOfElements: noOfRatings });
       }
       return this.$el;
    },

@@ -25,7 +25,7 @@
       this.model.changeScaleSize(event.currentTarget.value);
    },
    closeModal: function () {
-      this.model.emptyRatingsCollection();
+      this.model.restoreRatingsCollection();
       this.$el.modal("hide");
    },
    saveModal: function () {
@@ -33,6 +33,9 @@
       if (areRatingsValid) {
          this.$el.modal("hide");
       }
+   },
+   openModal: function () {
+      this.model.backupRatingsCollection();
    }
 });
 
@@ -84,8 +87,7 @@ SurveyModals.RatingsModalModel = Backbone.Model.extend({
    emptyRatingsCollection: function () {
       for (var i = this.surveyRatingsCollection.models.length - 1; i > -1; --i) {
          this.surveyRatingsCollection.remove(this.surveyRatingsCollection.models[i]);
-      }
-      this.set("ScaleSize", 0);
+      }      
    },
    validate: function () {
       var isValid = true;
@@ -96,6 +98,20 @@ SurveyModals.RatingsModalModel = Backbone.Model.extend({
          }
       });
       return isValid;
+   },
+   backupRatingsCollection: function () {
+      this.ratingsCollectionBackup = new SurveyModals.RatingsCollection();
+      _.each(this.surveyRatingsCollection.models, function (rating) {
+         this.ratingsCollectionBackup.add(new SurveyModals.RatingModel(rating.toJSON()));
+      }, this);
+      this.scaleSizeBackup = this.get("ScaleSize");
+   },
+   restoreRatingsCollection: function () {
+      this.emptyRatingsCollection();
+      _.each(this.ratingsCollectionBackup.models, function (rating) {
+         this.surveyRatingsCollection.add(new SurveyModals.RatingModel(rating.toJSON()));
+      }, this);
+      this.set("ScaleSize", this.scaleSizeBackup);
    }
 });
 

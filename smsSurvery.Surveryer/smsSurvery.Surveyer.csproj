@@ -493,7 +493,7 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Compatel\oneapi-dot-net\OneApi\OneApi.csproj">
+    <ProjectReference Include="..\..\..\compatelOneApi\OneApi\OneApi.csproj">
       <Project>{bb105549-1799-4601-9d24-652773a187f5}</Project>
       <Name>OneApi</Name>
     </ProjectReference>

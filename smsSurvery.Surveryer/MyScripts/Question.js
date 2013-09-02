@@ -87,6 +87,12 @@ Question.QuestionModel = Backbone.Model.extend({
             this.set("ValidAnswersDetails", answersAsJson.ValidAnswersDetails);
          }
       }
+      /* Attributes Answers (array) and ValidAnswers/ValidAnswersDetails(strings) keep the same information 
+         and they must be kept synchronized. Answers is used on client and ValidAnswers(Details) is used on
+         server-side.
+         For better code clarity Answers(array) should be removed.
+      */
+      this.parseAttributes();
    },
    setRatings: function () {
       if (this.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_RATING) {
@@ -129,11 +135,15 @@ Question.QuestionView = Backbone.View.extend({
    events: {
       "click .question-type": "selectQuestionType",
       "click .delete-btn": "deleteQuestion",
-      "keyup .question-input": "updateQuestion"
+      "keyup .question-input": "updateQuestion",
+      "click .edit-answers-btn": "openAnswersModal",
+      "click .edit-alerts-btn": "openAlertsModal",
+      "click .edit-ratings-btn": "openRatingsModal"
    },
    initialize: function () {
       _.bindAll(this, "selectQuestionType", "deleteQuestion", "updateQuestion",
-         "render", "initializeModals", "validationResult");
+         "render", "initializeModals", "validationResult", "openAnswersModal",
+         "openAlertsModal", "openRatingsModal");
       this.questionTemplate = _.template($("#question-template").html());
       this.model.on(this.model.events.ANSWERS_CHANGED, this.render);
       this.model.on(this.model.events.ALERTS_CHANGED, this.render);
@@ -225,6 +235,18 @@ Question.QuestionView = Backbone.View.extend({
       } else if (result == this.model.errors.VALID) {
          this.dom.$QUESTION_INPUT.removeClass(invalidFieldClass);
       }
+   },
+   openAnswersModal: function () {
+      this.answersModalView.render();
+      this.answersModalView.openModal();
+   },
+   openAlertsModal: function () {
+      this.alertsModalView.render();
+      this.alertsModalView.openModal();
+   },
+   openRatingsModal: function () {
+      this.ratingsModalView.render();
+      this.ratingsModalView.openModal();
    }
 });
 
@@ -295,8 +317,7 @@ Question.QuestionSetView = Backbone.View.extend({
       }
    },
    addQuestion: function (event) {
-      event.preventDefault();
-     
+      event.preventDefault();     
       this.model.addQuestion();
    },
    listSorted: function (event, ui) {
@@ -307,6 +328,11 @@ Question.QuestionSetView = Backbone.View.extend({
    },
    previewSurvey: function () {
       this.model.getQuestionSetCollectionAsJson(true);
+      this.surveyPreviewView = new SurveyPreview.SurveyPreviewView({
+         el: this.dom.$PREVIEW_MODAL,
+         model: this.model,
+         surveyPreviewModel: this.surveyPreviewModel
+      });
       this.surveyPreviewView.render();
    }
 });
@@ -348,7 +374,6 @@ Question.QuestionSetModel = Backbone.Model.extend({
          // set the last alerts changes
          if (saveAlerts) {
             this.questionSetCollection.models[i].setQuestionAlertSet();
-
          }
          this.questionSetCollection.models[i].setAnswers();
          this.questionSetCollection.models[i].setRatings();
@@ -356,6 +381,7 @@ Question.QuestionSetModel = Backbone.Model.extend({
          // set the last answers changes
          collectionAsJson.push(this.questionSetCollection.models[i].toJSON());
       }
+      this.set("jsonQuestions", collectionAsJson);
       return collectionAsJson;
    },
    addQuestion: function () {
