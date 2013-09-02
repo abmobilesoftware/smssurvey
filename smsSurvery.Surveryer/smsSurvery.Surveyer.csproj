@@ -286,8 +286,10 @@
     <Content Include="Content\survey.css" />
     <Content Include="Content\SurveyPlan\questionSet.css" />
     <Content Include="Content\WordCloud.css" />
+    <Content Include="MyScripts\DateHelper.js" />
     <Content Include="MyScripts\MobileSurvey.js" />
     <Content Include="MyScripts\Question.js" />
+    <Content Include="MyScripts\ReportsFilterArea.js" />
     <Content Include="MyScripts\SurveyAlertsModal.js" />
     <Content Include="MyScripts\SurveyAnswersModal.js" />
     <Content Include="MyScripts\SurveyElements.js" />
@@ -482,6 +484,7 @@
     <Content Include="Views\Shared\SurveyEditor.cshtml" />
     <Content Include="Views\MobileSurvey\Fill.cshtml" />
     <Content Include="Views\MobileSurvey\SurveyAlreadyCompleted.cshtml" />
+    <Content Include="Views\Shared\ReportFilterArea.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

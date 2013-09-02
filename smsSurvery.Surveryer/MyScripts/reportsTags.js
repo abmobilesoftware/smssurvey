@@ -1,11 +1,15 @@
 ﻿window.app = window.app || {};
 window.app.piedata = {};
 window.app.overviewPieData = {};
-window.app.tags = [];
+
+
+
 window.app.displayComparisonReportsForRatingQ = function (questionId) {
    $.ajax({
       data: {
          questionId: questionId,
+         iIntervalStart: window.app.dateHelper.transformStartDate(window.app.startDate),
+         iIntervalEnd: window.app.dateHelper.transformEndDate(window.app.endDate),
          tags: window.app.tags
       },
       traditional: true,
@@ -56,43 +60,11 @@ window.app.runrunrun = function (firstTime) {
       }
    }
 }
-$(document).ready(function () {
-   $('.alert .close').on("click", function (e) {
-      $(this).parent().hide();
-   });
 
+$(document).ready(function () {  
+   window.filterArea.initialize();
    $("#refreshReport").click(function () {
       window.app.runrunrun(false);
    });
-
-   var tagsInput = $("#filterTag").tagsInput({
-      'height': '22px',
-      'width': 'auto',
-      'autocomplete_url': "/Reports/FindMatchingLocationTags",
-      'onAddTag': function (tagValue) {
-         var delimiter = ',';
-         window.app.tags = $("#filterTag").val().split(delimiter);
-
-      },
-      'onRemoveTag': function (tagValue) {
-         var delimiter = ',';
-         window.app.tags = $("#filterTag").val().split(delimiter);
-         if ("" === window.app.tags[0]) {
-            window.app.tags = [];
-         }
-      },
-      'defaultText': 'add location tag here',
-      'placeholder': 'add location tag here',
-      'interactive': true,
-      'placeholderColor': '#666666',
-      'minChars': 3,
-      'maxChars': 10,
-      'autocomplete': {
-         autoFocus: true,
-         minLength: 1
-      }
-   });  
-
-
    window.app.runrunrun(true);
 });

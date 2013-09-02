@@ -38,10 +38,14 @@ namespace smsSurvery.Surveryer
          bundles.Add(new ScriptBundle("~/bundles/referencescripts").Include(
                      "~/Scripts/jquery.tagsinput.js"));                     
 
-         bundles.Add(new ScriptBundle("~/bundles/custom").Include(                     
+         bundles.Add(new ScriptBundle("~/bundles/activityReports").Include(
+                     "~/MyScripts/DateHelper.js",
+                     "~/MyScripts/ReportsFilterArea.js",  
                      "~/MyScripts/reports.js"));
          
-         bundles.Add(new ScriptBundle("~/bundles/reports").Include(
+         bundles.Add(new ScriptBundle("~/bundles/comparisonReports").Include(
+                     "~/MyScripts/DateHelper.js",
+                     "~/MyScripts/ReportsFilterArea.js",
                      "~/MyScripts/reportsTags.js"));
 
 

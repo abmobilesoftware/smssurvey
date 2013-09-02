@@ -7,6 +7,8 @@ window.app.displayReportsForRatingQ = function (questionId) {
    $.ajax({
       data: {
          questionId: questionId,
+         iIntervalStart: window.app.dateHelper.transformStartDate(window.app.startDate),
+         iIntervalEnd: window.app.dateHelper.transformEndDate(window.app.endDate),
          tags: window.app.tags
       },
       traditional: true,
@@ -44,50 +46,12 @@ window.app.displayReportsForRatingQ = function (questionId) {
    });
 };
 
-window.app.displayReportForYesNoQ = function (questionId) {
-   $.ajax({
-      data: {
-         questionId: questionId,
-         tags: window.app.tags
-      },
-      traditional: true,
-      url: "/Reports/GetSurveyQuestionResults",
-      dataType: "json",
-      async: true,
-      success: function (jsonData) {
-         var options = {
-            backgroundColor: '#F5F8FA',
-            sliceVisibilityThreshold: 0,
-            'width': 'auto',
-            'height': 350
-         };
-         var yesNoPiechart = new google.visualization.PieChart(document.getElementById('yesNoChart_div' + questionId));
-         var yesNoPiedata = new google.visualization.DataTable(jsonData.pie);
-         window.app.yesnopiedata[questionId] = yesNoPiedata;
-         piechart.draw(yesNoPiedata, options);
-         google.visualization.events.addListener(yesNoPiechart, 'select', function (e) {
-            var sel = yesNoPiechart.getSelection();
-            var selectedValue = window.app.yesnopiedata[questionId].getValue(sel[0].row, 0);
-            var url = "/Answer/GetRatingMessagesWithAnswer?questionId=" + questionId + "&answer=" + selectedValue;
-            //window.location.href = url;
-            var win = window.open(url, "_blank");
-            win.focus();
-         });
-         var yesNoTablechart = new google.visualization.Table(document.getElementById('yesNoTableChart_div' + questionId));
-         yesNoTabledata = new google.visualization.DataTable(jsonData.table);
-         var tableOptions = {
-            backgroundColor: '#F5F8FA',
-            sliceVisibilityThreshold: 0,
-            cssClassNames: { tableCell: "tCell" }
-         };
-         yesNoTablechart.draw(yesNoTabledata, tableOptions);
-      }
-   });
-};
 window.app.displayReportsForFreeTextQ = function (questionId) {
    $.ajax({
       data: {
          questionId: questionId,
+         iIntervalStart: window.app.dateHelper.transformStartDate(window.app.startDate),
+         iIntervalEnd: window.app.dateHelper.transformEndDate(window.app.endDate),
          tags: window.app.tags
       },
       url: "/Reports/GetWordCloud",
@@ -105,6 +69,8 @@ window.app.displayReportOverview = function (surveyPlanId) {
    $.ajax({
       data: {
          surveyPlanId: surveyPlanId,
+         iIntervalStart: window.app.dateHelper.transformStartDate(window.app.startDate),
+         iIntervalEnd: window.app.dateHelper.transformEndDate(window.app.endDate),
          tags: window.app.tags
       },
       url: "/Reports/GetSurveyOverview",
@@ -155,37 +121,10 @@ window.app.runrunrun = function () {
    });
 }
 $(document).ready(function () {
+   window.filterArea.initialize();
    $("#refreshReport").click(function () {
       window.app.runrunrun();
    });
-
-   $("#filterTag").tagsInput({
-      'height': '22px',
-      'width': 'auto',
-      'autocomplete_url': "/Home/FindMatchingTags",
-      'onAddTag': function (tagValue) {
-         var delimiter = ',';
-         window.app.tags = $("#filterTag").val().split(delimiter);         
-         
-      },
-      'onRemoveTag': function (tagValue) {
-         var delimiter = ',';
-         window.app.tags = $("#filterTag").val().split(delimiter);
-         if ("" === window.app.tags[0]) {
-            window.app.tags = [];
-         }
-      },
-      'defaultText': 'add tag here',
-      'placeholder': 'add tag here',
-      'interactive': true,
-      'placeholderColor': '#666666',
-      'minChars': 3,
-      'maxChars': 10,
-      'autocomplete': {
-         autoFocus: true,
-         minLength: 1
-      }
-   });
-
+ 
    window.app.runrunrun();
 });

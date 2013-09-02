@@ -9,12 +9,7 @@
     Select at least 2 locations to have a relevant comparison report
    </div>
 
-<div id="tagContainer" >
-      <div id="wrapperForTags" rel="popover" data-content="Using this filter, select the locations for which you would like to visualize the report for and hit Generate report" data-original-title="Select location">
-       <input name="filterTag" id="filterTag" type="text"  />
-      </div>
-       <button id="refreshReport" class="btn btn-primary" value="Generate report" >Generate report</button>
- </div>
+@{Html.RenderPartial("ReportFilterArea");}
 
 @foreach (var q in Model.QuestionSet)
 {
@@ -41,7 +36,7 @@
  <script type="text/javascript" src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
 
 @Scripts.Render("~/bundles/referencescripts")
-@Scripts.Render("~/bundles/reports")
+@Scripts.Render("~/bundles/comparisonReports")
 
 }
  

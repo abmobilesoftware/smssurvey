@@ -126,7 +126,19 @@ namespace smsSurvery.Surveryer.Controllers
       [Authorize]
       public ActionResult ThrowError()
       {
-         throw new Exception("This should be an unhandled error");
+         try
+         {
+            logger.Info("info");
+            string test = null;
+            test.Split(';');
+         }
+         catch (Exception ex)
+         {
+            logger.Error("Demo error", ex);
+            logger.Fatal("musai");
+            
+         }
+         return null;
       }
 
       [Authorize]

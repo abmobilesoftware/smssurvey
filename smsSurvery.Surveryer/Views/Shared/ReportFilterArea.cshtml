@@ -1,0 +1,18 @@
+﻿@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<div id="tagContainer" >
+      <div id="wrapperForTags" rel="popover" data-content="Using this filter, select the locations for which you would like to visualize the report for and hit Generate report" data-original-title="Select location">
+       <input name="filterTag" id="filterTag" type="text"  />
+      </div>
+   <div class="secondRow">
+      <div class="dateSelectorArea">
+          <label class="dateFilterHorizontalLabel">Start Date </label><input type="text" id="from" name="from" class="filterDate filterInputBox"  value=""/>
+         <label class="dateFilterHorizontalLabel">End Date </label><input type="text" id="to" name="to" class="filterDate filterInputBox"  value=""/>
+      </div>
+      <button id="refreshReport" class="btn btn-primary" value="Generate report" >Generate report</button>
+   </div>
+ </div>

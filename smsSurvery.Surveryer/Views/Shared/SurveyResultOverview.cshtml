@@ -1,9 +1,7 @@
 ﻿@model smsSurvey.dbInterface.SurveyPlan
 
-<div id="tagContainer">
-       <input name="filterTag"  id="filterTag" type="text"/>
-       <input id="refreshReport" class="btn btn-primary" value="Refresh" />
- </div>
+@{Html.RenderPartial("ReportFilterArea");}
+
 <div class="clear:both"></div>
 <fieldset>
     <legend> Overview: @Model.Description </legend>
