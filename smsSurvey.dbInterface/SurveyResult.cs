@@ -28,6 +28,7 @@ namespace smsSurvey.dbInterface
         public bool Terminated { get; set; }
         public Nullable<int> CurrentQuestion_Id { get; set; }
         public double PercentageComplete { get; set; }
+        public string LanguageChosenForSurvey { get; set; }
     
         public virtual Customer Customer { get; set; }
         public virtual SurveyPlan SurveyPlan { get; set; }

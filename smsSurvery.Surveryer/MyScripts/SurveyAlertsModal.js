@@ -72,13 +72,13 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
          var alertOperators = new Array("=", "NOT EQUAL", "<", "<=", ">", ">=");
          return alertOperators;
       } else if (type == questionConstants.TYPE_FREE_TEXT) {
-         var alertOperators = new Array("CONTAINS");
+         var alertOperators = new Array("contains");
          return alertOperators;
       } else if (type == questionConstants.TYPE_YES_NO) {
          var alertOperators = new Array("==");
          return alertOperators;
       } else if (type == questionConstants.TYPE_SELECT_MANY_FROM_MANY) {
-         var alertOperators = new Array("ANY", "ALL");
+         var alertOperators = new Array("any", "all");
          return alertOperators;
       }
    },
@@ -253,7 +253,7 @@ SurveyModals.AlertModel = Backbone.Model.extend({
             areEmailsValid = false;
          }
       }
-      if (this.get("Operator") == "" || this.get("Operator") == "noValue") {
+      if (this.get("Operator") == "" || this.get("Operator") == Question.noValueAnswer) {
          hasErrors = true;
          errors.push(this.errors.INVALID_OPERATOR);
       }

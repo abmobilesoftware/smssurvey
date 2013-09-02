@@ -91,14 +91,19 @@ namespace smsSurvery.Surveryer.Controllers
          tags = tags ?? new string[0];
          switch (question.Type)
          {
-            case cRatingsTypeQuestion:            
+            case cRatingsTypeQuestion:
+            case cYesNoTypeQuestion:
+            case cSelectOneFromManyTypeQuestion:
                {
                   string[] optionDef = question.ValidAnswersDetails.Split(';');
                   res = GenerateResultForRatingQuestion(question,tags);
                   List<RepDataRow> pieChartContent = new List<RepDataRow>();
                   foreach (var rowData in res.AnswersPerValidOption)
                   {
-                     var row = new RepDataRow(new RepDataRowCell[] { new RepDataRowCell(rowData.Key, optionDef[Int32.Parse(rowData.Key) - 1]), new RepDataRowCell(rowData.Value, rowData.Value.ToString() + " answer(s)") });
+                     //DA when dealing with Rating we expect that the valid answers array will be 1;2;3 - so to get the UserFriendlyName we -1
+                     //for YesNo we have 0;1 - so we no longer need to subtract
+                     var index  =Int32.Parse(rowData.Key) -1;                   
+                     var row = new RepDataRow(new RepDataRowCell[] { new RepDataRowCell(rowData.Key, optionDef[index]), new RepDataRowCell(rowData.Value, rowData.Value.ToString() + " answer(s)") });
                      pieChartContent.Add(row);
                   }
 
@@ -128,7 +133,7 @@ namespace smsSurvery.Surveryer.Controllers
          return null;
       }
 
-
+     
       private QuestionSurveyResults GenerateResultForRatingQuestion(Question q, string[] tags)
       {
          //we need the possible values - only valid answers are to be considered
@@ -161,7 +166,7 @@ namespace smsSurvery.Surveryer.Controllers
          outcome.ValidOptions = validPossibleAnswers;
          outcome.AnswersPerValidOption = resultsPerAnswer;
          return outcome;
-      }
+      }     
 
       public static TagCloud GetTagCloudData(Question q, string[] tags)
       {

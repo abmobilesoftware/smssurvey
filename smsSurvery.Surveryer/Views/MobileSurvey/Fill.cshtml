@@ -1,4 +1,5 @@
-﻿@{
+﻿@using smsSurvery.Surveryer.GlobalResources
+@{
     Layout = null;
 }
 
@@ -7,7 +8,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>MobileSurvey</title>   
+    <title>@Global.MobileSurveyPageTitle</title>   
     @Styles.Render("~/bundles/MobileSurveyCss")
    
 <script id="mobileSurveyTemplate" type="text/template">   
@@ -22,8 +23,8 @@
             <div class="answerArea">
                <%
                if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_YES_NO) { %>
-                   <input type="radio" name="yes-no-answer" value="Yes" /> Yes <br/>
-                   <input type="radio" name="yes-no-answer" value="No" /> No  
+                   <input type="radio" name="yes-no-answer" value="1" /> Yes <br/>
+                   <input type="radio" name="yes-no-answer" value="2" /> No  
                <% 
                } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_FREE_TEXT) {
                %>
@@ -33,11 +34,21 @@
                %>
                 
                <%
-               } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY) { 
-                  _.each(Answers, function(answer, index) {  %>
-                     <input type="checkbox" name="multiple-answers" value="<%= answer.AnswerLabel %>" /> <%=answer.AnswerLabel %> <br/>
+               } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_MANY_FROM_MANY) { 
+                  _.each(Answers, function(answer, index) {  %>                     
+                     <input type="checkbox" id="m-a-<%= answer.AnswerIdentifier %>" class="css-checkbox"  value="<%= answer.AnswerIdentifier %>" />
+                     <label for="m-a-<%= answer.AnswerIdentifier %>" name="multiple-answers-label"  class="css-label"><%=answer.AnswerLabel %></label>  
                <% });
-               } %>           
+               } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY) {
+               %>     
+                     <select class="answer list" name="answer">
+                        <option value="noValue">Select an answer</option>
+                    <% _.each(Answers, function(value, key, list) { %>
+                        <option value="<%= value.AnswerIdentifier %>"><%= value.AnswerLabel %></option>
+                    <% }); %> 
+                </select>
+               <% } %>
+
             </div>
         </div>
 </script>
@@ -84,21 +95,27 @@
                 <div class="headerContainer">
                   <img id="pageIcon" src="/Content/images/small-icon.png" />
                   <h3 id="pageTitle">@ViewBag.SurveyTitle</h3>
+                 
                 </div>                       
             </header>
            <div class="clear" />
+           <section id="introMessage">
+                <p>
+                      @ViewBag.IntroMessage
+                </p>
+           </section>
             <section id="questions">
             </section>
             <div id="doneBtnWrapper">
                 <button id="doneBtn"></button>
             </div>
             <footer>
-                <span>Powered by 
+                <span>@Global.MobileSurveyFooterCaption
                   <a href="http://www.txtfeedback.net">TxtFeedback
                   </a>
                 </span>
             </footer>
-            <input type="hidden" value="Submit" id="doneBtnTitle" />
+            <input type="hidden" value="@Global.MobileSurveySubmitButtonCaption" id="doneBtnTitle" />         
         </section>
         <section id="thankYouPage" class="page" style="display:none">
           

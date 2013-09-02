@@ -9,6 +9,11 @@ namespace smsSurvery.Surveryer.Controllers
 {
     public class MobileSurveyController : Controller
     {
+
+       public MobileSurveyController()
+       {
+        
+       }
         private smsSurveyEntities db = new smsSurveyEntities();
 
         [HttpGet]
@@ -16,16 +21,21 @@ namespace smsSurvery.Surveryer.Controllers
         {
         
            //should only be valid for survey result that is not yet terminated
-           SurveyResult res = db.SurveyResultSet.Find(id);
+           SurveyResult runningSurvey = db.SurveyResultSet.Find(id);
            int idToUse = 1;
-           if (res != null)
+           if (runningSurvey != null)
            {
-              idToUse = res.SurveyPlan.Id;
-              if (res.Terminated != true)
+              //DA for compatibility with the old versions make sure that we have a valid survey language
+              var surveyLanguage = runningSurvey.LanguageChosenForSurvey;
+              surveyLanguage = !String.IsNullOrEmpty(surveyLanguage) ? surveyLanguage : runningSurvey.SurveyPlan.DefaultLanguage;
+              System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture(surveyLanguage);
+              idToUse = runningSurvey.SurveyPlan.Id;
+              if (runningSurvey.Terminated != true)
               {
                  ViewBag.Id = idToUse;
                  ViewBag.SurveyTitle = "Mobile survey";
                  ViewBag.IsFeedback = 0;
+                 ViewBag.IntroMessage = runningSurvey.SurveyPlan.IntroMessage;
                  return View();
               }
               else
@@ -45,11 +55,24 @@ namespace smsSurvery.Surveryer.Controllers
         [HttpGet]
         public ActionResult Feedback(int id)
         {
-           //the id is a the SurveyPlanId
-           ViewBag.Id = id;
-           ViewBag.SurveyTitle = "Feedback";
-           ViewBag.IsFeedback = 1;
-           return View("Fill");
+           SurveyPlan survey = db.SurveyPlanSet.Find(id);
+           if (survey != null)
+           {             
+              var surveyLanguage = survey.DefaultLanguage;             
+              System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture(surveyLanguage);
+              //the id is a the SurveyPlanId
+              ViewBag.Id = id;
+              ViewBag.SurveyTitle = "Feedback";
+              ViewBag.IntroMessage = survey.IntroMessage;
+              ViewBag.IsFeedback = 1;
+              return View("Fill");
+           }
+           else
+           {
+              //invalid survey plan
+              //TODO return a "the survey you are looking for is no longer available
+              return null;
+           }
         }
 
         public class QuestionResponse
@@ -66,7 +89,9 @@ namespace smsSurvery.Surveryer.Controllers
 
         [HttpPost]
         public void SaveSurvey(List<QuestionResponse> questions, int surveyResultId, int surveyPlanId)
-        {         
+        {
+           //for mobile surveys the survey language is the default Survey definition language
+           SurveyResult surveyToAnalyze = null;
            //DA take all the responses and save the to the corresponding surveyResult
            if (surveyResultId < 0)
            {
@@ -75,18 +100,22 @@ namespace smsSurvery.Surveryer.Controllers
               var uniqueCustomerID = Guid.NewGuid().ToString();
               var surveyToRun = db.SurveyPlanSet.Find(surveyPlanId);
               var customer = new Customer() { PhoneNumber = uniqueCustomerID, Name = uniqueCustomerID, Surname = uniqueCustomerID };
-              SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyPlan = surveyToRun, Terminated = true, PercentageComplete = 1 };
+              SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyPlan = surveyToRun, Terminated = true, PercentageComplete = 1, LanguageChosenForSurvey = surveyToRun.DefaultLanguage };
               db.SurveyResultSet.Add(newSurvey);
               foreach (var q in questions)
               {
                  var currentQuestion = db.QuestionSet.Find(q.Id);
-                 var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion };
+                 
+                 var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion };                
                  newSurvey.Result.Add(res);
               }
               db.SaveChanges();
+              db.Entry(newSurvey).Reload();
+              surveyToAnalyze = newSurvey;
+             
            }
            else
-           {
+           {      
               //we are dealing with a "dedicated" survey
               var surveyToRun = db.SurveyPlanSet.Find(surveyPlanId);
               var surveyToFill = db.SurveyResultSet.Find(surveyResultId);
@@ -102,8 +131,16 @@ namespace smsSurvery.Surveryer.Controllers
                     surveyToFill.Result.Add(res);
                  }
                  db.SaveChanges();
+                 surveyToAnalyze = surveyToFill;
               }
-           }         
+           }          
+           foreach (var q in questions)
+           {
+              var currentQuestion = db.QuestionSet.Find(q.Id);
+
+              var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion };
+              AnswerController.HandleAlertsForQuestion(currentQuestion, q.PickedAnswer, surveyToAnalyze.Id, this);             
+           }
         }
         protected override void Dispose(bool disposing)
         {

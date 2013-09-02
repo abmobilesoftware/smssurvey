@@ -57,6 +57,13 @@
       <div>
          @Html.DropDownList("ID", "Choose a survey")      
       </div>
+      <div>
+        <label> Choose the survey language</label>
+      </div>
+       <div>
+         @Html.DropDownList("Language", new SelectList(new List<SelectListItem>() {  new SelectListItem(){Text ="English", Value="en-US"}, new SelectListItem() {Text="Romanian",Value="ro-Ro"} },"Value", "Text"))
+      </div>
+    
       <input id="sendMobileSurvey" class="css-checkbox" type="checkbox" value="type" />
       <label for="sendMobileSurvey" name="dsurveyType"  class="css-label">Send mobile survey</label>     
       <p>
@@ -117,6 +124,13 @@
             alert("Please add at least 1 phone number");
             return;
          }
+         //we should have a surveyLanguage
+         var surveyLanguage = $('#Language').find(":selected").attr('value');
+         if (surveyLanguage === "") {
+            //display message that you should select a survey
+            alert("Please select a survey language");
+            return;
+         }
          var numbers = new Array();
          $.each(phonenumbers, function (index, value) {
             numbers.push(value.textContent);
@@ -129,12 +143,14 @@
          if ("" === tags[0]) {
             tags = [];
          }
+
          $.ajax({
             data: {
                surveyid: selSurveyId,
                customerNumbers: numbers,
                sendMobile: $('#sendMobileSurvey').is(':checked'),
-               tags: tags
+               tags: tags,
+               surveyLanguage: surveyLanguage
             },
             url: "/Home/RunSurveyForNumbers",
             traditional: true,

@@ -74,14 +74,31 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
       }
    },
    updateAnswer: function () {
-      this.model.set(
+      var questionType= this.model.get("Type");
+      if (questionType == this.questionConstants.TYPE_SELECT_ONE_FROM_MANY) {
+         var selectedOption = $("select[name='answer']", this.$el).find(":selected").val();
+         this.model.set({ "PickedAnswer": selectedOption }, { validate: true });
+      } else if (questionType == this.questionConstants.TYPE_YES_NO) {
+         var yesNoAnswer = $('input[name=yes-no-answer]:checked', this.$el).val();
+         yesNoAnswer = yesNoAnswer != undefined ? yesNoAnswer : Question.noValueAnswer;         
+         this.model.set({ "PickedAnswer": yesNoAnswer }, { validate: true });
+      } else if (questionType == this.questionConstants.TYPE_SELECT_MANY_FROM_MANY) {
+         var selectedValuesArr = $.map($('input[type=checkbox]:checked', this.$el), function (elem) {
+            return $(elem).val();
+         });
+         var selectValues = selectedValuesArr.join(';');
+         this.model.set({ "PickedAnswer": selectValues }, { validate: true });
+      }
+      else {
+         this.model.set(
           {
              "PickedAnswer": $(".answer", this.$el).val(),
-             "AdditionalInfo": $(".additionalInfo", this.$el)!=undefined ? $(".additionalInfo", this.$el).val() : ""
+             "AdditionalInfo": $(".additionalInfo", this.$el) != undefined ? $(".additionalInfo", this.$el).val() : ""
           },
           {
              validate: true
           });
+      }
    }
 });
 

@@ -50,8 +50,8 @@
                 <a class="btn btn-primary add-answer-btn">Add answer</a>
             </div>
             <div class="modal-footer">
-               <button type="button" class="btn btn-success save-answers">Save</button>
-               <button type="button" class="btn btn-danger close-answers-modal-btn" aria-hidden="true">Discard</button>
+               <button type="button" class="btn btn-success save-answers">Ok</button>
+               <button type="button" class="btn btn-danger close-answers-modal-btn" aria-hidden="true">Cancel</button>
             </div>
          </div>
       <% } else if (Type == "Rating") { %>
@@ -154,8 +154,9 @@
                 
                <%
                } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_MANY_FROM_MANY) { 
-                  _.each(Answers, function(answer, index) {  %>
-                     <input type="checkbox" name="multiple-answers" value="<%= answer.AnswerLabel %>" /> <%=answer.AnswerLabel %> <br/>
+                  _.each(Answers, function(answer, index) {  %>                     
+                   <input type="checkbox" name="multiple-answers" class="css-checkbox"  value="<%= answer.AnswerLabel %>" />
+                   <label for="multiple-answers" nname="multiple-answers-label"  class="css-label"><%=answer.AnswerLabel %></label>     
                <% });
                } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY) { %>
                      <select>    
@@ -234,9 +235,35 @@
          <td>Description</td>
          <td><input type="text" placeholder="Insert survey description" id="survey-description" value="<%= Description %>"/></td>
       </tr>
+       <tr>
+         <td>Introductory message</td>
+         <td><input type="text" placeholder="Insert survey intro" id="survey-intro" value="<%= IntroMessage %>"/></td>
+      </tr>
       <tr>
          <td>Thank you message & follow up</td>
          <td><input type="text" placeholder="Insert thank you message" id="survey-thank-you-message" value="<%= ThankYouMessage %>"/></td>
+      </tr>
+       <tr>
+         <td>Survey language</td>
+          <%
+            var language = "";
+            if (DefaultLanguage == "en-US") {
+               language = "English" 
+            } else if (DefaultLanguage == "ro-RO") {
+               language = "Romanian";       
+            }     
+         %>
+         <td>
+            <div class="btn-group">
+             <button class="btn dropdown-toggle type-btn" data-toggle="dropdown">
+                  <span class="type-btn-text"><%= language %></span>
+                  <span class="caret"></span>
+               </button>
+            <ul class="dropdown-menu">            
+                  <li><a href="#" value="en-US" class="languageSelect">English</a></li>
+                  <li><a href="#" value="ro-RO" class="languageSelect">Romanian</a></li>                  
+            </ul>
+            </div>          
       </tr>
       <tr>
          <% var idRepresentation = Id == -1 ? "-" : Id; %>

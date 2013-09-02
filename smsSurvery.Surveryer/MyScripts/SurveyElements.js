@@ -32,7 +32,7 @@ SurveyElements.StarsCollection = Backbone.Collection.extend({
       for (var i = model.get("id") + 1; i < this.models.length; ++i) {
          this.at(i).set("Active", false);
       }
-      this.trigger("resultEvent", model.get("id"));
+      this.trigger("resultEvent", model.get("id") + 1);
    }
 });
 
@@ -66,13 +66,13 @@ SurveyElements.StarBarView = Backbone.View.extend({
          $ADDITIONAL_INFO: $(".additionalInfo", this.$el),
          $ANSWER: $(".answer", this.$el)
       };
-      if (this.dom.$ANSWER.val() == "noValue") {
+      if (this.dom.$ANSWER.val() == Question.noValueAnswer) {
          this.dom.$ADDITIONAL_INFO.hide();
       }
    },
    //TODO DA - don't hardcode the 2 value - it should be configurable (we should move this at db level as WhyThreshold)
    starClicked: function (value) {
-      if (value < 2) {
+      if (value <= 2) {
          this.dom.$ADDITIONAL_INFO.show();
          this.saveResult(value,
              this.dom.$ADDITIONAL_INFO.val());

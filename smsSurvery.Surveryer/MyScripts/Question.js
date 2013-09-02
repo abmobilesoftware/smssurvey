@@ -1,5 +1,5 @@
 ﻿var Question = Question || {};
-
+Question.noValueAnswer = "noValue";
 Question.QuestionModel = Backbone.Model.extend({
    errors: {
       INVALID_TEXT: "invalid text",
@@ -19,7 +19,7 @@ Question.QuestionModel = Backbone.Model.extend({
       Answers: [],
       AlertOperators: [],
       QuestionAlertSet: [],
-      PickedAnswer: "noValue",
+      PickedAnswer: Question.noValueAnswer,
       AdditionalInfo: "",
       ValidAnswer: true
    },
@@ -97,6 +97,12 @@ Question.QuestionModel = Backbone.Model.extend({
          }
       }
    },
+   setYesNo: function() {
+      if (this.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_YES_NO) {
+         this.set("ValidAnswers", "0;1");
+         this.set("ValidAnswersDetails", "No;Yes");
+      }
+   },
    // Used for validation when building the survey
    validateQuestion: function () {
       if (this.get("Text").length == 0 || this.get("Text").length > 160) {
@@ -109,7 +115,7 @@ Question.QuestionModel = Backbone.Model.extend({
    },
    // Used for validation when taking the survey
    validate: function (attributes, options) {
-      if (attributes.PickedAnswer === "noValue" || attributes.PickedAnswer === "") {
+      if (attributes.PickedAnswer === Question.noValueAnswer || attributes.PickedAnswer === "") {
          this.set({ "ValidAnswer": false }, { silent: false });
       } else {
          this.set({ "ValidAnswer": true }, { silent: false });
@@ -290,6 +296,7 @@ Question.QuestionSetView = Backbone.View.extend({
    },
    addQuestion: function (event) {
       event.preventDefault();
+     
       this.model.addQuestion();
    },
    listSorted: function (event, ui) {
@@ -350,6 +357,7 @@ Question.QuestionSetModel = Backbone.Model.extend({
          }
          this.questionSetCollection.models[i].setAnswers();
          this.questionSetCollection.models[i].setRatings();
+         this.questionSetCollection.models[i].setYesNo();
          // set the last answers changes
          collectionAsJson.push(this.questionSetCollection.models[i].toJSON());
       }
@@ -358,6 +366,14 @@ Question.QuestionSetModel = Backbone.Model.extend({
    },
    addQuestion: function () {
       ++this.questionTemporaryId;
+      //DA before this, make sure that the changes are saved
+      for (var i = 0; i < this.questionSetCollection.models.length; ++i) {
+         // set the last alerts changes         
+         this.questionSetCollection.models[i].setQuestionAlertSet();
+         this.questionSetCollection.models[i].setAnswers();
+         this.questionSetCollection.models[i].setRatings();
+         this.questionSetCollection.models[i].setYesNo();
+      }
       var questionModel = new Question.QuestionModel({ Id: this.questionTemporaryId });
       questionModel.updateOrder(this.questionSetCollection.models.length);
       this.questionSetCollection.add(questionModel);
