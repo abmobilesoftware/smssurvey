@@ -18,8 +18,6 @@ window.filterArea.initializeDateFilter = function () {
    startDate.setDate(endDate.getDate() - 31);
    window.app.startDate = startDate;
    window.app.endDate = endDate;
-   window.app.newStartDate = startDate;
-   window.app.newEndDate = endDate;
    var fromDatePicker = $("#from");
    // DA first set the default value using the same function as for DatePicker in In Store Customer Feedback
    var startDay = (window.app.startDate.getDate() < 10) ? "0" + window.app.startDate.getDate() : window.app.startDate.getDate();
@@ -37,8 +35,7 @@ window.filterArea.initializeDateFilter = function () {
       onSelect: function (selectedDate) {
          window.app.newStartDate = fromDatePicker.datepicker("getDate");
          if (window.app.newStartDate !== window.app.startDate) {
-            window.app.startDate = window.app.newStartDate;
-            window.app.endDate = window.app.newEndDate;
+            window.app.startDate = window.app.newStartDate;            
             var fromDateString = $.datepicker.formatDate(window.app.dateFormatForDatePicker, window.app.startDate);
             toDatePicker.datepicker("option", "minDate", fromDateString);            
          }
@@ -58,8 +55,7 @@ window.filterArea.initializeDateFilter = function () {
       dateFormat: window.app.dateFormatForDatePicker,
       onSelect: function (selectedDate) {
          window.app.newEndDate = toDatePicker.datepicker("getDate");
-         if (window.app.newEndDate !== window.app.endDate) {
-            window.app.startDate = window.app.newStartDate;
+         if (window.app.newEndDate !== window.app.endDate) {            
             window.app.endDate = window.app.newEndDate;
             var endDateString = $.datepicker.formatDate(window.app.dateFormatForDatePicker, window.app.endDate);
             fromDatePicker.datepicker("option", "maxDate", endDateString);            
