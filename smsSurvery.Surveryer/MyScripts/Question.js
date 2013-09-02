@@ -87,6 +87,12 @@ Question.QuestionModel = Backbone.Model.extend({
             this.set("ValidAnswersDetails", answersAsJson.ValidAnswersDetails);
          }
       }
+      /* Attributes Answers (array) and ValidAnswers/ValidAnswersDetails(strings) keep the same information 
+         and they must be kept synchronized. Answers is used on client and ValidAnswers(Details) is used on
+         server-side.
+         For better code clarity Answers(array) should be removed.
+      */
+      this.parseAttributes();
    },
    setRatings: function () {
       if (this.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_RATING) {
@@ -311,8 +317,7 @@ Question.QuestionSetView = Backbone.View.extend({
       }
    },
    addQuestion: function (event) {
-      event.preventDefault();
-     
+      event.preventDefault();     
       this.model.addQuestion();
    },
    listSorted: function (event, ui) {
@@ -369,7 +374,6 @@ Question.QuestionSetModel = Backbone.Model.extend({
          // set the last alerts changes
          if (saveAlerts) {
             this.questionSetCollection.models[i].setQuestionAlertSet();
-
          }
          this.questionSetCollection.models[i].setAnswers();
          this.questionSetCollection.models[i].setRatings();
