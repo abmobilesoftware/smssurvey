@@ -72,6 +72,9 @@
     <Reference Include="Nexmo-CSharp-lib">
       <HintPath>ExternalReferences\Nexmo-CSharp-lib.dll</HintPath>
     </Reference>
+    <Reference Include="OneApi">
+      <HintPath>ExternalReferences\OneApi.dll</HintPath>
+    </Reference>
     <Reference Include="RestSharp">
       <HintPath>..\packages\RestSharp.104.1\lib\net4\RestSharp.dll</HintPath>
     </Reference>
@@ -493,10 +496,6 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\compatelOneApi\OneApi\OneApi.csproj">
-      <Project>{bb105549-1799-4601-9d24-652773a187f5}</Project>
-      <Name>OneApi</Name>
-    </ProjectReference>
     <ProjectReference Include="..\smsSurvey.dbInterface\smsSurvey.dbInterface.csproj">
       <Project>{ce8ff7ed-dfb9-4908-bf2e-a3699a3512ff}</Project>
       <Name>smsSurvey.dbInterface</Name>

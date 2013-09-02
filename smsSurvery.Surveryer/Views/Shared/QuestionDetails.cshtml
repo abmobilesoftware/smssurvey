@@ -12,6 +12,15 @@
     </div>    
 </fieldset>
 
-<div id="@String.Format("tableChart_div{0}", Model.Id)"></div>
-<div id="@String.Format("pieChart_div{0}", Model.Id)"></div> 
-<div id="@String.Format("textCloudSection{0}", Model.Id)"></div> 
+<div class="graphsContainer" id="@String.Format("graphsContainer{0}", Model.Id)">
+   <div id="@String.Format("tableChart_div{0}", Model.Id)"></div>
+   <div id="@String.Format("pieChart_div{0}", Model.Id)"></div>
+   <div id="@String.Format("textCloudSection{0}", Model.Id)"></div>
+
+   <div id="@String.Format("loadingIndicator{0}", Model.Id)" style="display:none" class="loadingIndicatorArea">
+      <div class="loadingIndicatorContainer">
+         <img src="~/Content/images/ajax-loader_vs1.gif" class="loadingIndicatorIcon" />
+      </div>
+      <div class="overlay"></div>
+   </div>
+</div>
