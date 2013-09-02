@@ -223,6 +223,10 @@
     <Compile Include="Mailers\IAlertMailer.cs" />
     <Compile Include="Models\AlertNotification.cs" />
     <Compile Include="Models\BusinessObjects\SmsMessage.cs" />
+    <Compile Include="Models\Paging\IPagedList.cs" />
+    <Compile Include="Models\Paging\PagedList.cs" />
+    <Compile Include="Models\Paging\Pager.cs" />
+    <Compile Include="Models\Paging\PagingExtensions.cs" />
     <Compile Include="Models\Question.cs" />
     <Compile Include="Models\QuestionAlert.cs" />
     <Compile Include="Models\RequestResult.cs" />
@@ -270,6 +274,7 @@
     <Content Include="Content\jquery.tagsinput.css" />
     <Content Include="Content\survey.css" />
     <Content Include="Content\SurveyPlan\questionSet.css" />
+    <Content Include="Content\SurveyResult\SurveyResult.css" />
     <Content Include="Content\WordCloud.css" />
     <Content Include="MyScripts\MobileSurvey.js" />
     <Content Include="MyScripts\Question.js" />
@@ -466,6 +471,8 @@
     <Content Include="Views\Shared\SurveyEditor.cshtml" />
     <Content Include="Views\MobileSurvey\Fill.cshtml" />
     <Content Include="Views\MobileSurvey\SurveyAlreadyCompleted.cshtml" />
+    <Content Include="Views\Shared\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\SearchBoxItems.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

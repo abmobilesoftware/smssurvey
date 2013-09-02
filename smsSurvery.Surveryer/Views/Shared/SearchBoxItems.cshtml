@@ -1,0 +1,17 @@
+﻿@*
+	Iván Loire - www.iloire.com
+	Please readme README file for license terms.
+
+	ASP.NET MVC3 ACME Invocing app (demo app for training purposes)
+*@
+
+@model string
+@using (Html.BeginForm("Search", Model, null, FormMethod.Get))
+{
+   <div class="searchBox noprint">
+      <span>Text:</span>
+      <input name="text" id="text" type="text" value="@Request["text"]"
+              placeholder="Text to look for ..." />
+       <input type="submit" value="Filter" class="btn btn-primary" />
+   </div>
+}
