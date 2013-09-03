@@ -9,6 +9,7 @@ using smsSurvey.dbInterface;
 using smsSurvery.Surveryer.ClientModels;
 using System.Data.Entity.Validation;
 using System.Text;
+using MvcPaging;
 
 namespace smsSurvery.Surveryer.Controllers
 {
@@ -20,11 +21,29 @@ namespace smsSurvery.Surveryer.Controllers
       // GET: /SurveyPlan/
 
       [Authorize]
-      public ActionResult Index()
+      public ActionResult Index(int page = 1)
       {
-
+         int currentPageIndex = page - 1;
+         int NUMBER_OF_RESULTS_PER_PAGE = 10;
          UserProfile user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-         return View(user.SurveyPlanSet.ToList());
+         var res = user.SurveyPlanSet;
+         var pageRes = res.Skip((page-1) * NUMBER_OF_RESULTS_PER_PAGE).Take(NUMBER_OF_RESULTS_PER_PAGE);
+         IPagedList<SurveyPlan> pagingDetails = new PagedList<SurveyPlan>(res, currentPageIndex, NUMBER_OF_RESULTS_PER_PAGE, res.Count());
+         ViewBag.pagingDetails = pagingDetails;
+         return View(pageRes.ToList());
+      }
+
+      public ActionResult Search(string text, int page = 1)
+      {
+         int currentPageIndex = page - 1;
+         int NUMBER_OF_RESULTS_PER_PAGE = 10;
+         var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+         var res = user.SurveyPlanSet.Where(x=>x.Description.ToLower().Contains(text.Trim().ToLower())
+            || x.Description.StartsWith(text.Trim().ToLower()));
+         var pageRes = res.Skip((page - 1) * NUMBER_OF_RESULTS_PER_PAGE).Take(NUMBER_OF_RESULTS_PER_PAGE);
+         IPagedList<SurveyPlan> pagingDetails = new PagedList<SurveyPlan>(res, currentPageIndex, NUMBER_OF_RESULTS_PER_PAGE, res.Count());
+         ViewBag.pagingDetails = pagingDetails;
+         return View("Index", pageRes.ToList());
       }
 
       //

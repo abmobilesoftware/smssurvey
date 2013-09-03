@@ -1,11 +1,24 @@
 ﻿@model IEnumerable<smsSurvey.dbInterface.SurveyResult>
 
 @{
-    ViewBag.Title = "Index";
+   ViewBag.Title = "Index";
+}
+@using MvcPaging;
+@using smsSurvey.dbInterface;
+
+@{
+   IPagedList<SurveyResult> pagingDetails = ViewBag.pagingDetails;
+   RouteValueDictionary r = new RouteValueDictionary();
+   r.Add("to", Request["to"]);
+   r.Add("from", Request["from"]);
+   r.Add("text", Request["text"]);
 }
 
+@Html.Pager(pagingDetails.PageSize, pagingDetails.PageNumber, pagingDetails.TotalItemCount, r)
 <text>
-   @{Html.RenderPartial("SurveyResultsDetails", (IEnumerable<smsSurvey.dbInterface.SurveyResult>) Model);}
+   @{Html.RenderPartial("SurveyResultsDetails", (IEnumerable<smsSurvey.dbInterface.SurveyResult>)Model);}
 </text>
 
-
+@section css {
+   @Styles.Render("~/bundles/SurveyResult")
+}

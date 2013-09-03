@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using smsSurvey.dbInterface;
+using MvcPaging;
 
 namespace smsSurvery.Surveryer.Controllers
 {
@@ -18,12 +19,17 @@ namespace smsSurvery.Surveryer.Controllers
         // GET: /SurveyResult/
 
         [Authorize]
-        public ActionResult Index()
+        public ActionResult Index(int page=1)
         {
+           int currentPageIndex = page - 1;
+           int NUMBER_OF_RESULTS_PER_PAGE = 10;
            var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
            var res = (from s in user.SurveyPlanSet select s.SurveyResult).SelectMany(x=>x).OrderByDescending(r=>r.DateRan);
-           return View(res.ToList());
-        }
+           var pageRes = res.Skip((page - 1) * NUMBER_OF_RESULTS_PER_PAGE).Take(NUMBER_OF_RESULTS_PER_PAGE);
+           IPagedList<SurveyResult> pagingDetails = new PagedList<SurveyResult>(res, currentPageIndex, NUMBER_OF_RESULTS_PER_PAGE, res.Count());
+           ViewBag.pagingDetails = pagingDetails;
+           return View(pageRes.ToList());
+        }      
 
         //
         // GET: /SurveyResult/Details/5
