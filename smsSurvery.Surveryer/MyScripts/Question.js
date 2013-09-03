@@ -2,8 +2,12 @@
 Question.noValueAnswer = "noValue";
 Question.QuestionModel = Backbone.Model.extend({
    errors: {
-      INVALID_TEXT: "invalid text",
-      VALID: "valid"
+      INVALID_TEXT: "invalidText",
+      VALID_TEXT: "validText",
+      INVALID_RATINGS: "ratingsError",
+      INVALID_ANSWERS: "answersError",
+      VALID_RATINGS: "ratingsValid",
+      VALID_ANSWERS: "answersValid"
    },
    events: {
       ANSWERS_CHANGED: "answersChanged",
@@ -22,7 +26,9 @@ Question.QuestionModel = Backbone.Model.extend({
       QuestionAlertSet: [],
       PickedAnswer: Question.noValueAnswer,
       AdditionalInfo: "",
-      ValidAnswer: true
+      ValidAnswer: true,
+      ValidAnswers: "",
+      ValidAnswersDetails: ""
    },
    initialize: function () {
       this.parseAttributes();
@@ -60,6 +66,7 @@ Question.QuestionModel = Backbone.Model.extend({
       Backbone.trigger(attributeChangedEvent);
    },
    updateQuestionType: function (newType) {
+      this.set("ValidAnswers", "");
       this.set("ValidAnswersDetails", "");
       this.set("Answers", []);
       this.set("Type", newType);
@@ -112,13 +119,33 @@ Question.QuestionModel = Backbone.Model.extend({
    },
    // Used for validation when building the survey
    validateQuestion: function () {
+      var questionValidity = true;
       if (this.get("Text").length == 0 || this.get("Text").length > 160) {
          this.trigger(this.events.VALIDATE, this.errors.INVALID_TEXT);
-         return false;
+         questionValidity = false;
       } else {
-         this.trigger(this.events.VALIDATE, this.errors.VALID);
-         return true;
+         this.trigger(this.events.VALIDATE, this.errors.VALID_TEXT);         
       }
+      var questionTypes = SurveyUtilities.Utilities.CONSTANTS_QUESTION;
+      if (this.get("Type") == questionTypes.TYPE_RATING) {
+         var ratingsValidity = this.ratingsModalModel.validate();
+         if (!ratingsValidity) {
+            this.trigger(this.events.VALIDATE, this.errors.INVALID_RATINGS);
+            questionValidity = ratingsValidity;
+         } else {
+            this.trigger(this.events.VALIDATE, this.errors.VALID_RATINGS);
+         }
+      } else if (this.get("Type") == questionTypes.TYPE_SELECT_ONE_FROM_MANY
+         || this.get("Type") == questionTypes.TYPE_SELECT_MANY_FROM_MANY) {
+         var answersValidity = this.answersModalModel.validate();
+         if (!answersValidity) {
+            this.trigger(this.events.VALIDATE, this.errors.INVALID_ANSWERS);
+            questionValidity = answersValidity;
+         } else {
+            this.trigger(this.events.VALIDATE, this.errors.VALID_ANSWERS);
+         }
+      }
+      return questionValidity;
    },
    // Used for validation when taking the survey
    validate: function (attributes, options) {
@@ -161,7 +188,9 @@ Question.QuestionView = Backbone.View.extend({
          $ANSWERS_TABLE: $(".answers-table", this.$el),
          $MULTIPLE_ANSWERS_MODAL: $("#multiple-answer-modal" + this.model.get("Id"), this.$el),
          $EDIT_ALERTS_MODAL: $("#edit-alerts-modal" + this.model.get("Id"), this.$el),
-         $RATINGS_MODAL: $("#edit-rating-modal" + this.model.get("Id"), this.$el)
+         $RATINGS_MODAL: $("#edit-rating-modal" + this.model.get("Id"), this.$el),
+         $EDIT_ANSWERS_BTN: $(".edit-answers-btn", this.$el),
+         $EDIT_RATINGS_BTN: $(".edit-ratings-btn", this.$el)
       };
       if (this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY
          || this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_MANY_FROM_MANY) {
@@ -233,8 +262,16 @@ Question.QuestionView = Backbone.View.extend({
       var invalidFieldClass = SurveyUtilities.Utilities.CONSTANTS_CLASS.INVALID_FIELD;
       if (result == this.model.errors.INVALID_TEXT) {
          this.dom.$QUESTION_INPUT.addClass(invalidFieldClass);
-      } else if (result == this.model.errors.VALID) {
+      } else if (result == this.model.errors.VALID_TEXT) {
          this.dom.$QUESTION_INPUT.removeClass(invalidFieldClass);
+      } else if (result == this.model.errors.INVALID_RATINGS) {
+         this.dom.$EDIT_RATINGS_BTN.addClass(invalidFieldClass);
+      } else if (result == this.model.errors.VALID_RATINGS) {
+         this.dom.$EDIT_RATINGS_BTN.removeClass(invalidFieldClass);
+      } else if (result == this.model.errors.INVALID_ANSWERS) {
+         this.dom.$EDIT_ANSWERS_BTN.addClass(invalidFieldClass);
+      } else if (result == this.model.errors.VALID_ANSWERS) {
+         this.dom.$EDIT_ANSWERS_BTN.removeClass(invalidFieldClass);
       }
    },
    openAnswersModal: function () {
