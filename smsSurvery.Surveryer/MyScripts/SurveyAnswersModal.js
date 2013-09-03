@@ -84,7 +84,7 @@ SurveyModals.AnswersModalModel = Backbone.Model.extend({
       var answersIdentifierAsString = "";
       if (answers.length > 0) {
          answersLabelAsString = answers[0].get("AnswerLabel");
-         answersIdentifierAsString = 1;
+         answersIdentifierAsString = "1";
       }
       for (var i = 1; i < answers.length; ++i) {
          answersLabelAsString += ";" + answers[i].get("AnswerLabel");
