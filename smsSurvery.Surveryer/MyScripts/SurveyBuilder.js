@@ -13,34 +13,42 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       var self = this;
       _.bindAll(this, "editSurveyInfo", "render", "updateDescription",
          "updateThankYouMessage", "saveSurvey", "confirmPageLeaving",
-         "surveyLoaded", "validationResult", "updateSaveButton", "updateIntroMessage", "updateSurveyLanguage");
+         "validationResult", "updateSaveButton", "updateIntroMessage",
+         "updateSurveyLanguage");
       this.template = _.template($("#survey-info-template").html());
       this.dom = {
          $SURVEY_INFO: $("#survey-info", this.$el),
          $SURVEY_BUILDER: $("#survey-builder", this.$el),
          $NOTIFICATION_TEXT: $(".notification-text", this.$el),
          $NOTIFICATION: $("#survey-notification", this.$el)
-      }
+      };
       this.model.on("change:DisplayInfoTable", this.render);
       this.model.on("change:Id change:MobileWebsiteLocation", this.render);
+
       window.onbeforeunload = this.confirmPageLeaving;
-      this.model.on(this.model.events.SURVEY_LOADED, this.surveyLoaded);
       this.model.on(this.model.events.VALIDATE, this.validationResult);
       this.model.on(this.model.events.UPDATE_SAVE_BUTTON, this.updateSaveButton);
+      this.model.on(this.model.events.SURVEY_LOADED, function () {
+         self.render();
+      });
       //TODO - this should actually be a renderLanguage
       this.model.on("change:DefaultLanguage", this.render);
+      this.questionSetView = new Question.QuestionSetView({
+         el: this.dom.$SURVEY_BUILDER,
+         model: this.model.getQuestionSetModel()
+      });
       this.model.loadSurvey();
    },
    render: function () {
       this.dom.$SURVEY_INFO.html(this.template(this.model.toJSON()));
       this.dom.$EDIT_SURVEY_INFO = $(".edit-survey", this.$el);
       this.dom.$INFO_TABLE = $(".survey-info-data", this.$el);
-      this.dom.$SURVEY_INFO_TITLE_TEXT = $(".survey-info-title-text", this.$el);      
+      this.dom.$SURVEY_INFO_TITLE_TEXT = $(".survey-info-title-text", this.$el);
       this.dom.$SURVEY_DESCRIPTION_INPUT = $("#survey-description", this.$el);
       this.dom.$SURVEY_THANK_YOU_MESSAGE_INPUT = $("#survey-thank-you-message", this.$el);
       this.dom.$SURVEY_INTRO_MESSAGE_INPUT = $("#survey-intro", this.$el);
       this.dom.$SAVE_SURVEY_BTN = $(".save-btn", this.$el);
-   },   
+   },
    editSurveyInfo: function (event) {
       event.preventDefault();
       if (this.model.get("DisplayInfoTable")) {
@@ -50,7 +58,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       }
    },
    updateIntroMessage: function (event) {
-      this.model.updateIntroMessage(event.currentTarget.value);      
+      this.model.updateIntroMessage(event.currentTarget.value);
    },
    updateDescription: function (event) {
       this.model.updateDescription(event.currentTarget.value);
@@ -62,7 +70,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
    updateQuestionSet: function () {
       this.model.set("QuestionSet", this.model.getQuestionSetModel().getQuestionSetCollectionAsJson(true));
    },
-   updateSurveyLanguage: function(event) {
+   updateSurveyLanguage: function (event) {
       event.preventDefault();
       var newSurveyLanguage = $(event.currentTarget).attr("value");
       this.model.updateSurveyLanguage(newSurveyLanguage);
@@ -75,21 +83,15 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
          this.model.save(this.model.toJSON(),
             {
                success: function (model, response, options) {
-                  if (response.Result == "success") {
-                     self.dom.$NOTIFICATION_TEXT.text("Changes saved successfully.");
-                     self.dom.$NOTIFICATION_TEXT.
-                        removeClass("notification-success notification-error").addClass("notification-success");
-                     if (response.Operation == "create") {
-                        self.model.set("Id", response.Details);
-                        self.model.set("MobileWebsiteLocation", response.MobileWebsiteLocation);
-                     }
-                     setTimeout(function () {
-                        self.model.set("DataChanged", false);
-                     }, 1000);
-                  } else if (response.Result == "error") {
+                  if (response.Result == "error") {
                      self.dom.$NOTIFICATION_TEXT.text("Errors while saving.");
                      self.dom.$NOTIFICATION_TEXT.
                         removeClass("notification-success notification-error").addClass("notification-error");
+                  } else {
+                     self.dom.$NOTIFICATION_TEXT.text("Changes saved successfully.");
+                     self.dom.$NOTIFICATION_TEXT.
+                        removeClass("notification-success notification-error").addClass("notification-success");
+                     self.model.updateQuestionSetModel();
                   }
                   self.dom.$NOTIFICATION.show();
                }
@@ -102,13 +104,6 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
             "this changes will be lost when you will leave the" +
             "page. Are you sure you want to do this?";
       }
-   },
-   surveyLoaded: function () {
-      this.questionSetView = new Question.QuestionSetView({
-         el: this.dom.$SURVEY_BUILDER,
-         model: this.model.getQuestionSetModel()
-      });
-      this.render();
    },
    validationResult: function (result) {
       var invalidFieldClass = SurveyUtilities.Utilities.CONSTANTS_CLASS.INVALID_FIELD;
@@ -168,6 +163,7 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
       this.on("sync", this.modelSynced);
       Backbone.on(attributeChangedEvent, this.attributeChanged);
       this.noOfAttributesChanged = 0;
+      this.questionSetModel = new Question.QuestionSetModel();
    },
    urlByMethod: {
       "read": "/SurveyPlan/GetSurvey",
@@ -225,7 +221,7 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
       } else {
          this.trigger(this.events.VALIDATE, [])
       }
-      return questionSetModelValidity && descriptionValidity && introMessageValidity  && thankYouMessageValidity;
+      return questionSetModelValidity && descriptionValidity && introMessageValidity && thankYouMessageValidity;
    },
    loadSurvey: function () {
       self = this;
@@ -234,12 +230,12 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
             silent: true,
             data: "Id=" + this.get("Id"),
             success: function (model, response, options) {
-               self.questionSetModel = new Question.QuestionSetModel({ jsonQuestions: model.get("QuestionSet") });
                self.trigger(self.events.SURVEY_LOADED);
+               self.updateQuestionSetModel();               
             },
             error: function (model, response, options) {
                alert(response)
-            }            
+            }
          });
       } else {
          this.set("Id", -1);
@@ -249,5 +245,8 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
    },
    getQuestionSetModel: function () {
       return this.questionSetModel;
+   },
+   updateQuestionSetModel: function () {
+      this.questionSetModel.updateQuestionSetCollection(this.get("QuestionSet"));
    }
 });

@@ -343,18 +343,9 @@ Question.QuestionSetModel = Backbone.Model.extend({
    },
    initialize: function () {
       _.bindAll(this, "getQuestionSetCollection");
-      this.jsonQuestions = this.get("jsonQuestions");
-
-      this.questionModels = [];
-      if (this.jsonQuestions != undefined) {
-         for (var i = 0; i < this.jsonQuestions.length; ++i) {
-            var question = new Question.QuestionModel(this.jsonQuestions[i]);
-            this.questionModels.push(question);
-         }
-      }
       this.questionSetCollection =
-         new Question.QuestionSetCollection(this.questionModels);
-      this.questionSetCollection.on("remove add",
+         new Question.QuestionSetCollection();
+      this.questionSetCollection.on("remove add reset",
          function () {
             this.trigger(this.events.UPDATE_VIEW);
             var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
@@ -410,5 +401,15 @@ Question.QuestionSetModel = Backbone.Model.extend({
          }
       });
       return isValid;
+   },
+   updateQuestionSetCollection: function (jsonQuestions) {
+      var questionModels = [];
+      if (jsonQuestions != undefined) {
+         for (var i = 0; i < jsonQuestions.length; ++i) {
+            var question = new Question.QuestionModel(jsonQuestions[i]);
+            questionModels.push(question);
+         }
+      }
+      this.questionSetCollection.reset(questionModels);
    }
 });
