@@ -304,7 +304,7 @@ div#preview-content-modal {
    -o-transition: all 0.25s ease-in-out;
 }
 
-input.invalidField {
+input.invalidField, select.invalidField {
    -webkit-box-shadow: 0 0 5px rgba(255, 0 ,0, 1);
    -moz-box-shadow: 0 0 5px rgba(255, 0, 0, 1);
    box-shadow: 0 0 5px rgba(255, 0, 0, 1);
@@ -326,4 +326,12 @@ input.bottom-input {
 
 table.answers-table {
    margin-bottom: 8px;
+}
+
+.answers-notifications {
+  background-image: linear-gradient(to bottom, #EE5F5B, #BD362F);
+  border-radius: 5px 5px 5px 5px;
+  color: #FFFFFF;
+  padding: 5px;
+  margin-bottom: 7px;
 }
