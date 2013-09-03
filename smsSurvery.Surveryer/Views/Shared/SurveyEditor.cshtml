@@ -101,11 +101,11 @@
       <br/>
       <select class="alert-operator-select">
                   <option value="noValue">Select operator</option>
-         <% _.each(AlertOperators, function(alertOperator, index) { 
+         <% _.each(AlertOperatorsValues, function(alertOperator, index) { 
                if (alertOperator == Operator) { %>
-                  <option value="<%= alertOperator %>" selected="selected"><%= alertOperator %></option>
+                  <option value="<%= alertOperator %>" selected="selected"><%= AlertOperatorsLabels[index] %></option>
                <% } else { %>         
-                  <option value="<%= alertOperator %>"><%= alertOperator %></option>
+                  <option value="<%= alertOperator %>"><%= AlertOperatorsLabels[index]  %></option>
                <% }
             });%>			
       </select>
