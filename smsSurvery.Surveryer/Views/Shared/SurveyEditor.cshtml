@@ -65,8 +65,8 @@
             <div class="modal-body">                                   
             </div>
             <div class="modal-footer">
-               <button type="button" class="btn btn-success save-rating">Save</button>
-               <button type="button" class="btn btn-danger close-rating-modal-btn" aria-hidden="true">Discard</button>
+               <button type="button" class="btn btn-success save-rating">Ok</button>
+               <button type="button" class="btn btn-danger close-rating-modal-btn" aria-hidden="true">Cancel</button>
             </div>
          </div>
       <% } %>
@@ -82,8 +82,8 @@
             <button class="btn btn-primary add-alert-btn">Add alert</button>                 
          </div>
          <div class="modal-footer">
-            <button type="button" class="btn btn-success save-alerts">Save</button>
-            <button type="button" class="btn btn-danger close-alerts-modal-btn" aria-hidden="true">Discard</button>
+            <button type="button" class="btn btn-success save-alerts">Ok</button>
+            <button type="button" class="btn btn-danger close-alerts-modal-btn" aria-hidden="true">Cancel</button>
          </div>
       </div>
    </div>
@@ -102,11 +102,11 @@
       <br/>
       <select class="alert-operator-select">
                   <option value="noValue">Select operator</option>
-         <% _.each(AlertOperators, function(alertOperator, index) { 
+         <% _.each(AlertOperatorsValues, function(alertOperator, index) { 
                if (alertOperator == Operator) { %>
-                  <option value="<%= alertOperator %>" selected="selected"><%= alertOperator %></option>
+                  <option value="<%= alertOperator %>" selected="selected"><%= AlertOperatorsLabels[index] %></option>
                <% } else { %>         
-                  <option value="<%= alertOperator %>"><%= alertOperator %></option>
+                  <option value="<%= alertOperator %>"><%= AlertOperatorsLabels[index]  %></option>
                <% }
             });%>			
       </select>
@@ -143,8 +143,8 @@
             <div class="website-answer-area-preview">
                <%
                if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_YES_NO) { %>
-                   <input type="radio" name="yes-no-answer" value="Yes" /> Yes <br/>
-                   <input type="radio" name="yes-no-answer" value="No" /> No  
+                   <input type="radio" name="yes-no-answer" value="1" /> Yes <br/>
+                   <input type="radio" name="yes-no-answer" value="2" /> No  
                <% 
                } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_FREE_TEXT) {
                %>

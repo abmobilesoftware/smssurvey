@@ -8,6 +8,7 @@ using smsSurvery.Surveryer.ReportHelpers;
 using smsSurvery.Surveryer.WordCloud;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Globalization;
 
 namespace smsSurvery.Surveryer.Controllers
 {
@@ -18,6 +19,7 @@ namespace smsSurvery.Surveryer.Controllers
       public const string cYesNoTypeQuestion = "YesNo";
       public const string cSelectManyFromManyTypeQuestion = "SelectManyFromMany";
       public const string cSelectOneFromManyTypeQuestion = "SelectOneFromMany";
+      private const String cDateFormat = "yyyy-MM-dd H:mm:ss";
 
       private smsSurveyEntities db = new smsSurveyEntities();
 
@@ -40,7 +42,11 @@ namespace smsSurvery.Surveryer.Controllers
                switch (question.Type)
                {
                   case cRatingsTypeQuestion:
-                     res = GenerateResultForRatingQuestion(question, new string[0]);
+                     {
+                        DateTime intervalStart = new DateTime(2013, 1, 1);
+                        DateTime intervalEnd = new DateTime(2013, 12, 12);
+                        res = GenerateResultForRatingQuestion(question, intervalStart, intervalEnd, new string[0]);
+                     }
                      break;
                   case cFreeTextTypeQuestion:
 
@@ -82,8 +88,10 @@ namespace smsSurvery.Surveryer.Controllers
       }
 
       [HttpGet]
-      public JsonResult GetSurveyQuestionResults(int questionId, string[] tags)
-      {        
+      public JsonResult GetSurveyQuestionResults(int questionId, String iIntervalStart, String iIntervalEnd, string[] tags)
+      {
+         DateTime intervalStart = DateTime.ParseExact(iIntervalStart, cDateFormat, CultureInfo.InvariantCulture);
+         DateTime intervalEnd = DateTime.ParseExact(iIntervalEnd, cDateFormat, CultureInfo.InvariantCulture);
          //for each question in the survey, aggregate the results
          Question question = db.QuestionSet.Find(questionId);                
          QuestionSurveyResults res = null;
@@ -95,8 +103,8 @@ namespace smsSurvery.Surveryer.Controllers
             case cYesNoTypeQuestion:
             case cSelectOneFromManyTypeQuestion:
                {
-                  string[] optionDef = question.ValidAnswersDetails.Split(';');
-                  res = GenerateResultForRatingQuestion(question,tags);
+                  string[] optionDef = question.ValidAnswersDetails.Split(';');                
+                  res = GenerateResultForRatingQuestion(question, intervalStart, intervalEnd, tags);
                   List<RepDataRow> pieChartContent = new List<RepDataRow>();
                   foreach (var rowData in res.AnswersPerValidOption)
                   {
@@ -133,8 +141,8 @@ namespace smsSurvery.Surveryer.Controllers
          return null;
       }
 
-     
-      private QuestionSurveyResults GenerateResultForRatingQuestion(Question q, string[] tags)
+
+      private QuestionSurveyResults GenerateResultForRatingQuestion(Question q, DateTime intervalStart, DateTime intervalEnd, string[] tags)
       {
          //we need the possible values - only valid answers are to be considered
          /**the output should contain
@@ -151,7 +159,11 @@ namespace smsSurvery.Surveryer.Controllers
 
          int validResponses = 0;
          tags = tags ?? new string[0];
-         foreach (var result in q.Result.Where(r=> !tags.Except(r.SurveyResult.Tags.Select(tag => tag.Name)).Any()))
+         IEnumerable<Result> resultsToAnalyze = q.Result.Where(r =>
+                     !tags.Except(r.SurveyResult.Tags.Select(tag => tag.Name)).Any() &&
+                     intervalStart <= r.SurveyResult.DateRan &&
+                     r.SurveyResult.DateRan <= intervalEnd);
+         foreach (var result in resultsToAnalyze)
          {
             if (validPossibleAnswers.Contains(result.Answer))
             {
@@ -161,19 +173,23 @@ namespace smsSurvery.Surveryer.Controllers
          }
          //now in resultsPerAnswer we should have, per possible answer value the number of responses and in validResponses the total number of valid/acceptable responses
          QuestionSurveyResults outcome = new QuestionSurveyResults();
-         outcome.TotalNumberOfAnswers = q.Result.Where(r => !tags.Except(r.SurveyResult.Tags.Select(tag => tag.Name)).Any()).Count();
+         outcome.TotalNumberOfAnswers = resultsToAnalyze.Count();
          outcome.TotalNumberOfValidAnswers = validResponses;
          outcome.ValidOptions = validPossibleAnswers;
          outcome.AnswersPerValidOption = resultsPerAnswer;
          return outcome;
       }     
 
-      public static TagCloud GetTagCloudData(Question q, string[] tags)
+      public static TagCloud GetTagCloudData(Question q,
+         DateTime intervalStart,
+         DateTime intervalEnd,
+         string[] tags)
       {
          using (smsSurveyEntities  db = new smsSurveyEntities())
          {
             List<string> stuff = new List<string>();
-            var results = q.Result.Where(r => !tags.Except(r.SurveyResult.Tags.Select(tag => tag.Name)).Any());
+            var results = q.Result.Where(r => !tags.Except(r.SurveyResult.Tags.Select(tag => tag.Name)).Any() &&
+               intervalStart <= r.SurveyResult.DateRan && r.SurveyResult.DateRan <= intervalEnd);
             foreach (var item in results)
             {
                stuff.AddRange(Regex.Split(item.Answer, "\\W+"));
@@ -232,9 +248,11 @@ namespace smsSurvery.Surveryer.Controllers
           * assume that each tag defines a location
           */
       [HttpGet]
-      public JsonResult GetTagComparisonReportForRatingQuestion(int questionID, string[] tags = null)
+      public JsonResult GetTagComparisonReportForRatingQuestion(int questionID, String iIntervalStart, String iIntervalEnd, string[] tags = null)
       {
          //TODO check if tags are location tags
+         DateTime intervalStart = DateTime.ParseExact(iIntervalStart, cDateFormat, CultureInfo.InvariantCulture);
+         DateTime intervalEnd = DateTime.ParseExact(iIntervalEnd, cDateFormat, CultureInfo.InvariantCulture);
 
          var headerContent = new List<RepDataColumn>();
 
@@ -258,7 +276,7 @@ namespace smsSurvery.Surveryer.Controllers
             QuestionSurveyResults[] results = new QuestionSurveyResults[tags.Count()];
             for (int i = 0; i < tags.Count(); i++)
             {
-               QuestionSurveyResults qRes = GenerateResultForRatingQuestion(question, new string[1] { tags[i] });
+               QuestionSurveyResults qRes = GenerateResultForRatingQuestion(question, intervalStart,intervalEnd, new string[1] { tags[i] });
                results[i] = qRes;
             }
             List<RepDataRow> rows = new List<RepDataRow>();
@@ -293,15 +311,18 @@ namespace smsSurvery.Surveryer.Controllers
       [HttpGet]
       public ActionResult GetWordCloud(
          int questionId,
+         String iIntervalStart, String iIntervalEnd,
           string[] tags
          ) 
       {
          //assuming that the question and valid
+         DateTime intervalStart = DateTime.ParseExact(iIntervalStart, cDateFormat, CultureInfo.InvariantCulture);
+         DateTime intervalEnd = DateTime.ParseExact(iIntervalEnd, cDateFormat, CultureInfo.InvariantCulture);
          Question question = db.QuestionSet.Find(questionId);
          tags = tags ?? new string[0];
          if (question != null && question.Type == ReportsController.cFreeTextTypeQuestion)
          {         
-            return PartialView(GetTagCloudData(question,tags));
+            return PartialView(GetTagCloudData(question,intervalStart, intervalEnd, tags));
          }         
          return null;
       }
@@ -309,12 +330,15 @@ namespace smsSurvery.Surveryer.Controllers
       [HttpGet]
       public JsonResult GetSurveyOverview(
          int surveyPlanId,
+         String iIntervalStart, String iIntervalEnd,
          string[] tags)
       {
+         DateTime intervalStart = DateTime.ParseExact(iIntervalStart, cDateFormat, CultureInfo.InvariantCulture);
+         DateTime intervalEnd = DateTime.ParseExact(iIntervalEnd, cDateFormat, CultureInfo.InvariantCulture);
          //go through all surveyResults and group them by completion rate
          SurveyPlan survey = db.SurveyPlanSet.Find(surveyPlanId);
          tags = tags ?? new string[0];
-         var surveyResults = (from s in survey.SurveyResult where (!tags.Except(s.Tags.Select(tag => tag.Name)).Any())
+         var surveyResults = (from s in survey.SurveyResult where (!tags.Except(s.Tags.Select(tag => tag.Name)).Any() && intervalStart <= s.DateRan && s.DateRan <= intervalEnd)
                   group s by s.PercentageComplete into g 
                   select new { PercentageComplete = g.Key, Count = g.Count() }).OrderBy(i => i.PercentageComplete);         
          int totalNumberOfSentSurveys = 0;

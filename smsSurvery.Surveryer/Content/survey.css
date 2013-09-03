@@ -18,7 +18,7 @@
 }
 
 #survey {
-    text-indent: 1em;
+    /*text-indent: 1em;*/
     position:relative;
 }
 
@@ -79,9 +79,7 @@ button {
         padding:0.3em;
     }
 
-    #introMessage {
-       text-align: center;
-    }
+
 /* END HEADER */
 
 /* QUESTION */
@@ -90,7 +88,7 @@ div.question {
     margin-bottom: 0.5em;
     background: #F4F7F8;
     border-bottom: 1px solid #D6DEE3;
-    text-align: center;
+    /*text-align: center;*/
 }
 
         div.question h4.questionTitle {
@@ -100,7 +98,7 @@ div.question {
             color: #FFFFFF;
             padding: 10px 7px;
             border-top: 0.1em solid #0A6DF6;
-            line-height: 1.2em;
+            /*line-height: 1.2em;*/
             display:block;
         }
 
@@ -120,7 +118,7 @@ div.question div.answerArea {
 
 textarea.comment {
     color: #000;
-    font: 1em sans-serif;
+    /*font: 1em sans-serif;*/
     width: 100%;
 }
 
@@ -166,17 +164,24 @@ footer {
 .page {
    float:left;
    width: 100%;
-   font-family:sans-serif;
+   /*font-family:sans-serif;*/
+   font-family: 'Arvo', serif;
 }
 
 /* STAR */
 .star {
-    display: inline;
+    display: inline-block;
 }
 
 .starImg {
-    width: 1.5em;
-    height: 1.5em;
+    width: 50px;
+    height: 50px;
+    display: inline-block;
+    background-position: 0px 0px;
+    background-image: url("/Content/images/stars.png");
+}
+.starActive {
+   background-position: 50px 0px;
 }
 
 .invisibleByDefault {
@@ -188,18 +193,45 @@ footer {
 
 /* END QUESTIONS PAGE */
 
-/* THANK YOU PAGE */
+
+
+
+
+
+.surveyMessage p{
+   background: #0C2639;
+   line-height: 35px;
+   color: #FFF;
+   font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+   /*font-size: 20px;*/
+}
+
+.surveyMessage {
+   /*text-align: center;*/
+}
+
+input[type=checkbox].css-checkbox { position: absolute;  overflow: hidden;  clip: rect(0 0 0 0);  height:1px;  width:1px;  margin:-1px;  padding:0; border:0; }  
+input[type=checkbox].css-checkbox + label.css-label { padding-left:20px; height:17px;  display:inline-block; line-height:17px; background-repeat:no-repeat; background-position: 0 0; font-size:15px; vertical-align:middle; cursor:pointer; }  
+input[type=checkbox].css-checkbox:checked + label.css-label { background-position: 0 -17px; } 
+ .css-label{ background-image:url(http://csscheckbox.com/checkboxes/elegant.png); }
+
+ /* THANK YOU PAGE */
 #thankYouPage {
-text-indent: 0px;
-position:relative;
-font-family: sans-serif;
+
 }
 
 #thankYouMessage {
-    padding-left:1em;
-    padding-top:0.5em;
-    padding-bottom:0.5em;
-    font-size:1.3em;
+  
+}
+
+#surveyUserInfo label {
+   text-indent: 0px;
+}
+
+.followup {
+   font-size: 20px;
+   color: #0C2639;
+   margin: 0px 0px 5px 0px;
 }
 
 #userInfo {
@@ -207,23 +239,69 @@ font-family: sans-serif;
     background: #F4F7F8;
     border: 1px solid #D6DEE3;
     font-size: 1.1em;
+    text-indent: 0px;
 }
 
 #userInfo label {
 line-height: 1.2em;
 }
 
-    #userInfo input {
-        font-size:1.1em;
-        height:1.2em;
-    }
-
-#introMessage p{
-   background: #0C2639;
-   line-height: 35px;
-   color: #FFF;
-   font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-   font-size: 20px;
+#userInfo input {
+   font-size:1.1em;
+   height:1.2em;
 }
 
-input[type=checkbox].css-checkbox { position: absolute;  overflow: hidden;  clip: rect(0 0 0 0);  height:1px;  width:1px;  margin:-1px;  padding:0; border:0; }  input[type=checkbox].css-checkbox + label.css-label { padding-left:20px; height:17px;  display:inline-block; line-height:17px; background-repeat:no-repeat; background-position: 0 0; font-size:15px; vertical-align:middle; cursor:pointer; }  input[type=checkbox].css-checkbox:checked + label.css-label { background-position: 0 -17px; }  .css-label{ background-image:url(http://csscheckbox.com/checkboxes/elegant.png); }
+input[type=radio] {
+    display:none;
+}
+ 
+input[type=radio] + label {
+    width: 75px;
+    display:inline-block;
+    margin:-2px;
+    padding: 4px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    line-height: 20px;
+    color: #333;
+    text-align: center;
+    text-shadow: 0 1px 1px rgba(255,255,255,0.75);
+    vertical-align: middle;
+    cursor: pointer;
+    background-color: #f5f5f5;
+    background-image: -moz-linear-gradient(top,#fff,#e6e6e6);
+    background-image: -webkit-gradient(linear,0 0,0 100%,from(#fff),to(#e6e6e6));
+    background-image: -webkit-linear-gradient(top,#fff,#e6e6e6);
+    background-image: -o-linear-gradient(top,#fff,#e6e6e6);
+    background-image: linear-gradient(to bottom,#fff,#e6e6e6);
+    background-repeat: repeat-x;
+    border: 1px solid #ccc;
+    border-color: #e6e6e6 #e6e6e6 #bfbfbf;
+    border-color: rgba(0,0,0,0.1) rgba(0,0,0,0.1) rgba(0,0,0,0.25);
+    border-bottom-color: #b3b3b3;
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff',endColorstr='#ffe6e6e6',GradientType=0);
+    filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+    -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,0.2),0 1px 2px rgba(0,0,0,0.05);
+    -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,0.2),0 1px 2px rgba(0,0,0,0.05);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.2),0 1px 2px rgba(0,0,0,0.05);
+}
+ 
+input[type=radio]:checked + label {
+       background-image: none;
+    outline: 0;
+    -webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
+    -moz-box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
+        background-color:#e0e0e0;
+}
+
+.starsArea {
+   width: 300px;
+   height:50px;
+   margin-left: auto;
+   margin-right: auto;
+}
+
+#survey h4 {
+   font-weight: normal;
+}

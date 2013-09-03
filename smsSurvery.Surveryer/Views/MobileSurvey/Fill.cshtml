@@ -10,7 +10,7 @@
     <meta name="viewport" content="width=device-width" />
     <title>@Global.MobileSurveyPageTitle</title>   
     @Styles.Render("~/bundles/MobileSurveyCss")
-   
+    <link href='http://fonts.googleapis.com/css?family=Arvo:400,700' rel='stylesheet' type='text/css'>
 <script id="mobileSurveyTemplate" type="text/template">   
    <div class="questionsArea">
 
@@ -23,8 +23,10 @@
             <div class="answerArea">
                <%
                if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_YES_NO) { %>
-                   <input type="radio" name="yes-no-answer" value="1" /> Yes <br/>
-                   <input type="radio" name="yes-no-answer" value="2" /> No  
+                   <input type="radio" id="y-<%= QuestionNumber %>" name="yes-no-answer" value="1">
+                   <label for="y-<%= QuestionNumber %>">@Global.MobileSurveyYesLabel</label>
+                   <input type="radio" id="n-<%= QuestionNumber %>" name="yes-no-answer" value="2">
+                   <label for="n-<%= QuestionNumber %>">@Global.MobileSurveyNoLabel</label>
                <% 
                } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_FREE_TEXT) {
                %>
@@ -42,7 +44,7 @@
                } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY) {
                %>     
                      <select class="answer list" name="answer">
-                        <option value="noValue">Select an answer</option>
+                        <option value="noValue">@Global.MobileSurveySelectOneFromManyLabel</option>
                     <% _.each(Answers, function(value, key, list) { %>
                         <option value="<%= value.AnswerIdentifier %>"><%= value.AnswerLabel %></option>
                     <% }); %> 
@@ -55,34 +57,66 @@
 
 <script type="text/template" id="star-template">
         <% if (Active) { %>
-            <a href="#"><img class="starImg" src="/Content/images/star50.png" /></a>
+            <a href="#" class="starImg starActive" src="/Content/images/stars.png" />
+
             <% } else { %>
-            <a href="#"><img class="starImg" src="/Content/images/star50_inactive.png" /></a>
+            <a href="#"  class="starImg" src="/Content/images/stars.png" />
             <% } %>
 </script>
 
 <script type="text/template" id="star-bar-template">
+   <div class="starsArea">
+
+   </div>
    <fieldset class='additionalInfo invisibleByDefault'>
-      <legend class='stars-additional-info'>Why?</legend><textarea  class='comment'></textarea>
+      <legend class='stars-additional-info'>@Global.MobileSurveyRatingAddionalInfoLabel</legend><textarea  class='comment'></textarea>
    </fieldset>
   <input type='hidden' class='answer' value='noValue' />
 </script>
 
-<script type="text/template" id="thankyoupage-template">
-      <div id="thankYouMessage"><strong>Thank you</strong> for filling in this survey</div>
-   @if ((int) @ViewBag.IsFeedback != 0)
-   {
-      <div id="userInfo">
-               <fieldset>
-                  <label for="email">
-                     Enter your e-mail address to receive the voucher:
-                  </label>
-                  <input id="email" type="email" /><br />
-                  <button id="sendBtn" class="enabled small">Send</button>
-               </fieldset>
-      </div>
-   }
-         
+<script type="text/template" id="thankyoupage-template">  
+         <header>
+                   <div class="headerContainer">
+                     <img id="pageIcon" src="/Content/images/small-icon.png" />
+                     <h3 id="pageTitle">@ViewBag.SurveyTitle</h3>
+                 
+                   </div>                       
+        </header>
+         <section id="thankYouMessage" class="surveyMessage">
+            <p>
+            @ViewBag.ThankYouMessage
+            </p>
+         </section>
+      @if ((int) @ViewBag.IsFeedback != 0)
+      {
+         <div id="userInfo">
+                  <fieldset id="surveyUserInfo">
+                     <label class="followup">
+                        @* If you like to be informed about the steps taken by us to improve on your feedback please leave us some personal details *@
+                        @* If you would like to receive the results of this survey please provide us some personal details *@
+                       @Global.MobileSurveyLeavePersonalInfoLabel
+                     </label>
+                     <div>
+                        <label for="name">@Global.MobileSurveyPersonalInfoNameLabel</label>
+                        <input id="name" type="text" /><br />
+                     </div>
+                     <div>
+                        <label for="surname">@Global.MobileSurveyPersonalInfoSurnameLabel</label>
+                        <input id="surname" type="text" /><br />
+                     </div>
+                     <div>
+                        <label for="email">@Global.MobileSurveyPersonalInfoEmailLabel</label>
+                        <input id="email" type="email" /><br />
+                     </div>
+                     <div>
+                        <label for="telephone">@Global.MobileSurveyPersonalInfoPhoneLabel</label>
+                        <input id="telephone" type="tel" />
+                     </div>                    
+                  </fieldset>
+                  <button id="sendPersonalDetailsBtn" class="enabled">@Global.MobileSurveyPersonalInfoSubmitBtnLabel</button>                 
+                  <input id="personalInfoSubmitted" type='hidden' value='@Global.MobileSurveyPersonalInfoSubmittedLabel' />
+         </div>
+      }    
 </script>   
 </head>
 
@@ -94,12 +128,11 @@
             <header>
                 <div class="headerContainer">
                   <img id="pageIcon" src="/Content/images/small-icon.png" />
-                  <h3 id="pageTitle">@ViewBag.SurveyTitle</h3>
-                 
+                  <h3 id="pageTitle">@ViewBag.SurveyTitle</h3>                 
                 </div>                       
             </header>
            <div class="clear" />
-           <section id="introMessage">
+           <section id="introMessage" class="surveyMessage">
                 <p>
                       @ViewBag.IntroMessage
                 </p>

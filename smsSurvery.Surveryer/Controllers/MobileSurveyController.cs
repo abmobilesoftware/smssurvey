@@ -15,6 +15,7 @@ namespace smsSurvery.Surveryer.Controllers
         
        }
         private smsSurveyEntities db = new smsSurveyEntities();
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         [HttpGet]
         public ActionResult Fill(int id)
@@ -36,6 +37,7 @@ namespace smsSurvery.Surveryer.Controllers
                  ViewBag.SurveyTitle = "Mobile survey";
                  ViewBag.IsFeedback = 0;
                  ViewBag.IntroMessage = runningSurvey.SurveyPlan.IntroMessage;
+                 ViewBag.ThankYouMessage = runningSurvey.SurveyPlan.ThankYouMessage;
                  return View();
               }
               else
@@ -64,6 +66,7 @@ namespace smsSurvery.Surveryer.Controllers
               ViewBag.Id = id;
               ViewBag.SurveyTitle = "Feedback";
               ViewBag.IntroMessage = survey.IntroMessage;
+              ViewBag.ThankYouMessage = survey.ThankYouMessage;
               ViewBag.IsFeedback = 1;
               return View("Fill");
            }
@@ -88,10 +91,12 @@ namespace smsSurvery.Surveryer.Controllers
         }      
 
         [HttpPost]
-        public void SaveSurvey(List<QuestionResponse> questions, int surveyResultId, int surveyPlanId)
-        {
+        public JsonResult SaveSurvey(List<QuestionResponse> questions, int surveyResultId, int surveyPlanId)
+        {       
            //for mobile surveys the survey language is the default Survey definition language
-           SurveyResult surveyToAnalyze = null;
+           //we return the Id of the save surveyResult
+           int savedSurveyResult = surveyResultId;
+           SurveyResult surveyToAnalyze = null;           
            //DA take all the responses and save the to the corresponding surveyResult
            if (surveyResultId < 0)
            {
@@ -105,14 +110,14 @@ namespace smsSurvery.Surveryer.Controllers
               foreach (var q in questions)
               {
                  var currentQuestion = db.QuestionSet.Find(q.Id);
-                 
-                 var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion };                
+
+                 var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion, AdditionalInfo = q.AdditionalInfo };                
                  newSurvey.Result.Add(res);
               }
               db.SaveChanges();
               db.Entry(newSurvey).Reload();
               surveyToAnalyze = newSurvey;
-             
+              savedSurveyResult = newSurvey.Id;
            }
            else
            {      
@@ -139,8 +144,54 @@ namespace smsSurvery.Surveryer.Controllers
               var currentQuestion = db.QuestionSet.Find(q.Id);
 
               var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion };
-              AnswerController.HandleAlertsForQuestion(currentQuestion, q.PickedAnswer, surveyToAnalyze.Id, this);             
+              AlertsController.HandleAlertsForQuestion(currentQuestion, q.PickedAnswer, surveyToAnalyze.Id, this, logger);             
            }
+           return Json(savedSurveyResult, JsonRequestBehavior.AllowGet);
+        }
+
+        public class RespondentInfo
+        {
+           public string Name { get; set; }
+           public string Surname { get; set; }
+           public string Email { get; set; }
+           public string Telephone { get; set; }
+        }
+        [HttpPost]
+        public void SaveRespondentInfo(RespondentInfo info, int surveyResultId)
+        {
+           //get the customer corresponding to the survey result and update its info
+           var survey = db.SurveyResultSet.Find(surveyResultId);
+           if (survey != null)
+           {
+              var customer = survey.Customer;              
+              //Since Telephone is the Primary Key
+              var existingCustomer = db.CustomerSet.Find(info.Telephone);
+              if (existingCustomer != null)
+              {
+                 //Should we update this info???
+                 //existingCustomer.Name = info.Name;
+                 //existingCustomer.Surname = info.Surname;
+                 //existingCustomer.Email = info.Email;
+              }
+              else
+              {
+                 //delete the bogus customer
+
+                 //and add a "realer" one
+                 var moreAccurateCustomer = new Customer()
+                 {
+                    PhoneNumber = info.Telephone,
+                    Name = info.Name,
+                    Surname = info.Surname,
+                    Email = info.Email
+                 };
+                 db.CustomerSet.Add(moreAccurateCustomer);
+                 
+                 survey.Customer = moreAccurateCustomer;
+                 db.CustomerSet.Remove(customer);
+                 db.SaveChanges();
+              }              
+           }           
         }
         protected override void Dispose(bool disposing)
         {

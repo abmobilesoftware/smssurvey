@@ -120,8 +120,38 @@
   <data name="MobileSurveyFooterCaption" xml:space="preserve">
     <value>Dezvoltat de</value>
   </data>
+  <data name="MobileSurveyLeavePersonalInfoLabel" xml:space="preserve">
+    <value>Daca doriti sa fiti informat despre masurile luate pe baza feedbackului dumneavoastra va rugam sa ne  impartasiti cateva informatii despre dumneavoastra:</value>
+  </data>
+  <data name="MobileSurveyNoLabel" xml:space="preserve">
+    <value>Nu</value>
+  </data>
   <data name="MobileSurveyPageTitle" xml:space="preserve">
     <value>Chestionar</value>
+  </data>
+  <data name="MobileSurveyPersonalInfoEmailLabel" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="MobileSurveyPersonalInfoNameLabel" xml:space="preserve">
+    <value>Nume</value>
+  </data>
+  <data name="MobileSurveyPersonalInfoPhoneLabel" xml:space="preserve">
+    <value>Numar de telefon</value>
+  </data>
+  <data name="MobileSurveyPersonalInfoSubmitBtnLabel" xml:space="preserve">
+    <value>Trimiteti informatiile personale</value>
+  </data>
+  <data name="MobileSurveyPersonalInfoSubmittedLabel" xml:space="preserve">
+    <value>Informatii trimise. Va multumim!</value>
+  </data>
+  <data name="MobileSurveyPersonalInfoSurnameLabel" xml:space="preserve">
+    <value>Prenume</value>
+  </data>
+  <data name="MobileSurveyRatingAddionalInfoLabel" xml:space="preserve">
+    <value>Va rugam sa va argumentati alegerea:</value>
+  </data>
+  <data name="MobileSurveySelectOneFromManyLabel" xml:space="preserve">
+    <value>Selectati un raspuns</value>
   </data>
   <data name="MobileSurveySubmitButtonCaption" xml:space="preserve">
     <value>Trimite</value>
@@ -134,6 +164,9 @@
   </data>
   <data name="MobileSurveySubmittedTitle" xml:space="preserve">
     <value>Chestionar deja completat</value>
+  </data>
+  <data name="MobileSurveyYesLabel" xml:space="preserve">
+    <value>Da</value>
   </data>
   <data name="SmsMobileSurveyTemplate" xml:space="preserve">
     <value>Va rugam sa completati chestionarul de la {0}</value>

@@ -3,16 +3,25 @@ SurveyElements.Star = Backbone.Model.extend({});
 SurveyElements.StarView = Backbone.View.extend({
    className: "star",
    events: {
-      "click a": "click"
+      "click .starImg": "click"
    },
    initialize: function () {
-      _.bindAll(this, "click", "render");
+      _.bindAll(this, "click", "render","activeStatusChanged");
       this.template = _.template($("#star-template").html());
-      this.model.on("change:Active", this.render);
+      this.model.on("change:Active", this.activeStatusChanged);
    },
    render: function () {
       this.$el.html(this.template(this.model.toJSON()));
       return this;
+   },
+   activeStatusChanged: function()
+   {
+      var activeStatus = this.model.get("Active");
+      if (activeStatus) {
+         $(".starImg", this.$el).addClass("starActive");
+      } else {
+         $(".starImg", this.$el).removeClass("starActive");
+      }
    },
    click: function (event) {
       event.preventDefault();
@@ -56,12 +65,14 @@ SurveyElements.StarBarView = Backbone.View.extend({
       this.render();
    },
    render: function () {
+      this.$el.append(this.template());
       _.each(this.starsCollection.models, function (value, index, list) {
          var starView = new SurveyElements.StarView({ model: value });
-         this.$el.append(starView.render().el);
+         $(".starsArea",this.$el).append(starView.render().el);
+         //this.$el.append();
       }, this);
 
-      this.$el.append(this.template());
+      
       this.dom = {
          $ADDITIONAL_INFO: $(".additionalInfo", this.$el),
          $ANSWER: $(".answer", this.$el)

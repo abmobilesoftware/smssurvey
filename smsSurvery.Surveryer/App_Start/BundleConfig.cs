@@ -38,10 +38,14 @@ namespace smsSurvery.Surveryer
          bundles.Add(new ScriptBundle("~/bundles/referencescripts").Include(
                      "~/Scripts/jquery.tagsinput.js"));                     
 
-         bundles.Add(new ScriptBundle("~/bundles/custom").Include(                     
+         bundles.Add(new ScriptBundle("~/bundles/activityReports").Include(
+                     "~/MyScripts/DateHelper.js",
+                     "~/MyScripts/ReportsFilterArea.js",  
                      "~/MyScripts/reports.js"));
          
-         bundles.Add(new ScriptBundle("~/bundles/reports").Include(
+         bundles.Add(new ScriptBundle("~/bundles/comparisonReports").Include(
+                     "~/MyScripts/DateHelper.js",
+                     "~/MyScripts/ReportsFilterArea.js",
                      "~/MyScripts/reportsTags.js"));
 
 
@@ -70,7 +74,8 @@ namespace smsSurvery.Surveryer
             "~/Content/survey.css"
             ));
 
-         bundles.Add(new StyleBundle("~/Content/custom").Include(           
+         bundles.Add(new StyleBundle("~/Content/custom").Include(     
+            "~/Content/jquery-ui-1.8.23.custom.css",
             "~/Content/jquery.tagsinput.css"));
 
          bundles.Add(new StyleBundle("~/Content/themes/base/css").Include(

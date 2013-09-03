@@ -50,6 +50,18 @@
       <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.WindowsAzure.Configuration, Version=1.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.WindowsAzure.ConfigurationManager.1.8.0.0\lib\net35-full\Microsoft.WindowsAzure.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.Diagnostics, Version=1.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.ServiceRuntime, Version=1.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAzure.StorageClient, Version=1.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\WindowsAzure.Storage.1.7.0.0\lib\net35-full\Microsoft.WindowsAzure.StorageClient.dll</HintPath>
+    </Reference>
     <Reference Include="Mvc.Mailer">
       <HintPath>..\packages\MvcMailer.4.5\lib\45\Mvc.Mailer.dll</HintPath>
     </Reference>
@@ -60,12 +72,16 @@
     <Reference Include="Nexmo-CSharp-lib">
       <HintPath>ExternalReferences\Nexmo-CSharp-lib.dll</HintPath>
     </Reference>
+    <Reference Include="OneApi">
+      <HintPath>ExternalReferences\OneApi.dll</HintPath>
+    </Reference>
     <Reference Include="RestSharp">
       <HintPath>..\packages\RestSharp.104.1\lib\net4\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Data.Services.Client" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -245,6 +261,7 @@
     <Compile Include="Models\SmsInterface\SmsInterfaceFactory.cs" />
     <Compile Include="Models\SurveyPlan.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\ElmahHandledErrorLoggerFilter.cs" />
     <Compile Include="Utilities\RequiredIfValidator.cs" />
     <Compile Include="Utilities\ViewExtensionMethods.cs" />
     <Compile Include="WordCloud\ByLanguageFactory.cs" />
@@ -270,14 +287,29 @@
     <Content Include="Content\images\small-icon.png" />
     <Content Include="Content\images\star50.png" />
     <Content Include="Content\images\star50_inactive.png" />
+    <Content Include="Content\images\stars.png" />
+    <Content Include="Content\images\ui-bg_diagonals-thick_15_0b3e6f_40x40.png" />
+    <Content Include="Content\images\ui-bg_dots-medium_30_0b58a2_4x4.png" />
+    <Content Include="Content\images\ui-bg_dots-small_20_333333_2x2.png" />
+    <Content Include="Content\images\ui-bg_dots-small_30_a32d00_2x2.png" />
+    <Content Include="Content\images\ui-bg_dots-small_40_00498f_2x2.png" />
+    <Content Include="Content\images\ui-bg_flat_0_aaaaaa_40x100.png" />
+    <Content Include="Content\images\ui-bg_flat_40_292929_40x100.png" />
+    <Content Include="Content\images\ui-bg_gloss-wave_20_111111_500x100.png" />
+    <Content Include="Content\images\ui-icons_00498f_256x240.png" />
+    <Content Include="Content\images\ui-icons_98d2fb_256x240.png" />
+    <Content Include="Content\images\ui-icons_9ccdfc_256x240.png" />
+    <Content Include="Content\images\ui-icons_ffffff_256x240.png" />
     <Content Include="Content\jquery-ui-1.8.23.custom.css" />
     <Content Include="Content\jquery.tagsinput.css" />
     <Content Include="Content\survey.css" />
     <Content Include="Content\SurveyPlan\questionSet.css" />
     <Content Include="Content\SurveyResult\SurveyResult.css" />
     <Content Include="Content\WordCloud.css" />
+    <Content Include="MyScripts\DateHelper.js" />
     <Content Include="MyScripts\MobileSurvey.js" />
     <Content Include="MyScripts\Question.js" />
+    <Content Include="MyScripts\ReportsFilterArea.js" />
     <Content Include="MyScripts\SurveyAlertsModal.js" />
     <Content Include="MyScripts\SurveyAnswersModal.js" />
     <Content Include="MyScripts\SurveyElements.js" />
@@ -369,6 +401,7 @@
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <None Include="Properties\PublishProfiles\loyaltydemo.pubxml" />
     <None Include="Properties\PublishProfiles\smssurvey.pubxml" />
     <None Include="Properties\PublishProfiles\smssurveytest.pubxml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
@@ -472,6 +505,7 @@
     <Content Include="Views\MobileSurvey\Fill.cshtml" />
     <Content Include="Views\MobileSurvey\SurveyAlreadyCompleted.cshtml" />
     <Content Include="Views\Shared\_ViewStart.cshtml" />
+    <Content Include="Views\Shared\ReportFilterArea.cshtml" />
     <Content Include="Views\Shared\SearchBoxItems.cshtml" />
   </ItemGroup>
   <ItemGroup>
@@ -481,10 +515,6 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\compatelOneApi\OneApi\OneApi.csproj">
-      <Project>{bb105549-1799-4601-9d24-652773a187f5}</Project>
-      <Name>OneApi</Name>
-    </ProjectReference>
     <ProjectReference Include="..\smsSurvey.dbInterface\smsSurvey.dbInterface.csproj">
       <Project>{ce8ff7ed-dfb9-4908-bf2e-a3699a3512ff}</Project>
       <Name>smsSurvey.dbInterface</Name>

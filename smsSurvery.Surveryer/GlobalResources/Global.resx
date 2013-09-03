@@ -120,8 +120,38 @@
   <data name="MobileSurveyFooterCaption" xml:space="preserve">
     <value>Powered by</value>
   </data>
+  <data name="MobileSurveyLeavePersonalInfoLabel" xml:space="preserve">
+    <value>If you like to be informed about the steps taken by us to improve on your feedback please leave us some personal details:</value>
+  </data>
+  <data name="MobileSurveyNoLabel" xml:space="preserve">
+    <value>No</value>
+  </data>
   <data name="MobileSurveyPageTitle" xml:space="preserve">
     <value>Mobile Survey</value>
+  </data>
+  <data name="MobileSurveyPersonalInfoEmailLabel" xml:space="preserve">
+    <value>Email</value>
+  </data>
+  <data name="MobileSurveyPersonalInfoNameLabel" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="MobileSurveyPersonalInfoPhoneLabel" xml:space="preserve">
+    <value>Phone number</value>
+  </data>
+  <data name="MobileSurveyPersonalInfoSubmitBtnLabel" xml:space="preserve">
+    <value>Submit personal info</value>
+  </data>
+  <data name="MobileSurveyPersonalInfoSubmittedLabel" xml:space="preserve">
+    <value>Information submitted. Thank you!</value>
+  </data>
+  <data name="MobileSurveyPersonalInfoSurnameLabel" xml:space="preserve">
+    <value>Surname</value>
+  </data>
+  <data name="MobileSurveyRatingAddionalInfoLabel" xml:space="preserve">
+    <value>Please argument your choice:</value>
+  </data>
+  <data name="MobileSurveySelectOneFromManyLabel" xml:space="preserve">
+    <value>Select an answer</value>
   </data>
   <data name="MobileSurveySubmitButtonCaption" xml:space="preserve">
     <value>Submit</value>
@@ -134,6 +164,9 @@
   </data>
   <data name="MobileSurveySubmittedTitle" xml:space="preserve">
     <value>Survey completed</value>
+  </data>
+  <data name="MobileSurveyYesLabel" xml:space="preserve">
+    <value>Yes</value>
   </data>
   <data name="SmsMobileSurveyTemplate" xml:space="preserve">
     <value>Please fill in the survey at {0}</value>

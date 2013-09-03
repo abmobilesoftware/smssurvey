@@ -311,7 +311,7 @@ namespace smsSurvery.Surveryer.Controllers
                     //send ThankYouMessage
                     SendThankYouToCustomer(customer, numberToSendFrom, surveyToRun);                    
                  }
-                 HandleAlertsForQuestion(currentQuestion, text, runningSurvey.Id, this);
+                 AlertsController.HandleAlertsForQuestion(currentQuestion, text, runningSurvey.Id, this, logger);
               }
               else
               {
@@ -324,147 +324,7 @@ namespace smsSurvery.Surveryer.Controllers
            }
         }
 
-        public static void HandleAlertsForQuestion(Question currentQuestion, String answerText, int surveyResultId, Controller ctrl)
-        {
-           //triggerAnswer, when containing more values, should be ; separated
-           foreach (var alert in currentQuestion.QuestionAlertSet)
-           {
-              bool notificationRequired = false;
-              string alertCause = String.Empty;
-              int receivedAnswerAsInt = 0;
-              int alertTriggerAnswerAsInt = 0;
-              char separator = ';';
-              switch (alert.Operator)
-              {
-                 case "==":
-                    if (answerText == alert.TriggerAnswer)
-                    {
-                       notificationRequired = true;
-                    }
-                    break;
-                 case "!=":
-                    if (answerText != alert.TriggerAnswer)
-                    {
-                       notificationRequired = true; 
-                    }
-                    break;
-                 case "<":
-                    //< makes sense only for numeric type answers                   
-                    if (Int32.TryParse(answerText, out receivedAnswerAsInt) && Int32.TryParse(alert.TriggerAnswer, out alertTriggerAnswerAsInt))
-                    {
-                       if (receivedAnswerAsInt < alertTriggerAnswerAsInt)
-                       {
-                          notificationRequired = true;
-                          alertCause = String.Format("Received answer '{0}' < then threshold answer '{1}'", receivedAnswerAsInt, alertTriggerAnswerAsInt);
-                       }
-                    }                    
-                    break;
-                 case "<=":
-                    //< makes sense only for numeric type answers                   
-                    if (Int32.TryParse(answerText, out receivedAnswerAsInt) && Int32.TryParse(alert.TriggerAnswer, out alertTriggerAnswerAsInt))
-                    {
-                       if (receivedAnswerAsInt <= alertTriggerAnswerAsInt)
-                       {
-                          notificationRequired = true;
-                          alertCause = String.Format("Received answer '{0}' <= then threshold answer '{1}'", receivedAnswerAsInt, alertTriggerAnswerAsInt);
-                       }
-                    }
-                    break;
-                 case ">":
-                    //< makes sense only for numeric type answers                   
-                    if (Int32.TryParse(answerText, out receivedAnswerAsInt) && Int32.TryParse(alert.TriggerAnswer, out alertTriggerAnswerAsInt))
-                    {
-                       if (receivedAnswerAsInt > alertTriggerAnswerAsInt)
-                       {
-                          notificationRequired = true;
-                          alertCause = String.Format("Received answer '{0}' > then threshold answer '{1}'", receivedAnswerAsInt, alertTriggerAnswerAsInt);
-                       }
-                    }
-                    break;
-                 case ">=":
-                    //< makes sense only for numeric type answers                   
-                    if (Int32.TryParse(answerText, out receivedAnswerAsInt) && Int32.TryParse(alert.TriggerAnswer, out alertTriggerAnswerAsInt))
-                    {
-                       if (receivedAnswerAsInt >= alertTriggerAnswerAsInt)
-                       {
-                          notificationRequired = true;
-                          alertCause = String.Format("Received answer '{0}' >= then threshold answer '{1}'", receivedAnswerAsInt, alertTriggerAnswerAsInt);
-                       }
-                    }
-                    break;
-                 case "any":
-                 case "ANY":
-                    //find out if the received answer contains any of the trigger values
-                    //get the expected values                  
-                    var triggerValues = alert.TriggerAnswer.Split(separator);
-                    foreach (var val in triggerValues)
-                    {
-                       if (answerText.Contains(alert.TriggerAnswer))
-                       {
-                          notificationRequired = true;
-                          alertCause = String.Format("Keyword '{0}' detected'", val);
-                       }
-                       break;
-                    }                    
-                    break;
-                 case "all":
-                 case "ALL":
-                    //find out if the received answer contains all of the trigger values
-                    //get the expected values               
-                    var tValues = alert.TriggerAnswer.Split(separator);
-                    foreach (var val in tValues)
-                    {
-                       notificationRequired &=answerText.Contains(alert.TriggerAnswer);                       
-                    }
-                    if (notificationRequired)
-                    {
-                       alertCause = String.Format("Keywords '{0}' detected'", string.Join(", ", tValues));
-                    }
-                    break;
-                 case "contains":    
-                 case "CONTAINS":
-                    if (answerText.Contains(alert.TriggerAnswer))
-                    {
-                       notificationRequired = true;
-                       alertCause = String.Format("Keyword '{0}' detected'", alert.TriggerAnswer);
-                    }
-                    break;
-                 default:
-                    logger.Error("invalid operator detected");
-                    break;
-              }
-              if (notificationRequired)
-              {
-                 foreach (var notification in alert.AlertNotificationSet)
-                 {
-                    SendNotificationForAlert(notification, answerText, alertCause, surveyResultId, ctrl);
-                 }
-              }
-           }
-        }
-
-        public static void SendNotificationForAlert(AlertNotificationSet alert, String answerText, String alertCause, int surveyResultId, Controller ctrl)
-        {
-           switch (alert.Type)
-           {
-              case "email":
-                 AlertMailer mailer = new AlertMailer();
-                 //DA here we compose the email Subject & message
-                 var emailSubject = String.Format("Alert '{0}' triggered for question '{1}' ", alert.QuestionAlertSet.Description, alert.QuestionAlertSet.QuestionSet.Text);
-                 var message = "";
-                 //string linkToSurveyResults = String.Format("http://localhost:3288/SurveyResult/Details/{0}", surveyResultId);
-                 UrlHelper u = new UrlHelper(ctrl.ControllerContext.RequestContext);
-                 string linkToSurveyResults = ctrl.HttpContext.Request.Url.Scheme + "://" + ctrl.HttpContext.Request.Url.Authority + u.Action("Details", "SurveyResult", new { id = surveyResultId });
-                 var mail = mailer.SendAlert(emailSubject, alert.DistributionList, message, alertCause,linkToSurveyResults);
-                 mail.SendAsync();
-                 break;
-              case "twitter":
-                 break;
-              default:
-                 logger.ErrorFormat("Invalid notification alert detected {0}", alert.Type);
-                 break;
-           }
-        }
+        
 
        /**
         * DA the problem here is that a customer cannot have 2 surveys running at the same time
@@ -569,29 +429,36 @@ namespace smsSurvery.Surveryer.Controllers
            string prefix = String.Format(GlobalResources.Global.SmsQuestionIndexTemplate, q.Order, totalNumberOfQuestions);
            if (isFirstQuestion)
            {
-              prefix = introMessage + System.Environment.NewLine + prefix;
+              prefix = introMessage + System.Environment.NewLine + System.Environment.NewLine + prefix;
            }
-           var validAnswer = q.ValidAnswers.Split(';');
-           var validAnswerDetails = q.ValidAnswersDetails.Split(';');                
+           
            switch (q.Type)
            {
               case ReportsController.cFreeTextTypeQuestion:
-                 return prefix + q.Text;                 
+                 return prefix + q.Text;
               case ReportsController.cRatingsTypeQuestion:
-                 return prefix + q.Text + String.Format(GlobalResources.Global.SmsQuestionRatingSuffixTemplate, validAnswer[0], validAnswerDetails[0], validAnswer.Last(), validAnswerDetails.Last());                 
+                 {
+                    var validAnswer = q.ValidAnswers.Split(';');
+                    var validAnswerDetails = q.ValidAnswersDetails.Split(';');                
+                    return prefix + q.Text + String.Format(GlobalResources.Global.SmsQuestionRatingSuffixTemplate, validAnswer[0], validAnswerDetails[0], validAnswer.Last(), validAnswerDetails.Last());
+                 }
               case ReportsController.cYesNoTypeQuestion:
                  return prefix + q.Text + GlobalResources.Global.SmsQuestionYesNoSuffixTemplate;
               case ReportsController.cSelectManyFromManyTypeQuestion:
                 //DA TODO
                  return "";
-              case ReportsController.cSelectOneFromManyTypeQuestion:                
-                 List<string> pairs = new List<string>();
-                 for (int i = 0; i < validAnswer.Length; i++)
+              case ReportsController.cSelectOneFromManyTypeQuestion:
                  {
-                    pairs.Add(String.Format(GlobalResources.Global.SmsQuestionSelectOneFromManyMemberSuffixTemplate, validAnswer[i], validAnswerDetails[i]));
+                    var validAnswer = q.ValidAnswers.Split(';');
+                    var validAnswerDetails = q.ValidAnswersDetails.Split(';');                
+                    List<string> pairs = new List<string>();
+                    for (int i = 0; i < validAnswer.Length; i++)
+                    {
+                       pairs.Add(String.Format(GlobalResources.Global.SmsQuestionSelectOneFromManyMemberSuffixTemplate, validAnswer[i], validAnswerDetails[i]));
+                    }
+                    string suffix = String.Format(GlobalResources.Global.SmsQuestionSelectOneFromManySuffixTemplate, String.Join(", ", pairs));
+                    return prefix + q.Text + suffix;
                  }
-                 string suffix = String.Format(GlobalResources.Global.SmsQuestionSelectOneFromManySuffixTemplate, String.Join(", ", pairs));
-                 return prefix + q.Text + suffix;
               default:
                  return prefix + q.Text;
            }

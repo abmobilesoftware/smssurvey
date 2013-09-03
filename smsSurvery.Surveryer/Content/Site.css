@@ -950,5 +950,68 @@ textarea[name="Text"] {
    width:80%;
 }
 
-input[type=checkbox].css-checkbox { position: absolute;  overflow: hidden;  clip: rect(0 0 0 0);  height:1px;  width:1px;  margin:-1px;  padding:0; border:0; }  input[type=checkbox].css-checkbox + label.css-label { padding-left:20px; height:17px;  display:inline-block; line-height:17px; background-repeat:no-repeat; background-position: 0 0; font-size:15px; vertical-align:middle; cursor:pointer; }  input[type=checkbox].css-checkbox:checked + label.css-label { background-position: 0 -17px; }  .css-label{ background-image:url(http://csscheckbox.com/checkboxes/elegant.png); }
+input[type=checkbox].css-checkbox { position: absolute;  overflow: hidden;  clip: rect(0 0 0 0);  height:1px;  width:1px;  margin:-1px;  padding:0; border:0; }  
+input[type=checkbox].css-checkbox + label.css-label { padding-left:20px; height:17px;  display:inline-block; line-height:17px; background-repeat:no-repeat; background-position: 0 0; font-size:15px; vertical-align:middle; cursor:pointer; }  
+input[type=checkbox].css-checkbox:checked + label.css-label { background-position: 0 -17px; }  .css-label{ background-image:url(http://csscheckbox.com/checkboxes/elegant.png); }
 
+.dateSelectorArea {
+   display: inline-block;
+}
+/*styling the datepicker control*/
+.ui-datepicker-month {
+   height:20px;
+   padding: 0px 6px 0px 6px;
+}
+
+.dateFilterHorizontalLabel {
+   display:inline-block;
+   line-height: 30px;
+   vertical-align: middle;
+   padding: 4px 6px;
+}
+
+/*loading icons*/
+.loadingIndicatorArea {  
+  text-align: center;
+  position: absolute;
+   top: 0px;
+   left: 0px;
+   display: inline-block;
+}
+
+.loadingIndicatorContainer {
+   width:100%;
+   height:100%;
+   position:absolute;
+   top:0;
+   z-index:10;
+}
+
+.loadingIndicatorContainer > img {
+  vertical-align: middle;
+ z-index:11;
+}
+
+.graphsContainer {
+   width:100%;
+   height:100%;
+   position:relative;
+}
+.chart {
+   /*position: absolute;*/
+}
+
+.overlay {
+   width:100%;
+   height:100%;
+   background: black;
+   opacity:0.6;
+   position:absolute;
+   top:0;   
+}
+
+.graphsContainer > label {
+   text-align: center;
+   border: solid 1px #F5F8FA;
+   padding: 5px;
+}

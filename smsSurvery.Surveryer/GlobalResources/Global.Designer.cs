@@ -70,11 +70,101 @@ namespace smsSurvery.Surveryer.GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to If you like to be informed about the steps taken by us to improve on your feedback please leave us some personal details:.
+        /// </summary>
+        public static string MobileSurveyLeavePersonalInfoLabel {
+            get {
+                return ResourceManager.GetString("MobileSurveyLeavePersonalInfoLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to No.
+        /// </summary>
+        public static string MobileSurveyNoLabel {
+            get {
+                return ResourceManager.GetString("MobileSurveyNoLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Mobile Survey.
         /// </summary>
         public static string MobileSurveyPageTitle {
             get {
                 return ResourceManager.GetString("MobileSurveyPageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Email.
+        /// </summary>
+        public static string MobileSurveyPersonalInfoEmailLabel {
+            get {
+                return ResourceManager.GetString("MobileSurveyPersonalInfoEmailLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Name.
+        /// </summary>
+        public static string MobileSurveyPersonalInfoNameLabel {
+            get {
+                return ResourceManager.GetString("MobileSurveyPersonalInfoNameLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Phone number.
+        /// </summary>
+        public static string MobileSurveyPersonalInfoPhoneLabel {
+            get {
+                return ResourceManager.GetString("MobileSurveyPersonalInfoPhoneLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Submit personal info.
+        /// </summary>
+        public static string MobileSurveyPersonalInfoSubmitBtnLabel {
+            get {
+                return ResourceManager.GetString("MobileSurveyPersonalInfoSubmitBtnLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Information submitted. Thank you!.
+        /// </summary>
+        public static string MobileSurveyPersonalInfoSubmittedLabel {
+            get {
+                return ResourceManager.GetString("MobileSurveyPersonalInfoSubmittedLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Surname.
+        /// </summary>
+        public static string MobileSurveyPersonalInfoSurnameLabel {
+            get {
+                return ResourceManager.GetString("MobileSurveyPersonalInfoSurnameLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Please argument your choice:.
+        /// </summary>
+        public static string MobileSurveyRatingAddionalInfoLabel {
+            get {
+                return ResourceManager.GetString("MobileSurveyRatingAddionalInfoLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Select an answer.
+        /// </summary>
+        public static string MobileSurveySelectOneFromManyLabel {
+            get {
+                return ResourceManager.GetString("MobileSurveySelectOneFromManyLabel", resourceCulture);
             }
         }
         
@@ -111,6 +201,15 @@ namespace smsSurvery.Surveryer.GlobalResources {
         public static string MobileSurveySubmittedTitle {
             get {
                 return ResourceManager.GetString("MobileSurveySubmittedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes.
+        /// </summary>
+        public static string MobileSurveyYesLabel {
+            get {
+                return ResourceManager.GetString("MobileSurveyYesLabel", resourceCulture);
             }
         }
         

@@ -197,22 +197,25 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
 });
 MobileSurvey.ThankYouPageView = Backbone.View.extend({
    events: {
-      "click button": "sendEmail"
+      "click #sendPersonalDetailsBtn": "sendPersonalInfo"
+
    },
    initialize: function () {
       _.bindAll(this, "setWidth", "show",
-          "getHeight", "render");
+          "getHeight", "render","sendPersonalInfo",
+          "setSurveyResultId");
       this.template = _.template($("#thankyoupage-template").html());
-      this.sendBtn = new MobileSurvey.ButtonView({ el: $("#sendBtn", this.$el) });
-      this.sendBtn.setTitle("Send");
-      this.sendBtn.enable();
+    
       this.render();
+   },
+   setSurveyResultId: function(surveyResultId) {
+      this.surveyResultId = surveyResultId;
    },
    setWidth: function (value) {
       this.$el.css("width", value);
    },
    show: function () {
-      this.$el.show();
+      this.$el.show();   
    },
    enableSendBtn: function (event) {
       if (event.target.checked) {
@@ -221,8 +224,28 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
          this.sendBtn.disable();
       }
    },
-   sendEmail: function (event) {
-      alert("Send email");
+   sendPersonalInfo: function (event) {
+      $('#surveyUserInfo').slideToggle('slow');
+      this.sendBtn.setTitle($("#personalInfoSubmitted", this.$el).val());
+      this.sendBtn.disable();
+      var personalInfo = {};
+      personalInfo.Name = $('#name').val();
+      personalInfo.Surname = $('#surname').val();
+      personalInfo.Email = $('#email').val();
+      personalInfo.Telephone = $('#telephone').val();
+      var dataToSend = JSON.stringify({
+         info: personalInfo,
+         surveyResultId: this.surveyResultId         
+      });
+      $.ajax({
+         url: "/MobileSurvey/SaveRespondentInfo",
+         data: dataToSend,
+         type: 'post',
+         cache: false,
+         dataType: "json",
+         contentType: 'application/json',
+         traditional: true      
+      });
    },
    getHeight: function () {
       return this.$el.outerHeight();
@@ -232,6 +255,9 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
    },
    render: function () {
       this.$el.append(this.template());
+      this.sendBtn = new MobileSurvey.ButtonView({ el: $("#sendPersonalDetailsBtn", this.$el) });
+     
+      this.sendBtn.enable();
       return this.$el;
    }
 });
@@ -242,17 +268,16 @@ MobileSurvey.SurveyView = Backbone.View.extend({
       this.questionsPage = new MobileSurvey.SurveyMobileView({ el: $("#questionsPage"), model: this.model });
       this.thankYouPage = new MobileSurvey.ThankYouPageView({ el: $("#thankYouPage") });      
       this.questionsPage.on(this.questionsPage.pageEvents.THANK_YOU_PAGE,
-          this.goToThankYouPage);
-      this.questionsPage.on(this.questionsPage.pageEvents.THANK_YOU_PAGE,
          this.saveSurvey);
    },
-   goToThankYouPage: function () {
+   goToThankYouPage: function (surveyResultId) {
       var self = this;
       var pageWidthInPixels = this.questionsPage.getWidth() + "px";
       var expandedWidthPercent = "200%"; // width of two pages side by side
       var normalWidthPercent = "100%";
       this.questionsPage.setWidth(pageWidthInPixels);
       this.setWidth(expandedWidthPercent);
+      this.thankYouPage.setSurveyResultId(surveyResultId);
       this.thankYouPage.show();
       this.thankYouPage.setWidth(pageWidthInPixels);
       /*
@@ -301,7 +326,10 @@ MobileSurvey.SurveyView = Backbone.View.extend({
          cache: false,
          dataType: "json",
          contentType: 'application/json',
-         traditional: true
+         traditional: true,
+         success: function (surveyResultId) {
+            self.goToThankYouPage(surveyResultId);
+         }
       });
       //this.model.save(this.model.toJSON(),
       //   {

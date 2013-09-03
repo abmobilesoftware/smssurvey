@@ -55,7 +55,8 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
       this.alertsCollection = new SurveyModals.AlertsCollection();
       _.each(this.get("QuestionAlertSet"), function (alert) {
          alert = alert || {};
-         alert.AlertOperators = this.getAlertOperators(this.get("QuestionType"));
+         alert.AlertOperatorsValues = this.getAlertOperators(this.get("QuestionType"));
+         alert.AlertOperatorsLabels = this.getAlertOperatorsLabels(this.get("QuestionType"));
          var alertModel = new SurveyModals.AlertModel(alert);
          this.alertsCollection.add(alertModel);
       }, this);
@@ -69,20 +70,29 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
    getAlertOperators: function (type) {
       var questionConstants = SurveyUtilities.Utilities.CONSTANTS_QUESTION;
       if (type == questionConstants.TYPE_SELECT_ONE_FROM_MANY) {
-         var alertOperators = new Array("==", "!=");
-         return alertOperators;
+         return new Array("==", "!=");         
       } else if (type == questionConstants.TYPE_RATING) {
-         var alertOperators = new Array("=", "NOT EQUAL", "<", "<=", ">", ">=");
-         return alertOperators;
+         return new Array("==", "!=", "<", "<=", ">", ">=");         
       } else if (type == questionConstants.TYPE_FREE_TEXT) {
-         var alertOperators = new Array("contains");
-         return alertOperators;
+         return new Array("contains");         
       } else if (type == questionConstants.TYPE_YES_NO) {
-         var alertOperators = new Array("==");
-         return alertOperators;
+         return new Array("==");         
       } else if (type == questionConstants.TYPE_SELECT_MANY_FROM_MANY) {
-         var alertOperators = new Array("any", "all");
-         return alertOperators;
+         return new Array("any", "all");         
+      }
+   },
+   getAlertOperatorsLabels: function (type) {
+      var questionConstants = SurveyUtilities.Utilities.CONSTANTS_QUESTION;      
+      if (type == questionConstants.TYPE_SELECT_ONE_FROM_MANY) {
+         return new Array("equal", "not equal");         
+      } else if (type == questionConstants.TYPE_RATING) {
+         return new Array("equal", "not equal", "<", "<=", ">", ">=");         
+      } else if (type == questionConstants.TYPE_FREE_TEXT) {
+         return new Array("contains");         
+      } else if (type == questionConstants.TYPE_YES_NO) {
+         return new Array("equal");         
+      } else if (type == questionConstants.TYPE_SELECT_MANY_FROM_MANY) {
+         return new Array("any", "all");         
       }
    },
    addAlert: function () {
@@ -92,7 +102,8 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
          Description: "",
          TriggerAnswer: "",
          Operator: "",
-         AlertOperators: this.getAlertOperators(this.get("QuestionType")),
+         AlertOperatorsValues: this.getAlertOperators(this.get("QuestionType")),
+         AlertOperatorsLabels: this.getAlertOperatorsLabels(this.get("QuestionType")),
          AlertNotification: {
             DistributionList: "",
             Id: "",
@@ -103,7 +114,8 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
    updateAlertOperators: function (type) {
       this.set("QuestionType", type);
       _.each(this.alertsCollection.models, function (alert) {
-         alert.set("AlertOperators", this.getAlertOperators(type));
+         alert.set("AlertOperatorsValues", this.getAlertOperators(type));
+         alert.set("AlertOperatorsLabels",this.getAlertOperatorsLabels(type));
       }, this);
    },
    getQuestionAlerts: function () {
@@ -224,7 +236,8 @@ SurveyModals.AlertModel = Backbone.Model.extend({
       Id: "",
       Description: "",
       TriggerAnswer: "",
-      AlertOperators: [],
+      AlertOperatorsValues: [],
+      AlertOperatorsLabels: [],
       AlertNotification: {}
    },
    updateTriggerAnswer: function (newTriggerAnswer) {

@@ -9,12 +9,7 @@
     Select at least 2 locations to have a relevant comparison report
    </div>
 
-<div id="tagContainer" >
-      <div id="wrapperForTags" rel="popover" data-content="Using this filter, select the locations for which you would like to visualize the report for and hit Generate report" data-original-title="Select location">
-       <input name="filterTag" id="filterTag" type="text"  />
-      </div>
-       <button id="refreshReport" class="btn btn-primary" value="Generate report" >Generate report</button>
- </div>
+@{Html.RenderPartial("ReportFilterArea");}
 
 @foreach (var q in Model.QuestionSet)
 {
@@ -28,7 +23,16 @@
        @Html.HiddenFor(model => model.Id, new { qid = q.Id, qtype=q.Type})
     </div>    
    </fieldset>
-   <div id="@String.Format("barChart_div{0}", q.Id)" qid="@q.Id" qtype="@q.Type"></div>      
+   <div class="graphsContainer" id="@String.Format("graphsContainer{0}", q.Id)">
+      <div id="@String.Format("barChart_div{0}", q.Id)" qid="@q.Id" qtype="@q.Type" class="chart"></div>         
+      <div id="@String.Format("loadingIndicator{0}", q.Id)" style="display:none" class="loadingIndicatorArea">
+         <div class="loadingIndicatorContainer">
+         <img src="~/Content/images/ajax-loader_vs1.gif"  class="loadingIndicatorIcon" />
+         </div>
+         <div class="overlay"></div>
+      </div>
+      <label>No data. Generate report first</label>
+   </div>
    }
    
 }
@@ -41,7 +45,7 @@
  <script type="text/javascript" src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
 
 @Scripts.Render("~/bundles/referencescripts")
-@Scripts.Render("~/bundles/reports")
+@Scripts.Render("~/bundles/comparisonReports")
 
 }
  
