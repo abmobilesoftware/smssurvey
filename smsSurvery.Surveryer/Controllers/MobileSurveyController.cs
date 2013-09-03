@@ -15,6 +15,7 @@ namespace smsSurvery.Surveryer.Controllers
         
        }
         private smsSurveyEntities db = new smsSurveyEntities();
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         [HttpGet]
         public ActionResult Fill(int id)
@@ -143,7 +144,7 @@ namespace smsSurvery.Surveryer.Controllers
               var currentQuestion = db.QuestionSet.Find(q.Id);
 
               var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion };
-              AnswerController.HandleAlertsForQuestion(currentQuestion, q.PickedAnswer, surveyToAnalyze.Id, this);             
+              AlertsController.HandleAlertsForQuestion(currentQuestion, q.PickedAnswer, surveyToAnalyze.Id, this, logger);             
            }
            return Json(savedSurveyResult, JsonRequestBehavior.AllowGet);
         }
