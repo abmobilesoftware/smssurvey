@@ -46,7 +46,7 @@ SurveyModals.AnswersModalView = Backbone.View.extend({
    },
    validationResult: function(result) {
       if (result == "noAnswersDefined") {
-         this.dom.$ANSWERS_NOTIFICATIONS.html("No answers defined. Add at least one answer");
+         this.dom.$ANSWERS_NOTIFICATIONS.html("No answers defined. Add at least one answer.");
          this.dom.$ANSWERS_NOTIFICATIONS.show();
       } else if (result == "otherErrors") {
          this.dom.$ANSWERS_NOTIFICATIONS.html("Check the fields marked with red");
