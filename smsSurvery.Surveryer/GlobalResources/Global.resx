@@ -148,7 +148,7 @@
     <value>Surname</value>
   </data>
   <data name="MobileSurveyRatingAddionalInfoLabel" xml:space="preserve">
-    <value>Please qualify your choice:</value>
+    <value>Please qualify your answer:</value>
   </data>
   <data name="MobileSurveySelectOneFromManyLabel" xml:space="preserve">
     <value>Select an answer</value>
