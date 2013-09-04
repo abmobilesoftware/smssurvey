@@ -55,7 +55,7 @@ namespace smsSurvery.Surveryer.Controllers
         }
 
         [HttpGet]
-        public ActionResult Feedback(int id)
+        public ActionResult Feedback(int id, string locationTag)
         {
            SurveyPlan survey = db.SurveyPlanSet.Find(id);
            if (survey != null)
@@ -68,6 +68,7 @@ namespace smsSurvery.Surveryer.Controllers
               ViewBag.IntroMessage = survey.IntroMessage;
               ViewBag.ThankYouMessage = survey.ThankYouMessage;
               ViewBag.IsFeedback = 1;
+
               return View("Fill");
            }
            else

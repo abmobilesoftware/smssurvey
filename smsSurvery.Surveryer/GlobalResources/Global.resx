@@ -148,7 +148,7 @@
     <value>Surname</value>
   </data>
   <data name="MobileSurveyRatingAddionalInfoLabel" xml:space="preserve">
-    <value>Please argument your choice:</value>
+    <value>Please qualify your choice:</value>
   </data>
   <data name="MobileSurveySelectOneFromManyLabel" xml:space="preserve">
     <value>Select an answer</value>
@@ -174,16 +174,21 @@
   <data name="SmsQuestionIndexTemplate" xml:space="preserve">
     <value>Q{0}/{1}: </value>
   </data>
+  <data name="SmsQuestionRatingSuffixJoinTemplate" xml:space="preserve">
+    <value>{0} for {1}</value>
+  </data>
   <data name="SmsQuestionRatingSuffixTemplate" xml:space="preserve">
-    <value> Reply with a rating from {0} ({1}) to {2} ({3})</value>
+    <value>Reply with:</value>
   </data>
   <data name="SmsQuestionSelectOneFromManyMemberSuffixTemplate" xml:space="preserve">
     <value>{0} for {1}</value>
   </data>
   <data name="SmsQuestionSelectOneFromManySuffixTemplate" xml:space="preserve">
-    <value> Reply with: {0}</value>
+    <value>Reply with:</value>
   </data>
   <data name="SmsQuestionYesNoSuffixTemplate" xml:space="preserve">
-    <value> Reply 1 for Yes, 2 for No</value>
+    <value>Reply with:
+1 for Yes
+2 for No</value>
   </data>
 </root>

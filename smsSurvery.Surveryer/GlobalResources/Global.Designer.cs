@@ -151,7 +151,7 @@ namespace smsSurvery.Surveryer.GlobalResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please argument your choice:.
+        ///   Looks up a localized string similar to Please qualify your choice:.
         /// </summary>
         public static string MobileSurveyRatingAddionalInfoLabel {
             get {
@@ -232,7 +232,16 @@ namespace smsSurvery.Surveryer.GlobalResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  Reply with a rating from {0} ({1}) to {2} ({3}).
+        ///   Looks up a localized string similar to {0} for {1}.
+        /// </summary>
+        public static string SmsQuestionRatingSuffixJoinTemplate {
+            get {
+                return ResourceManager.GetString("SmsQuestionRatingSuffixJoinTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reply with:.
         /// </summary>
         public static string SmsQuestionRatingSuffixTemplate {
             get {
@@ -250,7 +259,7 @@ namespace smsSurvery.Surveryer.GlobalResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  Reply with: {0}.
+        ///   Looks up a localized string similar to Reply with:.
         /// </summary>
         public static string SmsQuestionSelectOneFromManySuffixTemplate {
             get {
@@ -259,7 +268,9 @@ namespace smsSurvery.Surveryer.GlobalResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to  Reply 1 for Yes, 2 for No.
+        ///   Looks up a localized string similar to Reply with:
+        ///1 for Yes
+        ///2 for No.
         /// </summary>
         public static string SmsQuestionYesNoSuffixTemplate {
             get {
