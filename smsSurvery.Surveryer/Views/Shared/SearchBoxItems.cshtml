@@ -9,7 +9,7 @@
 @using (Html.BeginForm("Search", Model, null, FormMethod.Get))
 {
    <div class="searchBox noprint">
-      <span>Text:</span>
+      <span>Description:</span>
       <input name="text" id="text" type="text" value="@Request["text"]"
               placeholder="Text to look for ..." />
        <input type="submit" value="Filter" class="btn btn-primary" />

@@ -14,14 +14,14 @@
    r.Add("from", Request["from"]);
    r.Add("text", Request["text"]);
 }
-@{Html.RenderPartial("SearchBoxItems", "SurveyPlan");}
 
-<h2>Index</h2>
+<h2>Survey plans</h2>
 
 <p>
    @* Create new survey part *@
     @Html.ActionLink("Create New", "Create")
 </p>
+@{Html.RenderPartial("SearchBoxItems", "SurveyPlan");}
 <table class="table table-striped table-bordered table-hover">
     <tr>
         <th>

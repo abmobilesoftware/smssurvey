@@ -148,7 +148,8 @@
                   </a>
                 </span>
             </footer>
-            <input type="hidden" value="@Global.MobileSurveySubmitButtonCaption" id="doneBtnTitle" />         
+            <input type="hidden" value="@Global.MobileSurveySubmitButtonCaption" id="doneBtnTitle" />  
+            <input type="hidden" value="@ViewBag.Location" id="location" />       
         </section>
         <section id="thankYouPage" class="page" style="display:none">
           
@@ -180,10 +181,10 @@
             success: function (model, response, options) {
                var surveyModel = new Question.QuestionSetModel(
                   {
-                     jsonQuestions: model.get("QuestionSet"),
                      SurveyResultId: surveyResultID,
                      SurveyPlanId: surveyId
                   });
+               surveyModel.updateQuestionSetCollection(model.get("QuestionSet"));
                //DA sure they are ordered
                var surveyView = new MobileSurvey.SurveyView({
                   el: $("#survey"),

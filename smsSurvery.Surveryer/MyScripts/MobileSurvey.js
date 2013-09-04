@@ -53,7 +53,9 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
       this.$el.html(this.questionMobileTemplate(this.model.toJSON()));
       if (this.model.get("Type") == this.questionConstants.TYPE_RATING) {
          var ratingsSeparator = SurveyUtilities.Utilities.CONSTANTS_MISC.SEPARATOR_ANSWERS;
-         var noOfRatings = this.model.get("ValidAnswersDetails").split(ratingsSeparator).length;
+         var noOfRatings = this.model.get("ValidAnswersDetails") != null ?
+            this.model.get("ValidAnswersDetails").split(ratingsSeparator).length
+            : 5;
          noOfRatings = noOfRatings == 1 ? 0 : noOfRatings;
          var starBarView = new SurveyElements.StarBarView({ el: $(".answerArea", this.$el), noOfElements: noOfRatings });
       }
@@ -107,7 +109,7 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
 
 MobileSurvey.SurveyMobileView = Backbone.View.extend({
    events: {
-
+      "click #doneBtn": "saveSurvey"
    },
    initialize: function () {
       _.bindAll(this, "render", "saveSurvey");
@@ -129,7 +131,6 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
       this.doneBtnTitle = $("#doneBtnTitle").val();
       this.doneBtn.enable();
       this.doneBtn.setTitle(this.doneBtnTitle);
-      this.doneBtn.on("click", this.saveSurvey);
       this.questionsViews = [];     
    },
    render: function () {
@@ -264,11 +265,14 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 
 MobileSurvey.SurveyView = Backbone.View.extend({
    initialize: function () {
-      _.bindAll(this, "goToThankYouPage","saveSurvey","updateQuestionSet", "render");
+      _.bindAll(this, "goToThankYouPage", "saveSurvey", "updateQuestionSet", "render");
       this.questionsPage = new MobileSurvey.SurveyMobileView({ el: $("#questionsPage"), model: this.model });
       this.thankYouPage = new MobileSurvey.ThankYouPageView({ el: $("#thankYouPage") });      
       this.questionsPage.on(this.questionsPage.pageEvents.THANK_YOU_PAGE,
          this.saveSurvey);
+      this.dom = {
+         $LOCATION_INPUT : $("#location", this.$el)
+      }
    },
    goToThankYouPage: function (surveyResultId) {
       var self = this;
@@ -314,10 +318,12 @@ MobileSurvey.SurveyView = Backbone.View.extend({
       this.updateQuestionSet();
       //DA now we have in this.model.get("QuestionSet") the required information
       var infoToUpload = this.model.getQuestionSetCollectionAsJson(false);
+      var location = this.dom.$LOCATION_INPUT.val();
       var sendData = JSON.stringify({
          questions: infoToUpload,
          surveyResultId: this.model.get("SurveyResultId"),
-         surveyPlanId: this.model.get("SurveyPlanId")
+         surveyPlanId: this.model.get("SurveyPlanId"),
+         location: location
       });
       $.ajax({
          url: "/MobileSurvey/SaveSurvey",        

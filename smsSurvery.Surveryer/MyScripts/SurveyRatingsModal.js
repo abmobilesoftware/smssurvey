@@ -5,17 +5,19 @@
       "click .save-rating": "saveModal"
    },
    initialize: function () {
-      _.bindAll(this, "changeScaleSize", "render", "closeModal");
+      _.bindAll(this, "changeScaleSize", "render", "closeModal", "validationResult");
       this.template = _.template($("#rating-modal-content-template").html());
       this.dom = {
          $RATING_MODAL_BODY: $(".modal-body", this.$el)
       }
       this.model.on("change:ScaleSize", this.render);
+      this.model.on(this.model.events.VALIDATE, this.validationResult);
    },
    render: function () {
       this.dom.$RATING_MODAL_BODY.html(this.template(this.model.toJSON()));
       this.dom = this.dom || {};
       this.dom.$RATING_TABLE = $(".rating-table", this.$el);
+      this.dom.$RATINGS_NOTIFICATIONS = $(".ratings-notifications", this.$el);
       _.each(this.model.getRatings(), function (rating) {
          var ratingView = new SurveyModals.RatingView({ model: rating });
          this.dom.$RATING_TABLE.append(ratingView.render());
@@ -36,10 +38,22 @@
    },
    openModal: function () {
       this.model.backupRatingsCollection();
+   },
+   validationResult: function(result) {
+      if (result == "noRatingsDefined") {
+         this.dom.$RATINGS_NOTIFICATIONS.html("No ratings defined. Choose a scale using the selector below.");
+         this.dom.$RATINGS_NOTIFICATIONS.show();
+      } else if (result == "otherErrors") {
+         this.dom.$RATINGS_NOTIFICATIONS.html("Check the fields marked with red");
+         this.dom.$RATINGS_NOTIFICATIONS.show();
+      }
    }
 });
 
 SurveyModals.RatingsModalModel = Backbone.Model.extend({
+   events: {
+      VALIDATE: "validateEvent"
+   },
    defaults: {
       Ratings: "",
       ScaleSize: "",
@@ -91,12 +105,18 @@ SurveyModals.RatingsModalModel = Backbone.Model.extend({
    },
    validate: function () {
       var isValid = true;
-      _.each(this.surveyRatingsCollection.models, function (rating) {
-         var ratingValidity = rating.validate();
-         if (!ratingValidity) {
-            isValid = ratingValidity;
-         }
-      });
+      if (this.surveyRatingsCollection.models.length > 0) {
+         _.each(this.surveyRatingsCollection.models, function (rating) {
+            var ratingValidity = rating.validate();
+            if (!ratingValidity) {
+               isValid = ratingValidity;
+            }
+         });
+         this.trigger(this.events.VALIDATE, "otherErrors");
+      } else {
+         isValid = false;
+         this.trigger(this.events.VALIDATE, "noRatingsDefined");
+      };
       return isValid;
    },
    backupRatingsCollection: function () {

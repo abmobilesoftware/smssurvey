@@ -7,11 +7,13 @@ SurveyModals.AnswersModalView = Backbone.View.extend({
    },
    initialize: function () {
       _.bindAll(this, "render", "addAnswer", "closeModal",
-         "saveModal", "openModal");
+         "saveModal", "openModal", "validationResult");
       this.template = _.template($("#no-answers-template").html());
       this.dom = {
-         $ANSWERS_TABLE: $(".answers-table", this.$el)
+         $ANSWERS_TABLE: $(".answers-table", this.$el),
+         $ANSWERS_NOTIFICATIONS: $(".answers-notifications", this.$el)
       };
+      this.model.on(this.model.events.VALIDATE, this.validationResult)
       this.model.on(this.model.events.UPDATE_VIEW, this.render);
       this.render();
    },
@@ -39,13 +41,24 @@ SurveyModals.AnswersModalView = Backbone.View.extend({
       }
    },
    openModal: function () {
+      this.dom.$ANSWERS_NOTIFICATIONS.hide();
       this.model.backupAnswersCollection();
+   },
+   validationResult: function(result) {
+      if (result == "noAnswersDefined") {
+         this.dom.$ANSWERS_NOTIFICATIONS.html("No answers defined. Add at least one answer.");
+         this.dom.$ANSWERS_NOTIFICATIONS.show();
+      } else if (result == "otherErrors") {
+         this.dom.$ANSWERS_NOTIFICATIONS.html("Check the fields marked with red");
+         this.dom.$ANSWERS_NOTIFICATIONS.show();
+      }
    }
 });
 
 SurveyModals.AnswersModalModel = Backbone.Model.extend({
    events: {
-      UPDATE_VIEW: "updateViewEvent"
+      UPDATE_VIEW: "updateViewEvent",
+      VALIDATE: "validateEvent"
    },
    defaults: {
       Answers: []
@@ -71,7 +84,7 @@ SurveyModals.AnswersModalModel = Backbone.Model.extend({
       var answersIdentifierAsString = "";
       if (answers.length > 0) {
          answersLabelAsString = answers[0].get("AnswerLabel");
-         answersIdentifierAsString = 1;
+         answersIdentifierAsString = "1";
       }
       for (var i = 1; i < answers.length; ++i) {
          answersLabelAsString += ";" + answers[i].get("AnswerLabel");
@@ -92,12 +105,18 @@ SurveyModals.AnswersModalModel = Backbone.Model.extend({
    },
    validate: function () {
       var isValid = true;
-      _.each(this.answersCollection.models, function (answer) {
-         var answerValidity = answer.validate();
-         if (!answerValidity) {
-            isValid = answerValidity;
-         }
-      });
+      if (this.answersCollection.models.length > 0) {
+         _.each(this.answersCollection.models, function (answer) {
+            var answerValidity = answer.validate();
+            if (!answerValidity) {
+               isValid = answerValidity;
+            }
+         });
+         if (!isValid) this.trigger(this.events.VALIDATE, "otherErrors");
+      } else {
+         isValid = false;
+         this.trigger(this.events.VALIDATE, "noAnswersDefined");
+      }
       return isValid;
    },
    backupAnswersCollection: function () {

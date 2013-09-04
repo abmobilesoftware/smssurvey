@@ -143,22 +143,20 @@ namespace smsSurvery.Surveryer.Controllers
          if (surveyplan == null)
          {
             return HttpNotFound();
-         }
-
-       
+         }       
          return View(surveyplan);
       }
 
-      public JsonResult GetSurvey(int id = 0)
+      public ClientSurveyPlan GetSurveyPlanObject(int id)
       {
          try
          {
             SurveyPlan surveyplan = db.SurveyPlanSet.Find(id);
             if (surveyplan == null)
             {
-               return Json("resource not found", JsonRequestBehavior.AllowGet);
+               return null;
             }
-           
+
             List<ClientQuestion> questions =
                new List<ClientQuestion>();
             foreach (var question in surveyplan.QuestionSet)
@@ -193,12 +191,26 @@ namespace smsSurvery.Surveryer.Controllers
                   surveyplan.DateEnded, surveyplan.IsRunning, questions, surveyplan.DefaultLanguage);
 
             surveyPlan.MobileWebsiteLocation = GetAnonymousMobileSurveyLocation(surveyplan, this.ControllerContext.RequestContext);
-            return Json(surveyPlan, JsonRequestBehavior.AllowGet);
+            return surveyPlan;
          }
          catch (Exception e)
          {
-            return Json(null, JsonRequestBehavior.AllowGet);
+            return null;
          }
+      }
+
+      public JsonResult GetSurvey(int id = 0)
+      {
+         var surveyPlan = GetSurveyPlanObject(id);
+         if (surveyPlan != null)
+         {
+            return Json(surveyPlan, JsonRequestBehavior.AllowGet);
+         }
+         else
+         {
+            return Json("can't retrieve survey", JsonRequestBehavior.AllowGet);
+         }
+
       }
 
       [HttpPost]
@@ -348,8 +360,7 @@ namespace smsSurvery.Surveryer.Controllers
                }
                db.SaveChanges();               
                var mobileWebsiteLocation = GetAnonymousMobileSurveyLocation(dbSurveyPlan, this.ControllerContext.RequestContext);               
-               return Json(new smsSurvery.Surveryer.Models.RequestResult("success",
-                  "update",iMobileWebsiteLocation:mobileWebsiteLocation), JsonRequestBehavior.AllowGet);
+               return Json(GetSurveyPlanObject(clientSurveyPlan.Id), JsonRequestBehavior.AllowGet);
             }
             else
             {
@@ -425,9 +436,7 @@ namespace smsSurvery.Surveryer.Controllers
                   return Json(new smsSurvery.Surveryer.Models.RequestResult("error", "save", sb.ToString()),JsonRequestBehavior.AllowGet);
                }
                var mobileWebsiteLocation = GetAnonymousMobileSurveyLocation(dbSurveyPlan, this.ControllerContext.RequestContext);
-               return Json(new smsSurvery.Surveryer.Models.RequestResult("success",
-                  "create", dbSurveyPlan.Id.ToString(), mobileWebsiteLocation),
-                  JsonRequestBehavior.AllowGet);
+               return Json(GetSurveyPlanObject(dbSurveyPlan.Id), JsonRequestBehavior.AllowGet);
             }
          }
          catch (Exception e)
