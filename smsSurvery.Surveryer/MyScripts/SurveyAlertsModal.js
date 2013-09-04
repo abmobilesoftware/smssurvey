@@ -217,6 +217,7 @@ SurveyModals.AlertView = Backbone.View.extend({
       this.dom.$ALERT_DESCRIPTION_INPUT.removeClass(invalidFieldClass);
       this.dom.$ALERT_TRIGGER_ANSWER_INPUT.removeClass(invalidFieldClass);
       this.dom.$ALERT_DISTRIBUTION_LIST_INPUT.removeClass(invalidFieldClass);
+      this.dom.$ALERT_OPERATOR_SELECT.removeClass(invalidFieldClass);
       if (result != "valid") {
          for (var i = 0; i < result.length; ++i) {
             if (result[i] == this.model.errors.INVALID_DESCRIPTION) {
