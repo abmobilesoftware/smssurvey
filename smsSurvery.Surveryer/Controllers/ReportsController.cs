@@ -183,6 +183,7 @@ namespace smsSurvery.Surveryer.Controllers
       public static TagCloud GetTagCloudData(Question q,
          DateTime intervalStart,
          DateTime intervalEnd,
+         bool checkAdditionalInfo,
          string[] tags)
       {
          using (smsSurveyEntities  db = new smsSurveyEntities())
@@ -192,7 +193,17 @@ namespace smsSurvery.Surveryer.Controllers
                intervalStart <= r.SurveyResult.DateRan && r.SurveyResult.DateRan <= intervalEnd);
             foreach (var item in results)
             {
-               stuff.AddRange(Regex.Split(item.Answer, "\\W+"));
+               if (checkAdditionalInfo)
+               {
+                  if (item.AdditionalInfo != null)
+                  {
+                     stuff.AddRange(Regex.Split(item.AdditionalInfo, "\\W+"));
+                  }
+               }
+               else
+               {
+                  stuff.AddRange(Regex.Split(item.Answer, "\\W+"));
+               }
             }
             //stuff.AddRange(Regex.Split(testString, "\\W+"));
 
@@ -311,7 +322,7 @@ namespace smsSurvery.Surveryer.Controllers
       [HttpGet]
       public ActionResult GetWordCloud(
          int questionId,
-         String iIntervalStart, String iIntervalEnd,
+         String iIntervalStart, String iIntervalEnd, bool checkAdditionalInfo,
           string[] tags
          ) 
       {
@@ -320,9 +331,10 @@ namespace smsSurvery.Surveryer.Controllers
          DateTime intervalEnd = DateTime.ParseExact(iIntervalEnd, cDateFormat, CultureInfo.InvariantCulture);
          Question question = db.QuestionSet.Find(questionId);
          tags = tags ?? new string[0];
-         if (question != null && question.Type == ReportsController.cFreeTextTypeQuestion)
-         {         
-            return PartialView(GetTagCloudData(question,intervalStart, intervalEnd, tags));
+         if (question != null && (question.Type == ReportsController.cFreeTextTypeQuestion || question.Type == ReportsController.cRatingsTypeQuestion))
+         {
+            ViewBag.CheckAdditionalInfo = checkAdditionalInfo;
+            return PartialView(GetTagCloudData(question,intervalStart, intervalEnd,checkAdditionalInfo, tags));
          }         
          return null;
       }
@@ -425,17 +437,24 @@ namespace smsSurvery.Surveryer.Extensions
 {
 public static class HtmlHelperExtension
 {
-   public static string TagCloud(this HtmlHelper helper, smsSurvery.Surveryer.Controllers.ReportsController.TagCloud tagCloud)
+   public static string TagCloud(this HtmlHelper helper, smsSurvery.Surveryer.Controllers.ReportsController.TagCloud tagCloud, bool checkAdditionalInfo)
    {
       //We build an unordered list where each word points to it's category
       var output = new StringBuilder();
-      output.AppendFormat(@"<ul class=""cloud"" id=""textCloudSection{0}"">",tagCloud.QuestionId);
+      if (checkAdditionalInfo)
+      {
+         output.AppendFormat(@"<ul class=""cloud"" id=""textCloudSectionAdditionalInfo{0}"">", tagCloud.QuestionId);
+      }
+      else
+      {
+         output.AppendFormat(@"<ul class=""cloud"" id=""textCloudSection{0}"">", tagCloud.QuestionId);
+      }
 
       foreach (smsSurvery.Surveryer.WordCloud.IWord tag in tagCloud.MenuTags)
       {
          output.Append("<li>");
-         output.AppendFormat(@"<a href=""/Answer/GetMessagesWithStem?questionId={0}&stem={1}"" target=""_blank"" class=""tag{2}"" title=""{3} occurrences""> {1}",
-                             tagCloud.QuestionId, tag.Text, tagCloud.GetRankForTag(tag), tag.Occurrences);
+         output.AppendFormat(@"<a href=""/Answer/GetMessagesWithStem?questionId={0}&stem={1}&checkAdditionalInfo={4}"" target=""_blank"" class=""tag{2}"" title=""{3} occurrences""> {1}",
+                             tagCloud.QuestionId, tag.Text, tagCloud.GetRankForTag(tag), tag.Occurrences,checkAdditionalInfo);
          output.Append("</a>");
          output.Append("</li>");
       }

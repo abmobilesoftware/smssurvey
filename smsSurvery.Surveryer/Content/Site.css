@@ -994,9 +994,11 @@ input[type=checkbox].css-checkbox:checked + label.css-label { background-positio
 
 .graphsContainer {
    width:100%;
-   height:100%;
+   height:auto;
    position:relative;
+   /*display:inline;*/
 }
+
 .chart {
    /*position: absolute;*/
 }
@@ -1011,6 +1013,13 @@ input[type=checkbox].css-checkbox:checked + label.css-label { background-positio
 }
 
 .graphsContainer > label {
+   text-align: center;
+   border: solid 1px #F5F8FA;
+   padding: 5px;   
+}
+
+.additionalInfoLabel{
+   display:inline-block;
    text-align: center;
    border: solid 1px #F5F8FA;
    padding: 5px;

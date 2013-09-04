@@ -6,7 +6,7 @@ window.app.piedata = {};
 window.app.yesnopiedata = {};
 window.app.overviewPieData = {};
 window.app.tags = [];
-window.app.displayReportsForRatingQ = function (questionId) {
+window.app.displayReportsForRatingQ = function (questionId, qType) {
    var chartId = "#pieChart_div" + questionId;
    var chartElem = $(chartId);
    var loadingIndicatorId = "#loadingIndicator" + questionId;   
@@ -69,23 +69,46 @@ window.app.displayReportsForRatingQ = function (questionId) {
          };
          loadingIndicator.hide();
          tablechart.draw(tabledata, tableOptions);
+         if (qType == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_RATING) {
+            window.app.displayReportForRatingAdditionalInfo(questionId);
+         }
+      }
+   });
+   //for rating question we should also show an word cloud for Additional Info
+};
 
+window.app.displayReportForRatingAdditionalInfo = function (questionId) {
+   $.ajax({
+      data: {
+         questionId: questionId,
+         iIntervalStart: window.app.dateHelper.transformStartDate(window.app.startDate),
+         iIntervalEnd: window.app.dateHelper.transformEndDate(window.app.endDate),
+         checkAdditionalInfo: true,
+         tags: window.app.tags
+      },
+      url: "/Reports/GetWordCloud",
+      dataType: 'html',
+      traditional: true,
+      async: true,
+      cache: false,
+      success: function (wordCloudData) {
+         $("#textCloudSectionAdditionalInfo" + questionId).replaceWith(wordCloudData);
       }
    });
 };
-
 window.app.displayReportsForFreeTextQ = function (questionId) {
    $.ajax({
       data: {
          questionId: questionId,
          iIntervalStart: window.app.dateHelper.transformStartDate(window.app.startDate),
          iIntervalEnd: window.app.dateHelper.transformEndDate(window.app.endDate),
+         checkAdditionalInfo: false,
          tags: window.app.tags
       },
       url: "/Reports/GetWordCloud",
       dataType: 'html',
       traditional: true,
-      async: false,
+      async: true,
       cache: false,
       success: function (wordCloudData) {
          $("#textCloudSection" + questionId).replaceWith(wordCloudData);
@@ -114,7 +137,7 @@ window.app.displayReportOverview = function (surveyPlanId) {
 
    var graphsContainer = $("#graphsOverviewContainer" + surveyPlanId);
    var candidateHeight = graphsContainer.outerHeight();
-   candidateHeight = candidateHeight != 0 ? candidateHeight + "px" : "410px";
+   candidateHeight = candidateHeight != 0 ? candidateHeight + "px" : "300px";
    loadingIndicator.height(candidateHeight);
 
    graphsContainer.height(candidateHeight);
@@ -163,7 +186,7 @@ window.app.runrunrun = function () {
    window.app.displayReportOverview($("#surveyId").text());
    $('input[qid]').each(function (index) {
       if ($(this).attr('qtype') === "Rating" || $(this).attr('qtype') === "YesNo" || $(this).attr('qtype') === "SelectOneFromMany" ) {
-         window.app.displayReportsForRatingQ($(this).attr('qid'));
+         window.app.displayReportsForRatingQ($(this).attr('qid'), $(this).attr('qtype'));
       } else if ($(this).attr('qtype') === "FreeText") {
          window.app.displayReportsForFreeTextQ($(this).attr('qid'));
       }

@@ -173,20 +173,25 @@ namespace smsSurvery.Surveryer.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetMessagesWithStem(int questionId, string stem)
+        public ActionResult GetMessagesWithStem(int questionId, string stem, bool checkAdditionalInfo)
         {
            //for the given survey (if allowed access) show messages with given stem
            Question question = db.QuestionSet.Find(questionId);
-           if (question != null && question.Type == ReportsController.cFreeTextTypeQuestion)
+           if (question != null && (question.Type == ReportsController.cFreeTextTypeQuestion || question.Type == ReportsController.cRatingsTypeQuestion))
            {
               List<FreeTextAnswer> messages = new List<FreeTextAnswer>();
               foreach (var result in question.Result)
 	               {
-		               if (AnswerContainsStemOfWord(result.Answer, stem) ){
-                        messages.Add(new FreeTextAnswer(){Text=result.Answer, SurveyResult=result.SurveyResult, Customer=result.SurveyResult.Customer});
+
+                 if (AnswerContainsStemOfWord(checkAdditionalInfo ? result.AdditionalInfo :result.Answer, stem))
+                     {
+                        messages.Add(new FreeTextAnswer() { Text = result.Answer, SurveyResult = result.SurveyResult, Customer = result.SurveyResult.Customer, AdditionalInfo = result.AdditionalInfo });
                      }                     
 	               }
-              @ViewBag.Stem = stem;
+              ViewBag.Stem = stem;
+              ViewBag.BasedOnAdditionalInfo = checkAdditionalInfo;
+
+              ViewBag.Headline = checkAdditionalInfo ? String.Format("Answers with qualifier containing \"{0}\"", stem) : String.Format("Answers containing \"{0}\"", stem);
               return View(messages);
            }  
            return View();
@@ -194,6 +199,7 @@ namespace smsSurvery.Surveryer.Controllers
 
         private bool AnswerContainsStemOfWord(string p, string stem)
         {
+           if (p == null) return false;
            //TODO depending on the language
            return p.ToLowerInvariant().Contains(stem.ToLowerInvariant());
            //return true;
@@ -426,6 +432,11 @@ namespace smsSurvery.Surveryer.Controllers
 
         private static string PrepareSMSTextForQuestion(Question q, int totalNumberOfQuestions, bool isFirstQuestion, string introMessage)
         {
+           /*For the first question we will be adding the IntroMessage 
+            * IntroMessage
+            * 
+            * Q1/X Question text
+            */
            string prefix = String.Format(GlobalResources.Global.SmsQuestionIndexTemplate, q.Order, totalNumberOfQuestions);
            if (isFirstQuestion)
            {
@@ -438,12 +449,32 @@ namespace smsSurvery.Surveryer.Controllers
                  return prefix + q.Text;
               case ReportsController.cRatingsTypeQuestion:
                  {
-                    var validAnswer = q.ValidAnswers.Split(';');
-                    var validAnswerDetails = q.ValidAnswersDetails.Split(';');                
-                    return prefix + q.Text + String.Format(GlobalResources.Global.SmsQuestionRatingSuffixTemplate, validAnswer[0], validAnswerDetails[0], validAnswer.Last(), validAnswerDetails.Last());
+                    try
+                    {
+                       var validAnswer = q.ValidAnswers.Split(';');
+                       var validAnswerDetails = q.ValidAnswersDetails.Split(';');
+                       var pairs = new string[validAnswer.Length];
+                       for (int i = 0; i < validAnswer.Length; i++)
+                       {
+                          pairs[i] = String.Format(GlobalResources.Global.SmsQuestionRatingSuffixJoinTemplate, validAnswer[i], validAnswerDetails[i]);
+                       }
+                       var answers = GlobalResources.Global.SmsQuestionRatingSuffixTemplate + System.Environment.NewLine + String.Join(System.Environment.NewLine, pairs);
+                       return prefix + q.Text + System.Environment.NewLine + answers;
+                    }
+                    catch (IndexOutOfRangeException ex)
+                    {
+                       //most probably ValidAnswers and ValidAnswerDetails were not aligned
+                       logger.Error(String.Format("ValidAnswers and ValidAnswerDetails not aligned for question {0}", q.Id),ex);
+                       return prefix + q.Text;
+                    }                    
                  }
               case ReportsController.cYesNoTypeQuestion:
-                 return prefix + q.Text + GlobalResources.Global.SmsQuestionYesNoSuffixTemplate;
+                 /*we are aiming for
+                  * Reply with:
+                  * 1 for Yes
+                  * 2 for No
+                  */
+                 return prefix + q.Text + System.Environment.NewLine+ GlobalResources.Global.SmsQuestionYesNoSuffixTemplate;
               case ReportsController.cSelectManyFromManyTypeQuestion:
                 //DA TODO
                  return "";
@@ -456,8 +487,8 @@ namespace smsSurvery.Surveryer.Controllers
                     {
                        pairs.Add(String.Format(GlobalResources.Global.SmsQuestionSelectOneFromManyMemberSuffixTemplate, validAnswer[i], validAnswerDetails[i]));
                     }
-                    string suffix = String.Format(GlobalResources.Global.SmsQuestionSelectOneFromManySuffixTemplate, String.Join(", ", pairs));
-                    return prefix + q.Text + suffix;
+                    string suffix = GlobalResources.Global.SmsQuestionSelectOneFromManySuffixTemplate+ System.Environment.NewLine +  String.Join(System.Environment.NewLine, pairs);
+                    return prefix + q.Text + System.Environment.NewLine+ suffix;
                  }
               default:
                  return prefix + q.Text;

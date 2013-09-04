@@ -174,16 +174,21 @@
   <data name="SmsQuestionIndexTemplate" xml:space="preserve">
     <value>Intrebarea {0}/{1}: </value>
   </data>
+  <data name="SmsQuestionRatingSuffixJoinTemplate" xml:space="preserve">
+    <value>{0} pentru {1}</value>
+  </data>
   <data name="SmsQuestionRatingSuffixTemplate" xml:space="preserve">
-    <value> Raspundeti cu o nota de la {0} ({1}) la {2} ({3})</value>
+    <value>Raspundeti cu:</value>
   </data>
   <data name="SmsQuestionSelectOneFromManyMemberSuffixTemplate" xml:space="preserve">
     <value>{0} pentru {1}</value>
   </data>
   <data name="SmsQuestionSelectOneFromManySuffixTemplate" xml:space="preserve">
-    <value> Raspundeti cu: {0}</value>
+    <value> Raspundeti cu:</value>
   </data>
   <data name="SmsQuestionYesNoSuffixTemplate" xml:space="preserve">
-    <value> Raspundeti cu 1 pentru Da sau 2 pentru Nu</value>
+    <value>Raspundeti cu:
+1 pentru Da
+2 pentru Nu</value>
   </data>
 </root>

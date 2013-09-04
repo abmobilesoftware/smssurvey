@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "Details";
 }
+<div class="questionArea">
 <fieldset>
     <legend>Question @Model.Order</legend>
     <div class="display-field">
@@ -10,9 +11,10 @@
        @* we specify the question in case (will be needed later to get the report data) *@
        @Html.HiddenFor(model => model.Id, new { qid = Model.Id, qtype=Model.Type})
     </div>    
+  
 </fieldset>
 
-<div class="graphsContainer" id="@String.Format("graphsContainer{0}", Model.Id)">
+ <div   id="@String.Format("graphsContainer{0}", Model.Id)" class="graphsContainer">   
    <div id="@String.Format("tableChart_div{0}", Model.Id)"></div>
    <div id="@String.Format("pieChart_div{0}", Model.Id)"></div>
    <div id="@String.Format("textCloudSection{0}", Model.Id)"></div>
@@ -23,4 +25,13 @@
       </div>
       <div class="overlay"></div>
    </div>
+  
+</div>
+ @if (Model.Type == smsSurvery.Surveryer.Controllers.ReportsController.cRatingsTypeQuestion)
+   {
+    <div class="additionalInfoContainer">
+      <label class="additionalInfoLabel">Provided qualifications</label>
+      <div id="@String.Format("textCloudSectionAdditionalInfo{0}", Model.Id)"></div>      
+    </div>
+   }
 </div>

@@ -4,13 +4,21 @@
     ViewBag.Title = "GetMessagesWithStem";
 }
 
-<h2>Messages containing "@ViewBag.Stem"</h2>
+<h2>@ViewBag.Headline</h2>
 
 <table class="table table-striped table-bordered table-hover">
     <tr>
+       @if (ViewBag.BasedOnAdditionalInfo)
+       {
+         <th>
+            @Html.DisplayNameFor(model => model.AdditionalInfo)
+        </th>   
+       }
+       else {          
         <th>
             @Html.DisplayNameFor(model => model.Text)
         </th>
+       }
         <th>
          Customer
         </th>
@@ -24,9 +32,17 @@
 
 @foreach (var item in Model) {
     <tr>
+       @if (ViewBag.BasedOnAdditionalInfo)
+       {
+         <td>
+          @Html.DisplayFor(modelItem => item.AdditionalInfo)
+       </td>  
+       }
+       else {          
         <td>
             @Html.DisplayFor(modelItem => item.Text)
         </td>
+       }             
         <td>           
            @*@Html.DisplayFor(modelItem => item.Customer.PhoneNumber)*@
            @Html.ActionLink(item.Customer.PhoneNumber, "Details", "Customer", new { id = item.Customer.PhoneNumber }, null)
