@@ -303,6 +303,9 @@ Question.QuestionSetCollection = Backbone.Collection.extend({
    },
    deleteModel: function (model) {
       this.remove(model);
+      _.each(this.models, function (question, index) {
+         question.updateOrder(index);
+      });
    },
    comparator: function (question) {
       return question.get("Order");
