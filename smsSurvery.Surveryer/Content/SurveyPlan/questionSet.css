@@ -115,12 +115,18 @@ div.website-question-preview {
 
 /* STAR */
 .star {
-   display: inline;
+    display: inline-block;
 }
 
 .starImg {
-   width: 2em;
-   height: 2em;
+    width: 25px;
+    height: 30px;
+    display: inline-block;
+    background-position: 0px 0px;
+    background-image: url("/Content/images/stars_little.png");
+}
+.starActive {
+   background-position: 30px 0px;
 }
 
 .visible {
