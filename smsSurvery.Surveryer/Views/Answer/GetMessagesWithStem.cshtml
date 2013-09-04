@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<smsSurvery.Surveryer.Models.FreeTextAnswer>
 
 @{
-    ViewBag.Title = "GetMessagesWithStem";
+   ViewBag.Title = "Messages with keyword";
 }
 
 <h2>@ViewBag.Headline</h2>
@@ -21,39 +21,40 @@
        }
         <th>
          Customer
-        </th>
+       </th>
        <th>
           Survey results
        </th>
        <th>
          Date ran
-        </th>
+       </th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-       @if (ViewBag.BasedOnAdditionalInfo)
-       {
+@foreach (var item in Model)
+{
+   <tr>
+      @if (ViewBag.BasedOnAdditionalInfo)
+      {
          <td>
-          @Html.DisplayFor(modelItem => item.AdditionalInfo)
-       </td>  
+            @Html.DisplayFor(modelItem => item.AdditionalInfo)
+         </td>  
        }
-       else {          
-        <td>
+      else
+      {          
+         <td>
             @Html.DisplayFor(modelItem => item.Text)
-        </td>
-       }             
-        <td>           
-           @*@Html.DisplayFor(modelItem => item.Customer.PhoneNumber)*@
-           @Html.ActionLink(item.Customer.PhoneNumber, "Details", "Customer", new { id = item.Customer.PhoneNumber }, null)
-        </td>
-       <td>
-          @Html.ActionLink("Show entire survey results", "Details", "SurveyResult", new { id = item.SurveyResult.Id}, null)
-       </td>
-       <td>
-          @Html.DisplayFor(modelItem => item.SurveyResult.DateRan)           
-        </td>
-    </tr>
+         </td>
+       }
+      <td>
+         @Html.ActionLink(item.Customer.PhoneNumber, "Details", "Customer", new { id = item.Customer.PhoneNumber }, null)
+      </td>
+      <td>
+         @Html.ActionLink("Show entire survey results", "Details", "SurveyResult", new { id = item.SurveyResult.Id }, null)
+      </td>
+      <td>
+         @Html.DisplayFor(modelItem => item.SurveyResult.DateRan)
+      </td>
+   </tr>
 }
 
 </table>

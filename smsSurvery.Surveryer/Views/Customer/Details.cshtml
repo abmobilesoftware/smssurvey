@@ -1,7 +1,7 @@
 ﻿@model smsSurvey.dbInterface.Customer
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Customer details";
 }
 
 <h2>Details</h2>
@@ -33,5 +33,5 @@
 </fieldset>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id=Model.PhoneNumber }) |
-    @Html.ActionLink("Back to List", "Index")
+    @Html.ActionLink("Go to customers list", "Index")
 </p>
