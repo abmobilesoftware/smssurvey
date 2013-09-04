@@ -1,4 +1,4 @@
 ﻿@model smsSurvery.Surveryer.Controllers.ReportsController.TagCloud
 @using smsSurvery.Surveryer.Extensions
 
-@Html.Raw(Html.TagCloud(Model))
+@Html.Raw(Html.TagCloud(Model,(bool) ViewBag.CheckAdditionalInfo))

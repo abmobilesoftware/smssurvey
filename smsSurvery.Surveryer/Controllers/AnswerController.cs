@@ -173,20 +173,25 @@ namespace smsSurvery.Surveryer.Controllers
         }
 
         [HttpGet]
-        public ActionResult GetMessagesWithStem(int questionId, string stem)
+        public ActionResult GetMessagesWithStem(int questionId, string stem, bool checkAdditionalInfo)
         {
            //for the given survey (if allowed access) show messages with given stem
            Question question = db.QuestionSet.Find(questionId);
-           if (question != null && question.Type == ReportsController.cFreeTextTypeQuestion)
+           if (question != null && (question.Type == ReportsController.cFreeTextTypeQuestion || question.Type == ReportsController.cRatingsTypeQuestion))
            {
               List<FreeTextAnswer> messages = new List<FreeTextAnswer>();
               foreach (var result in question.Result)
 	               {
-		               if (AnswerContainsStemOfWord(result.Answer, stem) ){
-                        messages.Add(new FreeTextAnswer(){Text=result.Answer, SurveyResult=result.SurveyResult, Customer=result.SurveyResult.Customer});
+
+                 if (AnswerContainsStemOfWord(checkAdditionalInfo ? result.AdditionalInfo :result.Answer, stem))
+                     {
+                        messages.Add(new FreeTextAnswer() { Text = result.Answer, SurveyResult = result.SurveyResult, Customer = result.SurveyResult.Customer, AdditionalInfo = result.AdditionalInfo });
                      }                     
 	               }
-              @ViewBag.Stem = stem;
+              ViewBag.Stem = stem;
+              ViewBag.BasedOnAdditionalInfo = checkAdditionalInfo;
+
+              ViewBag.Headline = checkAdditionalInfo ? String.Format("Answers with qualifier containing \"{0}\"", stem) : String.Format("Answers containing \"{0}\"", stem);
               return View(messages);
            }  
            return View();
@@ -194,6 +199,7 @@ namespace smsSurvery.Surveryer.Controllers
 
         private bool AnswerContainsStemOfWord(string p, string stem)
         {
+           if (p == null) return false;
            //TODO depending on the language
            return p.ToLowerInvariant().Contains(stem.ToLowerInvariant());
            //return true;
