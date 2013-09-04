@@ -5,12 +5,14 @@
       "click .save-alerts": "saveModal"
    },
    initialize: function () {
-      _.bindAll(this, "render");
+      _.bindAll(this, "render", "validationResult");
       this.template = _.template($("#no-alerts-template").html());
       this.dom = {
-         $ALERTS_MODAL_CONTENT: $(".alerts-modal-content", this.$el)
+         $ALERTS_MODAL_CONTENT: $(".alerts-modal-content", this.$el),
+         $ALERTS_NOTIFICATIONS: $(".alerts-notifications", this.$el)
       };
-      this.model.on(this.model.events.UPDATE_VIEW, this.render);      
+      this.model.on(this.model.events.UPDATE_VIEW, this.render);
+      this.model.on(this.model.events.VALIDATE, this.validationResult)
    },
    render: function () {
       this.dom.$ALERTS_MODAL_CONTENT.empty();
@@ -39,12 +41,23 @@
    },
    openModal: function () {
       this.model.backupAlertsCollection();
+      this.dom.$ALERTS_NOTIFICATIONS.hide();
+   },
+   validationResult: function (result) {
+      if (result == this.model.errors.ERROR) {
+         this.dom.$ALERTS_NOTIFICATIONS.html("Check the fields marked with red");
+         this.dom.$ALERTS_NOTIFICATIONS.show();
+      }
    }
 });
 
 SurveyModals.AlertsModalModel = Backbone.Model.extend({
    events: {
-      UPDATE_VIEW: "updateViewEvent"      
+      UPDATE_VIEW: "updateViewEvent",
+      VALIDATE: "validateEvent"
+   },
+   errors: {
+      ERROR: "error"
    },
    defaults: {
       QuestionAlertSet: [],
@@ -141,6 +154,7 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
             isValid = isValidAlert;
          }
       });
+      if (!isValid) this.trigger(this.events.VALIDATE, this.errors.ERROR);
       return isValid;     
    },
    backupAlertsCollection: function () {
