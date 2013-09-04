@@ -48,6 +48,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       this.dom.$SURVEY_THANK_YOU_MESSAGE_INPUT = $("#survey-thank-you-message", this.$el);
       this.dom.$SURVEY_INTRO_MESSAGE_INPUT = $("#survey-intro", this.$el);
       this.dom.$SAVE_SURVEY_BTN = $(".save-btn", this.$el);
+      this.updateSaveButton(this.model.getNoOfAttributesChanged());
    },
    editSurveyInfo: function (event) {
       event.preventDefault();
@@ -248,5 +249,8 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
    },
    updateQuestionSetModel: function () {
       this.questionSetModel.updateQuestionSetCollection(this.get("QuestionSet"));
+   },
+   getNoOfAttributesChanged: function () {
+      return this.noOfAttributesChanged;
    }
 });
