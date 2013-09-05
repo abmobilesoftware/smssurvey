@@ -74,40 +74,11 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
       this.alertsCollection = new SurveyModals.AlertsCollection();
       _.each(this.get("QuestionAlertSet"), function (alert) {
          alert = alert || {};
-         var questionConstants = SurveyUtilities.Utilities.CONSTANTS_QUESTION;
          var questionType = this.get("QuestionType");
          alert.AlertOperatorsValues = this.getAlertOperators(questionType);
          alert.AlertOperatorsLabels = this.getAlertOperatorsLabels(questionType);
+         alert.TriggerAnswerValues = this.getTriggerAnswerValues(questionType);
          alert.QuestionType = questionType;
-         if (questionType == questionConstants.TYPE_RATING) {
-            var ratings = this.get("Modal").getRatings();
-            var ratingsTriggerValues = [];
-            for (var i = 0; i < ratings.length; ++i) {
-               ratingsTriggerValues.push({
-                  TriggerLabel: ratings[i].get("RatingLabel"),
-                  TriggerValue: ratings[i].get("RatingValue")
-               });
-            };
-            alert.TriggerAnswerValues = ratingsTriggerValues;
-         } else if (questionType == questionConstants.TYPE_SELECT_ONE_FROM_MANY
-            || questionType == questionConstants.TYPE_SELECT_MANY_FROM_MANY) {
-            var answers = this.get("Modal").getAnswers();
-            var answersTriggerValues = [];
-            for (var i = 0; i < answers.length; ++i) {
-               answersTriggerValues.push({
-                  TriggerLabel: answers[i].get("AnswerLabel"),
-                  TriggerValue: answers[i].get("AnswerValue")
-               })
-            };
-            alert.TriggerAnswerValues = answersTriggerValues;
-         } else if (questionType == questionConstants.TYPE_YES_NO) {
-            var yesNoTriggerValues = [];
-            yesNoTriggerValues.push({ TriggerLabel: "Yes", TriggerValue: "1" });
-            yesNoTriggerValues.push({ TriggerLabel: "No", TriggerValue: "0" });
-            alert.TriggerAnswerValues = yesNoTriggerValues;
-         } else if (questionType == questionConstants.TYPE_FREE_TEXT) {
-            alert.TriggerAnswerValues = [];
-         }
          var alertModel = new SurveyModals.AlertModel(alert);
          this.alertsCollection.add(alertModel);
       }, this);
@@ -146,6 +117,40 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
          return new Array("any", "all");         
       }
    },
+   getTriggerAnswerValues: function(questionType) {
+      var triggerAnswerValues = null;
+      var questionConstants = SurveyUtilities.Utilities.CONSTANTS_QUESTION;
+      if (questionType == questionConstants.TYPE_RATING) {
+         var ratings = this.get("Modal").getRatings();
+         var ratingsTriggerValues = [];
+         for (var i = 0; i < ratings.length; ++i) {
+            ratingsTriggerValues.push({
+               TriggerLabel: ratings[i].get("RatingLabel"),
+               TriggerValue: ratings[i].get("RatingValue")
+            });
+         };
+         triggerAnswerValues = ratingsTriggerValues;
+      } else if (questionType == questionConstants.TYPE_SELECT_ONE_FROM_MANY
+         || questionType == questionConstants.TYPE_SELECT_MANY_FROM_MANY) {
+         var answers = this.get("Modal").getAnswers();
+         var answersTriggerValues = [];
+         for (var i = 0; i < answers.length; ++i) {
+            answersTriggerValues.push({
+               TriggerLabel: answers[i].get("AnswerLabel"),
+               TriggerValue: answers[i].get("AnswerValue")
+            })
+         };
+         triggerAnswerValues = answersTriggerValues;
+      } else if (questionType == questionConstants.TYPE_YES_NO) {
+         var yesNoTriggerValues = [];
+         yesNoTriggerValues.push({ TriggerLabel: "Yes", TriggerValue: "1" });
+         yesNoTriggerValues.push({ TriggerLabel: "No", TriggerValue: "0" });
+         triggerAnswerValues = yesNoTriggerValues;
+      } else if (questionType == questionConstants.TYPE_FREE_TEXT) {
+         triggerAnswerValues = [];
+      }
+      return triggerAnswerValues;
+   },   
    addAlert: function () {
       ++this.alertClientId;
       this.alertsCollection.add(new SurveyModals.AlertModel({
@@ -159,7 +164,9 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
             DistributionList: "",
             Id: "",
             Type: "email"
-         }
+         },
+         QuestionType: this.get("QuestionType"),
+         TriggerAnswerValues: this.getTriggerAnswerValues(this.get("QuestionType"))
       }));
    },
    updateAlertOperators: function (type) {
