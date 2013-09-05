@@ -9,7 +9,8 @@
       this.template = _.template($("#no-alerts-template").html());
       this.dom = {
          $ALERTS_MODAL_CONTENT: $(".alerts-modal-content", this.$el),
-         $ALERTS_NOTIFICATIONS: $(".alerts-notifications", this.$el)
+         $ALERTS_NOTIFICATIONS: $(".alerts-notifications", this.$el),
+         $ALERT_BOX: $(".alert", this.$el)
       };
       this.model.on(this.model.events.UPDATE_VIEW, this.render);
       this.model.on(this.model.events.VALIDATE, this.validationResult)
@@ -41,12 +42,11 @@
    },
    openModal: function () {
       this.model.backupAlertsCollection();
-      this.dom.$ALERTS_NOTIFICATIONS.hide();
    },
    validationResult: function (result) {
       if (result == this.model.errors.ERROR) {
          this.dom.$ALERTS_NOTIFICATIONS.html("Check the fields marked with red");
-         this.dom.$ALERTS_NOTIFICATIONS.show();
+         this.dom.$ALERT_BOX.alert();
       }
    }
 });

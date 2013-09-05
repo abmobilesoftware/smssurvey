@@ -11,7 +11,8 @@ SurveyModals.AnswersModalView = Backbone.View.extend({
       this.template = _.template($("#no-answers-template").html());
       this.dom = {
          $ANSWERS_TABLE: $(".answers-table", this.$el),
-         $ANSWERS_NOTIFICATIONS: $(".answers-notifications", this.$el)
+         $ANSWERS_NOTIFICATIONS: $(".answers-notifications", this.$el),
+         $ALERT_BOX: $(".alert", this.$el)
       };
       this.model.on(this.model.events.VALIDATE, this.validationResult)
       this.model.on(this.model.events.UPDATE_VIEW, this.render);
