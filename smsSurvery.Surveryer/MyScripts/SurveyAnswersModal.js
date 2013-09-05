@@ -3,15 +3,17 @@ SurveyModals.AnswersModalView = Backbone.View.extend({
    events: {
       "click .add-answer-btn": "addAnswer",
       "click .close-answers-modal-btn": "closeModal",
-      "click .save-answers": "saveModal"
+      "click .save-answers": "saveModal",
+      "click .close-answers-notifications": "closeAlertBox"
    },
    initialize: function () {
       _.bindAll(this, "render", "addAnswer", "closeModal",
-         "saveModal", "openModal", "validationResult");
+         "saveModal", "openModal", "validationResult", "closeAlertBox");
       this.template = _.template($("#no-answers-template").html());
       this.dom = {
          $ANSWERS_TABLE: $(".answers-table", this.$el),
-         $ANSWERS_NOTIFICATIONS: $(".answers-notifications", this.$el)
+         $ANSWERS_NOTIFICATIONS: $(".answers-notifications", this.$el),
+         $ALERT_BOX: $(".alert", this.$el)
       };
       this.model.on(this.model.events.VALIDATE, this.validationResult)
       this.model.on(this.model.events.UPDATE_VIEW, this.render);
@@ -41,17 +43,20 @@ SurveyModals.AnswersModalView = Backbone.View.extend({
       }
    },
    openModal: function () {
-      this.dom.$ANSWERS_NOTIFICATIONS.hide();
       this.model.backupAnswersCollection();
+      this.dom.$ALERT_BOX.hide();
    },
    validationResult: function(result) {
       if (result == "noAnswersDefined") {
          this.dom.$ANSWERS_NOTIFICATIONS.html("No answers defined. Add at least one answer.");
-         this.dom.$ANSWERS_NOTIFICATIONS.show();
+         this.dom.$ALERT_BOX.show();
       } else if (result == "otherErrors") {
          this.dom.$ANSWERS_NOTIFICATIONS.html("Check the fields marked with red");
-         this.dom.$ANSWERS_NOTIFICATIONS.show();
+         this.dom.$ALERT_BOX.show();
       }
+   },
+   closeAlertBox: function () {
+      this.dom.$ALERT_BOX.hide();
    }
 });
 

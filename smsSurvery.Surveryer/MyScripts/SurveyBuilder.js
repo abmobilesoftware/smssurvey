@@ -240,7 +240,6 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
          });
       } else {
          this.set("Id", -1);
-         this.questionSetModel = new Question.QuestionSetModel();
          self.trigger(self.events.SURVEY_LOADED);
       }
    },

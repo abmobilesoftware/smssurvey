@@ -2,10 +2,12 @@
    events: {
       "change #rating-select": "changeScaleSize",
       "click .close-rating-modal-btn": "closeModal",
-      "click .save-rating": "saveModal"
+      "click .save-rating": "saveModal",
+      "click .close-ratings-notifications": "closeAlertBox"
    },
    initialize: function () {
-      _.bindAll(this, "changeScaleSize", "render", "closeModal", "validationResult");
+      _.bindAll(this, "changeScaleSize", "render", "closeModal",
+         "validationResult", "closeAlertBox");
       this.template = _.template($("#rating-modal-content-template").html());
       this.dom = {
          $RATING_MODAL_BODY: $(".modal-body", this.$el)
@@ -19,6 +21,7 @@
       this.dom.$RATING_TABLE = $(".rating-table", this.$el);
       this.dom.$RATINGS_NOTIFICATIONS = $(".ratings-notifications", this.$el);
       this.dom.$RATINGS_SELECT = $("#rating-select", this.$el);
+      this.dom.$ALERT_BOX = $(".alert", this.$el);
       _.each(this.model.getRatings(), function (rating) {
          var ratingView = new SurveyModals.RatingView({ model: rating });
          this.dom.$RATING_TABLE.append(ratingView.render());
@@ -43,13 +46,16 @@
    validationResult: function(result) {
       if (result == "noRatingsDefined") {
          this.dom.$RATINGS_NOTIFICATIONS.html("No ratings defined. Choose a scale using the selector below.");
-         this.dom.$RATINGS_NOTIFICATIONS.show();
+         this.dom.$ALERT_BOX.show();
          this.dom.$RATINGS_SELECT.addClass("invalidField");
       } else if (result == "otherErrors") {
          this.dom.$RATINGS_NOTIFICATIONS.html("Check the fields marked with red");
-         this.dom.$RATINGS_NOTIFICATIONS.show();
+         this.dom.$ALERT_BOX.show();
          this.dom.$RATINGS_SELECT.removeClass("invalidField");
       }
+   },
+   closeAlertBox: function () {
+      this.dom.$ALERT_BOX.hide();
    }
 });
 
