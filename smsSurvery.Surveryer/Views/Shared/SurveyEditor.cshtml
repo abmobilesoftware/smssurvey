@@ -118,25 +118,7 @@
                <% }
             });%>			
       </select>
-      <% 
-         var questionConstants = SurveyUtilities.Utilities.CONSTANTS_QUESTION;
-         if (QuestionType == questionConstants.TYPE_RATING || QuestionType == questionConstants.TYPE_SELECT_ONE_FROM_MANY 
-            || QuestionType == questionConstants.TYPE_YES_NO) {
-            if (TriggerAnswerValues.length > 0) {         
-       %>
-         <select>
-       <%      for (var i=0; i < TriggerAnswerValues.length; ++i) { %>
-                  <option value="<%= TriggerAnswerValues[i].TriggerValue %>"><%= TriggerAnswerValues[i].TriggerLabel %></option>
-       <%
-               }
-       %>
-         </select>
-       <%   }  
-          } else if (QuestionType == questionConstants.TYPE_FREE_TEXT) {
-       %>
-              <input type="text" class="alert-trigger-answer-input" value="<%= TriggerAnswer %>" placeholder="Insert trigger value" />
-       <% } %>
-
+      <input type="text" class="alert-trigger-answer-input" value="<%= TriggerAnswer %>" placeholder="Insert trigger value" />
       <br/>
       <span class="bottom-input-label"><strong>Send mail to:</strong></span>
       <input type="text" class="alert-distribution-list-input bottom-input" value="<%= AlertNotification.DistributionList %>" placeholder="Ex: address1@domain.net,address2@domain.net"/>

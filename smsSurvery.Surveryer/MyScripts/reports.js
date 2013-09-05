@@ -137,7 +137,7 @@ window.app.displayReportOverview = function (surveyPlanId) {
 
    var graphsContainer = $("#graphsOverviewContainer" + surveyPlanId);
    var candidateHeight = graphsContainer.outerHeight();
-   candidateHeight = candidateHeight != 0 ? candidateHeight + "px" : "300px";
+   candidateHeight = candidateHeight != 0 ? candidateHeight + "px" : "360px";
    loadingIndicator.height(candidateHeight);
 
    graphsContainer.height(candidateHeight);
