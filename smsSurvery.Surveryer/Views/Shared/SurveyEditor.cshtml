@@ -81,7 +81,10 @@
             <h3>Edit alerts</h3>
          </div>
          <div class="modal-body">
-            <div class="alerts-notifications hide"></div>
+            <div style="display:none" class="alert fade in alert-error" id="noTags-error" >
+                  <button type="button" class="close close-alerts-notifications">×</button>
+                  <div class="alerts-notifications"></div>
+               </div>
             <div class="alerts-modal-content">
             </div>
             <button class="btn btn-primary add-alert-btn">Add alert</button>                 
@@ -298,8 +301,10 @@
 </script>
 
 <script type="text/template" id="rating-modal-content-template">
-   <div class="ratings-notifications hide">
-   </div>  
+   <div style="display:none" class="alert fade in alert-error" id="noTags-error" >
+      <button type="button" class="close close-ratings-notifications">×</button>
+      <div class="ratings-notifications"></div>
+   </div> 
    <select id="rating-select"> 
       <option value="noValue">Select scale size</option>
       <option value="3" <% if (ScaleSize == 3) { %> selected="selected" <% } %>>Scale 1 to 3</option>

@@ -2,10 +2,11 @@
    events: {
       "click .add-alert-btn": "addAlert",
       "click .close-alerts-modal-btn": "closeModal",
-      "click .save-alerts": "saveModal"
+      "click .save-alerts": "saveModal",
+      "click .close-alerts-notifications": "closeAlertBox"
    },
    initialize: function () {
-      _.bindAll(this, "render", "validationResult");
+      _.bindAll(this, "render", "validationResult", "closeAlertBox");
       this.template = _.template($("#no-alerts-template").html());
       this.dom = {
          $ALERTS_MODAL_CONTENT: $(".alerts-modal-content", this.$el),
@@ -42,12 +43,16 @@
    },
    openModal: function () {
       this.model.backupAlertsCollection();
+      this.dom.$ALERT_BOX.hide();
    },
    validationResult: function (result) {
       if (result == this.model.errors.ERROR) {
          this.dom.$ALERTS_NOTIFICATIONS.html("Check the fields marked with red");
-         this.dom.$ALERT_BOX.alert();
+         this.dom.$ALERT_BOX.show();
       }
+   },
+   closeAlertBox: function () {
+      this.dom.$ALERT_BOX.hide();
    }
 });
 

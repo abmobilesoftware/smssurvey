@@ -44,6 +44,7 @@ SurveyModals.AnswersModalView = Backbone.View.extend({
    },
    openModal: function () {
       this.model.backupAnswersCollection();
+      this.dom.$ALERT_BOX.hide();
    },
    validationResult: function(result) {
       if (result == "noAnswersDefined") {
