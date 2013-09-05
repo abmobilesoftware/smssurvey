@@ -9,9 +9,9 @@
 @using (Html.BeginForm("Search", Model, null, FormMethod.Get))
 {
    <div class="searchBox noprint">
-      <span>Description:</span>
-      <input name="text" id="text" type="text" value="@Request["text"]"
+      <span class="description-filter-label">Description to look for...</span>
+      <input class="description-filter-input" name="text" id="text" type="text" value="@Request["text"]"
               placeholder="Text to look for ..." />
-       <input type="submit" value="Filter" class="btn btn-primary" />
+       <input type="submit" value="Filter" class="btn btn-primary filter-submit-btn" />
    </div>
 }

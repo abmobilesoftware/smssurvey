@@ -289,6 +289,7 @@
     <Content Include="Content\images\star50.png" />
     <Content Include="Content\images\star50_inactive.png" />
     <Content Include="Content\images\stars.png" />
+    <Content Include="Content\images\stars_little.png" />
     <Content Include="Content\images\ui-bg_diagonals-thick_15_0b3e6f_40x40.png" />
     <Content Include="Content\images\ui-bg_dots-medium_30_0b58a2_4x4.png" />
     <Content Include="Content\images\ui-bg_dots-small_20_333333_2x2.png" />

@@ -18,6 +18,7 @@
       this.dom = this.dom || {};
       this.dom.$RATING_TABLE = $(".rating-table", this.$el);
       this.dom.$RATINGS_NOTIFICATIONS = $(".ratings-notifications", this.$el);
+      this.dom.$RATINGS_SELECT = $("#rating-select", this.$el);
       _.each(this.model.getRatings(), function (rating) {
          var ratingView = new SurveyModals.RatingView({ model: rating });
          this.dom.$RATING_TABLE.append(ratingView.render());
@@ -43,9 +44,11 @@
       if (result == "noRatingsDefined") {
          this.dom.$RATINGS_NOTIFICATIONS.html("No ratings defined. Choose a scale using the selector below.");
          this.dom.$RATINGS_NOTIFICATIONS.show();
+         this.dom.$RATINGS_SELECT.addClass("invalidField");
       } else if (result == "otherErrors") {
          this.dom.$RATINGS_NOTIFICATIONS.html("Check the fields marked with red");
          this.dom.$RATINGS_NOTIFICATIONS.show();
+         this.dom.$RATINGS_SELECT.removeClass("invalidField");
       }
    }
 });
@@ -112,7 +115,7 @@ SurveyModals.RatingsModalModel = Backbone.Model.extend({
                isValid = ratingValidity;
             }
          });
-         this.trigger(this.events.VALIDATE, "otherErrors");
+         if (!isValid) this.trigger(this.events.VALIDATE, "otherErrors");
       } else {
          isValid = false;
          this.trigger(this.events.VALIDATE, "noRatingsDefined");

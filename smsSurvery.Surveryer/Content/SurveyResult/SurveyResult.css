@@ -1,5 +1,15 @@
 ﻿.searchBox {
    background: #fff;
    border: 2px solid #ddd;
-   padding: 1em;
+   padding: 11px 7px 0px 7px;
+}
+
+.description-filter-label {
+   position:relative;
+   bottom: 4px;   
+}
+
+.filter-submit-btn {
+   position: relative;
+   bottom: 5px;
 }

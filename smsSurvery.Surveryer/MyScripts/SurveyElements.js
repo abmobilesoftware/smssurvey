@@ -68,8 +68,7 @@ SurveyElements.StarBarView = Backbone.View.extend({
       this.$el.append(this.template());
       _.each(this.starsCollection.models, function (value, index, list) {
          var starView = new SurveyElements.StarView({ model: value });
-         $(".starsArea",this.$el).append(starView.render().el);
-         //this.$el.append();
+         $(".starsArea",this.$el).append(starView.render().el);         
       }, this);
 
       
