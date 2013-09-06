@@ -31,7 +31,7 @@ Question.QuestionModel = Backbone.Model.extend({
       ValidAnswersDetails: ""
    },
    initialize: function () {
-      this.parseAttributes();
+      this.parseAttributes();      
    },
    parseAttributes: function () {
       var questionConstants = SurveyUtilities.Utilities.CONSTANTS_QUESTION;
@@ -211,7 +211,7 @@ Question.QuestionView = Backbone.View.extend({
          this.alertsModalView = new SurveyModals.AlertsModalView({
             el: this.dom.$EDIT_ALERTS_MODAL,
             model: this.alertsModalModel
-         });
+         });         
       };
       this.alertsModalView.render();
 

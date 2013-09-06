@@ -102,7 +102,7 @@ SurveyModals.AnswersModalModel = Backbone.Model.extend({
    },
    addAnswer: function () {
       this.answersCollection.add(
-         new SurveyModals.AnswerModel({ AnswerIdentifier: this.answersCollection.models.length }));
+         new SurveyModals.AnswerModel({ AnswerIdentifier: (this.answersCollection.models.length + 1) }));
    },
    emptyAnswersCollection: function() {
       for (var i=this.answersCollection.models.length - 1; i>-1; --i) {

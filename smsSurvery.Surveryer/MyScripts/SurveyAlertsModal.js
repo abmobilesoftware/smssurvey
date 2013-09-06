@@ -12,7 +12,7 @@
          $ALERTS_MODAL_CONTENT: $(".alerts-modal-content", this.$el),
          $ALERTS_NOTIFICATIONS: $(".alerts-notifications", this.$el),
          $ALERT_BOX: $(".alert", this.$el)
-      };
+      };      
       this.model.on(this.model.events.UPDATE_VIEW, this.render);
       this.model.on(this.model.events.VALIDATE, this.validationResult)
    },
@@ -33,12 +33,13 @@
    },
    closeModal: function (event) {
       this.model.restoreAlertsCollection();
-      this.$el.modal("hide");
+      this.$el.modal("hide");      
    },
    saveModal: function (event) {
       var isDataValid = this.model.validateAlerts();
       if (isDataValid) {
-         this.$el.modal("hide");
+         this.model.saveAlertsCollection();
+         this.$el.modal("hide");         
       }
    },
    openModal: function () {
@@ -136,7 +137,7 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
       } else if (questionType == questionConstants.TYPE_YES_NO) {
          var yesNoTriggerValues = [];
          yesNoTriggerValues.push({ TriggerLabel: "Yes", TriggerValue: "1" });
-         yesNoTriggerValues.push({ TriggerLabel: "No", TriggerValue: "0" });
+         yesNoTriggerValues.push({ TriggerLabel: "No", TriggerValue: "2" });
          triggerAnswerValues = yesNoTriggerValues;
       } else if (questionType == questionConstants.TYPE_FREE_TEXT) {
          triggerAnswerValues = [];
@@ -213,6 +214,9 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
       _.each(this.alertsCollectionBackup.models, function (alert) {
          this.alertsCollection.add(new SurveyModals.AlertModel(alert.toJSON()));
       }, this);
+   },
+   saveAlertsCollection: function () {
+      this.set("QuestionAlertSet", this.getQuestionAlertsAsJson());
    }
 });
 
@@ -243,13 +247,11 @@ SurveyModals.AlertView = Backbone.View.extend({
       }
       this.dom.$ALERT_TRIGGER_ANSWER_SELECT.chosen({
          width: "45%",
-         allow_single_deselect: true,
          disable_search_threshold: 10,
          inherit_select_classes: true
       });
       this.dom.$ALERT_OPERATOR_SELECT.chosen({
          width: "45%",
-         allow_single_deselect: true,
          disable_search_threshold: 10,
          inherit_select_classes: true
       });
