@@ -10,6 +10,7 @@ namespace smsSurvery.Surveryer.Controllers
    public class MobileSurveyController : Controller
    {
 
+      public const string cNoLocation = "noLocation";
       public MobileSurveyController()
       {
 
@@ -38,6 +39,7 @@ namespace smsSurvery.Surveryer.Controllers
                ViewBag.IsFeedback = 0;
                ViewBag.IntroMessage = runningSurvey.SurveyPlan.IntroMessage;
                ViewBag.ThankYouMessage = runningSurvey.SurveyPlan.ThankYouMessage;
+               ViewBag.Location = cNoLocation;
                return View();
             }
             else
@@ -55,7 +57,7 @@ namespace smsSurvery.Surveryer.Controllers
       }
 
       [HttpGet]
-      public ActionResult Feedback(int id, string location = "noLocation")
+      public ActionResult Feedback(int id, string location = cNoLocation)
       {
          SurveyPlan survey = db.SurveyPlanSet.Find(id);
          if (survey != null)
@@ -100,7 +102,7 @@ namespace smsSurvery.Surveryer.Controllers
          SurveyResult surveyToAnalyze = null;
          var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
          Tags locationTag = null;
-         if (!location.Equals("noLocation"))
+         if (!String.IsNullOrEmpty(location) && !location.Equals(cNoLocation))
          {
             var locationTagResults = (from t in db.Tags
                                       where t.Name.Equals(location) &&
