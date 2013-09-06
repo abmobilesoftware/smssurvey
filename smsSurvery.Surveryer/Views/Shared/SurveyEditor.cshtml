@@ -351,13 +351,15 @@
 </script>
 
 <div id="survey">
-   <div id="survey-notification hide">
-      <p class="notification-text"></p>
-   </div>
+   <div style="display:none" class="alert fade in" id="noTags-error" >
+      <button type="button" class="close close-survey-notifications">×</button>
+      <div class="survey-notification">
+      </div>   
+    </div>
    <div id="survey-info">
    </div>
    <div id="survey-builder">
-      <div class="survey-builder-title-wrapper section-title">
+     <div class="survey-builder-title-wrapper section-title">
          <h4 class="survey-builder-title section-title-text">Questions</h4>
          <a class="btn btn-warning preview-btn section-title-button" role="button" data-toggle="modal" href="#preview-modal">Preview</a>
          <div class="clear"></div>

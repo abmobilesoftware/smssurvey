@@ -7,20 +7,21 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       "keyup #survey-intro": "updateIntroMessage",
       "keyup #survey-thank-you-message": "updateThankYouMessage",
       "click .save-btn": "saveSurvey",
-      "click .languageSelect": "updateSurveyLanguage"
+      "click .languageSelect": "updateSurveyLanguage",
+      "click .close-survey-notifications": "closeSurveyNotifications"
    },
    initialize: function () {
       var self = this;
       _.bindAll(this, "editSurveyInfo", "render", "updateDescription",
          "updateThankYouMessage", "saveSurvey", "confirmPageLeaving",
          "validationResult", "updateSaveButton", "updateIntroMessage",
-         "updateSurveyLanguage");
+         "updateSurveyLanguage", "closeSurveyNotifications");
       this.template = _.template($("#survey-info-template").html());
       this.dom = {
          $SURVEY_INFO: $("#survey-info", this.$el),
          $SURVEY_BUILDER: $("#survey-builder", this.$el),
-         $NOTIFICATION_TEXT: $(".notification-text", this.$el),
-         $NOTIFICATION: $("#survey-notification", this.$el)
+         $NOTIFICATION: $(".survey-notification", this.$el),
+         $ALERT_BOX: $(".alert", this.$el)
       };
       this.model.on("change:DisplayInfoTable", this.render);
       this.model.on("change:Id change:MobileWebsiteLocation", this.render);
@@ -85,16 +86,14 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
             {
                success: function (model, response, options) {
                   if (response.Result == "error") {
-                     self.dom.$NOTIFICATION_TEXT.text("Errors while saving.");
-                     self.dom.$NOTIFICATION_TEXT.
-                        removeClass("notification-success notification-error").addClass("notification-error");
+                     self.dom.$NOTIFICATION.text("Errors while saving.");
+                     self.dom.$ALERT_BOX.addClass("alert-error");
                   } else {
-                     self.dom.$NOTIFICATION_TEXT.text("Changes saved successfully.");
-                     self.dom.$NOTIFICATION_TEXT.
-                        removeClass("notification-success notification-error").addClass("notification-success");
+                     self.dom.$NOTIFICATION.text("Changes saved successfully.");
+                     self.dom.$ALERT_BOX.removeClass("alert-error");
                      self.model.updateQuestionSetModel();
                   }
-                  self.dom.$NOTIFICATION.show();
+                  self.dom.$ALERT_BOX.show();
                }
             });
       }
@@ -112,14 +111,25 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       this.dom.$SURVEY_THANK_YOU_MESSAGE_INPUT.removeClass(invalidFieldClass);
       this.dom.$SURVEY_INTRO_MESSAGE_INPUT.removeClass(invalidFieldClass);
 
+      var surveyHasError = false;
       for (var i = 0; i < result.length; ++i) {
          if (result[i] == this.model.errors.INVALID_DESCRIPTION) {
             this.dom.$SURVEY_DESCRIPTION_INPUT.addClass(invalidFieldClass);
+            surveyHasError = true;
          } else if (result[i] == this.model.errors.INVALID_THANK_YOU_MESSAGE) {
             this.dom.$SURVEY_THANK_YOU_MESSAGE_INPUT.addClass(invalidFieldClass);
+            surveyHasError = true;
          } else if (result[i] == this.model.errors.INVALID_INTRO_MESSAGE) {
             this.dom.$SURVEY_INTRO_MESSAGE_INPUT.addClass(invalidFieldClass);
+            surveyHasError = true;
+         } else if (result[i] == this.model.errors.ERROR_IN_QUESTION_SET) {
+            surveyHasError = true;
          }
+      }
+      if (surveyHasError) {
+         this.dom.$NOTIFICATION.text("Check the fields marked with red");
+         this.dom.$ALERT_BOX.addClass("alert-error");
+         this.dom.$ALERT_BOX.show();
       }
    },
    updateSaveButton: function (noOfChanges) {
@@ -132,6 +142,9 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
          this.dom.$SAVE_SURVEY_BTN.text("Save ( unsaved changes )");
          this.dom.$SAVE_SURVEY_BTN.removeClass("disabled");
       }
+   },
+   closeSurveyNotifications: function () {
+      this.dom.$ALERT_BOX.hide();
    }
 });
 
@@ -144,7 +157,8 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
    errors: {
       INVALID_DESCRIPTION: "invalid description",
       INVALID_THANK_YOU_MESSAGE: "invalid thank you message",
-      INVALID_INTRO_MESSAGE: "invalid intro message"
+      INVALID_INTRO_MESSAGE: "invalid intro message",
+      ERROR_IN_QUESTION_SET: "errorInQuestionSet"
    },
    defaults: {
       Id: 7,
@@ -200,11 +214,15 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
       this.trigger(this.events.UPDATE_SAVE_BUTTON, this.noOfAttributesChanged);
    },
    validateSurvey: function () {
-      var questionSetModelValidity = this.questionSetModel.validateQuestionSetModel();
+      this.result = [];
       var descriptionValidity = true;
       var thankYouMessageValidity = true;
       var introMessageValidity = true;
-      this.result = [];
+
+      var questionSetModelValidity = this.questionSetModel.validateQuestionSetModel();
+      if (!questionSetModelValidity) {
+         this.result.push(this.errors.ERROR_IN_QUESTION_SET);         
+      }     
       if (this.get("Description").length == 0 || this.get("Description").length > 100) {
          this.result.push(this.errors.INVALID_DESCRIPTION)
          descriptionValidity = false;
@@ -217,7 +235,7 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
          this.result.push(this.errors.INVALID_THANK_YOU_MESSAGE);
          thankYouMessageValidity = false;
       }
-      if (!descriptionValidity || !introMessageValidity || !thankYouMessageValidity) {
+      if (!descriptionValidity || !introMessageValidity || !thankYouMessageValidity || !questionSetModelValidity) {
          this.trigger(this.events.VALIDATE, this.result);
       } else {
          this.trigger(this.events.VALIDATE, [])
