@@ -197,12 +197,17 @@ namespace smsSurvery.Surveryer.Controllers
                {
                   if (item.AdditionalInfo != null)
                   {
+                     if(!String.IsNullOrEmpty(item.AdditionalInfo)) {
                      stuff.AddRange(Regex.Split(item.AdditionalInfo, "\\W+"));
+                     }
                   }
                }
                else
                {
-                  stuff.AddRange(Regex.Split(item.Answer, "\\W+"));
+                  if (!String.IsNullOrEmpty(item.Answer))
+                  {
+                     stuff.AddRange(Regex.Split(item.Answer, "\\W+"));
+                  }
                }
             }
             //stuff.AddRange(Regex.Split(testString, "\\W+"));
