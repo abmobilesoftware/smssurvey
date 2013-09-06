@@ -9,6 +9,7 @@ using smsSurvey.dbInterface;
 
 namespace smsSurvery.Surveryer.Controllers
 {
+   [Authorize]
     public class QuestionController : Controller
     {
         private smsSurveyEntities db = new smsSurveyEntities();

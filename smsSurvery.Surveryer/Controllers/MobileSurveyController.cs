@@ -7,6 +7,7 @@ using System.Web.Mvc;
 
 namespace smsSurvery.Surveryer.Controllers
 {
+   [Authorize]
    public class MobileSurveyController : Controller
    {
 
@@ -19,6 +20,7 @@ namespace smsSurvery.Surveryer.Controllers
       private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
       [HttpGet]
+      [AllowAnonymous]
       public ActionResult Fill(int id)
       {
 
@@ -57,6 +59,7 @@ namespace smsSurvery.Surveryer.Controllers
       }
 
       [HttpGet]
+      [AllowAnonymous]
       public ActionResult Feedback(int id, string location = cNoLocation)
       {
          SurveyPlan survey = db.SurveyPlanSet.Find(id);
@@ -94,6 +97,7 @@ namespace smsSurvery.Surveryer.Controllers
       }
 
       [HttpPost]
+      [AllowAnonymous]
       public JsonResult SaveSurvey(List<QuestionResponse> questions, int surveyResultId, int surveyPlanId, string location)
       {
          //for mobile surveys the survey language is the default Survey definition language
@@ -177,7 +181,9 @@ namespace smsSurvery.Surveryer.Controllers
          public string Email { get; set; }
          public string Telephone { get; set; }
       }
+
       [HttpPost]
+      [AllowAnonymous]
       public void SaveRespondentInfo(RespondentInfo info, int surveyResultId)
       {
          //get the customer corresponding to the survey result and update its info
@@ -214,6 +220,7 @@ namespace smsSurvery.Surveryer.Controllers
             }
          }
       }
+
       protected override void Dispose(bool disposing)
       {
          db.Dispose();

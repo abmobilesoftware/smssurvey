@@ -11,124 +11,16 @@ using smsSurvery.Surveryer.Models.SmsInterface;
 using smsSurvery.Surveryer.Mailers;
 
 namespace smsSurvery.Surveryer.Controllers
-{
+{   
     public class AnswerController : Controller
     {
 
        //private const string cNumberFromWhichToSendSMS = "40371700012";
        private smsSurveyEntities db = new smsSurveyEntities();
        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        //
-        // GET: /Answer/
-
-        public ActionResult Index()
-        {
-           var resultset = db.ResultSet.Include(r => r.Question).Include(r => r.SurveyResult);
-           return View(resultset.ToList());
-        }
-
-        //
-        // GET: /Answer/Details/5
-
-        public ActionResult Details(int id = 0)
-        {
-           Result result = db.ResultSet.Find(id);
-           if (result == null)
-           {
-              return HttpNotFound();
-           }
-           return View(result);
-        }
-
-        //
-        // GET: /Answer/Create
-
-        public ActionResult Create()
-        {
-           ViewBag.QuestionId = new SelectList(db.QuestionSet, "Id", "Text");
-           ViewBag.SurveyResultId = new SelectList(db.SurveyResultSet, "Id", "CustomerPhoneNumber");
-           return View();
-        }
-
-        //
-        // POST: /Answer/Create
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(Result result)
-        {
-           if (ModelState.IsValid)
-           {
-              db.ResultSet.Add(result);
-              db.SaveChanges();
-              return RedirectToAction("Index");
-           }
-
-           ViewBag.QuestionId = new SelectList(db.QuestionSet, "Id", "Text", result.QuestionId);
-           ViewBag.SurveyResultId = new SelectList(db.SurveyResultSet, "Id", "CustomerPhoneNumber", result.SurveyResultId);
-           return View(result);
-        }
-
-        //
-        // GET: /Answer/Edit/5
-
-        public ActionResult Edit(int id = 0)
-        {
-           Result result = db.ResultSet.Find(id);
-           if (result == null)
-           {
-              return HttpNotFound();
-           }
-           ViewBag.QuestionId = new SelectList(db.QuestionSet, "Id", "Text", result.QuestionId);
-           ViewBag.SurveyResultId = new SelectList(db.SurveyResultSet, "Id", "CustomerPhoneNumber", result.SurveyResultId);
-           return View(result);
-        }
-
-        //
-        // POST: /Answer/Edit/5
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(Result result)
-        {
-           if (ModelState.IsValid)
-           {
-              db.Entry(result).State = EntityState.Modified;
-              db.SaveChanges();
-              return RedirectToAction("Index");
-           }
-           ViewBag.QuestionId = new SelectList(db.QuestionSet, "Id", "Text", result.QuestionId);
-           ViewBag.SurveyResultId = new SelectList(db.SurveyResultSet, "Id", "CustomerPhoneNumber", result.SurveyResultId);
-           return View(result);
-        }
-
-        //
-        // GET: /Answer/Delete/5
-
-        public ActionResult Delete(int id = 0)
-        {
-           Result result = db.ResultSet.Find(id);
-           if (result == null)
-           {
-              return HttpNotFound();
-           }
-           return View(result);
-        }
-
-        //
-        // POST: /Answer/Delete/5
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-           Result result = db.ResultSet.Find(id);
-           db.ResultSet.Remove(result);
-           db.SaveChanges();
-           return RedirectToAction("Index");
-        }
 
         [HttpGet]
+        [Authorize]
         public ActionResult GetMessagesWithOnePredefinedAnswer(int questionId, int answer)
         {
            //for the given survey (if allowed access) show messages with given stem
@@ -157,6 +49,7 @@ namespace smsSurvery.Surveryer.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public ActionResult GetCustomerWhichAnsweredXQuestions(int surveyId, double nrOfAnsweredQuestions)
         {
            SurveyPlan sp = db.SurveyPlanSet.Find(surveyId);
@@ -173,6 +66,7 @@ namespace smsSurvery.Surveryer.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public ActionResult GetMessagesWithStem(int questionId, string stem, bool checkAdditionalInfo)
         {
            //for the given survey (if allowed access) show messages with given stem
@@ -206,6 +100,7 @@ namespace smsSurvery.Surveryer.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public ActionResult AnswerReceived(string from, string to, string text)
         {
            logger.InfoFormat("from: {0}, to: {1}, text: {2}", from, to, text);
@@ -329,14 +224,14 @@ namespace smsSurvery.Surveryer.Controllers
               logger.ErrorFormat("Received answer from client {0} while survey not in progress. Text {1}", customer.PhoneNumber, text);
            }
         }
-
-        
+              
 
        /**
         * DA the problem here is that a customer cannot have 2 surveys running at the same time
         * while an edge case, this is still a possibility
         */ 
        [HttpGet]
+       [Authorize]
        public void StartSMSQuery(string userName, string numberToSendFrom, string customerPhoneNumber, string[] tags = null )
         {
            logger.InfoFormat("userName: {0}, numberToSendFrom: {1}, customerPhoneNumber: {2}", userName, numberToSendFrom, customerPhoneNumber);

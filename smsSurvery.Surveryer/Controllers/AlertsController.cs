@@ -12,6 +12,7 @@ using smsSurvery.Surveryer.Mailers;
 
 namespace smsSurvery.Surveryer.Controllers
 {
+   [Authorize]
     public class AlertsController : Controller
     {
         private smsSurveyEntities db = new smsSurveyEntities();

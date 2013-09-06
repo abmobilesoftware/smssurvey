@@ -12,6 +12,7 @@ using System.Globalization;
 
 namespace smsSurvery.Surveryer.Controllers
 {
+   [Authorize]
    public class ReportsController : Controller
    {
       public const string cRatingsTypeQuestion = "Rating";

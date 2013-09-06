@@ -13,6 +13,7 @@ using MvcPaging;
 
 namespace smsSurvery.Surveryer.Controllers
 {
+   [Authorize]
    public class SurveyPlanController : Controller
    {
       private smsSurveyEntities db = new smsSurveyEntities();

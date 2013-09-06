@@ -19,7 +19,7 @@ namespace smsSurvery.Surveryer.Controllers
       public IEnumerable<Customer> Customers { get; set; }
    }
 
-   
+   [Authorize]   
    public class HomeController : Controller
    {
       protected class CsvCustomer
