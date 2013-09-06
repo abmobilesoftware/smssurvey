@@ -271,6 +271,8 @@
     <Content Include="App_Readme\Elmah.SqlServer.txt" />
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\chosen\chosen-sprite.png" />
+    <Content Include="Content\chosen\chosen.css" />
     <Content Include="Content\images\ajax-loader_vs1.gif" />
     <Content Include="Content\images\arrow_down_dblue_16.png" />
     <Content Include="Content\images\arrow_up_dblue_16.png" />
@@ -322,6 +324,7 @@
     <Content Include="MyScripts\SurveyUtilities.js" />
     <Content Include="Scripts\backbone.js" />
     <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\chosen.jquery.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.js" />
     <Content Include="MyScripts\reportsTags.js" />
     <Content Include="Scripts\jquery-1.10.1.js" />
