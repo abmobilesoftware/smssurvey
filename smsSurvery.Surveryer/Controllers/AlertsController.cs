@@ -288,7 +288,7 @@ namespace smsSurvery.Surveryer.Controllers
                     }
                     break;
                  default:
-                    logger.Error("invalid operator detected");
+                    logger.ErrorFormat("invalid operator detected {0} for alert {1}", alert.Operator, alert.Id);
                     break;
               }
               if (notificationRequired)
