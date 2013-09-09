@@ -31,7 +31,7 @@ Question.QuestionModel = Backbone.Model.extend({
       ValidAnswersDetails: ""
    },
    initialize: function () {
-      this.parseAttributes();
+      this.parseAttributes();      
    },
    parseAttributes: function () {
       var questionConstants = SurveyUtilities.Utilities.CONSTANTS_QUESTION;
@@ -211,18 +211,20 @@ Question.QuestionView = Backbone.View.extend({
          this.alertsModalView = new SurveyModals.AlertsModalView({
             el: this.dom.$EDIT_ALERTS_MODAL,
             model: this.alertsModalModel
-         });
+         });         
       };
       this.alertsModalView.render();
 
       return this.$el;
    },
    initializeModals: function () {
+      var modalModel = null;
       if (this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY
          || this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_MANY_FROM_MANY) {
          this.answersModalModel = new SurveyModals.AnswersModalModel({ Answers: this.model.get("Answers") });
          this.model.setAnswersModalModel(this.answersModalModel);
          this.answersModalView = null;
+         modalModel = this.answersModalModel;
       }
       if (this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_RATING) {
          this.ratingsModalModel = new SurveyModals.RatingsModalModel({
@@ -232,14 +234,16 @@ Question.QuestionView = Backbone.View.extend({
          });
          this.model.setRatingsModalModel(this.ratingsModalModel);
          this.ratingsModalView = null;
+         modalModel = this.ratingsModalModel;
       }
       this.alertsModalModel = new SurveyModals.AlertsModalModel({
          QuestionAlertSet: this.model.get("QuestionAlertSet"),
-         QuestionType: this.model.get("Type")
+         QuestionType: this.model.get("Type"),
+         Modal: modalModel
       });
       this.model.setAlertsModalModel(this.alertsModalModel);
       this.alertsModalView = null;
-      this.alertsModalModel.updateAlertOperators(this.model.get("Type"));
+      this.alertsModalModel.refreshAlerts(this.model.get("Type"));
    },
    selectQuestionType: function (event) {
       event.preventDefault();

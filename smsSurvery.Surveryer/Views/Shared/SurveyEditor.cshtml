@@ -108,8 +108,8 @@
       <input type="text" class="alert-description-input" placeholder="Ex: Insert description ..." value="<%= Description %>" />
       <button class="btn btn-danger delete-alert-btn"><img src="/Content/images/close_20.png" /></button>
       <br/>
-      <select class="alert-operator-select">
-                  <option value="noValue">Select operator</option>
+      <select data-placeholder="Choose an operator" class="chosen-select alert-operator-select">
+                  <option value=""></option>
          <% _.each(AlertOperatorsValues, function(alertOperator, index) { 
                if (alertOperator == Operator) { %>
                   <option value="<%= alertOperator %>" selected="selected"><%= AlertOperatorsLabels[index] %></option>
@@ -118,7 +118,36 @@
                <% }
             });%>			
       </select>
-      <input type="text" class="alert-trigger-answer-input" value="<%= TriggerAnswer %>" placeholder="Insert trigger value" />
+      <% 
+         var questionConstants = SurveyUtilities.Utilities.CONSTANTS_QUESTION;
+         if (QuestionType == questionConstants.TYPE_RATING || QuestionType == questionConstants.TYPE_SELECT_ONE_FROM_MANY 
+            || QuestionType == questionConstants.TYPE_YES_NO) {
+            if (TriggerAnswerValues.length > 0) {         
+       %>
+         <select data-placeholder="Choose a trigger answer" class="chosen-select alert-trigger-answer-select">
+            <option value=""></option>
+       <%      for (var i=0; i < TriggerAnswerValues.length; ++i) {
+                  if (TriggerAnswerValues[i].TriggerValue == TriggerAnswer) {        
+       %>
+                  <option value="<%= TriggerAnswerValues[i].TriggerValue %>" selected><%= TriggerAnswerValues[i].TriggerLabel %></option>
+       <%
+                  } else {
+       %>
+                  <option value="<%= TriggerAnswerValues[i].TriggerValue %>"><%= TriggerAnswerValues[i].TriggerLabel %></option>
+       <%
+                  }
+               }
+       %>
+         </select>
+       <%   } else { %>
+            <span>No values defined.</span> 
+      <%
+            }
+          } else if (QuestionType == questionConstants.TYPE_FREE_TEXT) {
+       %>
+              <input type="text" class="alert-trigger-answer-input" value="<%= TriggerAnswer %>" placeholder="Insert trigger value" />
+       <% } %>
+
       <br/>
       <span class="bottom-input-label"><strong>Send mail to:</strong></span>
       <input type="text" class="alert-distribution-list-input bottom-input" value="<%= AlertNotification.DistributionList %>" placeholder="Ex: address1@domain.net,address2@domain.net"/>
@@ -322,13 +351,15 @@
 </script>
 
 <div id="survey">
-   <div id="survey-notification hide">
-      <p class="notification-text"></p>
-   </div>
+   <div style="display:none" class="alert fade in" id="noTags-error" >
+      <button type="button" class="close close-survey-notifications">×</button>
+      <div class="survey-notification">
+      </div>   
+    </div>
    <div id="survey-info">
    </div>
    <div id="survey-builder">
-      <div class="survey-builder-title-wrapper section-title">
+     <div class="survey-builder-title-wrapper section-title">
          <h4 class="survey-builder-title section-title-text">Questions</h4>
          <a class="btn btn-warning preview-btn section-title-button" role="button" data-toggle="modal" href="#preview-modal">Preview</a>
          <div class="clear"></div>

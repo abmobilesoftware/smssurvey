@@ -101,7 +101,8 @@ SurveyModals.AnswersModalModel = Backbone.Model.extend({
       };
    },
    addAnswer: function () {
-      this.answersCollection.add(new SurveyModals.AnswerModel());
+      this.answersCollection.add(
+         new SurveyModals.AnswerModel({ AnswerIdentifier: (this.answersCollection.models.length + 1) }));
    },
    emptyAnswersCollection: function() {
       for (var i=this.answersCollection.models.length - 1; i>-1; --i) {
@@ -208,5 +209,8 @@ SurveyModals.AnswersCollection = Backbone.Collection.extend({
    },
    deleteAnswer: function (answer) {
       this.remove(answer);
+      _.each(this.models, function (answer, index) {
+         answer.set("AnswerIdentifier", (index + 1));
+      });
    }
 });
