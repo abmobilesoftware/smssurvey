@@ -130,7 +130,7 @@ namespace smsSurvery.Surveryer.Controllers
             {
                var currentQuestion = db.QuestionSet.Find(q.Id);
 
-               var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion, AdditionalInfo = q.AdditionalInfo };
+               var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion, AdditionalInfo = q.AdditionalInfo, DateSubmitted = DateTime.UtcNow };
                newSurvey.Result.Add(res);
             }
             db.SaveChanges();
@@ -152,7 +152,7 @@ namespace smsSurvery.Surveryer.Controllers
                foreach (var q in questions)
                {
                   var currentQuestion = db.QuestionSet.Find(q.Id);
-                  var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion };
+                  var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion, DateSubmitted = DateTime.UtcNow };
                   surveyToFill.Result.Add(res);
                }
                db.SaveChanges();
@@ -161,9 +161,7 @@ namespace smsSurvery.Surveryer.Controllers
          }
          foreach (var q in questions)
          {
-            var currentQuestion = db.QuestionSet.Find(q.Id);
-
-            var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion };
+            var currentQuestion = db.QuestionSet.Find(q.Id);            
             AlertsController.HandleAlertsForQuestion(currentQuestion, q.PickedAnswer, surveyToAnalyze.Id, this, logger);
          }
          if (locationTag != null)

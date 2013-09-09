@@ -177,7 +177,7 @@ namespace smsSurvery.Surveryer.Controllers
                     //compute the completed percentage - based on the total number of questions and the received answers
                     double newPercentageCompleted = (double) currentQuestion.Order / numberOfQuestionsInSurvey ;
                     runningSurvey.PercentageComplete = newPercentageCompleted;                  
-                    var res = new Result() { Answer = text, Question = currentQuestion };
+                    var res = new Result() { Answer = text, Question = currentQuestion, DateSubmitted= DateTime.UtcNow };
                     runningSurvey.Result.Add(res);
                     db.SaveChanges();                   
                  }

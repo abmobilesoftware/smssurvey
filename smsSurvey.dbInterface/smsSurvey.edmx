@@ -167,6 +167,7 @@
           <Property Name="QuestionId" Type="int" Nullable="false" />
           <Property Name="SurveyResultId" Type="int" Nullable="false" />
           <Property Name="AdditionalInfo" Type="nvarchar" MaxLength="500" />
+          <Property Name="DateSubmitted" Type="datetime" Nullable="true" />
         </EntityType>
         <EntityType Name="SurveyPlanSet">
           <Key>
@@ -722,6 +723,7 @@
           <NavigationProperty Name="SurveyResult" Relationship="smsSurveyModel.SurveyResultResult" FromRole="Result" ToRole="SurveyResult" />
           <Property Type="Int32" Name="SurveyResultId" Nullable="false" />
           <Property Type="String" Name="AdditionalInfo" MaxLength="500" FixedLength="false" Unicode="true" Nullable="true" />
+          <Property Type="DateTime" Name="DateSubmitted" Nullable="true"  Precision="3"/>
         </EntityType>
         <Association Name="QuestionResult">
           <End Type="smsSurveyModel.Question" Role="Question" Multiplicity="1" >
@@ -1066,6 +1068,7 @@
           <ScalarProperty Name="Answer" ColumnName="Answer" />
           <ScalarProperty Name="QuestionId" ColumnName="QuestionId" />
           <ScalarProperty Name="SurveyResultId" ColumnName="SurveyResultId" />
+           <ScalarProperty Name="DateSubmitted" ColumnName="DateSubmitted" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
