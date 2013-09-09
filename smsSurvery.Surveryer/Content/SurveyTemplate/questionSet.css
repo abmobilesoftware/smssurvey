@@ -332,3 +332,11 @@ input.bottom-input {
 table.answers-table {
    margin-bottom: 8px;
 }
+
+.numeric-entry {
+  background: none repeat scroll 0 0 blue;
+  float: left;
+  width: 41px;
+  height: 88px;
+  text-align:center;
+}

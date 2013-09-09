@@ -225,6 +225,7 @@
     <Compile Include="Controllers\MobileSurveyController.cs" />
     <Compile Include="Controllers\QuestionController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
+    <Compile Include="Controllers\SurveyTemplateController.cs" />
     <Compile Include="GlobalResources\Global.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -249,7 +250,6 @@
     <Compile Include="Models\SmsInterface\CompatelSmsRepository.cs" />
     <Compile Include="Models\SmsInterface\IExternalSmsRepository.cs" />
     <Compile Include="Models\SmsInterface\NexmoSmsRepository.cs" />
-    <Compile Include="Controllers\SurveyTemplateController.cs" />
     <Compile Include="Controllers\SurveyResultController.cs" />
     <Compile Include="Filters\InitializeSimpleMembershipAttribute.cs" />
     <Compile Include="Global.asax.cs">
@@ -307,7 +307,7 @@
     <Content Include="Content\jquery-ui-1.8.23.custom.css" />
     <Content Include="Content\jquery.tagsinput.css" />
     <Content Include="Content\survey.css" />
-    <Content Include="Content\SurveyTemplate\questionSet.css" />
+    <Content Include="Content\SurveyPlan\questionSet.css" />
     <Content Include="Content\SurveyResult\SurveyResult.css" />
     <Content Include="Content\WordCloud.css" />
     <Content Include="MyScripts\DateHelper.js" />
@@ -319,6 +319,7 @@
     <Content Include="MyScripts\SurveyElements.js" />
     <Content Include="MyScripts\SurveyBuilder.js" />
     <Content Include="MyScripts\SurveyMain.js" />
+    <Content Include="MyScripts\SurveyNumericModal.js" />
     <Content Include="MyScripts\SurveyPreview.js" />
     <Content Include="MyScripts\SurveyRatingsModal.js" />
     <Content Include="MyScripts\SurveyUtilities.js" />
@@ -462,8 +463,8 @@
     <Content Include="Views\Question\Details.cshtml" />
     <Content Include="Views\Question\Create.cshtml" />
     <Content Include="Views\Question\Delete.cshtml" />
-    <Content Include="Views\SurveyTemplate\Edit.cshtml" />
-    <Content Include="Views\SurveyTemplate\Delete.cshtml" />
+    <Content Include="Views\SurveyPlan\Edit.cshtml" />
+    <Content Include="Views\SurveyPlan\Delete.cshtml" />
     <Content Include="Views\Answer\Index.cshtml" />
     <Content Include="Views\Answer\Details.cshtml" />
     <Content Include="Views\Answer\Create.cshtml" />
@@ -479,20 +480,20 @@
     <Content Include="Views\Customer\Create.cshtml" />
     <Content Include="Views\Customer\Edit.cshtml" />
     <Content Include="Views\Customer\Delete.cshtml" />
-    <Content Include="Views\SurveyTemplate\Index.cshtml" />
-    <Content Include="Views\SurveyTemplate\Create.cshtml" />
-    <Content Include="Views\SurveyTemplate\Details.cshtml" />
+    <Content Include="Views\SurveyPlan\Index.cshtml" />
+    <Content Include="Views\SurveyPlan\Create.cshtml" />
+    <Content Include="Views\SurveyPlan\Details.cshtml" />
     <Content Include="Views\Shared\QuestionDetails.cshtml" />
     <Content Include="Views\Reports\GetWordCloud.cshtml" />
     <Content Include="Views\Answer\GetMessagesWithStem.cshtml" />
     <Content Include="Views\Question\Edit.cshtml" />
     <Content Include="Views\Home\MyHome.cshtml" />
-    <Content Include="Views\SurveyTemplate\CreateEditSurveyPlan.cshtml" />
+    <Content Include="Views\SurveyPlan\CreateEditSurveyPlan.cshtml" />
     <Content Include="Views\Question\CreateEditQuestion.cshtml" />
     <Content Include="Views\Shared\SurveyReport.cshtml" />
-    <Content Include="Views\SurveyTemplate\Report.cshtml" />
+    <Content Include="Views\SurveyPlan\Report.cshtml" />
     <Content Include="Views\Shared\SurveyResultsDetails.cshtml" />
-    <Content Include="Views\SurveyTemplate\Responses.cshtml" />
+    <Content Include="Views\SurveyPlan\Responses.cshtml" />
     <Content Include="Views\Answer\GetMessagesWithOnePredefinedAnswer.cshtml" />
     <Content Include="Views\Home\ManualSurvey.cshtml" />
     <Content Include="Views\Shared\SurveyResultOverview.cshtml" />
