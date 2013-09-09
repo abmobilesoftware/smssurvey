@@ -121,7 +121,7 @@
 </head>
 
 <body>
-     <input type="hidden" value="@ViewBag.Id" id="surveyPlanId"/>
+     <input type="hidden" value="@ViewBag.Id" id="surveyTemplateId"/>
      <input type="hidden" value="@ViewBag.IsFeedback" id="isFeedback"/>
      <section id="survey">
         <section id="questionsPage" class="page">
@@ -162,7 +162,7 @@
    <script type="text/javascript">
       $(function () {
          //initialize mobile survey given the id of the survey plan
-         var surveyId = $("#surveyPlanId").val();
+         var surveyId = $("#surveyTemplateId").val();
          var survey = new SurveyBuilder.SurveyModel({
             Id: surveyId,
             Description: "",
@@ -182,7 +182,7 @@
                var surveyModel = new Question.QuestionSetModel(
                   {
                      SurveyResultId: surveyResultID,
-                     SurveyPlanId: surveyId
+                     SurveyTemplateId: surveyId
                   });
                surveyModel.updateQuestionSetCollection(model.get("QuestionSet"));
                //DA sure they are ordered

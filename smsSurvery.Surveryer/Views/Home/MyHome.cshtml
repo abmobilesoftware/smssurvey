@@ -6,7 +6,7 @@
 @if (ViewBag.CurrentSurvey != null)
 {
    <text>
-    @{Html.RenderPartial("SurveyResultOverview", (smsSurvey.dbInterface.SurveyPlan) ViewBag.CurrentSurvey);}
+    @{Html.RenderPartial("SurveyResultOverview", (smsSurvey.dbInterface.SurveyTemplate)ViewBag.CurrentSurvey);}
    </text>   
    <text>
     @{Html.RenderPartial("SurveyReport", (IEnumerable<smsSurvey.dbInterface.Question>) ViewBag.SurveyQuestions);} 
@@ -16,7 +16,7 @@ else
 {
    <p>
       No running surveys. 
-      @Html.ActionLink("Start one of the existing surveys or create a new survey", "Index", "SurveyPlan",null,null)
+      @Html.ActionLink("Start one of the existing surveys or create a new survey", "Index", "SurveyTemplate",null,null)
    </p>      
 }   
  @section css{

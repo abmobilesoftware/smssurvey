@@ -1,4 +1,4 @@
-﻿@model smsSurvey.dbInterface.SurveyPlan
+﻿@model smsSurvey.dbInterface.SurveyTemplate
 
 @{
     ViewBag.Title = "Survey report";
@@ -7,7 +7,7 @@
 <script type="text/javascript" src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
 
 <text>
-@{Html.RenderPartial("SurveyResultOverview", (smsSurvey.dbInterface.SurveyPlan) Model);}
+@{Html.RenderPartial("SurveyResultOverview", (smsSurvey.dbInterface.SurveyTemplate)Model);}
 </text>
 
 @if (Model != null)

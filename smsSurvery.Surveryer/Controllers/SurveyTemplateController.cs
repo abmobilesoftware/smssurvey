@@ -13,22 +13,21 @@ using MvcPaging;
 
 namespace smsSurvery.Surveryer.Controllers
 {
-   public class SurveyPlanController : Controller
+   [Authorize]
+   public class SurveyTemplateController : Controller
    {
       private smsSurveyEntities db = new smsSurveyEntities();
       private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-      //
-      // GET: /SurveyPlan/
-
+      
       [Authorize]
       public ActionResult Index(int page = 1)
       {
          int currentPageIndex = page - 1;
          int NUMBER_OF_RESULTS_PER_PAGE = 10;
          UserProfile user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-         var res = user.SurveyPlanSet;
+         var res = user.SurveyTemplateSet;
          var pageRes = res.Skip((page-1) * NUMBER_OF_RESULTS_PER_PAGE).Take(NUMBER_OF_RESULTS_PER_PAGE);
-         IPagedList<SurveyPlan> pagingDetails = new PagedList<SurveyPlan>(res, currentPageIndex, NUMBER_OF_RESULTS_PER_PAGE, res.Count());
+         IPagedList<SurveyTemplate> pagingDetails = new PagedList<SurveyTemplate>(res, currentPageIndex, NUMBER_OF_RESULTS_PER_PAGE, res.Count());
          ViewBag.pagingDetails = pagingDetails;
          return View(pageRes.ToList());
       }
@@ -38,30 +37,24 @@ namespace smsSurvery.Surveryer.Controllers
          int currentPageIndex = page - 1;
          int NUMBER_OF_RESULTS_PER_PAGE = 10;
          var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-         var res = user.SurveyPlanSet.Where(x=>x.Description.ToLower().Contains(text.Trim().ToLower())
+         var res = user.SurveyTemplateSet.Where(x => x.Description.ToLower().Contains(text.Trim().ToLower())
             || x.Description.StartsWith(text.Trim().ToLower()));
          var pageRes = res.Skip((page - 1) * NUMBER_OF_RESULTS_PER_PAGE).Take(NUMBER_OF_RESULTS_PER_PAGE);
-         IPagedList<SurveyPlan> pagingDetails = new PagedList<SurveyPlan>(res, currentPageIndex, NUMBER_OF_RESULTS_PER_PAGE, res.Count());
+         IPagedList<SurveyTemplate> pagingDetails = new PagedList<SurveyTemplate>(res, currentPageIndex, NUMBER_OF_RESULTS_PER_PAGE, res.Count());
          ViewBag.pagingDetails = pagingDetails;
          return View("Index", pageRes.ToList());
       }
 
-      //
-      // GET: /SurveyPlan/Details/5
-
-      public ActionResult Details(int id = 0)
+            public ActionResult Details(int id = 0)
       {
-         SurveyPlan surveyplan = db.SurveyPlanSet.Find(id);
-         if (surveyplan == null)
+         SurveyTemplate surveyTemplate = db.SurveyTemplateSet.Find(id);
+         if (surveyTemplate == null)
          {
             return HttpNotFound();
          }
-         db.Entry(surveyplan).Collection(s => s.QuestionSet).Load();
-         return View(surveyplan);
+         db.Entry(surveyTemplate).Collection(s => s.QuestionSet).Load();
+         return View(surveyTemplate);
       }
-
-      //
-      // GET: /SurveyPlan/Create
 
       [Authorize]
       public ActionResult Create()
@@ -69,97 +62,92 @@ namespace smsSurvery.Surveryer.Controllers
          ViewBag.Action = "Create";
          return View();
       }
-
-      //
-      // POST: /SurveyPlan/Create
-
+     
       [HttpPost]
       [ValidateAntiForgeryToken]
       [Authorize]
-      public ActionResult Create(SurveyPlan surveyplan)
+      public ActionResult Create(SurveyTemplate surveyTemplate)
       {
          if (ModelState.IsValid)
          {
             //associate with the current user
             UserProfile user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-            surveyplan.Provider = user.DefaultProvider;
-            db.SurveyPlanSet.Add(surveyplan);
-            user.SurveyPlanSet.Add(surveyplan);
+            surveyTemplate.Provider = user.DefaultProvider;
+            db.SurveyTemplateSet.Add(surveyTemplate);
+            user.SurveyTemplateSet.Add(surveyTemplate);
             db.SaveChanges();
             return RedirectToAction("Index");
          }
 
-         return View(surveyplan);
+         return View(surveyTemplate);
       }
 
       [HttpGet]
       [Authorize]
       public ActionResult MakeActive(int id)
       {
-         SurveyPlan surveyplan = db.SurveyPlanSet.Find(id);
-         MakeActive(surveyplan);
+         SurveyTemplate surveyTemplate = db.SurveyTemplateSet.Find(id);
+         MakeActive(surveyTemplate);
          return RedirectToAction("Index");
       }
 
-      private void MakeActive(SurveyPlan surveyplan)
+      private void MakeActive(SurveyTemplate surveyTemplate)
       {
          //DA if the survey is already started, stop it
-         if (surveyplan.IsRunning)
+         if (surveyTemplate.IsRunning)
          {
-            surveyplan.IsRunning = false;
-            surveyplan.DateEnded = DateTime.UtcNow;
+            surveyTemplate.IsRunning = false;
+            surveyTemplate.DateEnded = DateTime.UtcNow;
             db.SaveChanges();
          }
          else
          {
             var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-            var currentRunningSurvey = user.SurveyPlanSet.Where(s => s.IsRunning).FirstOrDefault();
-            if (currentRunningSurvey != null && currentRunningSurvey.Id != surveyplan.Id)
+            var currentRunningSurvey = user.SurveyTemplateSet.Where(s => s.IsRunning).FirstOrDefault();
+            if (currentRunningSurvey != null && currentRunningSurvey.Id != surveyTemplate.Id)
             {
                currentRunningSurvey.IsRunning = false;
                currentRunningSurvey.DateEnded = DateTime.UtcNow;
             }
             //the current survey becomes active - all the other become inactive
-            surveyplan.IsRunning = true;
-            surveyplan.DateStarted = DateTime.UtcNow;
-            surveyplan.DateEnded = null;
+            surveyTemplate.IsRunning = true;
+            surveyTemplate.DateStarted = DateTime.UtcNow;
+            surveyTemplate.DateEnded = null;
             db.SaveChanges();
          }
 
       }
-      //
-      // GET: /SurveyPlan/Edit/5
-
-      private string GetAnonymousMobileSurveyLocation(SurveyPlan surveyPlan, System.Web.Routing.RequestContext rc)
+     
+      private string GetAnonymousMobileSurveyLocation(SurveyTemplate surveyTemplate, System.Web.Routing.RequestContext rc)
       {
          UrlHelper u = new UrlHelper(rc);
-         string mobileSurveyLocation = HttpContext.Request.Url.Scheme + "://" + HttpContext.Request.Url.Authority + u.Action("Feedback", "MobileSurvey", new { id = surveyPlan.Id });
+         string mobileSurveyLocation = HttpContext.Request.Url.Scheme + "://" + HttpContext.Request.Url.Authority + u.Action("Feedback", "MobileSurvey", new { id = surveyTemplate.Id });
          return mobileSurveyLocation;
       }
 
       public ActionResult Edit(int id = 0)
       {
-         SurveyPlan surveyplan = db.SurveyPlanSet.Find(id);
-         if (surveyplan == null)
+         SurveyTemplate surveyTemplate = db.SurveyTemplateSet.Find(id);
+         if (surveyTemplate == null)
          {
             return HttpNotFound();
          }       
-         return View(surveyplan);
+         return View(surveyTemplate);
       }
 
-      public ClientSurveyPlan GetSurveyPlanObject(int id)
+      public ClientSurveyTemplate GetSurveyTemplateObject(int id)
       {
          try
          {
-            SurveyPlan surveyplan = db.SurveyPlanSet.Find(id);
-            if (surveyplan == null)
+            SurveyTemplate surveyTemplate = db.SurveyTemplateSet.Find(id);
+            if (surveyTemplate == null)
             {
                return null;
             }
 
             List<ClientQuestion> questions =
                new List<ClientQuestion>();
-            foreach (var question in surveyplan.QuestionSet)
+            foreach (var question in surveyTemplate.QuestionSet)
             {
                List<ClientQuestionAlert> questionAlertSet =
                   new List<ClientQuestionAlert>();
@@ -184,14 +172,14 @@ namespace smsSurvery.Surveryer.Controllers
                      questionAlertSet);
                questions.Add(q);
             }
-            ClientSurveyPlan surveyPlan =
-               new ClientSurveyPlan(
-                  surveyplan.Id, surveyplan.Description, surveyplan.IntroMessage,
-                  surveyplan.ThankYouMessage, surveyplan.DateStarted,
-                  surveyplan.DateEnded, surveyplan.IsRunning, questions, surveyplan.DefaultLanguage);
+            ClientSurveyTemplate clientSurveyTemplate =
+                new ClientSurveyTemplate(
+                   surveyTemplate.Id, surveyTemplate.Description, surveyTemplate.IntroMessage,
+                   surveyTemplate.ThankYouMessage, surveyTemplate.DateStarted,
+                   surveyTemplate.DateEnded, surveyTemplate.IsRunning, questions, surveyTemplate.DefaultLanguage);
 
-            surveyPlan.MobileWebsiteLocation = GetAnonymousMobileSurveyLocation(surveyplan, this.ControllerContext.RequestContext);
-            return surveyPlan;
+            clientSurveyTemplate.MobileWebsiteLocation = GetAnonymousMobileSurveyLocation(surveyTemplate, this.ControllerContext.RequestContext);
+            return clientSurveyTemplate;
          }
          catch (Exception e)
          {
@@ -201,10 +189,10 @@ namespace smsSurvery.Surveryer.Controllers
 
       public JsonResult GetSurvey(int id = 0)
       {
-         var surveyPlan = GetSurveyPlanObject(id);
-         if (surveyPlan != null)
+         var surveyTemplate = GetSurveyTemplateObject(id);
+         if (surveyTemplate != null)
          {
-            return Json(surveyPlan, JsonRequestBehavior.AllowGet);
+            return Json(surveyTemplate, JsonRequestBehavior.AllowGet);
          }
          else
          {
@@ -215,25 +203,25 @@ namespace smsSurvery.Surveryer.Controllers
 
       [HttpPost]
       public JsonResult SaveSurvey(
-         ClientSurveyPlan clientSurveyPlan)
+         ClientSurveyTemplate clientSurveyTemplate)
       {
          //DA TODO we should have some check that the new language is a valid language identifier ( global-LOCAL)
          try
          {
-             SurveyPlan dbSurveyPlan = null;
-            if (clientSurveyPlan.Id >= 0)
+            SurveyTemplate surveyTemplate = null;
+            if (clientSurveyTemplate.Id >= 0)
             {
-               dbSurveyPlan = db.SurveyPlanSet.Find(clientSurveyPlan.Id);
-               if (dbSurveyPlan == null)
+               surveyTemplate = db.SurveyTemplateSet.Find(clientSurveyTemplate.Id);
+               if (surveyTemplate == null)
                {
                   return Json("resource not found", JsonRequestBehavior.AllowGet);
                }
-               dbSurveyPlan.ThankYouMessage = clientSurveyPlan.ThankYouMessage;
-               dbSurveyPlan.Description = clientSurveyPlan.Description;
-               dbSurveyPlan.IntroMessage = clientSurveyPlan.IntroMessage;              
-               dbSurveyPlan.DefaultLanguage = clientSurveyPlan.DefaultLanguage;
-               var dbQuestions = dbSurveyPlan.QuestionSet;
-               var clientQuestions = clientSurveyPlan.QuestionSet;
+               surveyTemplate.ThankYouMessage = clientSurveyTemplate.ThankYouMessage;
+               surveyTemplate.Description = clientSurveyTemplate.Description;
+               surveyTemplate.IntroMessage = clientSurveyTemplate.IntroMessage;              
+               surveyTemplate.DefaultLanguage = clientSurveyTemplate.DefaultLanguage;
+               var dbQuestions = surveyTemplate.QuestionSet;
+               var clientQuestions = clientSurveyTemplate.QuestionSet;
 
                // Delete old questions
                if (clientQuestions != null)
@@ -359,24 +347,24 @@ namespace smsSurvery.Surveryer.Controllers
                   }
                }
                db.SaveChanges();               
-               var mobileWebsiteLocation = GetAnonymousMobileSurveyLocation(dbSurveyPlan, this.ControllerContext.RequestContext);               
-               return Json(GetSurveyPlanObject(clientSurveyPlan.Id), JsonRequestBehavior.AllowGet);
+               var mobileWebsiteLocation = GetAnonymousMobileSurveyLocation(surveyTemplate, this.ControllerContext.RequestContext);               
+               return Json(GetSurveyTemplateObject(clientSurveyTemplate.Id), JsonRequestBehavior.AllowGet);
             }
             else
             {
-               dbSurveyPlan = new SurveyPlan();
+               surveyTemplate = new SurveyTemplate();
                UserProfile user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-               dbSurveyPlan.Provider = user.DefaultProvider;
-               dbSurveyPlan.Description = clientSurveyPlan.Description;
-               dbSurveyPlan.IntroMessage = clientSurveyPlan.IntroMessage;
-               dbSurveyPlan.ThankYouMessage = clientSurveyPlan.ThankYouMessage;
-               dbSurveyPlan.DefaultLanguage = clientSurveyPlan.DefaultLanguage;
+               surveyTemplate.Provider = user.DefaultProvider;
+               surveyTemplate.Description = clientSurveyTemplate.Description;
+               surveyTemplate.IntroMessage = clientSurveyTemplate.IntroMessage;
+               surveyTemplate.ThankYouMessage = clientSurveyTemplate.ThankYouMessage;
+               surveyTemplate.DefaultLanguage = clientSurveyTemplate.DefaultLanguage;
 
                // Add questions
                ICollection<Question> dbQuestions = new List<Question>();
-               if (clientSurveyPlan.QuestionSet != null)
+               if (clientSurveyTemplate.QuestionSet != null)
                {
-                  foreach (var clientQuestion in clientSurveyPlan.QuestionSet)
+                  foreach (var clientQuestion in clientSurveyTemplate.QuestionSet)
                   {
                      ICollection<QuestionAlertSet> dbQuestionAlertSet =
                      new List<QuestionAlertSet>();
@@ -413,9 +401,9 @@ namespace smsSurvery.Surveryer.Controllers
                      dbQuestions.Add(dbQuestion);
                   }
                }
-               dbSurveyPlan.QuestionSet = dbQuestions;
-               db.SurveyPlanSet.Add(dbSurveyPlan);
-               user.SurveyPlanSet.Add(dbSurveyPlan);
+               surveyTemplate.QuestionSet = dbQuestions;
+               db.SurveyTemplateSet.Add(surveyTemplate);
+               user.SurveyTemplateSet.Add(surveyTemplate);
                try
                {
                   db.SaveChanges();
@@ -435,8 +423,8 @@ namespace smsSurvery.Surveryer.Controllers
                   logger.Error(sb.ToString());
                   return Json(new smsSurvery.Surveryer.Models.RequestResult("error", "save", sb.ToString()),JsonRequestBehavior.AllowGet);
                }
-               var mobileWebsiteLocation = GetAnonymousMobileSurveyLocation(dbSurveyPlan, this.ControllerContext.RequestContext);
-               return Json(GetSurveyPlanObject(dbSurveyPlan.Id), JsonRequestBehavior.AllowGet);
+               var mobileWebsiteLocation = GetAnonymousMobileSurveyLocation(surveyTemplate, this.ControllerContext.RequestContext);
+               return Json(GetSurveyTemplateObject(surveyTemplate.Id), JsonRequestBehavior.AllowGet);
             }
          }
          catch (Exception e)
@@ -445,45 +433,38 @@ namespace smsSurvery.Surveryer.Controllers
             JsonRequestBehavior.AllowGet);
          }
       }
-      //
-      // POST: /SurveyPlan/Edit/5
-
+   
       [HttpPost]
       [ValidateAntiForgeryToken]
-      public ActionResult Edit(SurveyPlan surveyplan)
+      public ActionResult Edit(SurveyTemplate surveyTemplate)
       {
          if (ModelState.IsValid)
          {
-            db.Entry(surveyplan).State = EntityState.Modified;
+            db.Entry(surveyTemplate).State = EntityState.Modified;
             db.SaveChanges();
             return RedirectToAction("Index");
          }
-         return View(surveyplan);
+         return View(surveyTemplate);
       }
-
-      //
-      // GET: /SurveyPlan/Delete/5
 
       public ActionResult Delete(int id = 0)
       {
-         SurveyPlan surveyplan = db.SurveyPlanSet.Find(id);
-         if (surveyplan == null)
+         SurveyTemplate surveyTemplate = db.SurveyTemplateSet.Find(id);
+         if (surveyTemplate == null)
          {
             return HttpNotFound();
          }
-         return View(surveyplan);
+         return View(surveyTemplate);
       }
 
-      //
-      // POST: /SurveyPlan/Delete/5
-
+     
       [HttpPost, ActionName("Delete")]
       [ValidateAntiForgeryToken]
       public ActionResult DeleteConfirmed(int id)
       {
          //DA we have to manually break the SurveyResults <-> Tags association
-         SurveyPlan surveyplan = db.SurveyPlanSet.Find(id);
-         foreach (var result in surveyplan.SurveyResult)
+         SurveyTemplate surveyTemplate = db.SurveyTemplateSet.Find(id);
+         foreach (var result in surveyTemplate.SurveyResult)
          {
             var tagsPerResult = result.Tags.ToList();
             foreach (var tag in tagsPerResult)
@@ -492,15 +473,15 @@ namespace smsSurvery.Surveryer.Controllers
             }
          }
          //DA deal with customer - running survey reference before deleting
-         var customersWithSurveyUnderDeleteRunning = db.CustomerSet.Where(x => x.RunningSurvey.Id == surveyplan.Id);
+         var customersWithSurveyUnderDeleteRunning = db.CustomerSet.Where(x => x.RunningSurvey.Id == surveyTemplate.Id);
          foreach (var customer in customersWithSurveyUnderDeleteRunning)
          {
             customer.SurveyInProgress = false;
             customer.RunningSurvey = null;
          }
-         db.SurveyPlanSet.Remove(surveyplan);
+         db.SurveyTemplateSet.Remove(surveyTemplate);
          var connectedUser = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-         connectedUser.SurveyPlanSet.Remove(surveyplan);
+         connectedUser.SurveyTemplateSet.Remove(surveyTemplate);
          db.SaveChanges();
          return RedirectToAction("Index");
       }
@@ -514,22 +495,17 @@ namespace smsSurvery.Surveryer.Controllers
       [HttpGet]
       public ActionResult Report(int id)
       {
-         SurveyPlan surveyplan = db.SurveyPlanSet.Find(id);
-         return View(surveyplan);
+         SurveyTemplate surveyTemplate = db.SurveyTemplateSet.Find(id);
+         return View(surveyTemplate);
       }
 
       [HttpGet]
       public ActionResult Responses(int id)
       {
-         SurveyPlan surveyplan = db.SurveyPlanSet.Find(id);
-         var res = surveyplan.SurveyResult.OrderByDescending(s => s.DateRan);
+         SurveyTemplate surveyTemplate = db.SurveyTemplateSet.Find(id);
+         var res = surveyTemplate.SurveyResult.OrderByDescending(s => s.DateRan);
          return View(res);
       }
 
-      [HttpPost]
-      public JsonResult TestPost(string abc)
-      {
-         return Json("Ai trimis " + abc, JsonRequestBehavior.AllowGet);
-      }
    }
 }

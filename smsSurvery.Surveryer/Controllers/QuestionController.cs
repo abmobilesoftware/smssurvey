@@ -9,6 +9,7 @@ using smsSurvey.dbInterface;
 
 namespace smsSurvery.Surveryer.Controllers
 {
+   [Authorize]
     public class QuestionController : Controller
     {
         private smsSurveyEntities db = new smsSurveyEntities();
@@ -41,21 +42,21 @@ namespace smsSurvery.Surveryer.Controllers
         //
         // GET: /Question/Create
 
-        public ActionResult Create(int surveyplanid)
+        public ActionResult Create(int surveyTemplateId)
         {
-           //a question always belongs to a surveyPlan
-           var surveyPlan = db.SurveyPlanSet.Find(surveyplanid);
-           if (surveyPlan != null)
+           //a question always belongs to a surveyTemplate
+           var surveyTemplate = db.SurveyTemplateSet.Find(surveyTemplateId);
+           if (surveyTemplate != null)
            {
               //by default the order should be max +1
               int maxOrder = 0;
-              if (surveyPlan.QuestionSet.Count > 0)
+              if (surveyTemplate.QuestionSet.Count > 0)
               {
-               maxOrder =  surveyPlan.QuestionSet.Max(q => q.Order);
+               maxOrder =  surveyTemplate.QuestionSet.Max(q => q.Order);
               }
               Question newq = new Question()
               {
-                 SurveyPlan_Id = surveyplanid,
+                 SurveyPlan_Id = surveyTemplateId,
                  Order = maxOrder + 1             
               };
               
@@ -76,7 +77,7 @@ namespace smsSurvery.Surveryer.Controllers
             {
                 db.QuestionSet.Add(question);
                 db.SaveChanges();
-                return RedirectToAction("Edit", "SurveyPlan", new {id=question.SurveyPlan_Id });
+                return RedirectToAction("Edit", "SurveyTemplate", new { id = question.SurveyPlan_Id });
             }
 
             return View(question);
@@ -119,7 +120,7 @@ namespace smsSurvery.Surveryer.Controllers
                       }
                    }
                 }
-                return RedirectToAction("Edit", "SurveyPlan", new { id = question.SurveyPlan_Id });
+                return RedirectToAction("Edit", "SurveyTemplate", new { id = question.SurveyPlan_Id });
             }
             return View(question);
         }
@@ -147,7 +148,7 @@ namespace smsSurvery.Surveryer.Controllers
             Question question = db.QuestionSet.Find(id);
             db.QuestionSet.Remove(question);
             db.SaveChanges();
-            return RedirectToAction("Edit", "SurveyPlan", new { id = question.SurveyPlan_Id });
+            return RedirectToAction("Edit", "SurveyTemplate", new { id = question.SurveyPlan_Id });
             //return RedirectToAction("Index");
         }
 

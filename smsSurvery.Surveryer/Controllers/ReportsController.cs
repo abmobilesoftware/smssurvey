@@ -12,6 +12,7 @@ using System.Globalization;
 
 namespace smsSurvery.Surveryer.Controllers
 {
+   [Authorize]
    public class ReportsController : Controller
    {
       public const string cRatingsTypeQuestion = "Rating";
@@ -32,7 +33,7 @@ namespace smsSurvery.Surveryer.Controllers
       {
          string[] optionDef = new string[] {"Easy as pie", "Easy enough", "Average", "Rather hard", "Hard to use" };
          //for each question in the survey, aggregate the results
-         SurveyPlan survey = db.SurveyPlanSet.Find(surveyId);
+         SurveyTemplate survey = db.SurveyTemplateSet.Find(surveyId);
          //tags = tags ?? new string[0];
          QuestionSurveyResults res = null;
          if (survey != null)
@@ -197,12 +198,17 @@ namespace smsSurvery.Surveryer.Controllers
                {
                   if (item.AdditionalInfo != null)
                   {
+                     if(!String.IsNullOrEmpty(item.AdditionalInfo)) {
                      stuff.AddRange(Regex.Split(item.AdditionalInfo, "\\W+"));
+                     }
                   }
                }
                else
                {
-                  stuff.AddRange(Regex.Split(item.Answer, "\\W+"));
+                  if (!String.IsNullOrEmpty(item.Answer))
+                  {
+                     stuff.AddRange(Regex.Split(item.Answer, "\\W+"));
+                  }
                }
             }
             //stuff.AddRange(Regex.Split(testString, "\\W+"));
@@ -234,7 +240,7 @@ namespace smsSurvery.Surveryer.Controllers
       [HttpGet]
       public ViewResult GetTagComparisonReport(int surveyId)
       {
-         var survey = db.SurveyPlanSet.Find(surveyId);
+         var survey = db.SurveyTemplateSet.Find(surveyId);
          return View(survey);
       }
 
@@ -341,14 +347,14 @@ namespace smsSurvery.Surveryer.Controllers
 
       [HttpGet]
       public JsonResult GetSurveyOverview(
-         int surveyPlanId,
+         int surveyTemplateId,
          String iIntervalStart, String iIntervalEnd,
          string[] tags)
       {
          DateTime intervalStart = DateTime.ParseExact(iIntervalStart, cDateFormat, CultureInfo.InvariantCulture);
          DateTime intervalEnd = DateTime.ParseExact(iIntervalEnd, cDateFormat, CultureInfo.InvariantCulture);
          //go through all surveyResults and group them by completion rate
-         SurveyPlan survey = db.SurveyPlanSet.Find(surveyPlanId);
+         SurveyTemplate survey = db.SurveyTemplateSet.Find(surveyTemplateId);
          tags = tags ?? new string[0];
          var surveyResults = (from s in survey.SurveyResult where (!tags.Except(s.Tags.Select(tag => tag.Name)).Any() && intervalStart <= s.DateRan && s.DateRan <= intervalEnd)
                   group s by s.PercentageComplete into g 

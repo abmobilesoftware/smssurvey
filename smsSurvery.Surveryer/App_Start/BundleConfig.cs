@@ -66,8 +66,8 @@ namespace smsSurvery.Surveryer
          bundles.Add(new StyleBundle("~/Content/css").Include(
             "~/Content/site.css",
             "~/Content/bootstrap.css"));
-         bundles.Add(new StyleBundle("~/bundles/SurveyPlan").Include(
-            "~/Content/SurveyPlan/questionSet.css",
+         bundles.Add(new StyleBundle("~/bundles/SurveyTemplate").Include(
+            "~/Content/SurveyTemplate/questionSet.css",            
             "~/Content/chosen/chosen.css"
             ));
          bundles.Add(new StyleBundle("~/bundles/SurveyResult").Include(

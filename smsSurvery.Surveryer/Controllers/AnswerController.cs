@@ -11,124 +11,16 @@ using smsSurvery.Surveryer.Models.SmsInterface;
 using smsSurvery.Surveryer.Mailers;
 
 namespace smsSurvery.Surveryer.Controllers
-{
+{   
     public class AnswerController : Controller
     {
 
        //private const string cNumberFromWhichToSendSMS = "40371700012";
        private smsSurveyEntities db = new smsSurveyEntities();
        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-        //
-        // GET: /Answer/
-
-        public ActionResult Index()
-        {
-           var resultset = db.ResultSet.Include(r => r.Question).Include(r => r.SurveyResult);
-           return View(resultset.ToList());
-        }
-
-        //
-        // GET: /Answer/Details/5
-
-        public ActionResult Details(int id = 0)
-        {
-           Result result = db.ResultSet.Find(id);
-           if (result == null)
-           {
-              return HttpNotFound();
-           }
-           return View(result);
-        }
-
-        //
-        // GET: /Answer/Create
-
-        public ActionResult Create()
-        {
-           ViewBag.QuestionId = new SelectList(db.QuestionSet, "Id", "Text");
-           ViewBag.SurveyResultId = new SelectList(db.SurveyResultSet, "Id", "CustomerPhoneNumber");
-           return View();
-        }
-
-        //
-        // POST: /Answer/Create
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create(Result result)
-        {
-           if (ModelState.IsValid)
-           {
-              db.ResultSet.Add(result);
-              db.SaveChanges();
-              return RedirectToAction("Index");
-           }
-
-           ViewBag.QuestionId = new SelectList(db.QuestionSet, "Id", "Text", result.QuestionId);
-           ViewBag.SurveyResultId = new SelectList(db.SurveyResultSet, "Id", "CustomerPhoneNumber", result.SurveyResultId);
-           return View(result);
-        }
-
-        //
-        // GET: /Answer/Edit/5
-
-        public ActionResult Edit(int id = 0)
-        {
-           Result result = db.ResultSet.Find(id);
-           if (result == null)
-           {
-              return HttpNotFound();
-           }
-           ViewBag.QuestionId = new SelectList(db.QuestionSet, "Id", "Text", result.QuestionId);
-           ViewBag.SurveyResultId = new SelectList(db.SurveyResultSet, "Id", "CustomerPhoneNumber", result.SurveyResultId);
-           return View(result);
-        }
-
-        //
-        // POST: /Answer/Edit/5
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Edit(Result result)
-        {
-           if (ModelState.IsValid)
-           {
-              db.Entry(result).State = EntityState.Modified;
-              db.SaveChanges();
-              return RedirectToAction("Index");
-           }
-           ViewBag.QuestionId = new SelectList(db.QuestionSet, "Id", "Text", result.QuestionId);
-           ViewBag.SurveyResultId = new SelectList(db.SurveyResultSet, "Id", "CustomerPhoneNumber", result.SurveyResultId);
-           return View(result);
-        }
-
-        //
-        // GET: /Answer/Delete/5
-
-        public ActionResult Delete(int id = 0)
-        {
-           Result result = db.ResultSet.Find(id);
-           if (result == null)
-           {
-              return HttpNotFound();
-           }
-           return View(result);
-        }
-
-        //
-        // POST: /Answer/Delete/5
-
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public ActionResult DeleteConfirmed(int id)
-        {
-           Result result = db.ResultSet.Find(id);
-           db.ResultSet.Remove(result);
-           db.SaveChanges();
-           return RedirectToAction("Index");
-        }
 
         [HttpGet]
+        [Authorize]
         public ActionResult GetMessagesWithOnePredefinedAnswer(int questionId, int answer)
         {
            //for the given survey (if allowed access) show messages with given stem
@@ -157,9 +49,10 @@ namespace smsSurvery.Surveryer.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public ActionResult GetCustomerWhichAnsweredXQuestions(int surveyId, double nrOfAnsweredQuestions)
         {
-           SurveyPlan sp = db.SurveyPlanSet.Find(surveyId);
+           SurveyTemplate sp = db.SurveyTemplateSet.Find(surveyId);
            if (sp != null)
            {
               var totalNrOfQuestions = sp.QuestionSet.Count();
@@ -173,6 +66,7 @@ namespace smsSurvery.Surveryer.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public ActionResult GetMessagesWithStem(int questionId, string stem, bool checkAdditionalInfo)
         {
            //for the given survey (if allowed access) show messages with given stem
@@ -206,6 +100,7 @@ namespace smsSurvery.Surveryer.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public ActionResult AnswerReceived(string from, string to, string text)
         {
            logger.InfoFormat("from: {0}, to: {1}, text: {2}", from, to, text);
@@ -230,8 +125,8 @@ namespace smsSurvery.Surveryer.Controllers
            return null;
         }
 
-       
-        private void AddSurveyResult(string text, Customer customer, string numberToSendFrom, SurveyPlan surveyToRun)
+
+        private void AddSurveyResult(string text, Customer customer, string numberToSendFrom, SurveyTemplate surveyToRun)
         {
            /**DA is there is no running survey -> the user most probably answered after the thank you message has been sent - this is discard for the time being,
             * in the future we should store this for reference
@@ -301,10 +196,10 @@ namespace smsSurvery.Surveryer.Controllers
                        db.SaveChanges();
                        //DA for compatibility with the old versions make sure that we have a valid survey language
                        var surveyLanguage = runningSurvey.LanguageChosenForSurvey;
-                       surveyLanguage = !String.IsNullOrEmpty(surveyLanguage) ? surveyLanguage : runningSurvey.SurveyPlan.DefaultLanguage;
+                       surveyLanguage = !String.IsNullOrEmpty(surveyLanguage) ? surveyLanguage : runningSurvey.SurveyTemplate.DefaultLanguage;
                        //DA choose the appropriate language for the survey
                        System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture(surveyLanguage);
-                       SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion, runningSurvey.SurveyPlan.QuestionSet.Count(),false, db);                      
+                       SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion, runningSurvey.SurveyTemplate.QuestionSet.Count(),false, db);                      
                     }
                  }
                  else
@@ -329,14 +224,14 @@ namespace smsSurvery.Surveryer.Controllers
               logger.ErrorFormat("Received answer from client {0} while survey not in progress. Text {1}", customer.PhoneNumber, text);
            }
         }
-
-        
+              
 
        /**
         * DA the problem here is that a customer cannot have 2 surveys running at the same time
         * while an edge case, this is still a possibility
         */ 
        [HttpGet]
+       [Authorize]
        public void StartSMSQuery(string userName, string numberToSendFrom, string customerPhoneNumber, string[] tags = null )
         {
            logger.InfoFormat("userName: {0}, numberToSendFrom: {1}, customerPhoneNumber: {2}", userName, numberToSendFrom, customerPhoneNumber);
@@ -345,7 +240,7 @@ namespace smsSurvery.Surveryer.Controllers
            tags = tags != null ? tags : new string[0];
            if (user != null)
            {
-              var surveyToRun = user.SurveyPlanSet.Where(s => s.IsRunning).FirstOrDefault();
+              var surveyToRun = user.SurveyTemplateSet.Where(s => s.IsRunning).FirstOrDefault();
               //TODO DA sanity check - only one active survey at a time          
               if (surveyToRun != null)
               {
@@ -357,7 +252,7 @@ namespace smsSurvery.Surveryer.Controllers
        public void StartSmsSurveyInternal(
           string numberToSendFrom,
           string customerPhoneNumber,
-          SurveyPlan surveyToRun,
+          SurveyTemplate surveyToRun,
           smsSurvey.dbInterface.UserProfile authenticatedUser,
           bool sendMobile,
           string[] tags,
@@ -383,7 +278,7 @@ namespace smsSurvery.Surveryer.Controllers
           //TODO DA sanity check - only one active survey at a time          
          if (surveyToRun != null)
          {
-            SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyPlan = surveyToRun, Terminated = false, PercentageComplete= 0, LanguageChosenForSurvey= surveyLanguage };            
+            SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyTemplate = surveyToRun, Terminated = false, PercentageComplete= 0, LanguageChosenForSurvey= surveyLanguage };            
             db.SurveyResultSet.Add(newSurvey);
             //mark that we have started a new survey for the current user
             customer.SurveyInProgress = true;
@@ -424,7 +319,7 @@ namespace smsSurvery.Surveryer.Controllers
         {
            logger.DebugFormat("question id: {0}, to customer: {1}, from number: {2}", q.Id, c.PhoneNumber, numberToSendFrom);
            
-           var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyPlan(q.SurveyPlanSet);
+           var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyTemplate(q.SurveyTemplateSet);
            //DA before we send the SMS question we must prepare it - add the expected answers to it
            string smsText = PrepareSMSTextForQuestion(q, totalNumberOfQuestions, isFirstQuestion, introMessage);
            smsinterface.SendMessage(numberToSendFrom, c.PhoneNumber, smsText);
@@ -497,8 +392,8 @@ namespace smsSurvery.Surveryer.Controllers
 
         private  void SendMobileSurveyToCustomer(Customer c, string numberToSendFrom, SurveyResult surveyResult)
         {
-           var prefix = surveyResult.SurveyPlan.IntroMessage + System.Environment.NewLine;
-           var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyPlan(surveyResult.SurveyPlan);
+           var prefix = surveyResult.SurveyTemplate.IntroMessage + System.Environment.NewLine;
+           var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyTemplate(surveyResult.SurveyTemplate);
            string mobileSurveyLocation = GetTargetedMobileSurveyLocation(surveyResult, this.ControllerContext.RequestContext);
 
            string text = String.Format(GlobalResources.Global.SmsMobileSurveyTemplate, mobileSurveyLocation);
@@ -513,10 +408,10 @@ namespace smsSurvery.Surveryer.Controllers
            return mobileSurveyLocation;
         }
       
-        private void SendThankYouToCustomer(Customer c,string numberToSendFrom, SurveyPlan survey)
+        private void SendThankYouToCustomer(Customer c,string numberToSendFrom, SurveyTemplate survey)
         {
            logger.DebugFormat("Send thank you to customer {0}, from number {1}, for surveyId {2}", c.PhoneNumber, numberToSendFrom, survey.Id);
-           var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyPlan(survey);
+           var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyTemplate(survey);
            smsinterface.SendMessage(numberToSendFrom, c.PhoneNumber, survey.ThankYouMessage);
         }
 

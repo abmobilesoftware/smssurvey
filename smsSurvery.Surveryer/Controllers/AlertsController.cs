@@ -12,6 +12,7 @@ using smsSurvery.Surveryer.Mailers;
 
 namespace smsSurvery.Surveryer.Controllers
 {
+   [Authorize]
     public class AlertsController : Controller
     {
         private smsSurveyEntities db = new smsSurveyEntities();
@@ -288,7 +289,7 @@ namespace smsSurvery.Surveryer.Controllers
                     }
                     break;
                  default:
-                    logger.Error("invalid operator detected");
+                    logger.ErrorFormat("invalid operator detected {0} for alert {1}", alert.Operator, alert.Id);
                     break;
               }
               if (notificationRequired)
@@ -355,8 +356,7 @@ namespace smsSurvery.Surveryer.Controllers
                         return null;
                      }                       
                     
-                 }
-                 break;
+                 }                
               case ReportsController.cFreeTextTypeQuestion:
                  break;
               case ReportsController.cSelectManyFromManyTypeQuestion:

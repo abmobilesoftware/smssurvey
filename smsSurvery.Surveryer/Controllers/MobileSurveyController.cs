@@ -7,9 +7,11 @@ using System.Web.Mvc;
 
 namespace smsSurvery.Surveryer.Controllers
 {
+   [Authorize]
    public class MobileSurveyController : Controller
    {
 
+      public const string cNoLocation = "noLocation";
       public MobileSurveyController()
       {
 
@@ -18,6 +20,7 @@ namespace smsSurvery.Surveryer.Controllers
       private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
       [HttpGet]
+      [AllowAnonymous]
       public ActionResult Fill(int id)
       {
 
@@ -28,16 +31,17 @@ namespace smsSurvery.Surveryer.Controllers
          {
             //DA for compatibility with the old versions make sure that we have a valid survey language
             var surveyLanguage = runningSurvey.LanguageChosenForSurvey;
-            surveyLanguage = !String.IsNullOrEmpty(surveyLanguage) ? surveyLanguage : runningSurvey.SurveyPlan.DefaultLanguage;
+            surveyLanguage = !String.IsNullOrEmpty(surveyLanguage) ? surveyLanguage : runningSurvey.SurveyTemplate.DefaultLanguage;
             System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture(surveyLanguage);
-            idToUse = runningSurvey.SurveyPlan.Id;
+            idToUse = runningSurvey.SurveyTemplate.Id;
             if (runningSurvey.Terminated != true)
             {
                ViewBag.Id = idToUse;
                ViewBag.SurveyTitle = "Mobile survey";
                ViewBag.IsFeedback = 0;
-               ViewBag.IntroMessage = runningSurvey.SurveyPlan.IntroMessage;
-               ViewBag.ThankYouMessage = runningSurvey.SurveyPlan.ThankYouMessage;
+               ViewBag.IntroMessage = runningSurvey.SurveyTemplate.IntroMessage;
+               ViewBag.ThankYouMessage = runningSurvey.SurveyTemplate.ThankYouMessage;
+               ViewBag.Location = cNoLocation;
                return View();
             }
             else
@@ -55,14 +59,15 @@ namespace smsSurvery.Surveryer.Controllers
       }
 
       [HttpGet]
-      public ActionResult Feedback(int id, string location = "noLocation")
+      [AllowAnonymous]
+      public ActionResult Feedback(int id, string location = cNoLocation)
       {
-         SurveyPlan survey = db.SurveyPlanSet.Find(id);
+         SurveyTemplate survey = db.SurveyTemplateSet.Find(id);
          if (survey != null)
          {
             var surveyLanguage = survey.DefaultLanguage;
             System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture(surveyLanguage);
-            //the id is a the SurveyPlanId
+            //the id is a the SurveyTemplateId
             ViewBag.Id = id;
             ViewBag.SurveyTitle = "Feedback";
             ViewBag.IntroMessage = survey.IntroMessage;
@@ -92,7 +97,8 @@ namespace smsSurvery.Surveryer.Controllers
       }
 
       [HttpPost]
-      public JsonResult SaveSurvey(List<QuestionResponse> questions, int surveyResultId, int surveyPlanId, string location)
+      [AllowAnonymous]
+      public JsonResult SaveSurvey(List<QuestionResponse> questions, int surveyResultId, int surveyTemplateId, string location)
       {
          //for mobile surveys the survey language is the default Survey definition language
          //we return the Id of the save surveyResult
@@ -100,7 +106,7 @@ namespace smsSurvery.Surveryer.Controllers
          SurveyResult surveyToAnalyze = null;
          var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
          Tags locationTag = null;
-         if (!location.Equals("noLocation"))
+         if (!String.IsNullOrEmpty(location) && !location.Equals(cNoLocation))
          {
             var locationTagResults = (from t in db.Tags
                                       where t.Name.Equals(location) &&
@@ -116,9 +122,9 @@ namespace smsSurvery.Surveryer.Controllers
             //we are dealing with a new survey result
             //we have to create a new, unique customer
             var uniqueCustomerID = Guid.NewGuid().ToString();
-            var surveyToRun = db.SurveyPlanSet.Find(surveyPlanId);
+            var surveyToRun = db.SurveyTemplateSet.Find(surveyTemplateId);
             var customer = new Customer() { PhoneNumber = uniqueCustomerID, Name = uniqueCustomerID, Surname = uniqueCustomerID };
-            SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyPlan = surveyToRun, Terminated = true, PercentageComplete = 1, LanguageChosenForSurvey = surveyToRun.DefaultLanguage };
+            SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyTemplate = surveyToRun, Terminated = true, PercentageComplete = 1, LanguageChosenForSurvey = surveyToRun.DefaultLanguage };
             db.SurveyResultSet.Add(newSurvey);
             foreach (var q in questions)
             {
@@ -136,7 +142,7 @@ namespace smsSurvery.Surveryer.Controllers
          else
          {
             //we are dealing with a "dedicated" survey
-            var surveyToRun = db.SurveyPlanSet.Find(surveyPlanId);
+            var surveyToRun = db.SurveyTemplateSet.Find(surveyTemplateId);
             var surveyToFill = db.SurveyResultSet.Find(surveyResultId);
             if (!surveyToFill.Terminated)
             {
@@ -175,7 +181,9 @@ namespace smsSurvery.Surveryer.Controllers
          public string Email { get; set; }
          public string Telephone { get; set; }
       }
+
       [HttpPost]
+      [AllowAnonymous]
       public void SaveRespondentInfo(RespondentInfo info, int surveyResultId)
       {
          //get the customer corresponding to the survey result and update its info
@@ -212,6 +220,7 @@ namespace smsSurvery.Surveryer.Controllers
             }
          }
       }
+
       protected override void Dispose(bool disposing)
       {
          db.Dispose();

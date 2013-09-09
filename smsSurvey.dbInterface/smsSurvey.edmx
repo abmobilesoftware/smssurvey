@@ -537,7 +537,7 @@
       <Schema Namespace="smsSurveyModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="smsSurveyEntities" p1:LazyLoadingEnabled="true">
           <EntitySet Name="QuestionSet" EntityType="smsSurveyModel.Question" />
-          <EntitySet Name="SurveyPlanSet" EntityType="smsSurveyModel.SurveyPlan" />
+          <EntitySet Name="SurveyTemplateSet" EntityType="smsSurveyModel.SurveyTemplate" />
           <EntitySet Name="CustomerSet" EntityType="smsSurveyModel.Customer" />
           <EntitySet Name="SurveyResultSet" EntityType="smsSurveyModel.SurveyResult" />
           <AssociationSet Name="CustomerSurveyResult" Association="smsSurveyModel.CustomerSurveyResult">
@@ -545,7 +545,7 @@
             <End Role="SurveyResult" EntitySet="SurveyResultSet" />
           </AssociationSet>
           <AssociationSet Name="SurveyPlanSurveyResult" Association="smsSurveyModel.SurveyPlanSurveyResult">
-            <End Role="SurveyPlan" EntitySet="SurveyPlanSet" />
+            <End Role="SurveyPlan" EntitySet="SurveyTemplateSet" />
             <End Role="SurveyResult" EntitySet="SurveyResultSet" />
           </AssociationSet>
           <EntitySet Name="ResultSet" EntityType="smsSurveyModel.Result" />
@@ -566,15 +566,15 @@
             <End Role="UserProfile" EntitySet="UserProfile" />
           </AssociationSet>
           <AssociationSet Name="UserProfileSurveyPlan" Association="smsSurveyModel.UserProfileSurveyPlan">
-            <End Role="SurveyPlan" EntitySet="SurveyPlanSet" />
+            <End Role="SurveyPlan" EntitySet="SurveyTemplateSet" />
             <End Role="UserProfile" EntitySet="UserProfile" />
           </AssociationSet>
           <AssociationSet Name="FK_SurveyPlanQuestion" Association="smsSurveyModel.FK_SurveyPlanQuestion">
-            <End Role="SurveyPlan" EntitySet="SurveyPlanSet" />
+            <End Role="SurveyPlan" EntitySet="SurveyTemplateSet" />
             <End Role="Question" EntitySet="QuestionSet" />
           </AssociationSet>
           <AssociationSet Name="RunningSurvey" Association="smsSurveyModel.FK_RunningSurvey">
-            <End Role="SurveyPlan" EntitySet="SurveyPlanSet" />
+            <End Role="SurveyPlan" EntitySet="SurveyTemplateSet" />
             <End Role="Customer" EntitySet="CustomerSet" />
           </AssociationSet>
           <AssociationSet Name="FK_SurveyResultQuestion" Association="smsSurveyModel.FK_SurveyResultQuestion">
@@ -632,11 +632,11 @@
           </Property>
           <Property Type="String" Name="ValidAnswersDetails" MaxLength="1000" Unicode="true" FixedLength="false" />
           <Property Type="Int32" Name="SurveyPlan_Id" Nullable="false" />
-          <NavigationProperty Name="SurveyPlanSet" Relationship="smsSurveyModel.FK_SurveyPlanQuestion" FromRole="Question" ToRole="SurveyPlan" />
+          <NavigationProperty Name="SurveyTemplateSet" Relationship="smsSurveyModel.FK_SurveyPlanQuestion" FromRole="Question" ToRole="SurveyPlan" />
           <NavigationProperty Name="SurveyResultSet" Relationship="smsSurveyModel.FK_SurveyResultQuestion" FromRole="Question" ToRole="SurveyResult" />
           <NavigationProperty Name="QuestionAlertSet" Relationship="smsSurveyModel.FK_QuestionQuestionAlert" FromRole="Question" ToRole="QuestionAlertSet" />
         </EntityType>
-        <EntityType Name="SurveyPlan">
+        <EntityType Name="SurveyTemplate">
           <Key>
             <PropertyRef Name="Id" />
           </Key>
@@ -675,7 +675,7 @@
           <Property Type="DateTime" Name="DateRan" Nullable="false" Precision="3" />
           <NavigationProperty Name="Customer" Relationship="smsSurveyModel.CustomerSurveyResult" FromRole="SurveyResult" ToRole="Customer" />
           <Property Type="String" Name="CustomerPhoneNumber" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
-          <NavigationProperty Name="SurveyPlan" Relationship="smsSurveyModel.SurveyPlanSurveyResult" FromRole="SurveyResult" ToRole="SurveyPlan" />
+          <NavigationProperty Name="SurveyTemplate" Relationship="smsSurveyModel.SurveyPlanSurveyResult" FromRole="SurveyResult" ToRole="SurveyPlan" />
           <Property Type="Int32" Name="SurveyPlanId" Nullable="false" />
           <NavigationProperty Name="Result" Relationship="smsSurveyModel.SurveyResultResult" FromRole="SurveyResult" ToRole="Result" />
           <Property Type="Boolean" Name="Terminated" Nullable="false" />
@@ -698,7 +698,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="SurveyPlanSurveyResult">
-          <End Type="smsSurveyModel.SurveyPlan" Role="SurveyPlan" Multiplicity="1" >
+          <End Type="smsSurveyModel.SurveyTemplate" Role="SurveyPlan" Multiplicity="1" >
             <OnDelete Action="Cascade" />
           </End>
           <End Type="smsSurveyModel.SurveyResult" Role="SurveyResult" Multiplicity="*" />
@@ -756,7 +756,7 @@
           <Property Type="Int32" Name="UserId" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="String" Name="UserName" Nullable="false" MaxLength="56" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="webpages_Roles" Relationship="smsSurveyModel.webpages_UsersInRoles" FromRole="UserProfile" ToRole="webpages_Roles" />
-          <NavigationProperty Name="SurveyPlanSet" Relationship="smsSurveyModel.UserProfileSurveyPlan" FromRole="UserProfile" ToRole="SurveyPlan" />
+          <NavigationProperty Name="SurveyTemplateSet" Relationship="smsSurveyModel.UserProfileSurveyPlan" FromRole="UserProfile" ToRole="SurveyPlan" />
           <Property Type="String" Name="DefaultProvider" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="DefaultTelNo" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Company_Name" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -800,11 +800,11 @@
           <End Type="smsSurveyModel.UserProfile" Role="UserProfile" Multiplicity="*" />
         </Association>
         <Association Name="UserProfileSurveyPlan">
-          <End Type="smsSurveyModel.SurveyPlan" Role="SurveyPlan" Multiplicity="*" />
+          <End Type="smsSurveyModel.SurveyTemplate" Role="SurveyPlan" Multiplicity="*" />
           <End Type="smsSurveyModel.UserProfile" Role="UserProfile" Multiplicity="*" />
         </Association>
         <Association Name="FK_SurveyPlanQuestion">
-          <End Type="smsSurveyModel.SurveyPlan" Role="SurveyPlan" Multiplicity="1" >
+          <End Type="smsSurveyModel.SurveyTemplate" Role="SurveyPlan" Multiplicity="1" >
             <OnDelete Action="Cascade" />
           </End>
           <End Type="smsSurveyModel.Question" Role="Question" Multiplicity="*" />
@@ -818,7 +818,7 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_RunningSurvey">
-          <End Type="smsSurveyModel.SurveyPlan" Role="SurveyPlan" Multiplicity="0..1" />
+          <End Type="smsSurveyModel.SurveyTemplate" Role="SurveyPlan" Multiplicity="0..1" />
           <End Type="smsSurveyModel.Customer" Role="Customer" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="SurveyPlan">
@@ -1017,8 +1017,8 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="SurveyPlanSet">
-      <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.SurveyPlan)">
+    <EntitySetMapping Name="SurveyTemplateSet">
+      <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.SurveyTemplate)">
         <MappingFragment StoreEntitySet="SurveyPlanSet">
                 <ScalarProperty Name="DefaultLanguage" ColumnName="DefaultLanguage" />
                 <ScalarProperty Name="IntroMessage" ColumnName="IntroMessage" />

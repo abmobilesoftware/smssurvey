@@ -322,7 +322,7 @@ MobileSurvey.SurveyView = Backbone.View.extend({
       var sendData = JSON.stringify({
          questions: infoToUpload,
          surveyResultId: this.model.get("SurveyResultId"),
-         surveyPlanId: this.model.get("SurveyPlanId"),
+         surveyTemplateId: this.model.get("SurveyTemplateId"),
          location: location
       });
       $.ajax({

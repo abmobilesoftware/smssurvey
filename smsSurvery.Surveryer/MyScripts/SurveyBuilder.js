@@ -181,8 +181,8 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
       this.questionSetModel = new Question.QuestionSetModel();
    },
    urlByMethod: {
-      "read": "/SurveyPlan/GetSurvey",
-      "update": "/SurveyPlan/SaveSurvey"
+      "read": "/SurveyTemplate/GetSurvey",
+      "update": "/SurveyTemplate/SaveSurvey"
    },
    idAttribute: "Id",
    updateThankYouMessage: function (thankYouMessage) {

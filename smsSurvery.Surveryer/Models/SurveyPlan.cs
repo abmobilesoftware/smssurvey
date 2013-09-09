@@ -5,7 +5,7 @@ using System.Web;
 
 namespace smsSurvery.Surveryer.ClientModels
 {
-   public class ClientSurveyPlan
+   public class ClientSurveyTemplate
    {
       public int Id { get; set; }
       public string Description { get; set; }
@@ -21,9 +21,9 @@ namespace smsSurvery.Surveryer.ClientModels
       public string MobileWebsiteLocation { get; set; }
       #endregion
 
-      public ClientSurveyPlan() { }
+      public ClientSurveyTemplate() { }
 
-      public ClientSurveyPlan(
+      public ClientSurveyTemplate(
          int iId,
          string iDescription,
          string iIntroMessage,
