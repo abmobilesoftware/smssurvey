@@ -20,6 +20,7 @@ namespace smsSurvey.dbInterface
         public int SurveyResultId { get; set; }
         public string AdditionalInfo { get; set; }
         public Nullable<System.DateTime> DateSubmitted { get; set; }
+        public bool SubmittedViaSMS { get; set; }
     
         public virtual Question Question { get; set; }
         public virtual SurveyResult SurveyResult { get; set; }

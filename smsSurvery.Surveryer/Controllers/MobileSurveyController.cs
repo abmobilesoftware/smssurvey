@@ -130,7 +130,7 @@ namespace smsSurvery.Surveryer.Controllers
             foreach (var q in questions)
             {
                var currentQuestion = db.QuestionSet.Find(q.Id);
-               var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion, AdditionalInfo = q.AdditionalInfo, DateSubmitted = resultSubmitted };
+               var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion, AdditionalInfo = q.AdditionalInfo, DateSubmitted = resultSubmitted, SubmittedViaSMS= false };
                newSurvey.Result.Add(res);
             }
             db.SaveChanges();
@@ -153,7 +153,7 @@ namespace smsSurvery.Surveryer.Controllers
                foreach (var q in questions)
                {
                   var currentQuestion = db.QuestionSet.Find(q.Id);                  
-                  var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion, DateSubmitted = resultSubmitted };
+                  var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion, DateSubmitted = resultSubmitted, SubmittedViaSMS= false };
                   surveyToFill.Result.Add(res);
                }
                db.SaveChanges();
