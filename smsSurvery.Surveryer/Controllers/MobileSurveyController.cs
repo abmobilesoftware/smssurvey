@@ -126,11 +126,11 @@ namespace smsSurvery.Surveryer.Controllers
             var customer = new Customer() { PhoneNumber = uniqueCustomerID, Name = uniqueCustomerID, Surname = uniqueCustomerID };
             SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyTemplate = surveyToRun, Terminated = true, PercentageComplete = 1, LanguageChosenForSurvey = surveyToRun.DefaultLanguage };
             db.SurveyResultSet.Add(newSurvey);
+            DateTime resultSubmitted = DateTime.UtcNow;
             foreach (var q in questions)
             {
                var currentQuestion = db.QuestionSet.Find(q.Id);
-
-               var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion, AdditionalInfo = q.AdditionalInfo, DateSubmitted = DateTime.UtcNow };
+               var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion, AdditionalInfo = q.AdditionalInfo, DateSubmitted = resultSubmitted };
                newSurvey.Result.Add(res);
             }
             db.SaveChanges();
@@ -149,10 +149,11 @@ namespace smsSurvery.Surveryer.Controllers
                //we are not handling a survey that was already filled in
                surveyToFill.Terminated = true;
                surveyToFill.PercentageComplete = 1;
+               DateTime resultSubmitted = DateTime.UtcNow;
                foreach (var q in questions)
                {
-                  var currentQuestion = db.QuestionSet.Find(q.Id);
-                  var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion, DateSubmitted = DateTime.UtcNow };
+                  var currentQuestion = db.QuestionSet.Find(q.Id);                  
+                  var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion, DateSubmitted = resultSubmitted };
                   surveyToFill.Result.Add(res);
                }
                db.SaveChanges();
@@ -161,14 +162,14 @@ namespace smsSurvery.Surveryer.Controllers
          }
          foreach (var q in questions)
          {
-            var currentQuestion = db.QuestionSet.Find(q.Id);            
+            var currentQuestion = db.QuestionSet.Find(q.Id);
             AlertsController.HandleAlertsForQuestion(currentQuestion, q.PickedAnswer, surveyToAnalyze.Id, this, logger);
          }
          if (locationTag != null)
          {
             surveyToAnalyze.Tags.Add(locationTag);
             db.SaveChanges();
-         }         
+         }
          return Json(savedSurveyResult, JsonRequestBehavior.AllowGet);
       }
 
