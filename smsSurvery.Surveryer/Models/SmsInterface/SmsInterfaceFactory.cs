@@ -8,9 +8,9 @@ namespace smsSurvery.Surveryer.Models.SmsInterface
 {
    public class SmsInterfaceFactory
    {
-      public static IExternalSmsRepository GetSmsInterfaceForSurveyPlan(SurveyPlan surveyplan)
+      public static IExternalSmsRepository GetSmsInterfaceForSurveyTemplate(SurveyTemplate surveyTemplate)
       {
-         switch (surveyplan.Provider)
+         switch (surveyTemplate.Provider)
          {
             case "compatel":
                return new CompatelSmsRepository();               

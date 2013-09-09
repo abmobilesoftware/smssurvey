@@ -27,6 +27,6 @@ namespace smsSurvey.dbInterface
         public string Email { get; set; }
     
         public virtual ICollection<SurveyResult> SurveyResult { get; set; }
-        public virtual SurveyPlan RunningSurvey { get; set; }
+        public virtual SurveyTemplate RunningSurvey { get; set; }
     }
 }

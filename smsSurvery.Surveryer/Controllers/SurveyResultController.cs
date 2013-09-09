@@ -24,7 +24,7 @@ namespace smsSurvery.Surveryer.Controllers
            int currentPageIndex = page - 1;
            int NUMBER_OF_RESULTS_PER_PAGE = 10;
            var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-           var res = (from s in user.SurveyPlanSet select s.SurveyResult).SelectMany(x=>x).OrderByDescending(r=>r.DateRan);
+           var res = (from s in user.SurveyTemplateSet select s.SurveyResult).SelectMany(x => x).OrderByDescending(r => r.DateRan);
            var pageRes = res.Skip((page - 1) * NUMBER_OF_RESULTS_PER_PAGE).Take(NUMBER_OF_RESULTS_PER_PAGE);
            IPagedList<SurveyResult> pagingDetails = new PagedList<SurveyResult>(res, currentPageIndex, NUMBER_OF_RESULTS_PER_PAGE, res.Count());
            ViewBag.pagingDetails = pagingDetails;
@@ -50,7 +50,7 @@ namespace smsSurvery.Surveryer.Controllers
         public ActionResult Create()
         {
             ViewBag.CustomerPhoneNumber = new SelectList(db.CustomerSet, "PhoneNumber", "Name");
-            ViewBag.SurveyPlanId = new SelectList(db.SurveyPlanSet, "Id", "Description");
+            ViewBag.SurveyTemplateId = new SelectList(db.SurveyTemplateSet, "Id", "Description");
             return View();
         }
 
@@ -69,7 +69,7 @@ namespace smsSurvery.Surveryer.Controllers
             }
 
             ViewBag.CustomerPhoneNumber = new SelectList(db.CustomerSet, "PhoneNumber", "Name", surveyresult.CustomerPhoneNumber);
-            ViewBag.SurveyPlanId = new SelectList(db.SurveyPlanSet, "Id", "Description", surveyresult.SurveyPlanId);
+            ViewBag.SurveyTemplateId = new SelectList(db.SurveyTemplateSet, "Id", "Description", surveyresult.SurveyPlanId);
             return View(surveyresult);
         }
 
@@ -84,7 +84,7 @@ namespace smsSurvery.Surveryer.Controllers
                 return HttpNotFound();
             }
             ViewBag.CustomerPhoneNumber = new SelectList(db.CustomerSet, "PhoneNumber", "Name", surveyresult.CustomerPhoneNumber);
-            ViewBag.SurveyPlanId = new SelectList(db.SurveyPlanSet, "Id", "Description", surveyresult.SurveyPlanId);
+            ViewBag.SurveyTemplateId = new SelectList(db.SurveyTemplateSet, "Id", "Description", surveyresult.SurveyPlanId);
             return View(surveyresult);
         }
 
@@ -102,7 +102,7 @@ namespace smsSurvery.Surveryer.Controllers
                 return RedirectToAction("Index");
             }
             ViewBag.CustomerPhoneNumber = new SelectList(db.CustomerSet, "PhoneNumber", "Name", surveyresult.CustomerPhoneNumber);
-            ViewBag.SurveyPlanId = new SelectList(db.SurveyPlanSet, "Id", "Description", surveyresult.SurveyPlanId);
+            ViewBag.SurveyTemplateId = new SelectList(db.SurveyTemplateSet, "Id", "Description", surveyresult.SurveyPlanId);
             return View(surveyresult);
         }
 

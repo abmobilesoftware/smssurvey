@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace smsSurvey.dbInterface
 {
-   [MetadataType(typeof(SurveyPlan_Validation))]
-   public partial class SurveyPlan
+   [MetadataType(typeof(SurveyTemplate_Validation))]
+   public partial class SurveyTemplate
    {
       #region Calculated properties
       
@@ -17,7 +17,7 @@ namespace smsSurvey.dbInterface
    }
 
    #region Validation
-   public class SurveyPlan_Validation
+   public class SurveyTemplate_Validation
    {
       [DisplayName("Description")]
       [Required]

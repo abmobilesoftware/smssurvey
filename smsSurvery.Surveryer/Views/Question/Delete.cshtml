@@ -63,7 +63,7 @@
     @Html.AntiForgeryToken()
     <p>
         <input type="submit" class="btn btn-danger btn-small" value="Delete" /> |
-       @Html.ActionLink("Back to survey", "Edit", "SurveyPlan", new {id = Model.SurveyPlan_Id }, null)
+       @Html.ActionLink("Back to survey", "Edit", "SurveyTemplate", new {id = Model.SurveyPlan_Id }, null)
         @*@Html.ActionLink("Back to List", "Index")*@
     </p>
 }

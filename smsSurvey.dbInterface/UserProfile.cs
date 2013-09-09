@@ -17,7 +17,7 @@ namespace smsSurvey.dbInterface
         public UserProfile()
         {
             this.webpages_Roles = new HashSet<webpages_Roles>();
-            this.SurveyPlanSet = new HashSet<SurveyPlan>();
+            this.SurveyTemplateSet = new HashSet<SurveyTemplate>();
         }
     
         public int UserId { get; set; }
@@ -27,7 +27,7 @@ namespace smsSurvey.dbInterface
         public string Company_Name { get; set; }
     
         public virtual ICollection<webpages_Roles> webpages_Roles { get; set; }
-        public virtual ICollection<SurveyPlan> SurveyPlanSet { get; set; }
+        public virtual ICollection<SurveyTemplate> SurveyTemplateSet { get; set; }
         public virtual Companies Company { get; set; }
     }
 }

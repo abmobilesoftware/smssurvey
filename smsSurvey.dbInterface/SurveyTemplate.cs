@@ -12,9 +12,9 @@ namespace smsSurvey.dbInterface
     using System;
     using System.Collections.Generic;
     
-    public partial class SurveyPlan
+    public partial class SurveyTemplate
     {
-        public SurveyPlan()
+        public SurveyTemplate()
         {
             this.DefaultLanguage = "en-US";
             this.SurveyResult = new HashSet<SurveyResult>();

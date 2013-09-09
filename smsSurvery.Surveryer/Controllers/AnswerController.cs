@@ -52,7 +52,7 @@ namespace smsSurvery.Surveryer.Controllers
         [Authorize]
         public ActionResult GetCustomerWhichAnsweredXQuestions(int surveyId, double nrOfAnsweredQuestions)
         {
-           SurveyPlan sp = db.SurveyPlanSet.Find(surveyId);
+           SurveyTemplate sp = db.SurveyTemplateSet.Find(surveyId);
            if (sp != null)
            {
               var totalNrOfQuestions = sp.QuestionSet.Count();
@@ -125,8 +125,8 @@ namespace smsSurvery.Surveryer.Controllers
            return null;
         }
 
-       
-        private void AddSurveyResult(string text, Customer customer, string numberToSendFrom, SurveyPlan surveyToRun)
+
+        private void AddSurveyResult(string text, Customer customer, string numberToSendFrom, SurveyTemplate surveyToRun)
         {
            /**DA is there is no running survey -> the user most probably answered after the thank you message has been sent - this is discard for the time being,
             * in the future we should store this for reference
@@ -196,10 +196,10 @@ namespace smsSurvery.Surveryer.Controllers
                        db.SaveChanges();
                        //DA for compatibility with the old versions make sure that we have a valid survey language
                        var surveyLanguage = runningSurvey.LanguageChosenForSurvey;
-                       surveyLanguage = !String.IsNullOrEmpty(surveyLanguage) ? surveyLanguage : runningSurvey.SurveyPlan.DefaultLanguage;
+                       surveyLanguage = !String.IsNullOrEmpty(surveyLanguage) ? surveyLanguage : runningSurvey.SurveyTemplate.DefaultLanguage;
                        //DA choose the appropriate language for the survey
                        System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture(surveyLanguage);
-                       SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion, runningSurvey.SurveyPlan.QuestionSet.Count(),false, db);                      
+                       SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion, runningSurvey.SurveyTemplate.QuestionSet.Count(),false, db);                      
                     }
                  }
                  else
@@ -240,7 +240,7 @@ namespace smsSurvery.Surveryer.Controllers
            tags = tags != null ? tags : new string[0];
            if (user != null)
            {
-              var surveyToRun = user.SurveyPlanSet.Where(s => s.IsRunning).FirstOrDefault();
+              var surveyToRun = user.SurveyTemplateSet.Where(s => s.IsRunning).FirstOrDefault();
               //TODO DA sanity check - only one active survey at a time          
               if (surveyToRun != null)
               {
@@ -252,7 +252,7 @@ namespace smsSurvery.Surveryer.Controllers
        public void StartSmsSurveyInternal(
           string numberToSendFrom,
           string customerPhoneNumber,
-          SurveyPlan surveyToRun,
+          SurveyTemplate surveyToRun,
           smsSurvey.dbInterface.UserProfile authenticatedUser,
           bool sendMobile,
           string[] tags,
@@ -278,7 +278,7 @@ namespace smsSurvery.Surveryer.Controllers
           //TODO DA sanity check - only one active survey at a time          
          if (surveyToRun != null)
          {
-            SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyPlan = surveyToRun, Terminated = false, PercentageComplete= 0, LanguageChosenForSurvey= surveyLanguage };            
+            SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyTemplate = surveyToRun, Terminated = false, PercentageComplete= 0, LanguageChosenForSurvey= surveyLanguage };            
             db.SurveyResultSet.Add(newSurvey);
             //mark that we have started a new survey for the current user
             customer.SurveyInProgress = true;
@@ -319,7 +319,7 @@ namespace smsSurvery.Surveryer.Controllers
         {
            logger.DebugFormat("question id: {0}, to customer: {1}, from number: {2}", q.Id, c.PhoneNumber, numberToSendFrom);
            
-           var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyPlan(q.SurveyPlanSet);
+           var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyTemplate(q.SurveyTemplateSet);
            //DA before we send the SMS question we must prepare it - add the expected answers to it
            string smsText = PrepareSMSTextForQuestion(q, totalNumberOfQuestions, isFirstQuestion, introMessage);
            smsinterface.SendMessage(numberToSendFrom, c.PhoneNumber, smsText);
@@ -392,8 +392,8 @@ namespace smsSurvery.Surveryer.Controllers
 
         private  void SendMobileSurveyToCustomer(Customer c, string numberToSendFrom, SurveyResult surveyResult)
         {
-           var prefix = surveyResult.SurveyPlan.IntroMessage + System.Environment.NewLine;
-           var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyPlan(surveyResult.SurveyPlan);
+           var prefix = surveyResult.SurveyTemplate.IntroMessage + System.Environment.NewLine;
+           var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyTemplate(surveyResult.SurveyTemplate);
            string mobileSurveyLocation = GetTargetedMobileSurveyLocation(surveyResult, this.ControllerContext.RequestContext);
 
            string text = String.Format(GlobalResources.Global.SmsMobileSurveyTemplate, mobileSurveyLocation);
@@ -408,10 +408,10 @@ namespace smsSurvery.Surveryer.Controllers
            return mobileSurveyLocation;
         }
       
-        private void SendThankYouToCustomer(Customer c,string numberToSendFrom, SurveyPlan survey)
+        private void SendThankYouToCustomer(Customer c,string numberToSendFrom, SurveyTemplate survey)
         {
            logger.DebugFormat("Send thank you to customer {0}, from number {1}, for surveyId {2}", c.PhoneNumber, numberToSendFrom, survey.Id);
-           var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyPlan(survey);
+           var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyTemplate(survey);
            smsinterface.SendMessage(numberToSendFrom, c.PhoneNumber, survey.ThankYouMessage);
         }
 

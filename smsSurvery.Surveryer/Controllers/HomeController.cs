@@ -13,7 +13,7 @@ namespace smsSurvery.Surveryer.Controllers
 
    public class ManualSurvey
    {
-      public List<SurveyPlan> Surveys { get; set; }
+      public List<SurveyTemplate> Surveys { get; set; }
       [System.ComponentModel.DisplayName("Survey to run")]
       public int SelectedSurveyID { get; set; }
       public IEnumerable<Customer> Customers { get; set; }
@@ -38,7 +38,7 @@ namespace smsSurvery.Surveryer.Controllers
             return RedirectToAction("MyHome", "Home");
          }
          ViewBag.Message = "Are you ready for our newest, ground-breaking product?";
-         var currentSurveys = db.SurveyPlanSet.Where(s => s.IsRunning).FirstOrDefault();
+         var currentSurveys = db.SurveyTemplateSet.Where(s => s.IsRunning).FirstOrDefault();
          if (currentSurveys != null)
          {            
             db.Entry(currentSurveys).Collection(s => s.QuestionSet).Load();
@@ -55,7 +55,7 @@ namespace smsSurvery.Surveryer.Controllers
          var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
          //get only the surveys to which you have access (as a user)
          ViewBag.Message = "Are you ready for our newest, ground-breaking product?";
-         var currentSurveys = user.SurveyPlanSet.Where(s => s.IsRunning).FirstOrDefault();
+         var currentSurveys = user.SurveyTemplateSet.Where(s => s.IsRunning).FirstOrDefault();
          if (currentSurveys != null)
          {
             db.Entry(currentSurveys).Collection(s => s.QuestionSet).Load();
@@ -70,10 +70,10 @@ namespace smsSurvery.Surveryer.Controllers
       public ActionResult ManualSurvey()
       {
          var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-         ViewBag.Surveys = user.SurveyPlanSet;
+         ViewBag.Surveys = user.SurveyTemplateSet;
          var manSurvey = new ManualSurvey();
-         manSurvey.Surveys = user.SurveyPlanSet.ToList();
-         ViewBag.ID = new SelectList(user.SurveyPlanSet.ToList(), "Id", "Description");
+         manSurvey.Surveys = user.SurveyTemplateSet.ToList();
+         ViewBag.ID = new SelectList(user.SurveyTemplateSet.ToList(), "Id", "Description");
          ViewBag.DefaultSelectionForSurveyId = 0;
          return View(manSurvey);
       }
@@ -92,16 +92,16 @@ namespace smsSurvery.Surveryer.Controllers
             ViewBag.PhoneNumbers = customers.Select(x => x.Telephone).ToList();
          }
          var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-         ViewBag.Surveys = user.SurveyPlanSet;
+         ViewBag.Surveys = user.SurveyTemplateSet;
          var manSurvey = new ManualSurvey();
-         manSurvey.Surveys = user.SurveyPlanSet.ToList();
+         manSurvey.Surveys = user.SurveyTemplateSet.ToList();
          if (selectedSurveyId != 0)
          {
-            ViewBag.ID = new SelectList(user.SurveyPlanSet.ToList(), "Id", "Description", selectedSurveyId);
+            ViewBag.ID = new SelectList(user.SurveyTemplateSet.ToList(), "Id", "Description", selectedSurveyId);
          }
          else
          {
-            ViewBag.ID = new SelectList(user.SurveyPlanSet.ToList(), "Id", "Description", selectedSurveyId);
+            ViewBag.ID = new SelectList(user.SurveyTemplateSet.ToList(), "Id", "Description", selectedSurveyId);
          }
          ViewBag.DefaultSelectionForSurveyId = selectedSurveyId;
          return View("ManualSurvey", manSurvey);
@@ -147,7 +147,7 @@ namespace smsSurvery.Surveryer.Controllers
          var userName = User.Identity.Name;
          var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();         
          //some sanity checks should be required, but later
-         var surveyToRun = db.SurveyPlanSet.Find(surveyid);
+         var surveyToRun = db.SurveyTemplateSet.Find(surveyid);
          var selectedTags = tags != null ? tags : new string[0];
          var answersController = new AnswerController();
          answersController.ControllerContext = this.ControllerContext;

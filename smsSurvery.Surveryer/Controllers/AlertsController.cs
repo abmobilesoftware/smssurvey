@@ -356,8 +356,7 @@ namespace smsSurvery.Surveryer.Controllers
                         return null;
                      }                       
                     
-                 }
-                 break;
+                 }                
               case ReportsController.cFreeTextTypeQuestion:
                  break;
               case ReportsController.cSelectManyFromManyTypeQuestion:

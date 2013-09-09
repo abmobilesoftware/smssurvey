@@ -294,7 +294,7 @@ Question.QuestionSetCollection = Backbone.Collection.extend({
    },
    defaults: {
       SurveyResultId: "",
-      SurveyPlanId: ""
+      SurveyTemplateId: ""
    },
    model: Question.QuestionModel,
    initialize: function () {

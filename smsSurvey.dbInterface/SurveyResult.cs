@@ -31,7 +31,7 @@ namespace smsSurvey.dbInterface
         public string LanguageChosenForSurvey { get; set; }
     
         public virtual Customer Customer { get; set; }
-        public virtual SurveyPlan SurveyPlan { get; set; }
+        public virtual SurveyTemplate SurveyTemplate { get; set; }
         public virtual ICollection<Result> Result { get; set; }
         public virtual Question CurrentQuestion { get; set; }
         public virtual ICollection<Tags> Tags { get; set; }

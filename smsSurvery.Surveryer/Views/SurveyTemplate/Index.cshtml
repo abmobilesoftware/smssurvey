@@ -1,4 +1,4 @@
-﻿@model IEnumerable<smsSurvey.dbInterface.SurveyPlan>
+﻿@model IEnumerable<smsSurvey.dbInterface.SurveyTemplate>
 
 @{
     ViewBag.Title = "Survey list";
@@ -8,7 +8,7 @@
 @using smsSurvey.dbInterface;
 
 @{
-   IPagedList<SurveyPlan> pagingDetails = ViewBag.pagingDetails;
+   IPagedList<SurveyTemplate> pagingDetails = ViewBag.pagingDetails;
    RouteValueDictionary r = new RouteValueDictionary();
    r.Add("to", Request["to"]);
    r.Add("from", Request["from"]);
@@ -19,9 +19,9 @@
 
 <p>
    @* Create new survey part *@
-    <a href="/SurveyPlan/Create" class="btn btn-primary delete-btn">Create survey template</a>
+    <a href="/SurveyTemplate/Create" class="btn btn-primary delete-btn">Create survey template</a>
 </p>
-@{Html.RenderPartial("SearchBoxItems", "SurveyPlan");}
+@{Html.RenderPartial("SearchBoxItems", "SurveyTemplate");}
 <table class="table table-striped table-bordered table-hover">
     <tr>
         <th>
@@ -68,9 +68,9 @@
            } else {
               @Html.ActionLink("Make active", "MakeActive", new { id=item.Id }) 
            } |
-            @Html.ActionLink("Report", "Report","SurveyPlan", new { id=item.Id }, null) |
+            @Html.ActionLink("Report", "Report","SurveyTemplate", new { id=item.Id }, null) |
             @Html.ActionLink("Comparison report", "GetTagComparisonReport","Reports", new { surveyId=item.Id }, null) |
-            @Html.ActionLink("Responses", "Responses","SurveyPlan", new { id=item.Id }, null)
+            @Html.ActionLink("Responses", "Responses","SurveyTemplate", new { id=item.Id }, null)
         </td>
     </tr>
 }

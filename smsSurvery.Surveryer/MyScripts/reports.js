@@ -116,26 +116,26 @@ window.app.displayReportsForFreeTextQ = function (questionId) {
    });
 };
 
-window.app.displayReportOverview = function (surveyPlanId) {
+window.app.displayReportOverview = function (surveyTemplateId) {
    //DA we should avoid recreating the chart as this is a costly operation
-   var chartId = "#pieOverviewChart_div" + surveyPlanId;
+   var chartId = "#pieOverviewChart_div" + surveyTemplateId;
    var chartElem = $(chartId);
-   var loadingIndicatorId = "#loadingOverviewIndicator" + surveyPlanId;
+   var loadingIndicatorId = "#loadingOverviewIndicator" + surveyTemplateId;
    var loadingIndicator = $(loadingIndicatorId);
-   var pieChart = window.report.repOverviewPiecharts[surveyPlanId];
+   var pieChart = window.report.repOverviewPiecharts[surveyTemplateId];
    if (pieChart == undefined) {
       pieChart = new google.visualization.PieChart(chartElem[0]);
       google.visualization.events.addListener(pieChart, 'select', function (e) {
          var sel = pieChart.getSelection();
-         var selectedValue = window.app.overviewPieData[surveyPlanId].getValue(sel[0].row, 0);
-         var url = "/Answer/GetCustomerWhichAnsweredXQuestions?surveyId=" + surveyPlanId + "&nrOfAnsweredQuestions=" + selectedValue;
+         var selectedValue = window.app.overviewPieData[surveyTemplateId].getValue(sel[0].row, 0);
+         var url = "/Answer/GetCustomerWhichAnsweredXQuestions?surveyId=" + surveyTemplateId + "&nrOfAnsweredQuestions=" + selectedValue;
          var win = window.open(url, "_blank");
          win.focus();
       });
    }
    
 
-   var graphsContainer = $("#graphsOverviewContainer" + surveyPlanId);
+   var graphsContainer = $("#graphsOverviewContainer" + surveyTemplateId);
    var candidateHeight = graphsContainer.outerHeight();
    candidateHeight = candidateHeight != 0 ? candidateHeight + "px" : "360px";
    loadingIndicator.height(candidateHeight);
@@ -147,7 +147,7 @@ window.app.displayReportOverview = function (surveyPlanId) {
 
    $.ajax({
       data: {
-         surveyPlanId: surveyPlanId,
+         surveyTemplateId: surveyTemplateId,
          iIntervalStart: window.app.dateHelper.transformStartDate(window.app.startDate),
          iIntervalEnd: window.app.dateHelper.transformEndDate(window.app.endDate),
          tags: window.app.tags
@@ -166,11 +166,11 @@ window.app.displayReportOverview = function (surveyPlanId) {
             'title': "Percentage of completion (out of 100)"
          };         
          var piedata = new google.visualization.DataTable(jsonData.pie);
-         window.app.overviewPieData[surveyPlanId] = piedata;         
+         window.app.overviewPieData[surveyTemplateId] = piedata;
          loadingIndicator.hide();
          pieChart.draw(piedata, options);
         
-         var tablechart = new google.visualization.Table(document.getElementById('tableOverviewChart_div' + surveyPlanId));
+         var tablechart = new google.visualization.Table(document.getElementById('tableOverviewChart_div' + surveyTemplateId));
          tabledata = new google.visualization.DataTable(jsonData.table);
          var tableOptions = {
             backgroundColor: '#F5F8FA',

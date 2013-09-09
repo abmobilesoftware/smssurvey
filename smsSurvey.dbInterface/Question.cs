@@ -30,7 +30,7 @@ namespace smsSurvey.dbInterface
         public int SurveyPlan_Id { get; set; }
     
         public virtual ICollection<Result> Result { get; set; }
-        public virtual SurveyPlan SurveyPlanSet { get; set; }
+        public virtual SurveyTemplate SurveyTemplateSet { get; set; }
         public virtual ICollection<SurveyResult> SurveyResultSet { get; set; }
         public virtual ICollection<QuestionAlertSet> QuestionAlertSet { get; set; }
     }

@@ -26,7 +26,7 @@ namespace smsSurvey.dbInterface
         }
     
         public DbSet<Question> QuestionSet { get; set; }
-        public DbSet<SurveyPlan> SurveyPlanSet { get; set; }
+        public DbSet<SurveyTemplate> SurveyTemplateSet { get; set; }
         public DbSet<Customer> CustomerSet { get; set; }
         public DbSet<SurveyResult> SurveyResultSet { get; set; }
         public DbSet<Result> ResultSet { get; set; }
