@@ -471,6 +471,13 @@ namespace smsSurvery.Surveryer.Controllers
             {
                result.Tags.Remove(tag);
             }
+            //DA for each survey result remove all individual results
+            var individualQuestionResults = result.Result.ToList();
+            foreach (var qRes in individualQuestionResults)
+            {
+               result.Result.Remove(qRes);
+               db.ResultSet.Remove(qRes);
+            }
          }
          //DA deal with customer - running survey reference before deleting
          var customersWithSurveyUnderDeleteRunning = db.CustomerSet.Where(x => x.RunningSurvey.Id == surveyTemplate.Id);
@@ -479,6 +486,7 @@ namespace smsSurvery.Surveryer.Controllers
             customer.SurveyInProgress = false;
             customer.RunningSurvey = null;
          }
+         
          db.SurveyTemplateSet.Remove(surveyTemplate);
          var connectedUser = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
          connectedUser.SurveyTemplateSet.Remove(surveyTemplate);
