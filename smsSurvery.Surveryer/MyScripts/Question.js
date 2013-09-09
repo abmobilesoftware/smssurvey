@@ -319,14 +319,17 @@ Question.QuestionSetCollection = Backbone.Collection.extend({
 Question.QuestionSetView = Backbone.View.extend({
    events: {
       "click .add-question-btn": "addQuestion",
+      "click .add-nps-question-btn": "addNpsQuestion",
       "click .preview-btn": "previewSurvey"
    },
    initialize: function () {
-      _.bindAll(this, "render", "addQuestion", "listSorted", "previewSurvey");
+      _.bindAll(this, "render", "addQuestion", "listSorted", "previewSurvey",
+         "addNpsQuestion");
       this.model.on(this.model.events.UPDATE_VIEW, this.render)
 
       this.dom = {
          $ADD_QUESTION_BTN: $(".add-question-btn", this.$el),
+         $ADD_NPS_QUESTION_BTN: $(".add-nps-question-btn", this.$el),
          $QUESTION_SET_CONTENT: $("#question-set-content", this.$el),
          $PREVIEW_MODAL: $("#preview-modal", this.$el)
       };
@@ -354,8 +357,10 @@ Question.QuestionSetView = Backbone.View.extend({
          this.dom.$QUESTION_SET_CONTENT.sortable({ axis: "y", handle: ".grip", cursor: "move" });
          if (questionSetModels.length < 5) {
             this.dom.$ADD_QUESTION_BTN.show();
+            this.dom.$ADD_NPS_QUESTION_BTN.show();
          } else {
             this.dom.$ADD_QUESTION_BTN.hide();
+            this.dom.$ADD_NPS_QUESTION_BTN.hide();
          }
       } else {
          this.dom.$QUESTION_SET_CONTENT.append(this.noQuestionsTemplate());
@@ -364,6 +369,10 @@ Question.QuestionSetView = Backbone.View.extend({
    addQuestion: function (event) {
       event.preventDefault();     
       this.model.addQuestion();
+   },
+   addNpsQuestion: function(event) {
+      event.preventDefault();
+      this.model.addNpsQuestion();
    },
    listSorted: function (event, ui) {
       _.each(this.questionViewCollection, function (questionView) {
@@ -431,6 +440,25 @@ Question.QuestionSetModel = Backbone.Model.extend({
          this.questionSetCollection.models[i].setYesNo();
       }
       var questionModel = new Question.QuestionModel({ Id: this.questionTemporaryId });
+      questionModel.updateOrder(this.questionSetCollection.models.length);
+      this.questionSetCollection.add(questionModel);
+   },
+   addNpsQuestion: function() {
+      ++this.questionTemporaryId;
+      for (var i = 0; i < this.questionSetCollection.models.length; ++i) {
+         // set the last alerts changes         
+         this.questionSetCollection.models[i].setQuestionAlertSet();
+         this.questionSetCollection.models[i].setAnswers();
+         this.questionSetCollection.models[i].setRatings();
+         this.questionSetCollection.models[i].setYesNo();
+      }
+      var questionModel = new Question.QuestionModel({
+         Id: this.questionTemporaryId,
+         ValidAnswers: "1;2;3;4;5",
+         ValidAnswersDetails: "Very unlikely;;;;Very likely",
+         Text: "How likely are you to recommend our company/product/service to your friends and colleagues?",
+         Type: SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_NUMERIC
+      });
       questionModel.updateOrder(this.questionSetCollection.models.length);
       this.questionSetCollection.add(questionModel);
    },

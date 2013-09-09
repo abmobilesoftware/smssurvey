@@ -1,18 +1,21 @@
 ﻿<script type="text/template" id="question-template">
    <%
+      var questionConstants = SurveyUtilities.Utilities.CONSTANTS_QUESTION;
       var questionType = "";
       if (Type == "no type") {
          questionType = "Type" 
-      } else if (Type == "YesNo") {
+      } else if (Type == questionConstants.TYPE_YES_NO) {
          questionType = "Yes/No";
-      } else if (Type == "FreeText") {
+      } else if (Type == questionConstants.TYPE_FREE_TEXT) {
          questionType = "Free text";
-      } else if (Type == "Rating") {
+      } else if (Type == questionConstants.TYPE_RATING) {
          questionType = "Rating";
-      } else if (Type == "SelectOneFromMany") {
+      } else if (Type == questionConstants.TYPE_SELECT_ONE_FROM_MANY) {
          questionType = "Select one from many";
-      } else if (Type == "SelectManyFromMany") {
+      } else if (Type == questionConstants.TYPE_SELECT_MANY_FROM_MANY) {
          questionType = "Select many from many";
+      } else if (Type == questionConstants.TYPE_NUMERIC) {
+         questionType = "Numeric"
       }
    %>
       <div class="grip">
@@ -31,13 +34,14 @@
                   <li><a href="#" value="FreeText" class="question-type">Free text</a></li>
                   <li><a href="#" value="Rating" class="question-type">Rating</a></li>
                   <li><a href="#" value="SelectOneFromMany" class="question-type">Select one from many</a></li>
-                  <li><a href="#" value="SelectManyFromMany" class="question-type">Select many from many</a></li>               
+                  <li><a href="#" value="SelectManyFromMany" class="question-type">Select many from many</a></li>  
+                  <li><a href="#" value="Numeric" class="question-type">Numeric</a></li>               
                </ul>
             </div>
          </div>         
          <a href="#" class="btn btn-danger delete-btn">Delete</a>
     
-      <% if (Type == "SelectOneFromMany" || Type == "SelectManyFromMany") { %>
+      <% if (Type == questionConstants.TYPE_SELECT_ONE_FROM_MANY || Type == questionConstants.TYPE_SELECT_MANY_FROM_MANY) { %>
          <a href="#multiple-answer-modal<%= Id %>" role="button" class="open-modal-btn btn edit-answers-btn" data-backdrop="static" data-toggle="modal"><img class="icon" src="/Content/images/edit_20.png" />Edit answers</a>   
          <div id="multiple-answer-modal<%= Id %>" class="modal hide fade">
             <div class="modal-header">               
@@ -60,7 +64,7 @@
                <button type="button" class="btn btn-danger close-answers-modal-btn" aria-hidden="true">Cancel</button>
             </div>
          </div>
-      <% } else if (Type == "Rating") { %>
+      <% } else if (Type == questionConstants.TYPE_RATING) { %>
          <a href="#edit-rating-modal<%=Id %>" role="button" data-backdrop="static" class="open-modal-btn btn edit-ratings-btn" data-toggle="modal">Edit rating</a>   
          <div id="edit-rating-modal<%= Id %>" class="modal hide fade">
             <div class="modal-header">
@@ -71,6 +75,26 @@
             <div class="modal-footer">
                <button type="button" class="btn btn-success save-rating">Ok</button>
                <button type="button" class="btn btn-danger close-rating-modal-btn" aria-hidden="true">Cancel</button>
+            </div>
+         </div>
+      <% } else if (Type == questionConstants.TYPE_NUMERIC) { %>
+         <a href="#numeric-modal<%= Id %>" role="button" class="open-modal-btn btn edit-numeric-btn" data-backdrop="static" data-toggle="modal">Edit numeric scale</a>   
+         <div id="numeric-modal<%= Id %>" class="modal hide fade">
+            <div class="modal-header">               
+               <h3> Configure numeric scale</h3>
+            </div>
+            <div class="modal-body">
+               <div style="display:none" class="alert fade in alert-error" id="noTags-error" >
+                  <button type="button" class="close close-numeric-notifications">×</button>
+                  <div class="numeric-notifications">
+                  </div>   
+               </div>
+               <table class="table table-striped table-bordered answers-table">               
+               </table>               
+            </div>
+            <div class="modal-footer">
+               <button type="button" class="btn btn-success save-numeric-scale">Ok</button>
+               <button type="button" class="btn btn-danger close-numeric-modal-btn" aria-hidden="true">Cancel</button>
             </div>
          </div>
       <% } %>
@@ -368,6 +392,7 @@
          <ul id="question-set-content">
          </ul>
          <button class="btn btn-primary add-question-btn" type="button">Add question</button>
+         <button class="btn btn-primary add-nps-question-btn" type="button">Add NPS question</button>
       </div>
       <div id="preview-modal" class="modal hide fade">
          <div class="modal-header">
