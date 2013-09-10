@@ -83,6 +83,7 @@
     <Reference Include="System.Data.Entity" />
     <Reference Include="System.Data.Services.Client" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -240,6 +241,9 @@
     <Compile Include="Mailers\AlertMailer.cs" />
     <Compile Include="Mailers\IAlertMailer.cs" />
     <Compile Include="Models\AlertNotification.cs" />
+    <Compile Include="Models\BusinessObjects\Location.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Models\BusinessObjects\SmsMessage.cs" />
     <Compile Include="Models\Paging\IPagedList.cs" />
     <Compile Include="Models\Paging\PagedList.cs" />

@@ -9,6 +9,7 @@ using smsSurvey.dbInterface;
 using System.Net;
 using System.Data.Entity.Infrastructure;
 using System.Net.Http;
+using smsSurvery.Surveryer.Models.BusinessObjects;
 
 namespace smsSurvery.Surveryer.Controllers
 {
@@ -122,15 +123,26 @@ namespace smsSurvery.Surveryer.Controllers
    {
       private smsSurveyEntities db = new smsSurveyEntities();
 
-      // GET api/Default1
-      public IEnumerable<Tags> Get()
+      private UserProfile GetConnectedUser()
       {
-         db.Configuration.ProxyCreationEnabled = false;
-         var tags = db.Tags;
+         var connectedUser = User.Identity.Name;
+         var user = db.UserProfile.Where(u => u.UserName == connectedUser).FirstOrDefault();
+         return user;
+      }
+      // GET api/LocationTags
+      public IEnumerable<Location> Get()
+      {
+         var user = GetConnectedUser();
+         /**DA if we return tags then it will automatically try to load the connecting entities, and this will trigger an error (serialization not possible)
+          * we cannot solve this problem with  db.Configuration.ProxyCreationEnabled = false because then the select will not work
+          */                   
+          var tags = (from tag in user.Company.Tags
+                                 select
+                                    (from ct in tag.TagTagTypes where ct.TagTypeType == "Location" select new Location(tag))).SelectMany(x => x);
          return tags.AsEnumerable();
       }
 
-      // GET api/Default1/5
+      // GET api/LocationTags/5
       public Tags Get(string id)
       {
          Tags tags = db.Tags.Find(id);
@@ -142,7 +154,7 @@ namespace smsSurvery.Surveryer.Controllers
          return tags;
       }
 
-      // PUT api/Default1/5
+      // PUT api/LocationTags/5
       public System.Net.Http.HttpResponseMessage Put(string id, Tags tags)
       {
          if (!ModelState.IsValid)
@@ -169,7 +181,7 @@ namespace smsSurvery.Surveryer.Controllers
          return Request.CreateResponse(HttpStatusCode.OK);
       }
 
-      // POST api/Default1
+      // POST api/LocationTags
       public HttpResponseMessage Post(Tags tags)
       {
          if (ModelState.IsValid)
@@ -187,7 +199,7 @@ namespace smsSurvery.Surveryer.Controllers
          }
       }
 
-      // DELETE api/Default1/5
+      // DELETE api/LocationTags/5
       public HttpResponseMessage Delete(string id)
       {
          Tags tags = db.Tags.Find(id);
