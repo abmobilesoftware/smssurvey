@@ -2,9 +2,11 @@
 
 window.LocationModel = Backbone.Model.extend({
    events: {},
-   defaults: {
-      Name: "",
-      Description: ""      
+   defaults: function(){
+      return {
+         Name: "",
+         Description: ""
+      }
    },
    idAttribute: "Name",
    validate: function (attributes, options) {
@@ -16,18 +18,26 @@ window.LocationView = Backbone.View.extend({
    tagName: "li",
    className: "location",
    events: {
-      "click .edit-location-btn": "editLocation"
+      "click .save-location-btn": "saveLocation"
    },
    initialize: function () {
-      _.bindAll(this, "render", "editLocation");
+      _.bindAll(this, "render", "saveLocation", "updateView");
       this.template = _.template($("#location-template").html());
+      this.model.on( {
+         "change:Name" : this.updateView,
+         "change:Description" : this.updateView
+      });
    },
    render: function() {
       this.$el.html(this.template(this.model.toJSON()));
       return this.$el;
    },
-   editLocation: function () {
+   saveLocation: function () {
 
+   },
+   updateView: function () {
+      //now the only required update is enabling the Save button
+      $(".save-location-btn", this).prop("disabled", false);
    }
 });
 
@@ -77,7 +87,8 @@ window.LocationSetView = Backbone.View.extend({
       }
    },
    addNewLocation: function () {
-
+      var newLocation =new window.LocationModel();
+      this.collection.add(newLocation);
    }  
 });
 
