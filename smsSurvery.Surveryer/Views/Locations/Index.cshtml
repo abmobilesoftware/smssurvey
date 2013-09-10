@@ -1,0 +1,31 @@
+﻿@model IEnumerable<smsSurvey.dbInterface.Tags>
+
+@{
+    ViewBag.Title = "Index";
+    
+}
+
+<h2>Index</h2>
+
+<script type="text/template" id="location-template">  
+      <input class="readOnly" value="<%= Name %>" >         
+      </input>
+      <input class="readOnly" value="<%= Description %>" >       
+      </input>            
+      <button class="btn btn-primary edit-location-btn" type="button">Save</button>               
+</script>
+
+<script type="text/template" id="location-set-template">
+    <ul class="locations-set-content">
+
+    </ul>
+    <button class="btn btn-primary add-location-btn" type="button">Add location</button>
+</script>
+
+<div id="contentGoesHerelocView">
+
+</div>
+
+@section Scripts {  
+   @Scripts.Render("~/bundles/locationTags")
+}

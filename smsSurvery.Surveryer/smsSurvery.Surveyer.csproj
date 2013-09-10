@@ -221,7 +221,9 @@
     <Compile Include="Controllers\AlertsController.cs" />
     <Compile Include="Controllers\AnswerController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
+    <Compile Include="Controllers\Default1Controller.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LocationsController.cs" />
     <Compile Include="Controllers\MobileSurveyController.cs" />
     <Compile Include="Controllers\QuestionController.cs" />
     <Compile Include="Controllers\ReportsController.cs" />
@@ -311,6 +313,7 @@
     <Content Include="Content\SurveyResult\SurveyResult.css" />
     <Content Include="Content\WordCloud.css" />
     <Content Include="MyScripts\DateHelper.js" />
+    <Content Include="MyScripts\Locations.js" />
     <Content Include="MyScripts\MobileSurvey.js" />
     <Content Include="MyScripts\Question.js" />
     <Content Include="MyScripts\ReportsFilterArea.js" />
@@ -512,6 +515,11 @@
     <Content Include="Views\Shared\_ViewStart.cshtml" />
     <Content Include="Views\Shared\ReportFilterArea.cshtml" />
     <Content Include="Views\Shared\SearchBoxItems.cshtml" />
+    <Content Include="Views\Locations\Index.cshtml" />
+    <Content Include="Views\Locations\Details.cshtml" />
+    <Content Include="Views\Locations\Create.cshtml" />
+    <Content Include="Views\Locations\Edit.cshtml" />
+    <Content Include="Views\Locations\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

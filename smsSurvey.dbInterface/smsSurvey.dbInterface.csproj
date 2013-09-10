@@ -60,6 +60,7 @@
     <Compile Include="Extensions\QuestionAlertSet.cs" />
     <Compile Include="Extensions\SurveyTemplate.cs" />
     <Compile Include="Extensions\SurveyResult.cs" />
+    <Compile Include="Extensions\Tags.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Question.cs">
       <DependentUpon>smsSurvey.tt</DependentUpon>

@@ -50,6 +50,9 @@ namespace smsSurvery.Surveryer
                      "~/MyScripts/ReportsFilterArea.js",
                      "~/MyScripts/reportsTags.js"));
 
+         bundles.Add(new ScriptBundle("~/bundles/locationTags").Include(
+            "~/MyScripts/Locations.js"));
+
 
          bundles.Add(new ScriptBundle("~/bundles/jqueryui").Include(
                      "~/Scripts/jquery-ui-{version}.js"));
