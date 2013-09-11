@@ -51,6 +51,7 @@ namespace smsSurvery.Surveryer
                      "~/MyScripts/reportsTags.js"));
 
          bundles.Add(new ScriptBundle("~/bundles/locationTags").Include(
+            "~/MyScripts/SurveyUtilities.js",
             "~/MyScripts/Locations.js"));
 
 

@@ -1037,3 +1037,13 @@ input[type=checkbox].css-checkbox:checked + label.css-label { background-positio
 border: 1px solid #CCC;
 padding: 5px 5px 15px 20px;
 }
+
+input.invalidField, select.invalidField, a.invalidField, div.invalidField {
+   -webkit-box-shadow: 0 0 5px rgba(255, 0 ,0, 1);
+   -moz-box-shadow: 0 0 5px rgba(255, 0, 0, 1);
+   box-shadow: 0 0 5px rgba(255, 0, 0, 1);   
+}
+.location-notifications {
+   word-wrap: break-word;
+   white-space: pre;
+}
