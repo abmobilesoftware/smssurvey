@@ -14,7 +14,8 @@ namespace smsSurvery.Surveryer
                      "~/Scripts/bootstrap.js",
                      "~/Scripts/underscore.js",
                      "~/Scripts/backbone.js",
-                     "~/Scripts/chosen.jquery.js"
+                     "~/Scripts/chosen.jquery.js",
+                     "~/Scripts/jquery.screwdefaultbuttonsV2.js"
                      ));
          bundles.Add(new ScriptBundle("~/bundles/mobilesurvey").Include(
             "~/MyScripts/SurveyUtilities.js",

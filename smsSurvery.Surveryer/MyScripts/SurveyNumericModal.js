@@ -3,21 +3,25 @@ SurveyModals.NumericModalView = Backbone.View.extend({
    events: {
       "click .close-numeric-modal-btn": "closeModal",
       "click .save-numeric": "saveModal",
-      "click .close-numeric-notifications": "closeAlertBox"
+      "click .close-numeric-notifications": "closeAlertBox",
+      "change .numeric-select": "changeScale"
    },
    initialize: function () {
       _.bindAll(this, "closeModal", "saveModal", "closeAlertBox",
          "validationResult", "render");
       this.dom = {
-         $NUMERIC_TABLE: $(".numeric-table", this.$el),
+         $MODAL_CONTENT : $(".modal-content", this.$el),
          $NUMERIC_NOTIFICATIONS: $(".numeric-notifications", this.$el),
          $ALERT_BOX: $(".alert", this.$el)
       };
+      this.template = _.template($("#numeric-modal-template").html());
       this.model.on(this.model.events.VALIDATE, this.validationResult);
       this.model.on(this.model.events.UPDATE_VIEW, this.render)
       this.render();
    },
    render: function () {
+      this.dom.$MODAL_CONTENT.html(this.template(this.model.toJSON()));
+      this.dom.$NUMERIC_TABLE= $(".numeric-table", this.$el);
       this.dom.$NUMERIC_TABLE.empty();
       _.each(this.model.getNumericScale(), function (numericEntry) {
          var numericEntryView = new SurveyModals.NumericEntryView({ model: numericEntry });
@@ -26,6 +30,7 @@ SurveyModals.NumericModalView = Backbone.View.extend({
    },
    saveModal: function () {
       if (this.model.validate()) {
+         this.model.saveNumericScale();
          this.$el.modal("hide");
       }
    },
@@ -48,6 +53,9 @@ SurveyModals.NumericModalView = Backbone.View.extend({
          this.dom.$NUMERIC_NOTIFICATIONS.html("Invalid scale");
          this.dom.$ALERT_BOX.show();
       }
+   },
+   changeScale: function (event) {
+      this.model.changeScale(event.currentTarget.value)
    }
 });
 
@@ -57,18 +65,20 @@ SurveyModals.NumericModalModel = Backbone.Model.extend({
    },
    initialize: function () {
       this.numericScaleCollection = new SurveyModals.NumericScaleCollection();
-      var numericLabels = this.get("ValidAnswersDetails").split(";");
-      var numericValues = this.get("ValidAnswers").split(";");
-      if (numericLabels.length == numericValues.length) {
-         for (var i = 0; i < numericLabels.length; ++i) {
-            var numericEntryModel = new SurveyModals.NumericEntryModel(
-               {
-                  NumericLabel: numericLabels[i],
-                  NumericValue: numericValues[i]
-               });
-            this.numericScaleCollection.add(numericEntryModel);
-         }
-      };
+      if (this.get("ValidAnswers") != "") {
+         var numericLabels = this.get("ValidAnswersDetails").split(";");
+         var numericValues = this.get("ValidAnswers").split(";");
+         if (numericLabels.length == numericValues.length) {
+            for (var i = 0; i < numericLabels.length; ++i) {
+               var numericEntryModel = new SurveyModals.NumericEntryModel(
+                  {
+                     NumericLabel: numericLabels[i],
+                     NumericValue: numericValues[i]
+                  });
+               this.numericScaleCollection.add(numericEntryModel);
+            }
+         };
+      }
       this.numericScaleCollection.on("add remove", function () {
          this.trigger(this.events.UPDATE_VIEW);
          var attributeChangedEvent =
@@ -117,6 +127,11 @@ SurveyModals.NumericModalModel = Backbone.Model.extend({
          }, this);
 
    },
+   saveNumericScale: function() {
+      var numericScale = this.getNumericScaleAsJson();
+      this.set("ValidAnswers", numericScale.ValidAnswers);
+      this.set("ValidAnswersDetails", numericScale.ValidAnswersDetails);
+   },
    validate: function () {
       var isValid = true;
       if (this.numericScaleCollection.models.length > 0) {
@@ -132,6 +147,15 @@ SurveyModals.NumericModalModel = Backbone.Model.extend({
          this.trigger(this.events.VALIDATE, "invalidScale");
       }
       return isValid;
+   },
+   changeScale: function (size) {
+      this.emptyNumericScaleCollection();
+      for (var i = 0; i < size; ++i) {
+         this.numericScaleCollection.add(
+               new SurveyModals.NumericEntryModel());
+      };
+      this.saveNumericScale();
+      this.trigger(this.events.UPDATE_VIEW);
    }
 });
 
@@ -198,7 +222,7 @@ SurveyModals.NumericEntryModel = Backbone.Model.extend({
       Backbone.trigger(attributeChangedEvent);
    },
    validate: function() {
-      if (isNaN(this.get("NumericValue"))) {
+      if (isNaN(parseFloat(this.get("NumericValue")))) {
          this.trigger(this.events.VALIDATE, this.errors.INVALID_NUMERIC_VALUE);
          return false;
       } else {

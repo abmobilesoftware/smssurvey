@@ -287,6 +287,7 @@
     <Content Include="Content\images\glyphicons-halflings.png" />
     <Content Include="Content\images\iphone_frame.png" />
     <Content Include="Content\images\logo1.png" />
+    <Content Include="Content\images\screwDefaultButtons\radioSmall.png" />
     <Content Include="Content\images\small-icon.png" />
     <Content Include="Content\images\star50.png" />
     <Content Include="Content\images\star50_inactive.png" />
@@ -306,9 +307,14 @@
     <Content Include="Content\images\ui-icons_ffffff_256x240.png" />
     <Content Include="Content\jquery-ui-1.8.23.custom.css" />
     <Content Include="Content\jquery.tagsinput.css" />
+    <Content Include="Content\images\screwDefaultButtons\checkbox.jpg" />
+    <Content Include="Content\images\screwDefaultButtons\checkboxSmall.jpg" />
+    <Content Include="Content\images\screwDefaultButtons\checkboxSmall_Blue.jpg" />
+    <Content Include="Content\images\screwDefaultButtons\radio.jpg" />
+    <Content Include="Content\images\screwDefaultButtons\radioSmall.jpg" />
     <Content Include="Content\survey.css" />
-    <Content Include="Content\SurveyPlan\questionSet.css" />
     <Content Include="Content\SurveyResult\SurveyResult.css" />
+    <Content Include="Content\SurveyTemplate\questionSet.css" />
     <Content Include="Content\WordCloud.css" />
     <Content Include="MyScripts\DateHelper.js" />
     <Content Include="MyScripts\MobileSurvey.js" />
@@ -330,6 +336,7 @@
     <Content Include="MyScripts\reportsTags.js" />
     <Content Include="Scripts\jquery-1.10.1.js" />
     <Content Include="Scripts\jquery-1.10.1.min.js" />
+    <Content Include="Scripts\jquery.screwdefaultbuttonsV2.js" />
     <Content Include="Scripts\jquery.tagsinput.js" />
     <Content Include="MyScripts\reports.js" />
     <Content Include="Scripts\underscore.js" />
@@ -463,8 +470,6 @@
     <Content Include="Views\Question\Details.cshtml" />
     <Content Include="Views\Question\Create.cshtml" />
     <Content Include="Views\Question\Delete.cshtml" />
-    <Content Include="Views\SurveyPlan\Edit.cshtml" />
-    <Content Include="Views\SurveyPlan\Delete.cshtml" />
     <Content Include="Views\Answer\Index.cshtml" />
     <Content Include="Views\Answer\Details.cshtml" />
     <Content Include="Views\Answer\Create.cshtml" />
@@ -480,20 +485,14 @@
     <Content Include="Views\Customer\Create.cshtml" />
     <Content Include="Views\Customer\Edit.cshtml" />
     <Content Include="Views\Customer\Delete.cshtml" />
-    <Content Include="Views\SurveyPlan\Index.cshtml" />
-    <Content Include="Views\SurveyPlan\Create.cshtml" />
-    <Content Include="Views\SurveyPlan\Details.cshtml" />
     <Content Include="Views\Shared\QuestionDetails.cshtml" />
     <Content Include="Views\Reports\GetWordCloud.cshtml" />
     <Content Include="Views\Answer\GetMessagesWithStem.cshtml" />
     <Content Include="Views\Question\Edit.cshtml" />
     <Content Include="Views\Home\MyHome.cshtml" />
-    <Content Include="Views\SurveyPlan\CreateEditSurveyPlan.cshtml" />
     <Content Include="Views\Question\CreateEditQuestion.cshtml" />
     <Content Include="Views\Shared\SurveyReport.cshtml" />
-    <Content Include="Views\SurveyPlan\Report.cshtml" />
     <Content Include="Views\Shared\SurveyResultsDetails.cshtml" />
-    <Content Include="Views\SurveyPlan\Responses.cshtml" />
     <Content Include="Views\Answer\GetMessagesWithOnePredefinedAnswer.cshtml" />
     <Content Include="Views\Home\ManualSurvey.cshtml" />
     <Content Include="Views\Shared\SurveyResultOverview.cshtml" />
@@ -513,9 +512,18 @@
     <Content Include="Views\Shared\_ViewStart.cshtml" />
     <Content Include="Views\Shared\ReportFilterArea.cshtml" />
     <Content Include="Views\Shared\SearchBoxItems.cshtml" />
+    <Content Include="Views\SurveyTemplate\Create.cshtml" />
+    <Content Include="Views\SurveyTemplate\CreateEditSurveyPlan.cshtml" />
+    <Content Include="Views\SurveyTemplate\Delete.cshtml" />
+    <Content Include="Views\SurveyTemplate\Details.cshtml" />
+    <Content Include="Views\SurveyTemplate\Edit.cshtml" />
+    <Content Include="Views\SurveyTemplate\Index.cshtml" />
+    <Content Include="Views\SurveyTemplate\Report.cshtml" />
+    <Content Include="Views\SurveyTemplate\Responses.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\SurveyPlan\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />

@@ -89,8 +89,8 @@
                   <div class="numeric-notifications">
                   </div>   
                </div>
-               <table class="table table-striped table-bordered numeric-table">               
-               </table>               
+               <div class="modal-content">                  
+               </div>              
             </div>
             <div class="modal-footer">
                <button type="button" class="btn btn-success save-numeric">Ok</button>
@@ -126,6 +126,18 @@
    <div class="question">No questions. Use the button below to add questions.</div>   
 </script>
 
+<script type="text/template" id="numeric-modal-template">
+   <% 
+      var validAnswersArray = ValidAnswers.split(";");
+   %>
+   <select class="numeric-select">
+      <option value="0" <% if (validAnswersArray.length == 0) { %> selected <% } %> >Choose a scale</option>
+      <option value="5" <% if (validAnswersArray.length == 5) { %> selected <% } %> >1-5</option>
+   </select>
+   <table class="table table-striped table-bordered numeric-table">               
+   </table> 
+</script>
+
 <script type="text/template" id="alert-template">
    <div class="alert-entry">
       <span class="input-label"><strong>Description:</strong></span>
@@ -145,7 +157,7 @@
       <% 
          var questionConstants = SurveyUtilities.Utilities.CONSTANTS_QUESTION;
          if (QuestionType == questionConstants.TYPE_RATING || QuestionType == questionConstants.TYPE_SELECT_ONE_FROM_MANY 
-            || QuestionType == questionConstants.TYPE_YES_NO) {
+            || QuestionType == questionConstants.TYPE_YES_NO || QuestionType == questionConstants.TYPE_NUMERIC) {
             if (TriggerAnswerValues.length > 0) {         
        %>
          <select data-placeholder="Choose a trigger answer" class="chosen-select alert-trigger-answer-select">
@@ -230,16 +242,26 @@
                <% } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_NUMERIC) {
                         var numericValues = ValidAnswers.split(";");
                         var numericLabels = ValidAnswersDetails.split(";");
-                        for (var i=0; i < numericValues.length; ++i) {
+                        if (numericValues.length > 0) {
                      %>
-                     <div class="numeric-entry">
-                        <label for="radio<%= numericValues[i] %>" class="numericValue">
-                           <span class="numericLabel"><%= numericLabels[i] %></span>
-                           <span class="numericValue"><%= numericValues[i] %></span>
-                        </label>
-                        <input id="radio<%= numericValues[i] %>" type="radio" value="<%= numericValues[i] %>" name="scale" />                     
-                     </div>
-               <%       }
+                        <div class="scale-legend">
+                           <div class="low-scale"><< <%= numericLabels[0] %></div>
+                           <div class="high-scale"><%= numericLabels[numericLabels.length - 1] %> >></div>
+                           <div class="clear"></div>
+                        </div>
+                       <%
+                           for (var i=0; i < numericValues.length; ++i) {
+                        %>
+                        <div class="numeric-entry">                           
+                           <label for="radio<%= numericValues[i] %>" class="numeric-value-label">
+                              <span class="numeric-value"><%= numericValues[i] %></span>
+                           </label>
+                           <input class="numeric-radio" id="radio<%= numericValues[i] %>" type="radio" value="<% numericValues[i] %>" name="numeric-scale-answer" />                                                
+                        </div>
+                  <%       } 
+                        }%>
+                     <div class="clear"></div>
+               <%   
                   } 
                %>          
             </div>
@@ -394,36 +416,44 @@
 </script>
 
 <div id="survey">
-   <div style="display:none" class="alert fade in" id="noTags-error" >
-      <button type="button" class="close close-survey-notifications">×</button>
-      <div class="survey-notification">
-      </div>   
-    </div>
-   <div id="survey-info">
+   <div id="survey-loader" class="alert fade in">
+      <div id="survey-loader-content">
+         <img src="/Content/images/loader.gif" /> Loading survey. Please wait.
+       </div>
    </div>
-   <div id="survey-builder">
-     <div class="survey-builder-title-wrapper section-title">
-         <h4 class="survey-builder-title section-title-text">Questions</h4>
-         <a class="btn btn-warning preview-btn section-title-button" role="button" data-toggle="modal" href="#preview-modal">Preview</a>
-         <div class="clear"></div>
+   <div id="survey-content" class="hide">
+      <div style="display:none" class="save-alert alert fade in" id="noTags-error" >
+         <button type="button" class="close close-survey-notifications">×</button>
+         <div class="survey-notification">
+         </div>   
+       </div>
+      <div id="survey-info">
       </div>
-      <div id="question-set">
-         <ul id="question-set-content">
-         </ul>
-         <button class="btn btn-primary add-question-btn" type="button">Add question</button>
-         <button class="btn btn-primary add-nps-question-btn" type="button">Add NPS question</button>
-      </div>
-      <div id="preview-modal" class="modal hide fade">
-         <div class="modal-header">
-            <button type="button" class="close-modal-btn close" data-dismiss="modal" aria-hidden="true">x</button>
-            <div class="btn-group preview-tabs" data-toggle="buttons-radio">
-               <button type="button" class="btn btn-primary sms-preview-btn active">SMS</button>
-               <button type="button" class="btn btn-primary mobile-website-btn">Mobile website</button>
-            </div>
+      <div id="survey-builder">
+        <div class="survey-builder-title-wrapper section-title">
+            <h4 class="survey-builder-title section-title-text">Questions</h4>
+            <a class="btn btn-warning preview-btn section-title-button" role="button" data-toggle="modal" href="#preview-modal">Preview</a>
+            <div class="clear"></div>
          </div>
-         <div id="preview-content-modal" class="modal-body">
+         <div id="question-set">
+            <ul id="question-set-content">
+            </ul>
+            <button class="btn btn-primary add-question-btn" type="button">Add question</button>
+            <button class="btn btn-primary add-nps-question-btn" type="button">Add NPS question</button>
+         </div>
+         <div id="preview-modal" class="modal hide fade">
+            <div class="modal-header">
+               <button type="button" class="close-modal-btn close" data-dismiss="modal" aria-hidden="true">x</button>
+               <div class="btn-group preview-tabs" data-toggle="buttons-radio">
+                  <button type="button" class="btn btn-primary sms-preview-btn active">SMS</button>
+                  <button type="button" class="btn btn-primary mobile-website-btn">Mobile website</button>
+               </div>
+            </div>
+            <div id="preview-content-modal" class="modal-body">
+            </div>
          </div>
       </div>
    </div>
 </div>
-<a href="/SurveyTemplate">Back to Surveys list</a>
+
+<a role="button" class="btn btn-primary" href="/SurveyTemplate">Back to Surveys list</a>

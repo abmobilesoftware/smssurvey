@@ -305,3 +305,41 @@ input[type=radio]:checked + label {
 #survey h4 {
    font-weight: normal;
 }
+
+/* NUMERIC SCALE */
+.numeric-entry {
+  float: left;
+  width: 20%;
+  padding-top: 2px;
+  margin-top: -25px;
+}
+
+.numeric-text-label {
+   height: 42px;
+}
+
+.numeric-value-label {
+  height: 19px;
+  left: 18px;
+  position: relative;
+  top: 33px;
+  display:inline;
+}
+
+.low-scale {
+   float: left;
+}
+
+.high-scale {
+   float:right;
+}
+
+.scale-legend {
+   padding-left: 2.6%;
+   padding-right: 4.6%;
+   font-size: 0.7em;
+}
+
+input.numeric-radio {
+   display:inline;
+}

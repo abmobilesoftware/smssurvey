@@ -93,7 +93,11 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
          });
          var selectValues = selectedValuesArr.join(';');
          this.model.set({ "PickedAnswer": selectValues }, { validate: true });
-      }
+      } else if (questionType == this.questionConstants.TYPE_NUMERIC) {
+         var numericScaleAnswer = $('input[name=numeric-scale-answer]:checked', this.$el).val();
+         numericScaleAnswer = numericScaleAnswer != undefined ? numericScaleAnswer : Question.noValueAnswer;
+         this.model.set({ "PickedAnswer": numericScaleAnswer }, { validate: true });
+      }  
       else {
          this.model.set(
           {
@@ -144,6 +148,11 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
          this.questionsViews.push(questionPreviewView);
          areaToAddContentTo.append(questionPreviewView.render());
       }, this);
+      $('.numeric-radio').screwDefaultButtons({
+         image: 'url("/Content/images/screwDefaultButtons/radioSmall.png")',
+         width: 43,
+         height: 43
+      });
       return this.$el;
    },
    isSurveyComplete: function () {

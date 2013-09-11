@@ -58,6 +58,11 @@ SurveyPreview.SurveyPreviewWebsiteView = Backbone.View.extend({
          var questionPreviewView = new SurveyPreview.QuestionPreviewWebsiteView({ model: question });
          this.dom.$PREVIEW_CONTENT.append(questionPreviewView.render());
       }, this);
+      $('.numeric-radio', this.$el).screwDefaultButtons({
+         image: 'url("/Content/images/screwDefaultButtons/radioSmall.png")',
+         width: 43,
+         height: 43
+      });
       return this.$el;
    }
 });
