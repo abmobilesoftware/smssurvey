@@ -19,6 +19,10 @@ namespace smsSurvery.Surveryer
          // To avoid processing unexpected or malicious queries, use the validation settings on QueryableAttribute to validate incoming queries.
          // For more information, visit http://go.microsoft.com/fwlink/?LinkId=279712.
          //config.EnableQuerySupport();
+
+         //DA this is required for the Authorize attribute to work on WebApi controllers
+         //http://patrickdesjardins.com/blog/how-to-secure-your-web-api-controller-globally-without-having-to-use-authorize-attribute
+         config.Filters.Add(new AuthorizeAttribute());
       }
    }
 }
