@@ -94,7 +94,7 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
          var selectValues = selectedValuesArr.join(';');
          this.model.set({ "PickedAnswer": selectValues }, { validate: true });
       } else if (questionType == this.questionConstants.TYPE_NUMERIC) {
-         var numericScaleAnswer = $('input[name=numeric-scale-answer]:checked', this.$el).val();
+         var numericScaleAnswer = $('input[name=numeric-scale-answer' + this.model.get("Id") + ']:checked', this.$el).val();
          numericScaleAnswer = numericScaleAnswer != undefined ? numericScaleAnswer : Question.noValueAnswer;
          this.model.set({ "PickedAnswer": numericScaleAnswer }, { validate: true });
       }  

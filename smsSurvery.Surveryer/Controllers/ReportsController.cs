@@ -20,6 +20,7 @@ namespace smsSurvery.Surveryer.Controllers
       public const string cYesNoTypeQuestion = "YesNo";
       public const string cSelectManyFromManyTypeQuestion = "SelectManyFromMany";
       public const string cSelectOneFromManyTypeQuestion = "SelectOneFromMany";
+      public const string cNumericTypeQuestion = "Numeric";
       private const String cDateFormat = "yyyy-MM-dd H:mm:ss";
 
       private smsSurveyEntities db = new smsSurveyEntities();

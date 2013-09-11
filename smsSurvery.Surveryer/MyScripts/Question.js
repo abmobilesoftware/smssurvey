@@ -6,8 +6,10 @@ Question.QuestionModel = Backbone.Model.extend({
       VALID_TEXT: "validText",
       INVALID_RATINGS: "ratingsError",
       INVALID_ANSWERS: "answersError",
+      INVALID_NUMERIC: "numericError",
       VALID_RATINGS: "ratingsValid",
-      VALID_ANSWERS: "answersValid"
+      VALID_ANSWERS: "answersValid",
+      VALID_NUMERIC: "numericValid"
    },
    events: {
       ANSWERS_CHANGED: "answersChanged",
@@ -157,6 +159,14 @@ Question.QuestionModel = Backbone.Model.extend({
          } else {
             this.trigger(this.events.VALIDATE, this.errors.VALID_ANSWERS);
          }
+      } else if (this.get("Type") == questionTypes.TYPE_NUMERIC) {
+         var numericValidity = this.numericModalModel.validate();
+         if (!numericValidity) {
+            this.trigger(this.events.VALIDATE, this.errors.INVALID_NUMERIC);
+            questionValidity = numericValidity;
+         } else {
+            this.trigger(this.events.VALIDATE, this.errors.VALID_NUMERIC);
+         }
       }
       return questionValidity;
    },
@@ -205,7 +215,8 @@ Question.QuestionView = Backbone.View.extend({
          $RATINGS_MODAL: $("#edit-rating-modal" + this.model.get("Id"), this.$el),
          $NUMERIC_MODAL: $("#numeric-modal" + this.model.get("Id"), this.$el),
          $EDIT_ANSWERS_BTN: $(".edit-answers-btn", this.$el),
-         $EDIT_RATINGS_BTN: $(".edit-ratings-btn", this.$el)
+         $EDIT_RATINGS_BTN: $(".edit-ratings-btn", this.$el),
+         $EDIT_NUMERIC_BTN: $(".edit-numeric-btn", this.$el)
       };
       if (this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY
          || this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_MANY_FROM_MANY) {
@@ -308,6 +319,10 @@ Question.QuestionView = Backbone.View.extend({
          this.dom.$EDIT_ANSWERS_BTN.addClass(invalidFieldClass);
       } else if (result == this.model.errors.VALID_ANSWERS) {
          this.dom.$EDIT_ANSWERS_BTN.removeClass(invalidFieldClass);
+      } else if (result == this.model.errors.INVALID_NUMERIC) {
+         this.dom.$EDIT_NUMERIC_BTN.addClass(invalidFieldClass);
+      } else if (result == this.model.errors.VALID_NUMERIC) {
+         this.dom.$EDIT_NUMERIC_BTN.removeClass(invalidFieldClass);
       }
    },
    openAnswersModal: function () {
@@ -469,12 +484,15 @@ Question.QuestionSetModel = Backbone.Model.extend({
    addQuestion: function () {
       ++this.questionTemporaryId;
       //DA before this, make sure that the changes are saved
+      //TODO MB this approach is wrong, every modal should save it data when is 
+      //closed
       for (var i = 0; i < this.questionSetCollection.models.length; ++i) {
          // set the last alerts changes         
          this.questionSetCollection.models[i].setQuestionAlertSet();
          this.questionSetCollection.models[i].setAnswers();
          this.questionSetCollection.models[i].setRatings();
          this.questionSetCollection.models[i].setYesNo();
+         this.questionSetCollection.models[i].setNumericScale();
       }
       var questionModel = new Question.QuestionModel({ Id: this.questionTemporaryId });
       questionModel.updateOrder(this.questionSetCollection.models.length);

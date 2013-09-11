@@ -64,10 +64,10 @@
                            for (var i=0; i < numericValues.length; ++i) {
                         %>
                         <div class="numeric-entry">                           
-                           <label for="radio<%= numericValues[i] %>" class="numeric-value-label">
+                           <label for="radio<%= numericValues[i] %><%= Id %>" class="numeric-value-label">
                               <span class="numeric-value"><%= numericValues[i] %></span>
                            </label>
-                           <input class="numeric-radio" id="radio<%= numericValues[i] %>" type="radio" value="<%= numericValues[i] %>" name="numeric-scale-answer" />                                                
+                           <input class="numeric-radio" id="radio<%= numericValues[i] %><%= Id %>" type="radio" value="<%= numericValues[i] %>" name="numeric-scale-answer<%= Id %>" />                                                
                         </div>
                   <%       } 
                         }%>

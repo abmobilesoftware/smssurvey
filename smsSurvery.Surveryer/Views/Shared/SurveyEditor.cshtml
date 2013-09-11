@@ -253,10 +253,10 @@
                            for (var i=0; i < numericValues.length; ++i) {
                         %>
                         <div class="numeric-entry">                           
-                           <label for="radio<%= numericValues[i] %>" class="numeric-value-label">
-                              <span class="numeric-value"><%= numericValues[i] %></span>
+                           <label for="radio<%= numericValues[i] %><%= Id %>" class="numeric-value-label">
+                              <%= numericValues[i] %>
                            </label>
-                           <input class="numeric-radio" id="radio<%= numericValues[i] %>" type="radio" value="<% numericValues[i] %>" name="numeric-scale-answer" />                                                
+                           <input class="numeric-radio" id="radio<%= numericValues[i] %><%= Id %>" type="radio" value="<% numericValues[i] %>" name="numeric-scale-answer<%= Id %>" />                                                
                         </div>
                   <%       } 
                         }%>
@@ -385,7 +385,7 @@
 
 <script type="text/template" id="numeric-entry-template">
    <td><input class="numeric-value-input bottom-input" type="text" value="<%= NumericValue %>" placeholder="Input numeric value..." /></td>
-   <td><input class="numeric-label-input bottom-input" type="text" value="<%= NumericLabel %>" placeholder="Input numeric label..."/> </td>
+   <td><input class="numeric-label-input bottom-input" type="text" value="<%= NumericLabel %>" placeholder="Input a label for the numeric value..."/> </td>
 </script>
 
 <script type="text/template" id="no-answers-template">

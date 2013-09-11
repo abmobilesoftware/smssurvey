@@ -286,6 +286,7 @@
     <Content Include="Content\images\glyphicons-halflings-white.png" />
     <Content Include="Content\images\glyphicons-halflings.png" />
     <Content Include="Content\images\iphone_frame.png" />
+    <Content Include="Content\images\loader.gif" />
     <Content Include="Content\images\logo1.png" />
     <Content Include="Content\images\screwDefaultButtons\radioSmall.png" />
     <Content Include="Content\images\small-icon.png" />
@@ -563,7 +564,7 @@
         <WebProjectProperties>
           <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
-          <DevelopmentServerPort>0</DevelopmentServerPort>
+          <DevelopmentServerPort>7832</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
           <IISUrl>http://localhost:3288/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>

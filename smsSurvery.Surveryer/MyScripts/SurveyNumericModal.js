@@ -50,7 +50,7 @@ SurveyModals.NumericModalView = Backbone.View.extend({
          this.dom.$NUMERIC_NOTIFICATIONS.html("Check the fields marked with red");
          this.dom.$ALERT_BOX.show();
       } else if (result == "invalidScale") {
-         this.dom.$NUMERIC_NOTIFICATIONS.html("Invalid scale");
+         this.dom.$NUMERIC_NOTIFICATIONS.html("Invalid scale. Choose a scale from the list.");
          this.dom.$ALERT_BOX.show();
       }
    },
@@ -125,6 +125,7 @@ SurveyModals.NumericModalModel = Backbone.Model.extend({
             this.numericScaleCollection.add(
                new SurveyModals.NumericEntryModel(numericEntry.toJSON()));
          }, this);
+      this.saveNumericScale();
 
    },
    saveNumericScale: function() {
