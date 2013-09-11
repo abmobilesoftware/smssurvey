@@ -36,7 +36,6 @@ namespace smsSurvey.dbInterface
         public DbSet<webpages_Roles> webpages_Roles { get; set; }
         public DbSet<Companies> Companies { get; set; }
         public DbSet<Tags> Tags { get; set; }
-        public DbSet<TagTagTypes> TagTagTypes { get; set; }
         public DbSet<TagTypes> TagTypes { get; set; }
         public DbSet<AlertNotificationSet> AlertNotificationSet { get; set; }
         public DbSet<QuestionAlertSet> QuestionAlertSet { get; set; }

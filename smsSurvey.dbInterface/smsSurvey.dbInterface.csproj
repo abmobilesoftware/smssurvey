@@ -95,9 +95,6 @@
     <Compile Include="Tags.cs">
       <DependentUpon>smsSurvey.tt</DependentUpon>
     </Compile>
-    <Compile Include="TagTagTypes.cs">
-      <DependentUpon>smsSurvey.tt</DependentUpon>
-    </Compile>
     <Compile Include="TagTypes.cs">
       <DependentUpon>smsSurvey.tt</DependentUpon>
     </Compile>

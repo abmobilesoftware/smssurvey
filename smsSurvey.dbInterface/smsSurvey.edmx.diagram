@@ -24,20 +24,18 @@
         <AssociationConnector Association="smsSurveyModel.FK_RunningSurvey" ManuallyRouted="false" >
         </AssociationConnector>
         <AssociationConnector Association="smsSurveyModel.FK_SurveyResultQuestion" />
-        <EntityTypeShape EntityType="smsSurveyModel.Companies" Width="1.5" PointX="12.125" PointY="12" />
-        <EntityTypeShape EntityType="smsSurveyModel.Tags" Width="1.5" PointX="17.5" PointY="11" />
-        <EntityTypeShape EntityType="smsSurveyModel.TagTagTypes" Width="1.5" PointX="17.625" PointY="14.25" />
-        <EntityTypeShape EntityType="smsSurveyModel.TagTypes" Width="1.5" PointX="15.125" PointY="13.75" />
-        <AssociationConnector Association="smsSurveyModel.FK_CompanyTag" ManuallyRouted="false" >
+        <EntityTypeShape EntityType="smsSurveyModel.Companies" Width="1.5" PointX="12.125" PointY="12.75" />
+        <EntityTypeShape EntityType="smsSurveyModel.Tags" Width="1.5" PointX="17.5" PointY="10.625" />
+        <EntityTypeShape EntityType="smsSurveyModel.TagTypes" Width="1.5" PointX="21.625" PointY="10.75" />
+        <AssociationConnector ManuallyRouted="false" Association="smsSurveyModel.FK_CompanyTag">
         </AssociationConnector>
-        <AssociationConnector Association="smsSurveyModel.FK_TagTagTagType" />
-        <AssociationConnector Association="smsSurveyModel.FK_TagTypeTagTagType" />
         <AssociationConnector Association="smsSurveyModel.FK_UserProfileCompanies" />
-        <AssociationConnector Association="smsSurveyModel.SurveyResultTags" />
         <EntityTypeShape EntityType="smsSurveyModel.AlertNotificationSet" Width="1.5" PointX="18.5" PointY="1.75" />
         <EntityTypeShape EntityType="smsSurveyModel.QuestionAlertSet" Width="1.5" PointX="15.75" PointY="1.75" />
         <AssociationConnector Association="smsSurveyModel.FK_QuestionAlertAlertNotification" />
         <AssociationConnector Association="smsSurveyModel.FK_QuestionQuestionAlert" />
+        <AssociationConnector Association="smsSurveyModel.SurveyResultTags" />
+        <AssociationConnector Association="smsSurveyModel.TagsTagTypes" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

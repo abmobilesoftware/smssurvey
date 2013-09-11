@@ -20,7 +20,7 @@ namespace smsSurvey.dbInterface
       [IgnoreDataMember]
       public virtual Companies Companies { get; set; }
       [IgnoreDataMember]
-      public virtual ICollection<TagTagTypes> TagTagTypes { get; set; }
+      public virtual ICollection<TagTypes> TagTypes { get; set; }
 
       [IgnoreDataMember]
       public virtual ICollection<SurveyResult> SurveyResultSet { get; set; }

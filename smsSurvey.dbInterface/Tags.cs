@@ -16,16 +16,17 @@ namespace smsSurvey.dbInterface
     {
         public Tags()
         {
-            this.TagTagTypes = new HashSet<TagTagTypes>();
             this.SurveyResultSet = new HashSet<SurveyResult>();
+            this.TagTypes = new HashSet<TagTypes>();
         }
     
-        public string Name { get; set; }
         public string Description { get; set; }
         public string CompanyName { get; set; }
+        public string Name { get; set; }
+        public int Id { get; set; }
     
         public virtual Companies Companies { get; set; }
-        public virtual ICollection<TagTagTypes> TagTagTypes { get; set; }
         public virtual ICollection<SurveyResult> SurveyResultSet { get; set; }
+        public virtual ICollection<TagTypes> TagTypes { get; set; }
     }
 }

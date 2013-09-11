@@ -16,7 +16,7 @@
           <EntitySet Name="SurveyResultSet" EntityType="smsSurveyModel.Store.SurveyResultSet" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="SurveyResultTags" EntityType="smsSurveyModel.Store.SurveyResultTags" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Tags" EntityType="smsSurveyModel.Store.Tags" store:Type="Tables" Schema="dbo" />
-          <EntitySet Name="TagTagTypes" EntityType="smsSurveyModel.Store.TagTagTypes" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="TagsTagTypes" EntityType="smsSurveyModel.Store.TagsTagTypes" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="TagTypes" EntityType="smsSurveyModel.Store.TagTypes" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="UserProfile" EntityType="smsSurveyModel.Store.UserProfile" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="UserProfileSurveyPlan" EntityType="smsSurveyModel.Store.UserProfileSurveyPlan" store:Type="Tables" Schema="dbo" />
@@ -76,13 +76,13 @@
             <End Role="Tags" EntitySet="Tags" />
             <End Role="SurveyResultTags" EntitySet="SurveyResultTags" />
           </AssociationSet>
-          <AssociationSet Name="FK_TagTagTagType" Association="smsSurveyModel.Store.FK_TagTagTagType">
+          <AssociationSet Name="FK_TagsTagTypes_Tags" Association="smsSurveyModel.Store.FK_TagsTagTypes_Tags">
             <End Role="Tags" EntitySet="Tags" />
-            <End Role="TagTagTypes" EntitySet="TagTagTypes" />
+            <End Role="TagsTagTypes" EntitySet="TagsTagTypes" />
           </AssociationSet>
-          <AssociationSet Name="FK_TagTypeTagTagType" Association="smsSurveyModel.Store.FK_TagTypeTagTagType">
+          <AssociationSet Name="FK_TagsTagTypes_TagTypes" Association="smsSurveyModel.Store.FK_TagsTagTypes_TagTypes">
             <End Role="TagTypes" EntitySet="TagTypes" />
-            <End Role="TagTagTypes" EntitySet="TagTagTypes" />
+            <End Role="TagsTagTypes" EntitySet="TagsTagTypes" />
           </AssociationSet>
           <AssociationSet Name="fk_UserId" Association="smsSurveyModel.Store.fk_UserId">
             <End Role="UserProfile" EntitySet="UserProfile" />
@@ -167,8 +167,8 @@
           <Property Name="QuestionId" Type="int" Nullable="false" />
           <Property Name="SurveyResultId" Type="int" Nullable="false" />
           <Property Name="AdditionalInfo" Type="nvarchar" MaxLength="500" />
-          <Property Name="DateSubmitted" Type="datetime" Nullable="true" />
-          <Property  Name="SubmittedViaSMS" Type="bit" Nullable="false" />
+          <Property Name="SubmittedViaSMS" Type="bit" Nullable="false" />
+          <Property Name="DateSubmitted" Type="datetime" />
         </EntityType>
         <EntityType Name="SurveyPlanSet">
           <Key>
@@ -199,33 +199,33 @@
         </EntityType>
         <EntityType Name="SurveyResultTags">
           <Key>
-            <PropertyRef Name="SurveyResult_Id" />
-            <PropertyRef Name="Tags_Name" />
+            <PropertyRef Name="SurveyResultSet_Id" />
             <PropertyRef Name="Tags_CompanyName" />
+            <PropertyRef Name="Tags_Id" />
           </Key>
-          <Property Name="SurveyResult_Id" Type="int" Nullable="false" />
-          <Property Name="Tags_Name" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="SurveyResultSet_Id" Type="int" Nullable="false" />
           <Property Name="Tags_CompanyName" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Tags_Id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Tags">
           <Key>
-            <PropertyRef Name="Name" />
             <PropertyRef Name="CompanyName" />
+            <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
           <Property Name="CompanyName" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Name" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
         </EntityType>
-        <EntityType Name="TagTagTypes">
+        <EntityType Name="TagsTagTypes">
           <Key>
-            <PropertyRef Name="TagName" />
-            <PropertyRef Name="TagCompanyName" />
-            <PropertyRef Name="TagTypeType" />
+            <PropertyRef Name="Tags_CompanyName" />
+            <PropertyRef Name="Tags_Id" />
+            <PropertyRef Name="TagTypes_Type" />
           </Key>
-          <Property Name="IsDefault" Type="bit" Nullable="false" />
-          <Property Name="TagName" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="TagCompanyName" Type="nvarchar" Nullable="false" MaxLength="50" />
-          <Property Name="TagTypeType" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Tags_CompanyName" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="Tags_Id" Type="int" Nullable="false" />
+          <Property Name="TagTypes_Type" Type="nvarchar" Nullable="false" MaxLength="50" />
         </EntityType>
         <EntityType Name="TagTypes">
           <Key>
@@ -441,7 +441,7 @@
               <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="SurveyResultTags">
-              <PropertyRef Name="SurveyResult_Id" />
+              <PropertyRef Name="SurveyResultSet_Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -450,38 +450,38 @@
           <End Role="SurveyResultTags" Type="smsSurveyModel.Store.SurveyResultTags" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Tags">
-              <PropertyRef Name="Name" />
               <PropertyRef Name="CompanyName" />
+              <PropertyRef Name="Id" />
             </Principal>
             <Dependent Role="SurveyResultTags">
-              <PropertyRef Name="Tags_Name" />
               <PropertyRef Name="Tags_CompanyName" />
+              <PropertyRef Name="Tags_Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_TagTagTagType">
+        <Association Name="FK_TagsTagTypes_Tags">
           <End Role="Tags" Type="smsSurveyModel.Store.Tags" Multiplicity="1" />
-          <End Role="TagTagTypes" Type="smsSurveyModel.Store.TagTagTypes" Multiplicity="*" />
+          <End Role="TagsTagTypes" Type="smsSurveyModel.Store.TagsTagTypes" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Tags">
-              <PropertyRef Name="Name" />
               <PropertyRef Name="CompanyName" />
+              <PropertyRef Name="Id" />
             </Principal>
-            <Dependent Role="TagTagTypes">
-              <PropertyRef Name="TagName" />
-              <PropertyRef Name="TagCompanyName" />
+            <Dependent Role="TagsTagTypes">
+              <PropertyRef Name="Tags_CompanyName" />
+              <PropertyRef Name="Tags_Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_TagTypeTagTagType">
+        <Association Name="FK_TagsTagTypes_TagTypes">
           <End Role="TagTypes" Type="smsSurveyModel.Store.TagTypes" Multiplicity="1" />
-          <End Role="TagTagTypes" Type="smsSurveyModel.Store.TagTagTypes" Multiplicity="*" />
+          <End Role="TagsTagTypes" Type="smsSurveyModel.Store.TagsTagTypes" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="TagTypes">
               <PropertyRef Name="Type" />
             </Principal>
-            <Dependent Role="TagTagTypes">
-              <PropertyRef Name="TagTypeType" />
+            <Dependent Role="TagsTagTypes">
+              <PropertyRef Name="TagTypes_Type" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -585,27 +585,14 @@
           </AssociationSet>
           <EntitySet Name="Companies" EntityType="smsSurveyModel.Companies" />
           <EntitySet Name="Tags" EntityType="smsSurveyModel.Tags" />
-          <EntitySet Name="TagTagTypes" EntityType="smsSurveyModel.TagTagTypes" />
           <EntitySet Name="TagTypes" EntityType="smsSurveyModel.TagTypes" />
           <AssociationSet Name="FK_CompanyTag" Association="smsSurveyModel.FK_CompanyTag">
-            <End Role="Companies" EntitySet="Companies" />
-            <End Role="Tags" EntitySet="Tags" />
-          </AssociationSet>
-          <AssociationSet Name="FK_TagTagTagType" Association="smsSurveyModel.FK_TagTagTagType">
-            <End Role="Tags" EntitySet="Tags" />
-            <End Role="TagTagTypes" EntitySet="TagTagTypes" />
-          </AssociationSet>
-          <AssociationSet Name="FK_TagTypeTagTagType" Association="smsSurveyModel.FK_TagTypeTagTagType">
-            <End Role="TagTypes" EntitySet="TagTypes" />
-            <End Role="TagTagTypes" EntitySet="TagTagTypes" />
+            <End EntitySet="Companies" Role="Companies" />
+            <End EntitySet="Tags" Role="Tags" />
           </AssociationSet>
           <AssociationSet Name="FK_UserProfileCompanies" Association="smsSurveyModel.FK_UserProfileCompanies">
             <End Role="Companies" EntitySet="Companies" />
             <End Role="UserProfile" EntitySet="UserProfile" />
-          </AssociationSet>
-          <AssociationSet Name="SurveyResultTags" Association="smsSurveyModel.SurveyResultTags">
-            <End Role="SurveyResult" EntitySet="SurveyResultSet" />
-            <End Role="Tags" EntitySet="Tags" />
           </AssociationSet>
           <EntitySet Name="AlertNotificationSet" EntityType="smsSurveyModel.AlertNotificationSet" />
           <EntitySet Name="QuestionAlertSet" EntityType="smsSurveyModel.QuestionAlertSet" />
@@ -616,6 +603,14 @@
           <AssociationSet Name="FK_QuestionQuestionAlert" Association="smsSurveyModel.FK_QuestionQuestionAlert">
             <End Role="Question" EntitySet="QuestionSet" />
             <End Role="QuestionAlertSet" EntitySet="QuestionAlertSet" />
+          </AssociationSet>
+          <AssociationSet Name="SurveyResultTags" Association="smsSurveyModel.SurveyResultTags">
+            <End Role="SurveyResult" EntitySet="SurveyResultSet" />
+            <End Role="Tags" EntitySet="Tags" />
+          </AssociationSet>
+          <AssociationSet Name="TagsTagTypes" Association="smsSurveyModel.TagsTagTypes">
+            <End Role="Tags" EntitySet="Tags" />
+            <End Role="TagTypes" EntitySet="TagTypes" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="Question">
@@ -684,8 +679,8 @@
           <Property Type="Int32" Name="CurrentQuestion_Id" />
           <NavigationProperty Name="CurrentQuestion" Relationship="smsSurveyModel.FK_SurveyResultQuestion" FromRole="SurveyResult" ToRole="Question" />
           <Property Type="Double" Name="PercentageComplete" Nullable="false" DefaultValue="0" />
-          <NavigationProperty Name="Tags" Relationship="smsSurveyModel.SurveyResultTags" FromRole="SurveyResult" ToRole="Tags" />
           <Property Type="String" Name="LanguageChosenForSurvey" MaxLength="10" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Tags" Relationship="smsSurveyModel.SurveyResultTags" FromRole="SurveyResult" ToRole="Tags" />
         </EntityType>
         <Association Name="CustomerSurveyResult">
           <End Type="smsSurveyModel.Customer" Role="Customer" Multiplicity="1" />
@@ -866,71 +861,33 @@
         </EntityType>
         <EntityType Name="Tags">
           <Key>
-            <PropertyRef Name="Name" />
             <PropertyRef Name="CompanyName" />
+            <PropertyRef Name="Id" />
           </Key>
-          <Property Type="String" Name="Name" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="Description" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="CompanyName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Companies" Relationship="smsSurveyModel.FK_CompanyTag" FromRole="Tags" ToRole="Companies" />
-          <NavigationProperty Name="TagTagTypes" Relationship="smsSurveyModel.FK_TagTagTagType" FromRole="Tags" ToRole="TagTagTypes" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="50" Unicode="true" FixedLength="false" />
+          <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <NavigationProperty Name="SurveyResultSet" Relationship="smsSurveyModel.SurveyResultTags" FromRole="Tags" ToRole="SurveyResult" />
-        </EntityType>
-        <EntityType Name="TagTagTypes">
-          <Key>
-            <PropertyRef Name="TagName" />
-            <PropertyRef Name="TagCompanyName" />
-            <PropertyRef Name="TagTypeType" />
-          </Key>
-          <Property Type="Boolean" Name="IsDefault" Nullable="false" />
-          <Property Type="String" Name="TagName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="TagCompanyName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Type="String" Name="TagTypeType" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="Tags" Relationship="smsSurveyModel.FK_TagTagTagType" FromRole="TagTagTypes" ToRole="Tags" />
-          <NavigationProperty Name="TagTypes" Relationship="smsSurveyModel.FK_TagTypeTagTagType" FromRole="TagTagTypes" ToRole="TagTypes" />
+          <NavigationProperty Name="TagTypes" Relationship="smsSurveyModel.TagsTagTypes" FromRole="Tags" ToRole="TagTypes" />
         </EntityType>
         <EntityType Name="TagTypes">
           <Key>
             <PropertyRef Name="Type" />
           </Key>
           <Property Type="String" Name="Type" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <NavigationProperty Name="TagTagTypes" Relationship="smsSurveyModel.FK_TagTypeTagTagType" FromRole="TagTypes" ToRole="TagTagTypes" />
+          <NavigationProperty Name="Tags" Relationship="smsSurveyModel.TagsTagTypes" FromRole="TagTypes" ToRole="Tags" />
         </EntityType>
         <Association Name="FK_CompanyTag">
-          <End Type="smsSurveyModel.Companies" Role="Companies" Multiplicity="1" />
-          <End Type="smsSurveyModel.Tags" Role="Tags" Multiplicity="*" />
+          <End Type="smsSurveyModel.Companies" Multiplicity="1" Role="Companies" />
+          <End Type="smsSurveyModel.Tags" Multiplicity="*" Role="Tags" />
           <ReferentialConstraint>
             <Principal Role="Companies">
               <PropertyRef Name="Name" />
             </Principal>
             <Dependent Role="Tags">
               <PropertyRef Name="CompanyName" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_TagTagTagType">
-          <End Type="smsSurveyModel.Tags" Role="Tags" Multiplicity="1" />
-          <End Type="smsSurveyModel.TagTagTypes" Role="TagTagTypes" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Tags">
-              <PropertyRef Name="Name" />
-              <PropertyRef Name="CompanyName" />
-            </Principal>
-            <Dependent Role="TagTagTypes">
-              <PropertyRef Name="TagName" />
-              <PropertyRef Name="TagCompanyName" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_TagTypeTagTagType">
-          <End Type="smsSurveyModel.TagTypes" Role="TagTypes" Multiplicity="1" />
-          <End Type="smsSurveyModel.TagTagTypes" Role="TagTagTypes" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="TagTypes">
-              <PropertyRef Name="Type" />
-            </Principal>
-            <Dependent Role="TagTagTypes">
-              <PropertyRef Name="TagTypeType" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -945,10 +902,6 @@
               <PropertyRef Name="Company_Name" />
             </Dependent>
           </ReferentialConstraint>
-        </Association>
-        <Association Name="SurveyResultTags">
-          <End Type="smsSurveyModel.SurveyResult" Role="SurveyResult" Multiplicity="*" />
-          <End Type="smsSurveyModel.Tags" Role="Tags" Multiplicity="*" />
         </Association>
         <EntityType Name="AlertNotificationSet">
           <Key>
@@ -1001,6 +954,14 @@
               <PropertyRef Name="QuestionId" />
             </Dependent>
           </ReferentialConstraint>
+        </Association>
+        <Association Name="SurveyResultTags">
+          <End Type="smsSurveyModel.SurveyResult" Role="SurveyResult" Multiplicity="*" />
+          <End Type="smsSurveyModel.Tags" Role="Tags" Multiplicity="*" />
+        </Association>
+        <Association Name="TagsTagTypes">
+          <End Type="smsSurveyModel.Tags" Role="Tags" Multiplicity="*" />
+          <End Type="smsSurveyModel.TagTypes" Role="TagTypes" Multiplicity="*" />
         </Association>
         </Schema>
     </edmx:ConceptualModels>
@@ -1155,19 +1116,10 @@
           <EntitySetMapping Name="Tags">
             <EntityTypeMapping TypeName="smsSurveyModel.Tags">
               <MappingFragment StoreEntitySet="Tags">
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TagTagTypes">
-            <EntityTypeMapping TypeName="smsSurveyModel.TagTagTypes">
-              <MappingFragment StoreEntitySet="TagTagTypes">
-                <ScalarProperty Name="TagTypeType" ColumnName="TagTypeType" />
-                <ScalarProperty Name="TagCompanyName" ColumnName="TagCompanyName" />
-                <ScalarProperty Name="TagName" ColumnName="TagName" />
-                <ScalarProperty Name="IsDefault" ColumnName="IsDefault" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -1178,15 +1130,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <AssociationSetMapping Name="SurveyResultTags" TypeName="smsSurveyModel.SurveyResultTags" StoreEntitySet="SurveyResultTags">
-            <EndProperty Name="Tags">
-              <ScalarProperty Name="CompanyName" ColumnName="Tags_CompanyName" />
-              <ScalarProperty Name="Name" ColumnName="Tags_Name" />
-            </EndProperty>
-            <EndProperty Name="SurveyResult">
-              <ScalarProperty Name="Id" ColumnName="SurveyResult_Id" />
-            </EndProperty>
-          </AssociationSetMapping>
           <EntitySetMapping Name="AlertNotificationSet">
             <EntityTypeMapping TypeName="smsSurveyModel.AlertNotificationSet">
               <MappingFragment StoreEntitySet="AlertNotificationSet">
@@ -1208,6 +1151,24 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <AssociationSetMapping Name="SurveyResultTags" TypeName="smsSurveyModel.SurveyResultTags" StoreEntitySet="SurveyResultTags">
+            <EndProperty Name="Tags">
+              <ScalarProperty Name="Id" ColumnName="Tags_Id" />
+              <ScalarProperty Name="CompanyName" ColumnName="Tags_CompanyName" />
+            </EndProperty>
+            <EndProperty Name="SurveyResult">
+              <ScalarProperty Name="Id" ColumnName="SurveyResultSet_Id" />
+            </EndProperty>
+          </AssociationSetMapping>
+          <AssociationSetMapping Name="TagsTagTypes" TypeName="smsSurveyModel.TagsTagTypes" StoreEntitySet="TagsTagTypes">
+            <EndProperty Name="TagTypes">
+              <ScalarProperty Name="Type" ColumnName="TagTypes_Type" />
+            </EndProperty>
+            <EndProperty Name="Tags">
+              <ScalarProperty Name="Id" ColumnName="Tags_Id" />
+              <ScalarProperty Name="CompanyName" ColumnName="Tags_CompanyName" />
+            </EndProperty>
+          </AssociationSetMapping>
           </EntityContainerMapping>
 </Mapping></edmx:Mappings>
   </edmx:Runtime>

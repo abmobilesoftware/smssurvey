@@ -16,11 +16,11 @@ namespace smsSurvey.dbInterface
     {
         public TagTypes()
         {
-            this.TagTagTypes = new HashSet<TagTagTypes>();
+            this.Tags = new HashSet<Tags>();
         }
     
         public string Type { get; set; }
     
-        public virtual ICollection<TagTagTypes> TagTagTypes { get; set; }
+        public virtual ICollection<Tags> Tags { get; set; }
     }
 }
