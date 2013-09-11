@@ -251,7 +251,7 @@ namespace smsSurvery.Surveryer.Controllers
             var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();            
             var candidateTags = (from tag in user.Company.Tags
                                  select
-                                    (from ct in tag.TagTagTypes where ct.TagTypeType == "Location" && ct.TagName.IndexOf(term, StringComparison.InvariantCultureIgnoreCase) != -1 select ct.TagName)).SelectMany(x => x);
+                                    (from ct in tag.TagTypes where ct.Type == "Location" && tag.Name.IndexOf(term, StringComparison.InvariantCultureIgnoreCase) != -1 select tag.Name)).SelectMany(x => x);
             return Json(candidateTags, JsonRequestBehavior.AllowGet);
          }
          catch (Exception ex)

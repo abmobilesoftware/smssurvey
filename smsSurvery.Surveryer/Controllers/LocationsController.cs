@@ -138,7 +138,7 @@ namespace smsSurvery.Surveryer.Controllers
           */                   
           var tags = (from tag in user.Company.Tags
                                  select
-                                    (from ct in tag.TagTagTypes where ct.TagTypeType == "Location" select new Location(tag))).SelectMany(x => x);
+                                    (from ct in tag.TagTypes where ct.Type == "Location" select new Location(tag))).SelectMany(x => x);
          return tags.AsEnumerable();
       }
 

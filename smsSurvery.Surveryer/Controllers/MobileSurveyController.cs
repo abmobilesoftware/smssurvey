@@ -111,7 +111,7 @@ namespace smsSurvery.Surveryer.Controllers
             var locationTagResults = (from t in db.Tags
                                       where t.Name.Equals(location) &&
                                          t.CompanyName.Equals(user.Company.Name) &&
-                                         t.TagTagTypes.FirstOrDefault().TagTypes.Type.Equals("Location")
+                                         t.TagTypes.FirstOrDefault().Type.Equals("Location")
                                       select t);
             locationTag = locationTagResults.Count() > 0 ? locationTagResults.FirstOrDefault() : null;
          }
