@@ -519,10 +519,6 @@
     <Content Include="Views\Shared\ReportFilterArea.cshtml" />
     <Content Include="Views\Shared\SearchBoxItems.cshtml" />
     <Content Include="Views\Locations\Index.cshtml" />
-    <Content Include="Views\Locations\Details.cshtml" />
-    <Content Include="Views\Locations\Create.cshtml" />
-    <Content Include="Views\Locations\Edit.cshtml" />
-    <Content Include="Views\Locations\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
