@@ -14,17 +14,24 @@ namespace smsSurvery.Surveryer.Models.BusinessObjects
    /// </summary>
    [DataContract]
    public class Location
-   {      
+     {
+      public Location()
+      {
+
+      }
       public Location(Tags tg)
       {
+         Id = tg.Id;         
          Name = tg.Name;
          Description = tg.Description;
       }
+     [DataMember]
+      public int Id { get; set; }
       [Required]
-      [DataMember]
+      [DataMember(IsRequired = true)]
       public string Name { get; set; }
-      
-      [DataMember]
+            
+      [DataMember(IsRequired = true)]
       public string Description { get; set; }
    }
 }

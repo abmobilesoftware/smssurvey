@@ -143,31 +143,39 @@ namespace smsSurvery.Surveryer.Controllers
       }
 
       // GET api/LocationTags/5
-      public Tags Get(string id)
+      public Location Get(int id)
       {
-         Tags tags = db.Tags.Find(id);
-         if (tags == null)
+         var user = GetConnectedUser();
+         Tags tag = db.Tags.Find( user.Company_Name,id);
+         if (tag == null)
          {
             throw new System.Web.Http.HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
          }
 
-         return tags;
+         return new Location(tag);
       }
 
-      // PUT api/LocationTags/5
-      public System.Net.Http.HttpResponseMessage Put(string id, Tags tags)
+      // PUT api/LocationTags/5     
+      public System.Net.Http.HttpResponseMessage Put(int id, Location location)
       {
          if (!ModelState.IsValid)
          {
             return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
          }
 
-         if (id != tags.Name)
+         if (id != location.Id)
          {
             return Request.CreateResponse(HttpStatusCode.BadRequest);
          }
-
-         db.Entry(tags).State = EntityState.Modified;
+         var user = GetConnectedUser();         
+         var tag = db.Tags.Find(user.Company_Name, id);
+         if (tag == null)
+         {
+            return Request.CreateResponse(HttpStatusCode.BadRequest);
+         }
+         tag.Name = location.Name;
+         tag.Description = location.Description;
+         db.Entry(tag).State = EntityState.Modified;
 
          try
          {
@@ -182,15 +190,20 @@ namespace smsSurvery.Surveryer.Controllers
       }
 
       // POST api/LocationTags
-      public HttpResponseMessage Post(Tags tags)
+      public HttpResponseMessage Post(Location location)
       {
          if (ModelState.IsValid)
          {
-            db.Tags.Add(tags);
+             var user = GetConnectedUser();
+            var companyName = user.Company.Name;
+            var locationType = db.TagTypes.Find("Location");
+            var tag = new Tags() { Name = location.Name, Description = location.Description, CompanyName = companyName };
+            tag.TagTypes.Add(locationType);
+            db.Tags.Add(tag);
             db.SaveChanges();
 
-            HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.Created, tags);
-            response.Headers.Location = new Uri(Url.Link("DefaultApi", new { id = tags.Name }));
+            HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.Created, location);
+            response.Headers.Location = new Uri(Url.Link("DefaultApi", new { id = location.Name }));
             return response;
          }
          else

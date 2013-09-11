@@ -13,10 +13,10 @@ window.LocationModel = Backbone.Model.extend({
    defaults: function(){
       return {
          Name: "",
-         Description: ""
+         Description: ""         
       }
-   },
-   idAttribute: "Name",
+   },   
+   idAttribute: "Id",
    validate: function (attrs, options) {
       //DA will return an array of errors
       var errorsArray = [];
@@ -106,7 +106,8 @@ window.LocationView = Backbone.View.extend({
       var name = $('input[name="LocationName"]', this.$el).val();
       this.model.set({ "Name": name }, { validate: false, silent:true });
       var description = $('input[name="Description"]', this.$el).val();
-      this.model.set({ "Description": description }, { validate: true, silent:false });
+      this.model.set({ "Description": description }, { validate: false, silent: false });
+      this.model.save();
       $(".save-location-btn", this.$el).prop("disabled", true);
      
    },
