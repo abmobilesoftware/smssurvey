@@ -8,11 +8,11 @@
 <h2>Index</h2>
 
 <script type="text/template" id="location-template">  
-      <input class="readOnly" value="<%= Name %>" >         
+      <input name="Name" class="readOnly" value="<%= Name %>" placeholder="The unique location name, e.g. Bucharest1" style="width:250px">         
       </input>
-      <input class="readOnly" value="<%= Description %>" >       
+      <input name="Description" class="readOnly" value="<%= Description %>" placeholder="E.g. Our first store from Bucharest" style="width:550px">       
       </input>            
-      <button class="btn btn-primary save-location-btn disabled" type="button">Save</button>               
+      <button class="btn btn-primary save-location-btn" type="button" disabled>Save</button>               
 </script>
 
 <script type="text/template" id="location-set-template">

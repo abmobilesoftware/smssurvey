@@ -1024,3 +1024,16 @@ input[type=checkbox].css-checkbox:checked + label.css-label { background-positio
    border: solid 1px #F5F8FA;
    padding: 5px;
 }
+
+.locations-set-content {
+   list-style: none;   
+   margin: 0;
+}
+.location {
+   margin: 0 0 5px 0;
+}
+
+.locationsViewContent {   
+border: 1px solid #CCC;
+padding: 5px 5px 15px 20px;
+}

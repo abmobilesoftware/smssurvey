@@ -14,6 +14,28 @@ window.LocationModel = Backbone.Model.extend({
    }
 });
 
+//#region Detect if event is supported
+var isEventSupported = (function () {
+   var TAGNAMES = {
+      'select': 'input', 'change': 'input',
+      'submit': 'form', 'reset': 'form',
+      'error': 'img', 'load': 'img', 'abort': 'img'
+   };
+   function isEventSupported(eventName) {
+      var el = document.createElement(TAGNAMES[eventName] || 'div');
+      eventName = 'on' + eventName;
+      var isSupported = (eventName in el);
+      if (!isSupported) {
+         el.setAttribute(eventName, 'return;');
+         isSupported = typeof el[eventName] == 'function';
+      }
+      el = null;
+      return isSupported;
+   }
+   return isEventSupported;
+})();
+//#endregion
+
 window.LocationView = Backbone.View.extend({
    tagName: "li",
    className: "location",
@@ -21,23 +43,33 @@ window.LocationView = Backbone.View.extend({
       "click .save-location-btn": "saveLocation"
    },
    initialize: function () {
-      _.bindAll(this, "render", "saveLocation", "updateView");
+      _.bindAll(this, "render", "saveLocation", "dataChanged");
       this.template = _.template($("#location-template").html());
-      this.model.on( {
-         "change:Name" : this.updateView,
-         "change:Description" : this.updateView
-      });
+      
    },
    render: function() {
       this.$el.html(this.template(this.model.toJSON()));
+      var self = this;
+      if (isEventSupported('input')) {
+         $('input[name="Name"]', this.$el).off('input');
+         $('input[name="Name"]', this.$el).on('input', self.dataChanged);
+         $('input[name="Description"]', this.$el).unbind('input');
+         $('input[name="Description"]', this.$el).on('input', self.dataChanged);
+      }
+      else {
+         $('input[name="Name"]', this.$el).off('change');
+         $('input[name="Name"]', this.$el).on('change', self.dataChanged);
+         $('input[name="Description"]', this.$el).unbind('input');
+         $('input[name="Description"]', this.$el).on('input', self.dataChanged);
+      }
       return this.$el;
    },
    saveLocation: function () {
-
+      var a = 4;
    },
-   updateView: function () {
+   dataChanged: function () {
       //now the only required update is enabling the Save button
-      $(".save-location-btn", this).prop("disabled", false);
+      $(".save-location-btn", this.$el).prop("disabled", false);
    }
 });
 
