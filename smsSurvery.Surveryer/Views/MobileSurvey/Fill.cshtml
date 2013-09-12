@@ -55,23 +55,28 @@
                         var numericLabels = ValidAnswersDetails.split(";");
                         if (numericValues.length > 0) {
                      %>
+                     <div class="scale-legend-wrapper">
                         <div class="scale-legend">
                            <div class="low-scale"><< <%= numericLabels[0] %></div>
                            <div class="high-scale"><%= numericLabels[numericLabels.length - 1] %> >></div>
                            <div class="clear"></div>
                         </div>
-                     <%
+                     </div>
+                        <div class="scale-wrapper">
+                        <%
                            for (var i=0; i < numericValues.length; ++i) {
-                        %>
-                        <div class="numeric-entry">                           
-                           <label for="radio<%= numericValues[i] %><%= Id %>" class="numeric-value-label">
-                              <span class="numeric-value"><%= numericValues[i] %></span>
-                           </label>
-                           <input class="numeric-radio" id="radio<%= numericValues[i] %><%= Id %>" type="radio" value="<%= numericValues[i] %>" name="numeric-scale-answer<%= Id %>" />                                                
+                        %>                        
+                           <div class="numeric-entry">                           
+                              <label for="radio<%= numericValues[i] %><%= Id %>" class="numeric-value-label">
+                                 <span class="numeric-value"><%= numericValues[i] %></span>
+                              </label>
+                              <input class="numeric-radio" id="radio<%= numericValues[i] %><%= Id %>" type="radio" value="<%= numericValues[i] %>" name="numeric-scale-answer<%= Id %>" />                                                
+                           </div>
+                       <%
+                           } 
+                       }%>
+                        <div class="clear"></div>
                         </div>
-                  <%       } 
-                        }%>
-                     <div class="clear"></div>
                <%   
                   } 
                %>      

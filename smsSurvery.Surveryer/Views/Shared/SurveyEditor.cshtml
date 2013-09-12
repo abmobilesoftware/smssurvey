@@ -15,7 +15,7 @@
       } else if (Type == questionConstants.TYPE_SELECT_MANY_FROM_MANY) {
          questionType = "Select many from many";
       } else if (Type == questionConstants.TYPE_NUMERIC) {
-         questionType = "Numeric"
+         questionType = "Numeric scale"
       }
    %>
       <div class="grip">
@@ -65,7 +65,7 @@
             </div>
          </div>
       <% } else if (Type == questionConstants.TYPE_RATING) { %>
-         <a href="#edit-rating-modal<%=Id %>" role="button" data-backdrop="static" class="open-modal-btn btn edit-ratings-btn" data-toggle="modal">Edit rating</a>   
+         <a href="#edit-rating-modal<%=Id %>" role="button" data-backdrop="static" class="open-modal-btn btn edit-ratings-btn" data-toggle="modal"><img class="icon" src="/Content/images/edit_20.png" />Edit rating</a>   
          <div id="edit-rating-modal<%= Id %>" class="modal hide fade">
             <div class="modal-header">
                <h3>Edit rating</h3>
@@ -78,7 +78,7 @@
             </div>
          </div>
       <% } else if (Type == questionConstants.TYPE_NUMERIC) { %>
-         <a href="#numeric-modal<%= Id %>" role="button" class="open-modal-btn btn edit-numeric-btn" data-backdrop="static" data-toggle="modal">Edit numeric scale</a>   
+         <a href="#numeric-modal<%= Id %>" role="button" class="open-modal-btn btn edit-numeric-btn" data-backdrop="static" data-toggle="modal"><img class="icon" src="/Content/images/edit_20.png" />Edit numeric scale</a>   
          <div id="numeric-modal<%= Id %>" class="modal hide fade">
             <div class="modal-header">               
                <h3> Configure numeric scale</h3>
@@ -384,7 +384,7 @@
 </script>
 
 <script type="text/template" id="numeric-entry-template">
-   <td><input class="numeric-value-input bottom-input" type="text" value="<%= NumericValue %>" placeholder="Input numeric value..." /></td>
+   <td><%= NumericValue %></td>
    <td><input class="numeric-label-input bottom-input" type="text" value="<%= NumericLabel %>" placeholder="Input a label for the numeric value..."/> </td>
 </script>
 

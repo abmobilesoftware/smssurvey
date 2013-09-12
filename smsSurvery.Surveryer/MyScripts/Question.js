@@ -379,8 +379,7 @@ Question.QuestionSetView = Backbone.View.extend({
       this.model.on(this.model.events.UPDATE_VIEW, this.render)
 
       this.dom = {
-         $ADD_QUESTION_BTN: $(".add-question-btn", this.$el),
-         $ADD_NPS_QUESTION_BTN: $(".add-nps-question-btn", this.$el),
+         $ADD_QUESTION_GROUP: $(".btn-group", this.$el),
          $QUESTION_SET_CONTENT: $("#question-set-content", this.$el),
          $PREVIEW_MODAL: $("#preview-modal", this.$el)
       };
@@ -407,11 +406,9 @@ Question.QuestionSetView = Backbone.View.extend({
          }, this);
          this.dom.$QUESTION_SET_CONTENT.sortable({ axis: "y", handle: ".grip", cursor: "move" });
          if (questionSetModels.length < 5) {
-            this.dom.$ADD_QUESTION_BTN.show();
-            this.dom.$ADD_NPS_QUESTION_BTN.show();
+            this.dom.$ADD_QUESTION_GROUP.show();
          } else {
-            this.dom.$ADD_QUESTION_BTN.hide();
-            this.dom.$ADD_NPS_QUESTION_BTN.hide();
+            this.dom.$ADD_QUESTION_GROUP.hide();
          }
       } else {
          this.dom.$QUESTION_SET_CONTENT.append(this.noQuestionsTemplate());

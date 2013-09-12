@@ -296,7 +296,7 @@ input[type=radio]:checked + label {
 }
 
 .starsArea {
-   width: 300px;
+   width: 250px;
    height:50px;
    margin-left: auto;
    margin-right: auto;
@@ -312,6 +312,7 @@ input[type=radio]:checked + label {
   width: 20%;
   padding-top: 2px;
   margin-top: -25px;
+  text-align: center;
 }
 
 .numeric-text-label {
@@ -320,7 +321,6 @@ input[type=radio]:checked + label {
 
 .numeric-value-label {
   height: 19px;
-  left: 18px;
   position: relative;
   top: 33px;
   display:inline;
@@ -340,4 +340,18 @@ input[type=radio]:checked + label {
 
 input.numeric-radio {
    display:inline;
+}
+
+.scale-wrapper {
+   width:300px;
+   margin:0 auto;
+}
+
+.scale-legend-wrapper {
+   width: 270px;
+   margin: 0 auto;
+}
+
+div.numeric-radio {
+   margin:0 auto;
 }

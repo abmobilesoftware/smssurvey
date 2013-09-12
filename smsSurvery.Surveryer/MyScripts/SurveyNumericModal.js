@@ -153,7 +153,7 @@ SurveyModals.NumericModalModel = Backbone.Model.extend({
       this.emptyNumericScaleCollection();
       for (var i = 0; i < size; ++i) {
          this.numericScaleCollection.add(
-               new SurveyModals.NumericEntryModel());
+               new SurveyModals.NumericEntryModel({ NumericValue: (i + 1) }));
       };
       this.saveNumericScale();
       this.trigger(this.events.UPDATE_VIEW);
@@ -223,14 +223,8 @@ SurveyModals.NumericEntryModel = Backbone.Model.extend({
       Backbone.trigger(attributeChangedEvent);
    },
    validate: function() {
-      if (isNaN(parseFloat(this.get("NumericValue")))) {
-         this.trigger(this.events.VALIDATE, this.errors.INVALID_NUMERIC_VALUE);
-         return false;
-      } else {
-         this.trigger(this.events.VALIDATE, this.errors.VALID);
-         return true;
-      }
-      
+      // add here validation logic
+      return true;
    }
 });
 
