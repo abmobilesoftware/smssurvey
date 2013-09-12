@@ -101,6 +101,7 @@ namespace smsSurvery.Surveryer.Controllers
          tags = tags ?? new string[0];
          switch (question.Type)
          {
+            case cNumericTypeQuestion:
             case cRatingsTypeQuestion:
             case cYesNoTypeQuestion:
             case cSelectOneFromManyTypeQuestion:

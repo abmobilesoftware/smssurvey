@@ -185,7 +185,8 @@ window.app.displayReportOverview = function (surveyTemplateId) {
 window.app.runrunrun = function () {
    window.app.displayReportOverview($("#surveyId").text());
    $('input[qid]').each(function (index) {
-      if ($(this).attr('qtype') === "Rating" || $(this).attr('qtype') === "YesNo" || $(this).attr('qtype') === "SelectOneFromMany" ) {
+      if ($(this).attr('qtype') === "Rating" || $(this).attr('qtype') === "YesNo" || $(this).attr('qtype') === "SelectOneFromMany"
+         || $(this).attr('qtype') === "Numeric") {
          window.app.displayReportsForRatingQ($(this).attr('qid'), $(this).attr('qtype'));
       } else if ($(this).attr('qtype') === "FreeText") {
          window.app.displayReportsForFreeTextQ($(this).attr('qid'));
