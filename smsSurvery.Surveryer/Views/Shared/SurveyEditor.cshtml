@@ -438,8 +438,17 @@
          <div id="question-set">
             <ul id="question-set-content">
             </ul>
-            <button class="btn btn-primary add-question-btn" type="button">Add question</button>
-            <button class="btn btn-primary add-nps-question-btn" type="button">Add NPS question</button>
+            <div class="btn-group">
+               <button class="btn btn-primary add-question-btn" type="button">Add question</button>
+               <button class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+                  <span class="caret"></span>
+               </button>
+               <ul class="dropdown-menu">
+                  <li>
+                     <a class="add-nps-question-btn" role="button" href="#">Add NPS question</a>
+                  </li>
+               </ul>
+            </div>           
          </div>
          <div id="preview-modal" class="modal hide fade">
             <div class="modal-header">

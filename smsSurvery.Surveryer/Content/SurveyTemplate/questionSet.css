@@ -13,7 +13,7 @@
 
 #question-set-content {
    list-style: none;
-   margin: 0;
+   margin: 0 0 0.5em 0;
 }
 
 #question-set {
@@ -35,7 +35,7 @@
    float: right;
 }
 
-.add-question-btn, .add-nps-question-btn, .open-modal-btn {
+.open-modal-btn {
    margin-top: 0.5em;
 }
 
