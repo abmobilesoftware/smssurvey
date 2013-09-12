@@ -36,6 +36,7 @@
         <AssociationConnector Association="smsSurveyModel.FK_QuestionQuestionAlert" />
         <AssociationConnector Association="smsSurveyModel.SurveyResultTags" />
         <AssociationConnector Association="smsSurveyModel.TagsTagTypes" />
+        <AssociationConnector Association="smsSurveyModel.FK_SurveyTemplateTags" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

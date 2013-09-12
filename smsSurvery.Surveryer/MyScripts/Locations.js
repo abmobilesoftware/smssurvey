@@ -13,7 +13,9 @@ window.LocationModel = Backbone.Model.extend({
    defaults: function(){
       return {
          Name: "",
-         Description: ""         
+         Description: "",
+         ActiveSurveyDescription: "",
+         ActiveSurveyId: 0
       }
    },   
    idAttribute: "Id",
@@ -63,6 +65,7 @@ var isEventSupported = (function () {
    return isEventSupported;
 })();
 //#endregion
+window.Location.activeSurveyOptions = {};
 
 window.LocationView = Backbone.View.extend({
    tagName: "li",
@@ -70,12 +73,14 @@ window.LocationView = Backbone.View.extend({
    events: {
       "click .save-location-btn": "saveLocation",
       "click .close-location-notifications": "closeAlertBox",
-      "click .discard-location-btn": "discardChanges"
+      "click .discard-location-btn": "discardChanges",
+      "mousedown .location-select-active-survey": "loadSurveyTemplateOptions",
+      "change .location-select-active-survey": "inputDataChanged"
    },
    initialize: function () {
       _.bindAll(this, "render", "saveLocation", "inputDataChanged",
          "closeAlertBox", "validationError", "clearErrorsFromFields",
-         "discardChanges", "modelModified");
+         "discardChanges", "modelModified", "loadSurveyTemplateOptions");
       this.template = _.template($("#location-template").html());
       var self = this;
       this.model.on("invalid", self.validationError);
@@ -106,7 +111,10 @@ window.LocationView = Backbone.View.extend({
       var name = $('input[name="LocationName"]', this.$el).val();
       this.model.set({ "Name": name }, { validate: false, silent:true });
       var description = $('input[name="Description"]', this.$el).val();
-      this.model.set({ "Description": description }, { validate: false, silent: false });
+      this.model.set({ "Description": description }, { validate: false, silent: true });
+      var activeSurveyId = $("option:selected", this.$el);
+      activeSurveyId = activeSurveyId.length != 0 ? activeSurveyId.val() : 0;
+      this.model.set({ "ActiveSurveyId": activeSurveyId }, { validate: false, silent: false });
       this.model.save();
       $(".save-location-btn", this.$el).prop("disabled", true);
      
@@ -160,6 +168,35 @@ window.LocationView = Backbone.View.extend({
       var self = this;
       $(".location-notifications", self.$el).html("");
       $(".alert", self.$el).hide();
+   },
+   loadSurveyTemplateOptions: function () {
+      if (this._optionsLoaded) return;
+      if ($.isEmptyObject(window.Location.activeSurveyOptions)) {
+         //we need to load the options and cache them
+         $.ajax({
+            url: "/Locations/SurveyTemplateList",
+            type: 'get',
+            cache: false,
+            dataType: "json",
+            contentType: 'application/json',
+            success: function (data) {
+               var optElem = $(".location-select-active-survey", this.$el);
+               _.each(data, function (item) {
+                  var elem = '<option value="' + item.value + '">' + item.label + '</option>';
+                  optElem.append(elem);
+                  window.Location.activeSurveyOptions[item.value] = item.label;
+               });
+            }
+         });
+      }
+      else {
+         var optElem = $(".location-select-active-survey", this.$el);
+         for (var opt in window.Location.activeSurveyOptions) {
+            var elem = '<option value="' + opt + '">' + window.Location.activeSurveyOptions[opt] + '</option>';
+            optElem.append(elem);
+         }
+      }     
+      this._optionsLoaded = true;
    }
 });
 

@@ -21,6 +21,7 @@ namespace smsSurvey.dbInterface
             this.UserProfile = new HashSet<UserProfile>();
             this.QuestionSet = new HashSet<Question>();
             this.CustomerSet = new HashSet<Customer>();
+            this.LocationsWhereActive = new HashSet<Tags>();
         }
     
         public int Id { get; set; }
@@ -37,5 +38,6 @@ namespace smsSurvey.dbInterface
         public virtual ICollection<UserProfile> UserProfile { get; set; }
         public virtual ICollection<Question> QuestionSet { get; set; }
         public virtual ICollection<Customer> CustomerSet { get; set; }
+        public virtual ICollection<Tags> LocationsWhereActive { get; set; }
     }
 }

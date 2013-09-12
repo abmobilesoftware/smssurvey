@@ -24,9 +24,11 @@ namespace smsSurvey.dbInterface
         public string CompanyName { get; set; }
         public string Name { get; set; }
         public int Id { get; set; }
+        public Nullable<int> ActiveSurveyTemplate_Id { get; set; }
     
         public virtual Companies Companies { get; set; }
         public virtual ICollection<SurveyResult> SurveyResultSet { get; set; }
         public virtual ICollection<TagTypes> TagTypes { get; set; }
+        public virtual SurveyTemplate ActiveSurveyTemplate { get; set; }
     }
 }

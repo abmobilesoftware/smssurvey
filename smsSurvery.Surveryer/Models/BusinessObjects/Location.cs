@@ -24,8 +24,10 @@ namespace smsSurvery.Surveryer.Models.BusinessObjects
          Id = tg.Id;         
          Name = tg.Name;
          Description = tg.Description;
+         ActiveSurveyId =  tg.ActiveSurveyTemplate_Id != null ? tg.ActiveSurveyTemplate_Id.Value : 0;
+         ActiveSurveyDescription = tg.ActiveSurveyTemplate_Id != null ? tg.ActiveSurveyTemplate.Description : null;
       }
-     [DataMember]
+      [DataMember]
       public int Id { get; set; }
       [Required]
       [DataMember(IsRequired = true)]
@@ -33,5 +35,11 @@ namespace smsSurvery.Surveryer.Models.BusinessObjects
             
       [DataMember(IsRequired = true)]
       public string Description { get; set; }
+
+      [DataMember]
+      public int ActiveSurveyId { get; set; }
+
+      [DataMember]
+      public string ActiveSurveyDescription { get; set; }
    }
 }

@@ -32,6 +32,13 @@ namespace smsSurvery.Surveryer.Controllers
            return user;
         }
 
+        public JsonResult SurveyTemplateList()
+        {
+           var  user = GetConnectedUser();
+           var result = from st in user.SurveyTemplateSet select new { value= st.Id, label=st.Description};
+           return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
        protected override void Dispose(bool disposing)
         {
             db.Dispose();
@@ -96,6 +103,15 @@ namespace smsSurvery.Surveryer.Controllers
          }
          tag.Name = location.Name;
          tag.Description = location.Description;
+
+         if (location.ActiveSurveyId != 0)
+         {
+            var activeSurveyTemplate = db.SurveyTemplateSet.Find(location.ActiveSurveyId);
+            if (activeSurveyTemplate != null)
+            {
+               tag.ActiveSurveyTemplate = activeSurveyTemplate;
+            }
+         }
          db.Entry(tag).State = EntityState.Modified;
 
          try
