@@ -187,6 +187,7 @@ namespace smsSurvery.Surveryer.Controllers
          }
       }
 
+      [AllowAnonymous]
       public JsonResult GetSurvey(int id = 0)
       {
          var surveyTemplate = GetSurveyTemplateObject(id);
