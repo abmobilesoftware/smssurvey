@@ -522,7 +522,7 @@
     <Content Include="Views\SurveyTemplate\Create.cshtml" />
     <Content Include="Views\SurveyTemplate\CreateEditSurveyPlan.cshtml" />
     <Content Include="Views\SurveyTemplate\Delete.cshtml" />
-     <Content Include="Views\Locations\Index.cshtml" />
+    <Content Include="Views\Locations\Index.cshtml" />
     <Content Include="Views\MobileSurvey\NoActiveSurveyForLocation.cshtml" />
     <Content Include="Views\MobileSurvey\InvalidLocation.cshtml" />
     <Content Include="Views\SurveyTemplate\Details.cshtml" />

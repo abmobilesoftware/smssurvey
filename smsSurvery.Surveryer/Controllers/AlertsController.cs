@@ -206,7 +206,7 @@ namespace smsSurvery.Surveryer.Controllers
                        if (receivedAnswerAsInt < alertTriggerAnswerAsInt)
                        {
                           notificationRequired = true;
-                          alertCause = String.Format("Received answer '{0}' ({1}) < then threshold answer '{2}' ({3})",
+                          alertCause = String.Format("Received answer '{0}' ({1}) < than threshold answer '{2}' ({3})",
                              GetUserFriendlyAnswerVersion(currentQuestion,receivedAnswerAsInt,logger), receivedAnswerAsInt,
                              GetUserFriendlyAnswerVersion(currentQuestion, alertTriggerAnswerAsInt, logger), alertTriggerAnswerAsInt);
                        }
@@ -219,7 +219,7 @@ namespace smsSurvery.Surveryer.Controllers
                        if (receivedAnswerAsInt <= alertTriggerAnswerAsInt)
                        {
                           notificationRequired = true;
-                          alertCause = String.Format("Received answer '{0}' ({1}) <= then threshold answer '{2}' ({3})",
+                          alertCause = String.Format("Received answer '{0}' ({1}) <= than threshold answer '{2}' ({3})",
                              GetUserFriendlyAnswerVersion(currentQuestion, receivedAnswerAsInt, logger), receivedAnswerAsInt,
                              GetUserFriendlyAnswerVersion(currentQuestion, alertTriggerAnswerAsInt, logger), alertTriggerAnswerAsInt);
                        }
@@ -232,7 +232,7 @@ namespace smsSurvery.Surveryer.Controllers
                        if (receivedAnswerAsInt > alertTriggerAnswerAsInt)
                        {
                           notificationRequired = true;
-                          alertCause = String.Format("Received answer '{0}' ({1}) > then threshold answer '{2}' ({3})",
+                          alertCause = String.Format("Received answer '{0}' ({1}) > than threshold answer '{2}' ({3})",
                              GetUserFriendlyAnswerVersion(currentQuestion, receivedAnswerAsInt, logger), receivedAnswerAsInt,
                              GetUserFriendlyAnswerVersion(currentQuestion, alertTriggerAnswerAsInt, logger), alertTriggerAnswerAsInt);
                        }
@@ -245,7 +245,7 @@ namespace smsSurvery.Surveryer.Controllers
                        if (receivedAnswerAsInt >= alertTriggerAnswerAsInt)
                        {
                           notificationRequired = true;
-                          alertCause = String.Format("Received answer '{0}' ({1}) >= then threshold answer '{2}' ({3})",
+                          alertCause = String.Format("Received answer '{0}' ({1}) >= than threshold answer '{2}' ({3})",
                              GetUserFriendlyAnswerVersion(currentQuestion, receivedAnswerAsInt, logger), receivedAnswerAsInt,
                              GetUserFriendlyAnswerVersion(currentQuestion, alertTriggerAnswerAsInt, logger), alertTriggerAnswerAsInt);
                        }
