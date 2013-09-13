@@ -10,6 +10,7 @@ using System.Net;
 using System.Data.Entity.Infrastructure;
 using System.Net.Http;
 using smsSurvery.Surveryer.Models.BusinessObjects;
+using MvcPaging;
 
 namespace smsSurvery.Surveryer.Controllers
 {
@@ -20,9 +21,7 @@ namespace smsSurvery.Surveryer.Controllers
 
         public ActionResult Index()
         {
-           var user = GetConnectedUser();
-           var tags = db.Tags.Where(t=>t.CompanyName== user.Company_Name).Include(t => t.Companies);
-           return View(tags.ToList());
+           return View();
         }
 
         private UserProfile GetConnectedUser()

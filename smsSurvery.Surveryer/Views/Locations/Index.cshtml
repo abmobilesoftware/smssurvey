@@ -1,12 +1,9 @@
-﻿@model IEnumerable<smsSurvey.dbInterface.Tags>
-
-@{
+﻿@{
     ViewBag.Title = "View & edit locations";
     
 }
 
-<h2>Index</h2>
-
+<h2>Locations</h2>
 <script type="text/template" id="location-template">  
       <div style="display:none" class="alert fade in alert-error" id="noTags-error" >
                   <button type="button" class="close close-location-notifications">×</button>
@@ -40,7 +37,6 @@
 <div id="contentGoesHerelocView">
 
 </div>
-
 @section Scripts {  
    @Scripts.Render("~/bundles/locationTags")
 }
