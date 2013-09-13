@@ -86,10 +86,10 @@ namespace smsSurvery.Surveryer.Controllers
 
       [HttpGet]
       [AllowAnonymous]
-      public ActionResult ActiveSurvey(string location)
+      public ActionResult ActiveSurvey(string location, string company)
       {
          //DA run the Active Survey identified for this location, if any
-         var loc = db.Tags.Where(t => t.Name == location && t.TagTypes.Any(tt => tt.Type== "Location")).FirstOrDefault();
+         var loc = db.Tags.Where(t => t.Name == location && t.TagTypes.Any(tt => tt.Type== "Location") && t.CompanyName == company).FirstOrDefault();
          if (loc != null)
          {
             var surveyToRun = loc.ActiveSurveyTemplate;
@@ -114,6 +114,7 @@ namespace smsSurvery.Surveryer.Controllers
          {
             //invalid location
             ViewBag.Location = location;
+            ViewBag.Company = company;
             return View("InvalidLocation");
          }
       }
