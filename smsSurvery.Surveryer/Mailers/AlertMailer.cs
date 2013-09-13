@@ -21,7 +21,7 @@ namespace smsSurvery.Surveryer.Mailers
          ViewBag.LinkToPlatform = linkToSurveyResults;
 			return Populate(x =>
 			{
-				x.Subject = subject;
+            x.Subject = subject.Replace("\r\n", string.Empty);
 				x.ViewName = "SendAlert";
 				x.To.Add(to);            
 			});
