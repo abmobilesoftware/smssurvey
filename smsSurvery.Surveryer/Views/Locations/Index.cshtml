@@ -12,6 +12,7 @@
                   <button type="button" class="close close-location-notifications">×</button>
                   <div class="location-notifications"></div>
       </div>
+    
       <input name="LocationName" type="text" class="readOnly" value="<%= Name %>" placeholder="The unique location name, e.g. Bucharest1" style="width:180px">         
       </input>
       <input name="Description" type="text" class="readOnly" value="<%= Description %>" placeholder="E.g. Our first store from Bucharest" style="width:350px">       
@@ -19,8 +20,8 @@
       <select data-placeholder="Choose a trigger answer" class="chosen-select location-select-active-survey">
             <option value="<%= ActiveSurveyId %>" selected><%= ActiveSurveyDescription %></option>      
          </select>      
-      <button class="btn btn-primary save-location-btn" type="button" disabled>Save</button> 
-      <button style="display:none" class="btn btn-primary discard-location-btn" type="button">Discard</button>               
+      <button class="btn btn-primary save-location-btn location-button" type="button" disabled>Save</button> 
+      <button style="display:none" class="btn btn-primary discard-location-btn location-button" type="button">Discard</button>               
 </script>
 
 <script type="text/template" id="location-set-template">
@@ -30,6 +31,12 @@
     <button class="btn btn-primary add-location-btn" type="button">Add location</button>
 </script>
 
+<div class="locationsHeader">
+      <label style="width:190px">Name</label>
+      <label style="width:360px">Description</label>
+      <label style="width:200px">ActiveSurvey</label>
+   </div>
+<div class="clear"></div>
 <div id="contentGoesHerelocView">
 
 </div>

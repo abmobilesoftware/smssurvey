@@ -1034,8 +1034,20 @@ input[type=checkbox].css-checkbox:checked + label.css-label { background-positio
 }
 
 .locationsViewContent {   
-border: 1px solid #CCC;
-padding: 5px 5px 15px 20px;
+
+}
+.location-button {
+   margin-bottom: 6px !important;
+}
+.locationsHeader label {
+   float:left;
+   padding-left:6px;
+   border-right: 1px solid #DDD;
+}
+.locationsHeader {
+   background-color:#F9F9F9;
+   display: inline-block;
+   width:100%;
 }
 
 input.invalidField, select.invalidField, a.invalidField, div.invalidField {
