@@ -21,7 +21,9 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
          $SURVEY_INFO: $("#survey-info", this.$el),
          $SURVEY_BUILDER: $("#survey-builder", this.$el),
          $NOTIFICATION: $(".survey-notification", this.$el),
-         $ALERT_BOX: $(".alert", this.$el)
+         $ALERT_BOX: $(".save-alert", this.$el),
+         $SURVEY_LOADER: $("#survey-loader"),
+         $SURVEY_CONTENT: $("#survey-content")
       };
       this.model.on("change:DisplayInfoTable", this.render);
       this.model.on("change:Id change:MobileWebsiteLocation", this.render);
@@ -29,9 +31,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       window.onbeforeunload = this.confirmPageLeaving;
       this.model.on(this.model.events.VALIDATE, this.validationResult);
       this.model.on(this.model.events.UPDATE_SAVE_BUTTON, this.updateSaveButton);
-      this.model.on(this.model.events.SURVEY_LOADED, function () {
-         self.render();
-      });
+      this.model.on(this.model.events.SURVEY_LOADED, this.render);
       //TODO - this should actually be a renderLanguage
       this.model.on("change:DefaultLanguage", this.render);
       this.questionSetView = new Question.QuestionSetView({
@@ -50,6 +50,9 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       this.dom.$SURVEY_INTRO_MESSAGE_INPUT = $("#survey-intro", this.$el);
       this.dom.$SAVE_SURVEY_BTN = $(".save-btn", this.$el);
       this.updateSaveButton(this.model.getNoOfAttributesChanged());
+      this.dom.$SURVEY_LOADER.hide();
+      this.dom.$SURVEY_CONTENT.fadeIn();
+      
    },
    editSurveyInfo: function (event) {
       event.preventDefault();

@@ -86,7 +86,8 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
       var questionConstants = SurveyUtilities.Utilities.CONSTANTS_QUESTION;
       if (type == questionConstants.TYPE_SELECT_ONE_FROM_MANY) {
          return new Array("==", "!=");
-      } else if (type == questionConstants.TYPE_RATING) {
+      } else if (type == questionConstants.TYPE_RATING
+         || type == questionConstants.TYPE_NUMERIC) {
          return new Array("==", "!=", "<", "<=", ">", ">=");
       } else if (type == questionConstants.TYPE_FREE_TEXT) {
          return new Array("contains");
@@ -100,7 +101,8 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
       var questionConstants = SurveyUtilities.Utilities.CONSTANTS_QUESTION;
       if (type == questionConstants.TYPE_SELECT_ONE_FROM_MANY) {
          return new Array("equal", "not equal");
-      } else if (type == questionConstants.TYPE_RATING) {
+      } else if (type == questionConstants.TYPE_RATING ||
+         type == questionConstants.TYPE_NUMERIC) {
          return new Array("equal", "not equal", "<", "<=", ">", ">=");
       } else if (type == questionConstants.TYPE_FREE_TEXT) {
          return new Array("contains");
@@ -108,7 +110,7 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
          return new Array("equal");
       } else if (type == questionConstants.TYPE_SELECT_MANY_FROM_MANY) {
          return new Array("any", "all");
-      }
+      } 
    },
    getTriggerAnswerValues: function (questionType) {
       var triggerAnswerValues = null;
@@ -141,6 +143,16 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
          triggerAnswerValues = yesNoTriggerValues;
       } else if (questionType == questionConstants.TYPE_FREE_TEXT) {
          triggerAnswerValues = [];
+      } else if (questionType == questionConstants.TYPE_NUMERIC) {
+         var numericTriggerValues = [];
+         var numericAnswers = this.get("Modal").getNumericScale();
+         for (var i = 0; i < numericAnswers.length; ++i) {
+            numericTriggerValues.push({
+               TriggerValue: numericAnswers[i].get("NumericValue"),
+               TriggerLabel: numericAnswers[i].get("NumericLabel")
+            });
+         }
+         triggerAnswerValues = numericTriggerValues;
       }
       return triggerAnswerValues;
    },

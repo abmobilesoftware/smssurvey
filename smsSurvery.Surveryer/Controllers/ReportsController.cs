@@ -20,6 +20,7 @@ namespace smsSurvery.Surveryer.Controllers
       public const string cYesNoTypeQuestion = "YesNo";
       public const string cSelectManyFromManyTypeQuestion = "SelectManyFromMany";
       public const string cSelectOneFromManyTypeQuestion = "SelectOneFromMany";
+      public const string cNumericTypeQuestion = "Numeric";
       private const String cDateFormat = "yyyy-MM-dd H:mm:ss";
 
       private smsSurveyEntities db = new smsSurveyEntities();
@@ -100,6 +101,7 @@ namespace smsSurvery.Surveryer.Controllers
          tags = tags ?? new string[0];
          switch (question.Type)
          {
+            case cNumericTypeQuestion:
             case cRatingsTypeQuestion:
             case cYesNoTypeQuestion:
             case cSelectOneFromManyTypeQuestion:
@@ -337,7 +339,8 @@ namespace smsSurvery.Surveryer.Controllers
          DateTime intervalEnd = DateTime.ParseExact(iIntervalEnd, cDateFormat, CultureInfo.InvariantCulture);
          Question question = db.QuestionSet.Find(questionId);
          tags = tags ?? new string[0];
-         if (question != null && (question.Type == ReportsController.cFreeTextTypeQuestion || question.Type == ReportsController.cRatingsTypeQuestion))
+         if (question != null && (question.Type == ReportsController.cFreeTextTypeQuestion || question.Type == ReportsController.cRatingsTypeQuestion
+            || question.Type == ReportsController.cNumericTypeQuestion))
          {
             ViewBag.CheckAdditionalInfo = checkAdditionalInfo;
             return PartialView(GetTagCloudData(question,intervalStart, intervalEnd,checkAdditionalInfo, tags));

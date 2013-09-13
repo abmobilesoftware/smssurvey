@@ -305,6 +305,7 @@ namespace smsSurvery.Surveryer.Controllers
         {
            switch (q.Type)
            {
+              case ReportsController.cNumericTypeQuestion:
               case ReportsController.cRatingsTypeQuestion:
               case ReportsController.cSelectOneFromManyTypeQuestion:
               case ReportsController.cYesNoTypeQuestion:
@@ -340,6 +341,7 @@ namespace smsSurvery.Surveryer.Controllers
         {
            switch (q.Type)
            {
+              case ReportsController.cNumericTypeQuestion:
               case ReportsController.cRatingsTypeQuestion:
               case ReportsController.cSelectOneFromManyTypeQuestion:
               case ReportsController.cYesNoTypeQuestion:

@@ -17,7 +17,8 @@ SurveyUtilities.Utilities = (function () {
       TYPE_FREE_TEXT: "FreeText",
       TYPE_SELECT_ONE_FROM_MANY: "SelectOneFromMany",
       TYPE_SELECT_MANY_FROM_MANY: "SelectManyFromMany",
-      TYPE_YES_NO: "YesNo"
+      TYPE_YES_NO: "YesNo",
+      TYPE_NUMERIC: "Numeric"
    },
    innerClass.CONSTANTS_MISC = {
       SEPARATOR_ANSWERS: ";",

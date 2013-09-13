@@ -6,8 +6,10 @@ Question.QuestionModel = Backbone.Model.extend({
       VALID_TEXT: "validText",
       INVALID_RATINGS: "ratingsError",
       INVALID_ANSWERS: "answersError",
+      INVALID_NUMERIC: "numericError",
       VALID_RATINGS: "ratingsValid",
-      VALID_ANSWERS: "answersValid"
+      VALID_ANSWERS: "answersValid",
+      VALID_NUMERIC: "numericValid"
    },
    events: {
       ANSWERS_CHANGED: "answersChanged",
@@ -82,9 +84,22 @@ Question.QuestionModel = Backbone.Model.extend({
    setRatingsModalModel: function (ratingsModalModel) {
       this.ratingsModalModel = ratingsModalModel;
    },
+   setNumericModalModel: function(numericModalModel) {
+      this.numericModalModel = numericModalModel;
+   },
    setQuestionAlertSet: function () {
       this.set("QuestionAlertSet",
          this.alertsModalModel.getQuestionAlertsAsJson());
+   },
+   setNumericScale: function() {
+      if (this.get("Type") ==
+         SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_NUMERIC) {
+         if (this.numericModalModel != null) {
+            var numericScaleAsJson = this.numericModalModel.getNumericScaleAsJson();
+            this.set("ValidAnswers", numericScaleAsJson.ValidAnswers);
+            this.set("ValidAnswersDetails", numericScaleAsJson.ValidAnswersDetails);
+         }
+      }
    },
    setAnswers: function () {
       if (this.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_MANY_FROM_MANY ||
@@ -144,6 +159,14 @@ Question.QuestionModel = Backbone.Model.extend({
          } else {
             this.trigger(this.events.VALIDATE, this.errors.VALID_ANSWERS);
          }
+      } else if (this.get("Type") == questionTypes.TYPE_NUMERIC) {
+         var numericValidity = this.numericModalModel.validate();
+         if (!numericValidity) {
+            this.trigger(this.events.VALIDATE, this.errors.INVALID_NUMERIC);
+            questionValidity = numericValidity;
+         } else {
+            this.trigger(this.events.VALIDATE, this.errors.VALID_NUMERIC);
+         }
       }
       return questionValidity;
    },
@@ -166,12 +189,13 @@ Question.QuestionView = Backbone.View.extend({
       "keyup .question-input": "updateQuestion",
       "click .edit-answers-btn": "openAnswersModal",
       "click .edit-alerts-btn": "openAlertsModal",
-      "click .edit-ratings-btn": "openRatingsModal"
+      "click .edit-ratings-btn": "openRatingsModal",
+      "click .edit-numeric-btn": "openNumericModal"
    },
    initialize: function () {
       _.bindAll(this, "selectQuestionType", "deleteQuestion", "updateQuestion",
          "render", "initializeModals", "validationResult", "openAnswersModal",
-         "openAlertsModal", "openRatingsModal");
+         "openAlertsModal", "openRatingsModal", "openNumericModal");
       this.questionTemplate = _.template($("#question-template").html());
       this.model.on(this.model.events.ANSWERS_CHANGED, this.render);
       this.model.on(this.model.events.ALERTS_CHANGED, this.render);
@@ -189,8 +213,10 @@ Question.QuestionView = Backbone.View.extend({
          $MULTIPLE_ANSWERS_MODAL: $("#multiple-answer-modal" + this.model.get("Id"), this.$el),
          $EDIT_ALERTS_MODAL: $("#edit-alerts-modal" + this.model.get("Id"), this.$el),
          $RATINGS_MODAL: $("#edit-rating-modal" + this.model.get("Id"), this.$el),
+         $NUMERIC_MODAL: $("#numeric-modal" + this.model.get("Id"), this.$el),
          $EDIT_ANSWERS_BTN: $(".edit-answers-btn", this.$el),
-         $EDIT_RATINGS_BTN: $(".edit-ratings-btn", this.$el)
+         $EDIT_RATINGS_BTN: $(".edit-ratings-btn", this.$el),
+         $EDIT_NUMERIC_BTN: $(".edit-numeric-btn", this.$el)
       };
       if (this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY
          || this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_MANY_FROM_MANY) {
@@ -207,6 +233,14 @@ Question.QuestionView = Backbone.View.extend({
          })
          this.ratingsModalView.render();
       };
+      if (this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_NUMERIC) {
+         this.numericModalView = new SurveyModals.NumericModalView({
+            el: this.dom.$NUMERIC_MODAL,
+            model: this.numericModalModel
+         });
+         this.numericModalView.render();
+      }
+      
       if (this.alertsModalView == null) {
          this.alertsModalView = new SurveyModals.AlertsModalView({
             el: this.dom.$EDIT_ALERTS_MODAL,
@@ -235,6 +269,15 @@ Question.QuestionView = Backbone.View.extend({
          this.model.setRatingsModalModel(this.ratingsModalModel);
          this.ratingsModalView = null;
          modalModel = this.ratingsModalModel;
+      }
+      if (this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_NUMERIC) {
+         this.numericModalModel = new SurveyModals.NumericModalModel({
+            ValidAnswers: this.model.get("ValidAnswers"),
+            ValidAnswersDetails: this.model.get("ValidAnswersDetails")
+         });
+         this.model.setNumericModalModel(this.numericModalModel);
+         this.numericModalView = null;
+         modalModel = this.numericModalModel;
       }
       this.alertsModalModel = new SurveyModals.AlertsModalModel({
          QuestionAlertSet: this.model.get("QuestionAlertSet"),
@@ -276,6 +319,10 @@ Question.QuestionView = Backbone.View.extend({
          this.dom.$EDIT_ANSWERS_BTN.addClass(invalidFieldClass);
       } else if (result == this.model.errors.VALID_ANSWERS) {
          this.dom.$EDIT_ANSWERS_BTN.removeClass(invalidFieldClass);
+      } else if (result == this.model.errors.INVALID_NUMERIC) {
+         this.dom.$EDIT_NUMERIC_BTN.addClass(invalidFieldClass);
+      } else if (result == this.model.errors.VALID_NUMERIC) {
+         this.dom.$EDIT_NUMERIC_BTN.removeClass(invalidFieldClass);
       }
    },
    openAnswersModal: function () {
@@ -289,6 +336,10 @@ Question.QuestionView = Backbone.View.extend({
    openRatingsModal: function () {
       this.ratingsModalView.render();
       this.ratingsModalView.openModal();
+   },
+   openNumericModal: function () {
+      this.numericModalView.render();
+      this.numericModalView.openModal();
    }
 });
 
@@ -319,14 +370,16 @@ Question.QuestionSetCollection = Backbone.Collection.extend({
 Question.QuestionSetView = Backbone.View.extend({
    events: {
       "click .add-question-btn": "addQuestion",
+      "click .add-nps-question-btn": "addNpsQuestion",
       "click .preview-btn": "previewSurvey"
    },
    initialize: function () {
-      _.bindAll(this, "render", "addQuestion", "listSorted", "previewSurvey");
+      _.bindAll(this, "render", "addQuestion", "listSorted", "previewSurvey",
+         "addNpsQuestion");
       this.model.on(this.model.events.UPDATE_VIEW, this.render)
 
       this.dom = {
-         $ADD_QUESTION_BTN: $(".add-question-btn", this.$el),
+         $ADD_QUESTION_GROUP: $(".question-group", this.$el),
          $QUESTION_SET_CONTENT: $("#question-set-content", this.$el),
          $PREVIEW_MODAL: $("#preview-modal", this.$el)
       };
@@ -353,9 +406,9 @@ Question.QuestionSetView = Backbone.View.extend({
          }, this);
          this.dom.$QUESTION_SET_CONTENT.sortable({ axis: "y", handle: ".grip", cursor: "move" });
          if (questionSetModels.length < 5) {
-            this.dom.$ADD_QUESTION_BTN.show();
+            this.dom.$ADD_QUESTION_GROUP.show();
          } else {
-            this.dom.$ADD_QUESTION_BTN.hide();
+            this.dom.$ADD_QUESTION_GROUP.hide();
          }
       } else {
          this.dom.$QUESTION_SET_CONTENT.append(this.noQuestionsTemplate());
@@ -364,6 +417,10 @@ Question.QuestionSetView = Backbone.View.extend({
    addQuestion: function (event) {
       event.preventDefault();     
       this.model.addQuestion();
+   },
+   addNpsQuestion: function(event) {
+      event.preventDefault();
+      this.model.addNpsQuestion();
    },
    listSorted: function (event, ui) {
       _.each(this.questionViewCollection, function (questionView) {
@@ -411,6 +468,7 @@ Question.QuestionSetModel = Backbone.Model.extend({
          if (saveAlerts) {
             this.questionSetCollection.models[i].setQuestionAlertSet();
          }
+         this.questionSetCollection.models[i].setNumericScale();
          this.questionSetCollection.models[i].setAnswers();
          this.questionSetCollection.models[i].setRatings();
          this.questionSetCollection.models[i].setYesNo();
@@ -423,6 +481,22 @@ Question.QuestionSetModel = Backbone.Model.extend({
    addQuestion: function () {
       ++this.questionTemporaryId;
       //DA before this, make sure that the changes are saved
+      //TODO MB this approach is wrong, every modal should save it data when is 
+      //closed
+      for (var i = 0; i < this.questionSetCollection.models.length; ++i) {
+         // set the last alerts changes         
+         this.questionSetCollection.models[i].setQuestionAlertSet();
+         this.questionSetCollection.models[i].setAnswers();
+         this.questionSetCollection.models[i].setRatings();
+         this.questionSetCollection.models[i].setYesNo();
+         this.questionSetCollection.models[i].setNumericScale();
+      }
+      var questionModel = new Question.QuestionModel({ Id: this.questionTemporaryId });
+      questionModel.updateOrder(this.questionSetCollection.models.length);
+      this.questionSetCollection.add(questionModel);
+   },
+   addNpsQuestion: function() {
+      ++this.questionTemporaryId;
       for (var i = 0; i < this.questionSetCollection.models.length; ++i) {
          // set the last alerts changes         
          this.questionSetCollection.models[i].setQuestionAlertSet();
@@ -430,7 +504,13 @@ Question.QuestionSetModel = Backbone.Model.extend({
          this.questionSetCollection.models[i].setRatings();
          this.questionSetCollection.models[i].setYesNo();
       }
-      var questionModel = new Question.QuestionModel({ Id: this.questionTemporaryId });
+      var questionModel = new Question.QuestionModel({
+         Id: this.questionTemporaryId,
+         ValidAnswers: "1;2;3;4;5",
+         ValidAnswersDetails: "Very unlikely;2;3;4;Very likely",
+         Text: "How likely are you to recommend our company/product/service to your friends and colleagues?",
+         Type: SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_NUMERIC
+      });
       questionModel.updateOrder(this.questionSetCollection.models.length);
       this.questionSetCollection.add(questionModel);
    },

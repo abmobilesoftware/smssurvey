@@ -13,7 +13,7 @@
 
 #question-set-content {
    list-style: none;
-   margin: 0;
+   margin: 0 0 0.5em 0;
 }
 
 #question-set {
@@ -35,7 +35,7 @@
    float: right;
 }
 
-.add-question-btn, .open-modal-btn {
+.open-modal-btn {
    margin-top: 0.5em;
 }
 
@@ -331,4 +331,46 @@ input.bottom-input {
 
 table.answers-table {
    margin-bottom: 8px;
+}
+
+/* NUMERIC SCALE */
+.numeric-entry {
+  float: left;
+  width: 20%;
+  padding-top: 2px;
+  margin-top: -25px;
+}
+
+.numeric-text-label {
+   height: 42px;
+}
+
+.numeric-value-label {
+  height: 19px;
+  display:inline;
+  left: 18px;
+  position: relative;
+  top: 33px;
+}
+
+.low-scale {
+   float: left;
+}
+
+.high-scale {
+   float:right;
+}
+
+.scale-legend {
+   font-size: 0.7em;
+}
+
+input.numeric-radio {
+   display:inline;
+}
+
+#survey-loader {
+  display: block;
+  margin: 0 auto;
+  width: 234px;
 }
