@@ -42,11 +42,15 @@ MobileSurvey.ButtonView = Backbone.View.extend({
 });
 
 MobileSurvey.QuestionMobileView = Backbone.View.extend({
+   events: {
+      "click .numeric-radio": "numericScaleSelected"
+   },
    initialize: function () {
       this.questionMobileTemplate = _.template($("#question-mobile-template").html());
       this.questionConstants = SurveyUtilities.Utilities.CONSTANTS_QUESTION;
 
-      _.bindAll(this, "render", "toggleDisplay", "updateQuestionDisplay", "updateAnswer");
+      _.bindAll(this, "render", "toggleDisplay", "updateQuestionDisplay", "updateAnswer",
+         "numericScaleSelected");
       this.model.on("change:ValidAnswer", this.updateQuestionDisplay);
    },
    render: function () {
@@ -79,13 +83,13 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
       }
    },
    updateAnswer: function () {
-      var questionType= this.model.get("Type");
+      var questionType = this.model.get("Type");
       if (questionType == this.questionConstants.TYPE_SELECT_ONE_FROM_MANY) {
          var selectedOption = $("select[name='answer']", this.$el).find(":selected").val();
          this.model.set({ "PickedAnswer": selectedOption }, { validate: true });
       } else if (questionType == this.questionConstants.TYPE_YES_NO) {
          var yesNoAnswer = $('input[name=yes-no-answer]:checked', this.$el).val();
-         yesNoAnswer = yesNoAnswer != undefined ? yesNoAnswer : Question.noValueAnswer;         
+         yesNoAnswer = yesNoAnswer != undefined ? yesNoAnswer : Question.noValueAnswer;
          this.model.set({ "PickedAnswer": yesNoAnswer }, { validate: true });
       } else if (questionType == this.questionConstants.TYPE_SELECT_MANY_FROM_MANY) {
          var selectedValuesArr = $.map($('input[type=checkbox]:checked', this.$el), function (elem) {
@@ -96,17 +100,30 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
       } else if (questionType == this.questionConstants.TYPE_NUMERIC) {
          var numericScaleAnswer = $('input[name=numeric-scale-answer' + this.model.get("Id") + ']:checked', this.$el).val();
          numericScaleAnswer = numericScaleAnswer != undefined ? numericScaleAnswer : Question.noValueAnswer;
-         this.model.set({ "PickedAnswer": numericScaleAnswer }, { validate: true });
-      }  
+         this.model.set({
+            "PickedAnswer": numericScaleAnswer,
+            "AdditionalInfo": $(".comment", this.$el) != undefined ? $(".comment", this.$el).val() : ""
+         },
+         {
+            validate: true
+         });
+      }
       else {
          this.model.set(
           {
              "PickedAnswer": $(".answer", this.$el).val(),
-             "AdditionalInfo": $(".additionalInfo", this.$el) != undefined ? $(".additionalInfo", this.$el).val() : ""
+             "AdditionalInfo": $(".comment", this.$el) != undefined ? $(".comment", this.$el).val() : ""
           },
           {
              validate: true
           });
+      }
+   },
+   numericScaleSelected: function (event) {
+      if ($(event.currentTarget).children("input").val() < 3) {
+         $(".additionalInfo", this.$el).show();
+      } else {
+         $(".additionalInfo", this.$el).hide();
       }
    }
 });
@@ -135,7 +152,7 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
       this.doneBtnTitle = $("#doneBtnTitle").val();
       this.doneBtn.enable();
       this.doneBtn.setTitle(this.doneBtnTitle);
-      this.questionsViews = [];     
+      this.questionsViews = [];
    },
    render: function () {
       var self = this;
@@ -212,20 +229,20 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
    },
    initialize: function () {
       _.bindAll(this, "setWidth", "show",
-          "getHeight", "render","sendPersonalInfo",
+          "getHeight", "render", "sendPersonalInfo",
           "setSurveyResultId");
       this.template = _.template($("#thankyoupage-template").html());
-    
+
       this.render();
    },
-   setSurveyResultId: function(surveyResultId) {
+   setSurveyResultId: function (surveyResultId) {
       this.surveyResultId = surveyResultId;
    },
    setWidth: function (value) {
       this.$el.css("width", value);
    },
    show: function () {
-      this.$el.show();   
+      this.$el.show();
    },
    enableSendBtn: function (event) {
       if (event.target.checked) {
@@ -245,7 +262,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
       personalInfo.Telephone = $('#telephone').val();
       var dataToSend = JSON.stringify({
          info: personalInfo,
-         surveyResultId: this.surveyResultId         
+         surveyResultId: this.surveyResultId
       });
       $.ajax({
          url: "/MobileSurvey/SaveRespondentInfo",
@@ -254,7 +271,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
          cache: false,
          dataType: "json",
          contentType: 'application/json',
-         traditional: true      
+         traditional: true
       });
    },
    getHeight: function () {
@@ -266,7 +283,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
    render: function () {
       this.$el.append(this.template());
       this.sendBtn = new MobileSurvey.ButtonView({ el: $("#sendPersonalDetailsBtn", this.$el) });
-     
+
       this.sendBtn.enable();
       return this.$el;
    }
@@ -276,11 +293,11 @@ MobileSurvey.SurveyView = Backbone.View.extend({
    initialize: function () {
       _.bindAll(this, "goToThankYouPage", "saveSurvey", "updateQuestionSet", "render");
       this.questionsPage = new MobileSurvey.SurveyMobileView({ el: $("#questionsPage"), model: this.model });
-      this.thankYouPage = new MobileSurvey.ThankYouPageView({ el: $("#thankYouPage") });      
+      this.thankYouPage = new MobileSurvey.ThankYouPageView({ el: $("#thankYouPage") });
       this.questionsPage.on(this.questionsPage.pageEvents.THANK_YOU_PAGE,
          this.saveSurvey);
       this.dom = {
-         $LOCATION_INPUT : $("#location", this.$el)
+         $LOCATION_INPUT: $("#location", this.$el)
       }
    },
    goToThankYouPage: function (surveyResultId) {
@@ -322,7 +339,7 @@ MobileSurvey.SurveyView = Backbone.View.extend({
    updateQuestionSet: function () {
       this.model.set("QuestionSet", this.model.getQuestionSetCollectionAsJson(false));
    },
-   saveSurvey: function (event) {     
+   saveSurvey: function (event) {
       var self = this;
       this.updateQuestionSet();
       //DA now we have in this.model.get("QuestionSet") the required information
@@ -335,7 +352,7 @@ MobileSurvey.SurveyView = Backbone.View.extend({
          location: location
       });
       $.ajax({
-         url: "/MobileSurvey/SaveSurvey",        
+         url: "/MobileSurvey/SaveSurvey",
          data: sendData,
          type: 'post',
          cache: false,
