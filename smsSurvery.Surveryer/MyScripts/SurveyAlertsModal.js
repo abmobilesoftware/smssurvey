@@ -149,7 +149,7 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
          for (var i = 0; i < numericAnswers.length; ++i) {
             numericTriggerValues.push({
                TriggerValue: numericAnswers[i].get("NumericValue"),
-               TriggerLabel: numericAnswers[i].get("NumericValue")
+               TriggerLabel: numericAnswers[i].get("NumericLabel")
             });
          }
          triggerAnswerValues = numericTriggerValues;

@@ -507,7 +507,7 @@ Question.QuestionSetModel = Backbone.Model.extend({
       var questionModel = new Question.QuestionModel({
          Id: this.questionTemporaryId,
          ValidAnswers: "1;2;3;4;5",
-         ValidAnswersDetails: "Very unlikely;;;;Very likely",
+         ValidAnswersDetails: "Very unlikely;2;3;4;Very likely",
          Text: "How likely are you to recommend our company/product/service to your friends and colleagues?",
          Type: SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_NUMERIC
       });

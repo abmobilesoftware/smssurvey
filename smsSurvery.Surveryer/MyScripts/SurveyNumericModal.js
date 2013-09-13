@@ -165,6 +165,7 @@ SurveyModals.NumericEntryView = Backbone.View.extend({
       "keyup .numeric-value-input": "updateNumericValue",
       "keyup .numeric-label-input": "updateNumericLabel"
    },
+   tagName: "tr",
    initialize: function () {
       _.bindAll(this, "updateNumericValue",
          "updateNumericLabel", "validationResult");
@@ -191,8 +192,12 @@ SurveyModals.NumericEntryView = Backbone.View.extend({
       var invalidFieldClass = SurveyUtilities.Utilities.CONSTANTS_CLASS.INVALID_FIELD;
       if (result == this.model.errors.INVALID_NUMERIC_VALUE) {
          this.dom.$NUMERIC_VALUE_INPUT.addClass(invalidFieldClass);
-      } else if (result == this.model.errors.VALID) {
+      } else if (result == this.model.errors.VALID_NUMERIC_VALUE) {
          this.dom.$NUMERIC_VALUE_INPUT.removeClass(invalidFieldClass);
+      } else if (result == this.model.errors.INVALID_NUMERIC_LABEL) {
+         this.dom.$NUMERIC_LABEL_INPUT.addClass(invalidFieldClass);
+      } else if (result == this.model.errors.VALID_NUMERIC_LABEL) {
+         this.dom.$NUMERIC_LABEL_INPUT.removeClass(invalidFieldClass);
       }
    }
 });
@@ -200,8 +205,9 @@ SurveyModals.NumericEntryView = Backbone.View.extend({
 SurveyModals.NumericEntryModel = Backbone.Model.extend({
    errors: {
       INVALID_NUMERIC_VALUE: "invalidNumericValue",
-      VALID: "valid"
-
+      INVALID_NUMERIC_LABEL: "invalidNumericLabel",
+      VALID_NUMERIC_LABEL: "validNumericLabel",
+      VALID_NUMERIC_VALUE: "validNumericValue"
    },
    events: {
       VALIDATE: "validateEvent"
@@ -222,8 +228,11 @@ SurveyModals.NumericEntryModel = Backbone.Model.extend({
          SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
       Backbone.trigger(attributeChangedEvent);
    },
-   validate: function() {
-      // add here validation logic
+   validate: function () {
+      if (this.get("NumericLabel").length == 0) {
+         this.trigger(this.events.VALIDATE, this.errors.INVALID_NUMERIC_LABEL);
+         return false;
+      }
       return true;
    }
 });
