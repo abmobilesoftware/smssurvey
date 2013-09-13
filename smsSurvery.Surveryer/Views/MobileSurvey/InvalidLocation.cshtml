@@ -1,7 +1,7 @@
 ﻿@using smsSurvery.Surveryer.GlobalResources
 @{
     Layout = null;
-    ViewBag.Title = "Survey already submitted";
+    ViewBag.Title = "Invalid location";
 }
 
 
@@ -10,19 +10,19 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>@Global.MobileSurveySubmittedPageTitle</title>
+    <title>Invalid location</title>
    @Styles.Render("~/bundles/MobileSurveyCss")
 </head>
 <body>    
     <header>
        <div class="headerContainer">
                 <img id="pageIcon" src="/Content/images/small-icon.png" />
-                <h3 id="pageTitle">@Global.MobileSurveySubmittedTitle</h3>
+                <h3 id="pageTitle">Invalid location</h3>
        </div>        
     </header>
     <div class="clear" />
      <section id="survey">                
-        <p>@Global.MobileSurveySubmittedMessage</p>            
+        <p>Sorry - the location "@ViewBag.Location" cannot be found in our system </p>            
      </section>
      <div class="clear" />
         <footer>

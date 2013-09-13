@@ -84,6 +84,39 @@ namespace smsSurvery.Surveryer.Controllers
          }
       }
 
+      [HttpGet]
+      [AllowAnonymous]
+      public ActionResult ActiveSurvey(string location)
+      {
+         //DA run the Active Survey identified for this location, if any
+         var loc = db.Tags.Where(t => t.Name == location && t.TagTypes.Any(tt => tt.Type== "Location")).FirstOrDefault();
+         if (loc != null)
+         {
+            var surveyToRun = loc.ActiveSurveyTemplate;
+            if (surveyToRun != null)
+            {
+
+               ViewBag.Id = surveyToRun.Id;
+               ViewBag.SurveyTitle = "Feedback";
+               ViewBag.IntroMessage = surveyToRun.IntroMessage;
+               ViewBag.ThankYouMessage = surveyToRun.ThankYouMessage;
+               ViewBag.IsFeedback = 1;
+               ViewBag.Location = location;
+               return View("Fill");
+            }
+            else
+            {
+               //no active survey
+               return View("NoActiveSurveyForLocation");
+            }
+         }
+         else
+         {
+            //invalid location
+            ViewBag.Location = location;
+            return View("InvalidLocation");
+         }
+      }
       public class QuestionResponse
       {
          public QuestionResponse()

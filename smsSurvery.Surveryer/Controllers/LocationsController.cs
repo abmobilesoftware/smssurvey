@@ -137,6 +137,14 @@ namespace smsSurvery.Surveryer.Controllers
             var tag = new Tags() { Name = location.Name, Description = location.Description, CompanyName = companyName };
             tag.TagTypes.Add(locationType);
             db.Tags.Add(tag);
+            if (location.ActiveSurveyId != 0)
+            {
+               var activeSurveyTemplate = db.SurveyTemplateSet.Find(location.ActiveSurveyId);
+               if (activeSurveyTemplate != null)
+               {
+                  tag.ActiveSurveyTemplate = activeSurveyTemplate;
+               }
+            }
             db.SaveChanges();
 
             HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.Created, location);

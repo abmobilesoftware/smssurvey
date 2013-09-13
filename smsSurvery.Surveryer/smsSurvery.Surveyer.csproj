@@ -519,6 +519,8 @@
     <Content Include="Views\Shared\ReportFilterArea.cshtml" />
     <Content Include="Views\Shared\SearchBoxItems.cshtml" />
     <Content Include="Views\Locations\Index.cshtml" />
+    <Content Include="Views\MobileSurvey\NoActiveSurveyForLocation.cshtml" />
+    <Content Include="Views\MobileSurvey\InvalidLocation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

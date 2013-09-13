@@ -1,7 +1,7 @@
 ﻿@using smsSurvery.Surveryer.GlobalResources
 @{
     Layout = null;
-    ViewBag.Title = "Survey already submitted";
+    ViewBag.Title = "No running survey";
 }
 
 
@@ -10,19 +10,19 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>@Global.MobileSurveySubmittedPageTitle</title>
+    <title>No running survey</title>
    @Styles.Render("~/bundles/MobileSurveyCss")
 </head>
 <body>    
     <header>
        <div class="headerContainer">
                 <img id="pageIcon" src="/Content/images/small-icon.png" />
-                <h3 id="pageTitle">@Global.MobileSurveySubmittedTitle</h3>
+                <h3 id="pageTitle">No running survey</h3>
        </div>        
     </header>
     <div class="clear" />
      <section id="survey">                
-        <p>@Global.MobileSurveySubmittedMessage</p>            
+        <p>Sorry - no running survey for this location</p>            
      </section>
      <div class="clear" />
         <footer>

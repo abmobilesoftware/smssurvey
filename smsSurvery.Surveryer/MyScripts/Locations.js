@@ -40,7 +40,15 @@ window.LocationModel = Backbone.Model.extend({
    },
    restore: function () {
       var self = this;
-      this.set(self._backup, { silent: false });
+      //DA for some reason the discard is not working correctly (maybe the Id? )
+      this.set(
+         {
+            Name: self._backup.get("Name"),
+            Description: self._backup.get("Description"),
+            ActiveSurveyId: self._backup.get("ActiveSurveyId"),
+            ActiveSurveyDescription: self._backup.get("ActiveSurveyDescription")
+         }, { silent: true });
+      //this.set(self._backup, { silent: true });
    }
 });
 
@@ -84,7 +92,7 @@ window.LocationView = Backbone.View.extend({
       this.template = _.template($("#location-template").html());
       var self = this;
       this.model.on("invalid", self.validationError);
-      this.model.on("change:Name change:Description", self.modelModified);
+      this.model.on("change:Name change:Description change:ActiveSurveyId", self.modelModified);
    },
    render: function() {
       this.$el.html(this.template(this.model.toJSON()));
@@ -112,11 +120,20 @@ window.LocationView = Backbone.View.extend({
       this.model.set({ "Name": name }, { validate: false, silent:true });
       var description = $('input[name="Description"]', this.$el).val();
       this.model.set({ "Description": description }, { validate: false, silent: true });
-      var activeSurveyId = $("option:selected", this.$el);
-      activeSurveyId = activeSurveyId.length != 0 ? activeSurveyId.val() : 0;
-      this.model.set({ "ActiveSurveyId": activeSurveyId }, { validate: false, silent: false });
+      var activeSurveyElem = $("option:selected", this.$el);
+      var activeSurveyId = activeSurveyElem.length != 0 ? activeSurveyElem.val() : 0;
+      var activeSurveyDescription = activeSurveyElem.text();
+      this.model.set(
+         {
+            "ActiveSurveyId": activeSurveyId,
+            "ActiveSurveyDescription" : activeSurveyDescription
+         }, { validate: false, silent: false });
+
+      //hide to discard button, we will bring it up if validation fails
+      $(".discard-location-btn", this.$el).hide();
       this.model.save();
       $(".save-location-btn", this.$el).prop("disabled", true);
+      
      
    },
    discardChanges: function() {
@@ -124,6 +141,7 @@ window.LocationView = Backbone.View.extend({
       this.modelModified();
       this.closeAlertBox();
       this.clearErrorsFromFields();
+      $(".save-location-btn", this.$el).prop("disabled", true);
    },
    modelModified: function() {
       $(".discard-location-btn", this.$el).hide();
@@ -131,6 +149,11 @@ window.LocationView = Backbone.View.extend({
       nameField.val(this.model.get("Name"));
       var descriptionField = $('input[name="Description"]', this.$el);
       descriptionField.val(this.model.get("Description"));
+      var activeSurveyField = $(".location-select-active-survey", this.$el);
+      var selectedValue = this.model.get("ActiveSurveyId");
+      $("option", this.$el).filter(function () {
+         return $(this).val() == selectedValue;
+      })[0].selected = true;
       this.model.backup();
    },
    inputDataChanged: function (model) {
@@ -171,6 +194,7 @@ window.LocationView = Backbone.View.extend({
    },
    loadSurveyTemplateOptions: function () {
       if (this._optionsLoaded) return;
+      var self = this;
       if ($.isEmptyObject(window.Location.activeSurveyOptions)) {
          //we need to load the options and cache them
          $.ajax({
@@ -178,14 +202,26 @@ window.LocationView = Backbone.View.extend({
             type: 'get',
             cache: false,
             dataType: "json",
+            async: false,
             contentType: 'application/json',
             success: function (data) {
-               var optElem = $(".location-select-active-survey", this.$el);
+               //bring the option list up to date and make sure that the default option is selected
+               var activeSurveyId = $("option:selected", self.$el).val();
+               var optElem = $(".location-select-active-survey", self.$el);
+               optElem.html("");
+               var noSelectionElem = '<option value="0"></option>';
+               optElem.append(noSelectionElem);
                _.each(data, function (item) {
                   var elem = '<option value="' + item.value + '">' + item.label + '</option>';
                   optElem.append(elem);
                   window.Location.activeSurveyOptions[item.value] = item.label;
                });
+               var selectedCandidate = $("option", self.$el).filter(function () {
+                  return $(this).val() == activeSurveyId;
+               });
+               if (selectedCandidate.length === 1) {
+                  selectedCandidate[0].selected = true;
+               }              
             }
          });
       }
