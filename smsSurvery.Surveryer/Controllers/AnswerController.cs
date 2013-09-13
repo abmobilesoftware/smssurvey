@@ -27,7 +27,8 @@ namespace smsSurvery.Surveryer.Controllers
            Question question = db.QuestionSet.Find(questionId);
            if (question != null &&  (question.Type == ReportsController.cRatingsTypeQuestion ||
               question.Type == ReportsController.cYesNoTypeQuestion) || 
-              question.Type == ReportsController.cSelectOneFromManyTypeQuestion)
+              question.Type == ReportsController.cSelectOneFromManyTypeQuestion ||
+              question.Type == ReportsController.cNumericTypeQuestion)
            {
               List<FreeTextAnswer> messages = new List<FreeTextAnswer>();
               var results = question.Result.OrderByDescending(x => x.SurveyResult.DateRan);
@@ -71,7 +72,8 @@ namespace smsSurvery.Surveryer.Controllers
         {
            //for the given survey (if allowed access) show messages with given stem
            Question question = db.QuestionSet.Find(questionId);
-           if (question != null && (question.Type == ReportsController.cFreeTextTypeQuestion || question.Type == ReportsController.cRatingsTypeQuestion))
+           if (question != null && (question.Type == ReportsController.cFreeTextTypeQuestion || 
+              question.Type == ReportsController.cRatingsTypeQuestion || question.Type == ReportsController.cNumericTypeQuestion))
            {
               List<FreeTextAnswer> messages = new List<FreeTextAnswer>();
               foreach (var result in question.Result)
@@ -342,6 +344,7 @@ namespace smsSurvery.Surveryer.Controllers
            {
               case ReportsController.cFreeTextTypeQuestion:
                  return prefix + q.Text;
+              case ReportsController.cNumericTypeQuestion:
               case ReportsController.cRatingsTypeQuestion:
                  {
                     try
