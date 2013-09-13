@@ -339,7 +339,8 @@ namespace smsSurvery.Surveryer.Controllers
          DateTime intervalEnd = DateTime.ParseExact(iIntervalEnd, cDateFormat, CultureInfo.InvariantCulture);
          Question question = db.QuestionSet.Find(questionId);
          tags = tags ?? new string[0];
-         if (question != null && (question.Type == ReportsController.cFreeTextTypeQuestion || question.Type == ReportsController.cRatingsTypeQuestion))
+         if (question != null && (question.Type == ReportsController.cFreeTextTypeQuestion || question.Type == ReportsController.cRatingsTypeQuestion
+            || question.Type == ReportsController.cNumericTypeQuestion))
          {
             ViewBag.CheckAdditionalInfo = checkAdditionalInfo;
             return PartialView(GetTagCloudData(question,intervalStart, intervalEnd,checkAdditionalInfo, tags));

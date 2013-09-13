@@ -69,7 +69,8 @@ window.app.displayReportsForRatingQ = function (questionId, qType) {
          };
          loadingIndicator.hide();
          tablechart.draw(tabledata, tableOptions);
-         if (qType == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_RATING) {
+         if (qType == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_RATING
+            || qType == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_NUMERIC) {
             window.app.displayReportForRatingAdditionalInfo(questionId);
          }
       }

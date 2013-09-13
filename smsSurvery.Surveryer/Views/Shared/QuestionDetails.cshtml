@@ -27,7 +27,8 @@
    </div>
   
 </div>
- @if (Model.Type == smsSurvery.Surveryer.Controllers.ReportsController.cRatingsTypeQuestion)
+ @if (Model.Type == smsSurvery.Surveryer.Controllers.ReportsController.cRatingsTypeQuestion
+    || Model.Type == smsSurvery.Surveryer.Controllers.ReportsController.cNumericTypeQuestion)
    {
     <div class="additionalInfoContainer">
       <label class="additionalInfoLabel">Provided qualifications</label>
