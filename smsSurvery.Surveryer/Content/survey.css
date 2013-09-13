@@ -335,7 +335,7 @@ input[type=radio]:checked + label {
 }
 
 .scale-legend {
-   font-size: 0.7em;
+   font-size: 0.8em;
 }
 
 input.numeric-radio {
