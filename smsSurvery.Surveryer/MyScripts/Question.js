@@ -379,7 +379,7 @@ Question.QuestionSetView = Backbone.View.extend({
       this.model.on(this.model.events.UPDATE_VIEW, this.render)
 
       this.dom = {
-         $ADD_QUESTION_GROUP: $(".btn-group", this.$el),
+         $ADD_QUESTION_GROUP: $(".question-group", this.$el),
          $QUESTION_SET_CONTENT: $("#question-set-content", this.$el),
          $PREVIEW_MODAL: $("#preview-modal", this.$el)
       };
