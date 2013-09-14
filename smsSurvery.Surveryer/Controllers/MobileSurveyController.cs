@@ -138,27 +138,18 @@ namespace smsSurvery.Surveryer.Controllers
          //we return the Id of the save surveyResult
          int savedSurveyResult = surveyResultId;
          SurveyResult surveyToAnalyze = null;
-         var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-         Tags locationTag = null;
-         if (!String.IsNullOrEmpty(location) && !location.Equals(cNoLocation))
-         {
-            var locationTagResults = (from t in db.Tags
-                                      where t.Name.Equals(location) &&
-                                         t.CompanyName.Equals(user.Company.Name) &&
-                                         t.TagTypes.FirstOrDefault().Type.Equals("Location")
-                                      select t);
-            locationTag = locationTagResults.Count() > 0 ? locationTagResults.FirstOrDefault() : null;
-         }
 
+         var companyName = "";
          //DA take all the responses and save the to the corresponding surveyResult
          if (surveyResultId < 0)
          {
             //we are dealing with a new survey result
             //we have to create a new, unique customer
             var uniqueCustomerID = Guid.NewGuid().ToString();
-            var surveyToRun = db.SurveyTemplateSet.Find(surveyTemplateId);
+            var surveyTemplateToUse = db.SurveyTemplateSet.Find(surveyTemplateId);
+            companyName = surveyTemplateToUse.UserProfile.FirstOrDefault().Company_Name;
             var customer = new Customer() { PhoneNumber = uniqueCustomerID, Name = uniqueCustomerID, Surname = uniqueCustomerID };
-            SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyTemplate = surveyToRun, Terminated = true, PercentageComplete = 1, LanguageChosenForSurvey = surveyToRun.DefaultLanguage };
+            SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyTemplate = surveyTemplateToUse, Terminated = true, PercentageComplete = 1, LanguageChosenForSurvey = surveyTemplateToUse.DefaultLanguage };
             db.SurveyResultSet.Add(newSurvey);
             DateTime resultSubmitted = DateTime.UtcNow;
             foreach (var q in questions)
@@ -175,9 +166,9 @@ namespace smsSurvery.Surveryer.Controllers
          }
          else
          {
-            //we are dealing with a "dedicated" survey
-            var surveyToRun = db.SurveyTemplateSet.Find(surveyTemplateId);
+            //we are dealing with a "dedicated" survey                
             var surveyToFill = db.SurveyResultSet.Find(surveyResultId);
+            companyName = surveyToFill.SurveyTemplate.UserProfile.FirstOrDefault().Company_Name;
             if (!surveyToFill.Terminated)
             {
                //we are not handling a survey that was already filled in
@@ -198,6 +189,17 @@ namespace smsSurvery.Surveryer.Controllers
          {
             var currentQuestion = db.QuestionSet.Find(q.Id);
             AlertsController.HandleAlertsForQuestion(currentQuestion, q.PickedAnswer, surveyToAnalyze.Id, this, logger);
+         }
+
+         Tags locationTag = null;       
+         if (!String.IsNullOrEmpty(location) && !location.Equals(cNoLocation))
+         {
+            var locationTagResults = (from t in db.Tags
+                                      where t.Name.Equals(location) &&
+                                     t.CompanyName.Equals(companyName) &&
+                                         t.TagTypes.FirstOrDefault().Type.Equals("Location")
+                                      select t);
+            locationTag = locationTagResults.Count() > 0 ? locationTagResults.FirstOrDefault() : null;
          }
          if (locationTag != null)
          {
