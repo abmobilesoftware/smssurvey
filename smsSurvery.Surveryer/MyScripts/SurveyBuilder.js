@@ -90,10 +90,12 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
                success: function (model, response, options) {
                   if (response.Result == "error") {
                      self.dom.$NOTIFICATION.text("Errors while saving.");
+                     self.dom.$ALERT_BOX.removeClass("alert-success");
                      self.dom.$ALERT_BOX.addClass("alert-error");
                   } else {
                      self.dom.$NOTIFICATION.text("Changes saved successfully.");
                      self.dom.$ALERT_BOX.removeClass("alert-error");
+                     self.dom.$ALERT_BOX.addClass("alert-success");
                      self.model.updateQuestionSetModel();
                   }
                   self.dom.$ALERT_BOX.show();
