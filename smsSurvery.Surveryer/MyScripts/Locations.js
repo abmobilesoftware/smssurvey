@@ -127,7 +127,7 @@ window.LocationView = Backbone.View.extend({
          {
             "ActiveSurveyId": activeSurveyId,
             "ActiveSurveyDescription" : activeSurveyDescription
-         }, { validate: false, silent: false });
+         }, { validate: false, silent: true });
 
       //hide to discard button, we will bring it up if validation fails
       $(".discard-location-btn", this.$el).hide();
