@@ -23,6 +23,10 @@ namespace smsSurvey.dbInterface
       [Required]
       public string Description { get; set; }
 
+      [DisplayName("Introductory message")]
+      [Required]
+      public string IntroMessage { get; set; }
+
       [DisplayName("Thank you message & follow up")]
       [Required]
       [MaxLength(160, ErrorMessage="Max 160 characters")]      
