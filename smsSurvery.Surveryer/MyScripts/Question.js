@@ -282,7 +282,8 @@ Question.QuestionView = Backbone.View.extend({
       this.alertsModalModel = new SurveyModals.AlertsModalModel({
          QuestionAlertSet: this.model.get("QuestionAlertSet"),
          QuestionType: this.model.get("Type"),
-         Modal: modalModel
+         Modal: modalModel,
+         Locations: this.model.get("Locations")
       });
       this.model.setAlertsModalModel(this.alertsModalModel);
       this.alertsModalView = null;
@@ -527,10 +528,12 @@ Question.QuestionSetModel = Backbone.Model.extend({
       });
       return isValid;
    },
-   updateQuestionSetCollection: function (jsonQuestions) {
+   updateQuestionSetCollection: function (jsonQuestions, locations) {
       var questionModels = [];
       if (jsonQuestions != undefined) {
          for (var i = 0; i < jsonQuestions.length; ++i) {
+            var jsonQuestion = jsonQuestions[i];
+            jsonQuestion.Locations = locations;
             var question = new Question.QuestionModel(jsonQuestions[i]);
             questionModels.push(question);
          }

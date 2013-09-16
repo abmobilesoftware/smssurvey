@@ -263,6 +263,23 @@ namespace smsSurvery.Surveryer.Controllers
          }
       }
 
+      public JsonResult GetAllLocationTags()
+      {
+         try
+         {
+            var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            var locationTags = (from tag in user.Company.Tags
+                                select
+                                (from ct in tag.TagTypes where ct.Type == "Location" select tag.Name)).SelectMany(x => x);
+            return Json(locationTags, JsonRequestBehavior.AllowGet);
+         }
+         catch (Exception ex)
+         {
+            logger.Error("GetAllLocationTags error", ex);
+            return null;
+         }
+      }
+
       /*for each question different from free text build a bar chart ready structure that can be displayed
           * assume that each tag defines a location
           */

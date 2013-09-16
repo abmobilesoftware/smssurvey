@@ -69,7 +69,8 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
    defaults: {
       QuestionAlertSet: [],
       QuestionType: "",
-      Modal: {}
+      Modal: {},
+      Locations:[]
    },
    initialize: function () {
       _.bindAll(this, "refreshAlerts");
@@ -171,6 +172,7 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
             Type: "email"
          },
          QuestionType: this.get("QuestionType"),
+         Locations: this.get("Locations"),
          TriggerAnswerValues: this.getTriggerAnswerValues(this.get("QuestionType"))
       }));
    },
@@ -184,6 +186,7 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
          alert.AlertOperatorsValues = this.getAlertOperators(questionType);
          alert.AlertOperatorsLabels = this.getAlertOperatorsLabels(questionType);
          alert.TriggerAnswerValues = this.getTriggerAnswerValues(questionType);
+         alert.Locations = this.get("Locations")
          alert.QuestionType = questionType;
          var alertModel = new SurveyModals.AlertModel(alert);
          this.alertsCollection.add(alertModel);
@@ -239,7 +242,8 @@ SurveyModals.AlertView = Backbone.View.extend({
       "change .alert-trigger-answer-select": "updateTriggerAnswer",
       "change .alert-operator-select": "updateOperator",
       "keyup .alert-distribution-list-input": "updateDistributionList",
-      "keyup .alert-description-input": "updateDescription"
+      "keyup .alert-description-input": "updateDescription",
+      "change .alert-location-select": "updateLocation"
    },
    initialize: function () {
       _.bindAll(this, "render", "deleteAlert", "validationResult");
@@ -255,7 +259,8 @@ SurveyModals.AlertView = Backbone.View.extend({
          $ALERT_TRIGGER_ANSWER_INPUT: $(".alert-trigger-answer-input", this.$el),
          $ALERT_DISTRIBUTION_LIST_INPUT: $(".alert-distribution-list-input", this.$el),
          $ALERT_OPERATOR_SELECT: $(".alert-operator-select", this.$el),
-         $ALERT_TRIGGER_ANSWER_SELECT: $(".alert-trigger-answer-select", this.$el)         
+         $ALERT_TRIGGER_ANSWER_SELECT: $(".alert-trigger-answer-select", this.$el),
+         $ALERT_LOCATION_SELECT: $(".alert-location-select", this.$el)
       }
       this.dom.$ALERT_TRIGGER_ANSWER_SELECT.chosen({
          width: "45%",
@@ -263,6 +268,11 @@ SurveyModals.AlertView = Backbone.View.extend({
          inherit_select_classes: true
       });
       this.dom.$ALERT_OPERATOR_SELECT.chosen({
+         width: "45%",
+         disable_search_threshold: 10,
+         inherit_select_classes: true
+      });
+      this.dom.$ALERT_LOCATION_SELECT.chosen({
          width: "45%",
          disable_search_threshold: 10,
          inherit_select_classes: true
@@ -286,7 +296,10 @@ SurveyModals.AlertView = Backbone.View.extend({
    },
    updateOperator: function (event) {
       this.model.updateOperator(event.currentTarget.value);
-   },   
+   },
+   updateLocation: function(event) {
+      this.model.updateLocation(event.currentTarget.value);
+   },
    validationResult: function (result) {
       var invalidFieldClass = SurveyUtilities.Utilities.CONSTANTS_CLASS.INVALID_FIELD;
       this.dom.$ALERT_DESCRIPTION_INPUT.removeClass(invalidFieldClass);
@@ -294,6 +307,7 @@ SurveyModals.AlertView = Backbone.View.extend({
       this.dom.$ALERT_TRIGGER_ANSWER_INPUT.removeClass(invalidFieldClass);
       this.dom.$ALERT_DISTRIBUTION_LIST_INPUT.removeClass(invalidFieldClass);
       this.dom.$ALERT_OPERATOR_SELECT_DIV.removeClass(invalidFieldClass);
+      this.dom.$ALERT_LOCATION_SELECT.removeClass(invalidFieldClass);
       if (result != "valid") {
          for (var i = 0; i < result.length; ++i) {
             if (result[i] == this.model.errors.INVALID_DESCRIPTION) {
@@ -305,6 +319,8 @@ SurveyModals.AlertView = Backbone.View.extend({
                this.dom.$ALERT_DISTRIBUTION_LIST_INPUT.addClass(invalidFieldClass);
             } else if (result[i] == this.model.errors.INVALID_OPERATOR) {
                this.dom.$ALERT_OPERATOR_SELECT_DIV.addClass(invalidFieldClass);
+            } else if (result[i] == this.model.errors.INVALID_LOCATION) {
+               this.dom.$ALERT_LOCATION_SELECT.addClass(invalidFieldClass);
             }
          }
       }
@@ -317,6 +333,7 @@ SurveyModals.AlertModel = Backbone.Model.extend({
       INVALID_TRIGGER_ANSWER: "invalid trigger answer",
       INVALID_DISTRIBUTION_LIST: "invalid distribution list",
       INVALID_OPERATOR: "invalid operator",
+      INVALID_LOCATION: "invalid location",
       VALID: "valid"
    },
    events: {
@@ -330,7 +347,8 @@ SurveyModals.AlertModel = Backbone.Model.extend({
       TriggerAnswer: "",
       AlertOperatorsValues: [],
       AlertOperatorsLabels: [],
-      AlertNotification: {}
+      AlertNotification: {},
+      Location: ""
    },
    updateTriggerAnswer: function (newTriggerAnswer) {
       this.set("TriggerAnswer", newTriggerAnswer);
@@ -351,6 +369,13 @@ SurveyModals.AlertModel = Backbone.Model.extend({
    },
    updateOperator: function (newOperator) {
       this.set("Operator", newOperator);
+      var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
+      Backbone.trigger(attributeChangedEvent);
+   },
+   updateLocation: function (newLocation) {
+      var alertNotification = this.get("AlertNotification");
+      alertNotification.Location = newLocation;
+      this.set("AlertNotification", alertNotification);
       var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
       Backbone.trigger(attributeChangedEvent);
    },
@@ -376,6 +401,10 @@ SurveyModals.AlertModel = Backbone.Model.extend({
       if (this.get("Operator") == "" || this.get("Operator") == Question.noValueAnswer) {
          hasErrors = true;
          errors.push(this.errors.INVALID_OPERATOR);
+      }
+      if (this.get("AlertNotification").Location == "" || this.get("AlertNotification").Location == Question.noValueAnswer) {
+         hasErrors = true;
+         errors.push(this.errors.INVALID_LOCATION);
       }
       if (!areEmailsValid) {
          hasErrors = true;

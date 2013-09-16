@@ -173,7 +173,7 @@ namespace smsSurvery.Surveryer.Controllers
        /// <param name="answerText"></param>
        /// <param name="surveyResultId"></param>
        /// <param name="ctrl"></param>
-        public static void HandleAlertsForQuestion(Question currentQuestion, String answerText, int surveyResultId, Controller ctrl, log4net.ILog logger)
+        public static void HandleAlertsForQuestion(Question currentQuestion, String answerText, int surveyResultId, string location, Controller ctrl, log4net.ILog logger)
         {
            //triggerAnswer, when containing more values, should be ; separated
            foreach (var alert in currentQuestion.QuestionAlertSet)
@@ -296,7 +296,7 @@ namespace smsSurvery.Surveryer.Controllers
               {
                  foreach (var notification in alert.AlertNotificationSet)
                  {
-                    SendNotificationForAlert(notification, answerText, alertCause, surveyResultId, ctrl);
+                    SendNotificationForAlert(notification, answerText, alertCause, surveyResultId, location, ctrl);
                  }
               }
            }
@@ -369,26 +369,29 @@ namespace smsSurvery.Surveryer.Controllers
            return null;
         }
 
-        public static void SendNotificationForAlert(AlertNotificationSet alert, String answerText, String alertCause, int surveyResultId, Controller ctrl)
+        public static void SendNotificationForAlert(AlertNotificationSet alert, String answerText, String alertCause, int surveyResultId, string location, Controller ctrl)
         {
-           switch (alert.Type)
+           if (alert.LocationTag.Name.ToLower().Equals(location.ToLower()))
            {
-              case "email":
-                 AlertMailer mailer = new AlertMailer();
-                 //DA here we compose the email Subject & message
-                 var emailSubject = String.Format("Alert '{0}' triggered for question '{1}' ", alert.QuestionAlertSet.Description, alert.QuestionAlertSet.QuestionSet.Text);
-                 var message = "";
-                 //string linkToSurveyResults = String.Format("http://localhost:3288/SurveyResult/Details/{0}", surveyResultId);
-                 UrlHelper u = new UrlHelper(ctrl.ControllerContext.RequestContext);
-                 string linkToSurveyResults = ctrl.HttpContext.Request.Url.Scheme + "://" + ctrl.HttpContext.Request.Url.Authority + u.Action("Details", "SurveyResult", new { id = surveyResultId });
-                 var mail = mailer.SendAlert(emailSubject, alert.DistributionList, message, alertCause, linkToSurveyResults);
-                 mail.SendAsync();
-                 break;
-              case "twitter":
-                 break;
-              default:
-                 logger.ErrorFormat("Invalid notification alert detected {0}", alert.Type);
-                 break;
+              switch (alert.Type)
+              {
+                 case "email":
+                    AlertMailer mailer = new AlertMailer();
+                    //DA here we compose the email Subject & message
+                    var emailSubject = String.Format("Alert '{0}' triggered for question '{1}' ", alert.QuestionAlertSet.Description, alert.QuestionAlertSet.QuestionSet.Text);
+                    var message = "";
+                    //string linkToSurveyResults = String.Format("http://localhost:3288/SurveyResult/Details/{0}", surveyResultId);
+                    UrlHelper u = new UrlHelper(ctrl.ControllerContext.RequestContext);
+                    string linkToSurveyResults = ctrl.HttpContext.Request.Url.Scheme + "://" + ctrl.HttpContext.Request.Url.Authority + u.Action("Details", "SurveyResult", new { id = surveyResultId });
+                    var mail = mailer.SendAlert(emailSubject, alert.DistributionList, message, alertCause, linkToSurveyResults);
+                    mail.SendAsync();
+                    break;
+                 case "twitter":
+                    break;
+                 default:
+                    logger.ErrorFormat("Invalid notification alert detected {0}", alert.Type);
+                    break;
+              }
            }
         }
         #endregion

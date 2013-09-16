@@ -539,12 +539,6 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\smsSurvey.dbInterface\smsSurvey.dbInterface.csproj">
-      <Project>{ce8ff7ed-dfb9-4908-bf2e-a3699a3512ff}</Project>
-      <Name>smsSurvey.dbInterface</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
@@ -556,6 +550,12 @@
       <Generator>PublicResXFileCodeGenerator</Generator>
       <LastGenOutput>Global.ro.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\smsSurvey.dbInterface\smsSurvey.dbInterface.csproj">
+      <Project>{ce8ff7ed-dfb9-4908-bf2e-a3699a3512ff}</Project>
+      <Name>smsSurvey.dbInterface</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

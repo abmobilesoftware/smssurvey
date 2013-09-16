@@ -158,7 +158,8 @@ namespace smsSurvery.Surveryer.Controllers
                                               : null;
                   var dbAlertNotification = (efAlertNotification != null) ?
                      new ClientAlertNotification(efAlertNotification.Id,
-                        efAlertNotification.Type, efAlertNotification.DistributionList) : null;
+                        efAlertNotification.Type, efAlertNotification.DistributionList,
+                        efAlertNotification.LocationTag.Name) : null;
                   ClientQuestionAlert qa =
                    new ClientQuestionAlert(questionAlert.Id,
                       questionAlert.Description, questionAlert.Operator,
@@ -210,6 +211,7 @@ namespace smsSurvery.Surveryer.Controllers
          //DA TODO we should have some check that the new language is a valid language identifier ( global-LOCAL)
          try
          {
+            UserProfile user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             SurveyTemplate surveyTemplate = null;
             if (clientSurveyTemplate.Id >= 0)
             {
@@ -279,12 +281,17 @@ namespace smsSurvery.Surveryer.Controllers
                                  dbQuestionAlert.TriggerAnswer = clientQuestionAlert.TriggerAnswer;
                                  dbQuestionAlert.Description = clientQuestionAlert.Description;
                                  var clientAlertNotification = clientQuestionAlert.AlertNotification;
+                                 var locationTag = (from t in db.Tags
+                                                    where t.CompanyName.Equals(user.Company.Name) &&
+                                                       t.Name.Equals(clientAlertNotification.Location)
+                                                    select t).FirstOrDefault();
                                  var dbAlertNotificationSet = dbQuestionAlert.AlertNotificationSet;
                                  if (dbAlertNotificationSet.Count > 0)
                                  {
                                     var dbAlertNotification = dbAlertNotificationSet.First();
                                     dbAlertNotification.DistributionList = clientAlertNotification.DistributionList;
                                     dbAlertNotification.Type = clientAlertNotification.Type;
+                                    dbAlertNotification.LocationTag = locationTag;
                                  }
                                  dbQuestionAlert.AlertNotificationSet = dbAlertNotificationSet;
                               }
@@ -299,9 +306,14 @@ namespace smsSurvery.Surveryer.Controllers
                                  ICollection<AlertNotificationSet> dbAlertNotificationSet = new
                                  List<AlertNotificationSet>();
                                  var dbAlertNotification = new AlertNotificationSet();
+                                 var locationTag = (from t in db.Tags
+                                                    where t.CompanyName.Equals(user.Company.Name) &&
+                                                       t.Name.Equals(clientAlertNotification.Location)
+                                                    select t).FirstOrDefault();
                                  dbAlertNotification.Type = clientAlertNotification.Type;
                                  dbAlertNotification.DistributionList = clientAlertNotification.DistributionList;
-                                 dbAlertNotificationSet.Add(dbAlertNotification);
+                                 dbAlertNotification.LocationTag = locationTag;
+                                 dbAlertNotificationSet.Add(dbAlertNotification);                                 
                                  dbQuestionAlert.AlertNotificationSet = dbAlertNotificationSet;
                                  dbQuestionAlerts.Add(dbQuestionAlert);
                               }
@@ -336,9 +348,14 @@ namespace smsSurvery.Surveryer.Controllers
                               ICollection<AlertNotificationSet> dbAlertNotificationSet = new
                               List<AlertNotificationSet>();
                               var dbAlertNotification = new AlertNotificationSet();
+                              var locationTag = (from t in db.Tags
+                                                 where t.CompanyName.Equals(user.Company.Name) &&
+                                                    t.Name.Equals(clientAlertNotification.Location)
+                                                 select t).FirstOrDefault();
                               dbAlertNotification.Type = clientAlertNotification.Type;
                               dbAlertNotification.DistributionList = clientAlertNotification.DistributionList;
                               dbAlertNotificationSet.Add(dbAlertNotification);
+                              dbAlertNotification.LocationTag = locationTag;
                               dbQuestionAlert.AlertNotificationSet = dbAlertNotificationSet;
                               dbQuestionAlerts.Add(dbQuestionAlert);
                            }
@@ -355,7 +372,6 @@ namespace smsSurvery.Surveryer.Controllers
             else
             {
                surveyTemplate = new SurveyTemplate();
-               UserProfile user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
                surveyTemplate.Provider = user.DefaultProvider;
                surveyTemplate.Description = clientSurveyTemplate.Description;
                surveyTemplate.IntroMessage = clientSurveyTemplate.IntroMessage;
@@ -376,18 +392,26 @@ namespace smsSurvery.Surveryer.Controllers
                         {
                            ICollection<AlertNotificationSet> dbAlertNotificationSet =
                               new List<AlertNotificationSet>();
+                           
                            var clientAlertNotification = clientQuestionAlert.AlertNotification;
+                           var locationTag = (from t in db.Tags
+                                      where t.CompanyName.Equals(user.Company.Name) &&
+                                         t.Name.Equals(clientAlertNotification.Location)
+                                      select t).FirstOrDefault();
                            AlertNotificationSet dbAlertNotification = new AlertNotificationSet();
                            dbAlertNotification.DistributionList = clientAlertNotification.DistributionList;
                            dbAlertNotification.Type = clientAlertNotification.Type;
+                           dbAlertNotification.LocationTag = locationTag;
                            db.AlertNotificationSet.Add(dbAlertNotification);
                            dbAlertNotificationSet.Add(dbAlertNotification);
-
+                           
                            QuestionAlertSet dbQuestionAlert = new QuestionAlertSet();
                            dbQuestionAlert.AlertNotificationSet = dbAlertNotificationSet;
                            dbQuestionAlert.Operator = clientQuestionAlert.Operator;
                            dbQuestionAlert.TriggerAnswer = clientQuestionAlert.TriggerAnswer;
                            dbQuestionAlert.Description = clientQuestionAlert.Description;
+                           //dbQuestionAlert
+                           
                            db.QuestionAlertSet.Add(dbQuestionAlert);
                            dbQuestionAlertSet.Add(dbQuestionAlert);
                         }

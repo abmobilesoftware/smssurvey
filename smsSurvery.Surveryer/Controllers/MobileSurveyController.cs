@@ -188,7 +188,7 @@ namespace smsSurvery.Surveryer.Controllers
          foreach (var q in questions)
          {
             var currentQuestion = db.QuestionSet.Find(q.Id);
-            AlertsController.HandleAlertsForQuestion(currentQuestion, q.PickedAnswer, surveyToAnalyze.Id, this, logger);
+            AlertsController.HandleAlertsForQuestion(currentQuestion, q.PickedAnswer, surveyToAnalyze.Id, location, this, logger);
          }
 
          Tags locationTag = null;       

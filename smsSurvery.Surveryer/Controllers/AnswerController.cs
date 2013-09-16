@@ -200,7 +200,7 @@ namespace smsSurvery.Surveryer.Controllers
                        surveyLanguage = !String.IsNullOrEmpty(surveyLanguage) ? surveyLanguage : runningSurvey.SurveyTemplate.DefaultLanguage;
                        //DA choose the appropriate language for the survey
                        System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture(surveyLanguage);
-                       SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion, runningSurvey.SurveyTemplate.QuestionSet.Count(),false, db);                      
+                       SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion, runningSurvey.SurveyTemplate.QuestionSet.Count(), false, db);
                     }
                  }
                  else
@@ -211,9 +211,14 @@ namespace smsSurvery.Surveryer.Controllers
                     customer.SurveyInProgress = false;
                     db.SaveChanges();
                     //send ThankYouMessage
-                    SendThankYouToCustomer(customer, numberToSendFrom, surveyToRun);                    
+                    SendThankYouToCustomer(customer, numberToSendFrom, surveyToRun);
                  }
-                 AlertsController.HandleAlertsForQuestion(currentQuestion, text, runningSurvey.Id, this, logger);
+                 var locationTags = from t in latestSurveyResult.Tags 
+                                    where t.TagTypes.First().Type.Equals("Location") select t;
+                 foreach (var locationTag in locationTags)
+                 {
+                    AlertsController.HandleAlertsForQuestion(currentQuestion, text, runningSurvey.Id, locationTag.Name, this, logger);
+                 }
               }
               else
               {

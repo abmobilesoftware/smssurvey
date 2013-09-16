@@ -140,6 +140,18 @@
 
 <script type="text/template" id="alert-template">
    <div class="alert-entry">
+      <span class="location-input-label"><strong>For location:</strong></span>
+      <select data-placeholder="Choose a location" class="chosen-select alert-location-select">
+         <option value="noValue"></option>
+         <%
+            for (var i=0; i < Locations.length; ++i) {
+         %>
+            <option <% if (AlertNotification.Location == Locations[i]) { %> selected="selected" <% } %> value="<%= Locations[i] %>"><%= Locations[i] %></option>
+         <%
+            }
+         %>
+      </select>
+      <br />
       <span class="input-label"><strong>Description:</strong></span>
       <input type="text" class="alert-description-input" placeholder="Ex: Insert description ..." value="<%= Description %>" />
       <button class="btn btn-danger delete-alert-btn"><img src="/Content/images/close_20.png" /></button>
@@ -187,6 +199,7 @@
       <br/>
       <span class="bottom-input-label"><strong>Send mail to:</strong></span>
       <input type="text" class="alert-distribution-list-input bottom-input" value="<%= AlertNotification.DistributionList %>" placeholder="Ex: address1@domain.net,address2@domain.net"/>
+      <br />      
   </div>
 </script>
 
