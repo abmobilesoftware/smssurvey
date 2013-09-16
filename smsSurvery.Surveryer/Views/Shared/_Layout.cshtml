@@ -14,10 +14,8 @@
 <body>
    <header>
       <div class="content-wrapper">
-         <div class="float-left logo">
-            @*<img class="site-title" src="~/Content/images/logo.png" />*@
-            @*<p class="site-title">@Html.ActionLink("your logo here", "Index", "Home")</p>*@
-            @Url.ImageLink(Url.Content("~/Content/images/logo.png"), "home", "Index", "Home", "SMSSurvey", null, "logo")
+         <div class="float-left logo">            
+            @Url.ImageLink(Url.Content("~/Content/images/logo.png"), "home", "Index", "SurveyTemplate", "Survey templates", null, "logo")
          </div>
          <div class="float-right">
             <section id="login">
