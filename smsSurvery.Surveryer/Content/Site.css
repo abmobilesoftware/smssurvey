@@ -1043,9 +1043,9 @@ input[type=checkbox].css-checkbox:checked + label.css-label { background-positio
    float:left;
    padding-left:6px;
    border-right: 1px solid #DDD;
-}
-.locationsHeader {
    background-color:#F9F9F9;
+}
+.locationsHeader {  
    display: inline-block;
    width:100%;
 }
