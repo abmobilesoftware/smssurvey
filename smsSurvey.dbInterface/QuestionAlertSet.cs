@@ -24,8 +24,11 @@ namespace smsSurvey.dbInterface
         public string Operator { get; set; }
         public string TriggerAnswer { get; set; }
         public int QuestionId { get; set; }
+        public string Tags_CompanyName { get; set; }
+        public Nullable<int> Tags_Id { get; set; }
     
         public virtual ICollection<AlertNotificationSet> AlertNotificationSet { get; set; }
         public virtual Question QuestionSet { get; set; }
+        public virtual Tags LocationTag { get; set; }
     }
 }

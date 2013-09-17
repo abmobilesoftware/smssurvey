@@ -138,11 +138,12 @@ namespace smsSurvery.Surveryer.Controllers
          //we return the Id of the save surveyResult
          int savedSurveyResult = surveyResultId;
          SurveyResult surveyToAnalyze = null;
-
+         var locationTags = new List<string>();
          var companyName = "";
          //DA take all the responses and save the to the corresponding surveyResult
          if (surveyResultId < 0)
          {
+            locationTags.Add(location);
             //we are dealing with a new survey result
             //we have to create a new, unique customer
             var uniqueCustomerID = Guid.NewGuid().ToString();
@@ -168,6 +169,18 @@ namespace smsSurvery.Surveryer.Controllers
          {
             //we are dealing with a "dedicated" survey                
             var surveyToFill = db.SurveyResultSet.Find(surveyResultId);
+            var lt = from x in surveyToFill.Tags where x.TagTypes.First().Type.Equals("Location") select x;
+            if (lt.Count() > 0)
+            {
+               foreach (var a in lt)
+               {
+                  locationTags.Add(a.Name);
+               }
+            }
+            else
+            {
+               locationTags.Add("noLocation");
+            }
             companyName = surveyToFill.SurveyTemplate.UserProfile.FirstOrDefault().Company_Name;
             if (!surveyToFill.Terminated)
             {
@@ -188,7 +201,7 @@ namespace smsSurvery.Surveryer.Controllers
          foreach (var q in questions)
          {
             var currentQuestion = db.QuestionSet.Find(q.Id);
-            AlertsController.HandleAlertsForQuestion(currentQuestion, q.PickedAnswer, surveyToAnalyze.Id, location, this, logger);
+            AlertsController.HandleAlertsForQuestion(currentQuestion, q.PickedAnswer, surveyToAnalyze.Id, locationTags, this, logger);
          }
 
          Tags locationTag = null;       

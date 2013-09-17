@@ -264,6 +264,7 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
          });
       } else {
          this.set("Id", -1);
+         this.setLocationsOnQuestionSetModel(this.locations);
          self.trigger(self.events.SURVEY_LOADED);
       }
    },
@@ -288,5 +289,8 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
    },
    getNoOfAttributesChanged: function () {
       return this.noOfAttributesChanged;
+   },
+   setLocationsOnQuestionSetModel: function (locations) {
+      this.questionSetModel.setLocations(locations);
    }
 });

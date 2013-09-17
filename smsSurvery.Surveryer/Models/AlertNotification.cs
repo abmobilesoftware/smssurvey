@@ -10,18 +10,15 @@ namespace smsSurvery.Surveryer.ClientModels
       public int Id { get; set; }
       public string Type { get; set; }
       public string DistributionList { get; set; }
-      public string Location { get; set; }
-
+      
       public ClientAlertNotification(
          int iId,
          string iType,
-         string iDistributionList,
-         string iLocation)
+         string iDistributionList)
       {
          Id = iId;
          Type = iType;
-         DistributionList = iDistributionList;
-         Location = iLocation;
+         DistributionList = iDistributionList;         
       }
 
       public ClientAlertNotification() { }

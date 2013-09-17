@@ -215,10 +215,12 @@ namespace smsSurvery.Surveryer.Controllers
                  }
                  var locationTags = from t in latestSurveyResult.Tags 
                                     where t.TagTypes.First().Type.Equals("Location") select t;
+                 var locationTagsList = new List<string>();
                  foreach (var locationTag in locationTags)
                  {
-                    AlertsController.HandleAlertsForQuestion(currentQuestion, text, runningSurvey.Id, locationTag.Name, this, logger);
+                    locationTagsList.Add(locationTag.Name);
                  }
+                 AlertsController.HandleAlertsForQuestion(currentQuestion, text, runningSurvey.Id, locationTagsList, this, logger);
               }
               else
               {

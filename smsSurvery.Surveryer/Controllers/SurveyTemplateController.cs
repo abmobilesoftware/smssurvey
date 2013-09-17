@@ -18,7 +18,7 @@ namespace smsSurvery.Surveryer.Controllers
    {
       private smsSurveyEntities db = new smsSurveyEntities();
       private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-      
+
       [Authorize]
       public ActionResult Index(int page = 1)
       {
@@ -26,7 +26,7 @@ namespace smsSurvery.Surveryer.Controllers
          int NUMBER_OF_RESULTS_PER_PAGE = 10;
          UserProfile user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
          var res = user.SurveyTemplateSet;
-         var pageRes = res.Skip((page-1) * NUMBER_OF_RESULTS_PER_PAGE).Take(NUMBER_OF_RESULTS_PER_PAGE);
+         var pageRes = res.Skip((page - 1) * NUMBER_OF_RESULTS_PER_PAGE).Take(NUMBER_OF_RESULTS_PER_PAGE);
          IPagedList<SurveyTemplate> pagingDetails = new PagedList<SurveyTemplate>(res, currentPageIndex, NUMBER_OF_RESULTS_PER_PAGE, res.Count());
          ViewBag.pagingDetails = pagingDetails;
          return View(pageRes.ToList());
@@ -45,7 +45,7 @@ namespace smsSurvery.Surveryer.Controllers
          return View("Index", pageRes.ToList());
       }
 
-            public ActionResult Details(int id = 0)
+      public ActionResult Details(int id = 0)
       {
          SurveyTemplate surveyTemplate = db.SurveyTemplateSet.Find(id);
          if (surveyTemplate == null)
@@ -62,7 +62,7 @@ namespace smsSurvery.Surveryer.Controllers
          ViewBag.Action = "Create";
          return View();
       }
-     
+
       [HttpPost]
       [ValidateAntiForgeryToken]
       [Authorize]
@@ -117,7 +117,7 @@ namespace smsSurvery.Surveryer.Controllers
          }
 
       }
-     
+
       private string GetAnonymousMobileSurveyLocation(SurveyTemplate surveyTemplate, System.Web.Routing.RequestContext rc)
       {
          UrlHelper u = new UrlHelper(rc);
@@ -131,7 +131,7 @@ namespace smsSurvery.Surveryer.Controllers
          if (surveyTemplate == null)
          {
             return HttpNotFound();
-         }       
+         }
          return View(surveyTemplate);
       }
 
@@ -158,12 +158,11 @@ namespace smsSurvery.Surveryer.Controllers
                                               : null;
                   var dbAlertNotification = (efAlertNotification != null) ?
                      new ClientAlertNotification(efAlertNotification.Id,
-                        efAlertNotification.Type, efAlertNotification.DistributionList,
-                        efAlertNotification.LocationTag.Name) : null;
+                        efAlertNotification.Type, efAlertNotification.DistributionList) : null;
                   ClientQuestionAlert qa =
                    new ClientQuestionAlert(questionAlert.Id,
                       questionAlert.Description, questionAlert.Operator,
-                      questionAlert.TriggerAnswer, dbAlertNotification);
+                      questionAlert.TriggerAnswer, (questionAlert.LocationTag != null) ? questionAlert.LocationTag.Name: "", dbAlertNotification);
                   questionAlertSet.Add(qa);
                }
                ClientQuestion q =
@@ -222,7 +221,7 @@ namespace smsSurvery.Surveryer.Controllers
                }
                surveyTemplate.ThankYouMessage = clientSurveyTemplate.ThankYouMessage;
                surveyTemplate.Description = clientSurveyTemplate.Description;
-               surveyTemplate.IntroMessage = clientSurveyTemplate.IntroMessage;              
+               surveyTemplate.IntroMessage = clientSurveyTemplate.IntroMessage;
                surveyTemplate.DefaultLanguage = clientSurveyTemplate.DefaultLanguage;
                var dbQuestions = surveyTemplate.QuestionSet;
                var clientQuestions = clientSurveyTemplate.QuestionSet;
@@ -277,21 +276,21 @@ namespace smsSurvery.Surveryer.Controllers
                               {
                                  // Update question alert
                                  var dbQuestionAlert = dbQuestionAlertResult.First();
+                                 var locationTag = (from t in db.Tags
+                                                    where t.CompanyName.Equals(user.Company.Name) &&
+                                                       t.Name.Equals(clientQuestionAlert.LocationTag)
+                                                    select t).FirstOrDefault();
                                  dbQuestionAlert.Operator = clientQuestionAlert.Operator;
                                  dbQuestionAlert.TriggerAnswer = clientQuestionAlert.TriggerAnswer;
                                  dbQuestionAlert.Description = clientQuestionAlert.Description;
+                                 dbQuestionAlert.LocationTag = locationTag;
                                  var clientAlertNotification = clientQuestionAlert.AlertNotification;
-                                 var locationTag = (from t in db.Tags
-                                                    where t.CompanyName.Equals(user.Company.Name) &&
-                                                       t.Name.Equals(clientAlertNotification.Location)
-                                                    select t).FirstOrDefault();
                                  var dbAlertNotificationSet = dbQuestionAlert.AlertNotificationSet;
                                  if (dbAlertNotificationSet.Count > 0)
                                  {
                                     var dbAlertNotification = dbAlertNotificationSet.First();
                                     dbAlertNotification.DistributionList = clientAlertNotification.DistributionList;
                                     dbAlertNotification.Type = clientAlertNotification.Type;
-                                    dbAlertNotification.LocationTag = locationTag;
                                  }
                                  dbQuestionAlert.AlertNotificationSet = dbAlertNotificationSet;
                               }
@@ -299,21 +298,22 @@ namespace smsSurvery.Surveryer.Controllers
                               {
                                  // Add question alert
                                  var dbQuestionAlert = new QuestionAlertSet();
+                                 var locationTag = (from t in db.Tags
+                                                    where t.CompanyName.Equals(user.Company.Name) &&
+                                                       t.Name.Equals(clientQuestionAlert.LocationTag)
+                                                    select t).FirstOrDefault();
                                  dbQuestionAlert.Description = clientQuestionAlert.Description;
                                  dbQuestionAlert.Operator = clientQuestionAlert.Operator;
                                  dbQuestionAlert.TriggerAnswer = clientQuestionAlert.TriggerAnswer;
+                                 dbQuestionAlert.LocationTag = locationTag;
                                  var clientAlertNotification = clientQuestionAlert.AlertNotification;
                                  ICollection<AlertNotificationSet> dbAlertNotificationSet = new
                                  List<AlertNotificationSet>();
                                  var dbAlertNotification = new AlertNotificationSet();
-                                 var locationTag = (from t in db.Tags
-                                                    where t.CompanyName.Equals(user.Company.Name) &&
-                                                       t.Name.Equals(clientAlertNotification.Location)
-                                                    select t).FirstOrDefault();
+
                                  dbAlertNotification.Type = clientAlertNotification.Type;
                                  dbAlertNotification.DistributionList = clientAlertNotification.DistributionList;
-                                 dbAlertNotification.LocationTag = locationTag;
-                                 dbAlertNotificationSet.Add(dbAlertNotification);                                 
+                                 dbAlertNotificationSet.Add(dbAlertNotification);
                                  dbQuestionAlert.AlertNotificationSet = dbAlertNotificationSet;
                                  dbQuestionAlerts.Add(dbQuestionAlert);
                               }
@@ -341,21 +341,21 @@ namespace smsSurvery.Surveryer.Controllers
                            foreach (var clientQuestionAlert in clientQuestionAlerts)
                            {
                               var dbQuestionAlert = new QuestionAlertSet();
+                              var locationTag = (from t in db.Tags
+                                                 where t.CompanyName.Equals(user.Company.Name) &&
+                                                    t.Name.Equals(clientQuestionAlert.LocationTag)
+                                                 select t).FirstOrDefault();
                               dbQuestionAlert.Description = clientQuestionAlert.Description;
                               dbQuestionAlert.Operator = clientQuestionAlert.Operator;
                               dbQuestionAlert.TriggerAnswer = clientQuestionAlert.TriggerAnswer;
+                              dbQuestionAlert.LocationTag = locationTag;
                               var clientAlertNotification = clientQuestionAlert.AlertNotification;
                               ICollection<AlertNotificationSet> dbAlertNotificationSet = new
                               List<AlertNotificationSet>();
                               var dbAlertNotification = new AlertNotificationSet();
-                              var locationTag = (from t in db.Tags
-                                                 where t.CompanyName.Equals(user.Company.Name) &&
-                                                    t.Name.Equals(clientAlertNotification.Location)
-                                                 select t).FirstOrDefault();
                               dbAlertNotification.Type = clientAlertNotification.Type;
                               dbAlertNotification.DistributionList = clientAlertNotification.DistributionList;
                               dbAlertNotificationSet.Add(dbAlertNotification);
-                              dbAlertNotification.LocationTag = locationTag;
                               dbQuestionAlert.AlertNotificationSet = dbAlertNotificationSet;
                               dbQuestionAlerts.Add(dbQuestionAlert);
                            }
@@ -365,8 +365,8 @@ namespace smsSurvery.Surveryer.Controllers
                      }
                   }
                }
-               db.SaveChanges();               
-               var mobileWebsiteLocation = GetAnonymousMobileSurveyLocation(surveyTemplate, this.ControllerContext.RequestContext);               
+               db.SaveChanges();
+               var mobileWebsiteLocation = GetAnonymousMobileSurveyLocation(surveyTemplate, this.ControllerContext.RequestContext);
                return Json(GetSurveyTemplateObject(clientSurveyTemplate.Id), JsonRequestBehavior.AllowGet);
             }
             else
@@ -392,26 +392,27 @@ namespace smsSurvery.Surveryer.Controllers
                         {
                            ICollection<AlertNotificationSet> dbAlertNotificationSet =
                               new List<AlertNotificationSet>();
-                           
+
                            var clientAlertNotification = clientQuestionAlert.AlertNotification;
-                           var locationTag = (from t in db.Tags
-                                      where t.CompanyName.Equals(user.Company.Name) &&
-                                         t.Name.Equals(clientAlertNotification.Location)
-                                      select t).FirstOrDefault();
+
                            AlertNotificationSet dbAlertNotification = new AlertNotificationSet();
                            dbAlertNotification.DistributionList = clientAlertNotification.DistributionList;
                            dbAlertNotification.Type = clientAlertNotification.Type;
-                           dbAlertNotification.LocationTag = locationTag;
                            db.AlertNotificationSet.Add(dbAlertNotification);
                            dbAlertNotificationSet.Add(dbAlertNotification);
-                           
+
+                           var locationTag = (from t in db.Tags
+                                              where t.CompanyName.Equals(user.Company.Name) &&
+                                                 t.Name.Equals(clientQuestionAlert.LocationTag)
+                                              select t).FirstOrDefault();
                            QuestionAlertSet dbQuestionAlert = new QuestionAlertSet();
                            dbQuestionAlert.AlertNotificationSet = dbAlertNotificationSet;
                            dbQuestionAlert.Operator = clientQuestionAlert.Operator;
                            dbQuestionAlert.TriggerAnswer = clientQuestionAlert.TriggerAnswer;
                            dbQuestionAlert.Description = clientQuestionAlert.Description;
+                           dbQuestionAlert.LocationTag = locationTag;
                            //dbQuestionAlert
-                           
+
                            db.QuestionAlertSet.Add(dbQuestionAlert);
                            dbQuestionAlertSet.Add(dbQuestionAlert);
                         }
@@ -447,7 +448,7 @@ namespace smsSurvery.Surveryer.Controllers
                      }
                   }
                   logger.Error(sb.ToString());
-                  return Json(new smsSurvery.Surveryer.Models.RequestResult("error", "save", sb.ToString()),JsonRequestBehavior.AllowGet);
+                  return Json(new smsSurvery.Surveryer.Models.RequestResult("error", "save", sb.ToString()), JsonRequestBehavior.AllowGet);
                }
                var mobileWebsiteLocation = GetAnonymousMobileSurveyLocation(surveyTemplate, this.ControllerContext.RequestContext);
                return Json(GetSurveyTemplateObject(surveyTemplate.Id), JsonRequestBehavior.AllowGet);
@@ -459,7 +460,7 @@ namespace smsSurvery.Surveryer.Controllers
             JsonRequestBehavior.AllowGet);
          }
       }
-   
+
       [HttpPost]
       [ValidateAntiForgeryToken]
       public ActionResult Edit(SurveyTemplate surveyTemplate)
@@ -483,7 +484,7 @@ namespace smsSurvery.Surveryer.Controllers
          return View(surveyTemplate);
       }
 
-     
+
       [HttpPost, ActionName("Delete")]
       [ValidateAntiForgeryToken]
       public ActionResult DeleteConfirmed(int id)
@@ -512,7 +513,7 @@ namespace smsSurvery.Surveryer.Controllers
             customer.SurveyInProgress = false;
             customer.RunningSurvey = null;
          }
-         
+
          db.SurveyTemplateSet.Remove(surveyTemplate);
          var connectedUser = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
          connectedUser.SurveyTemplateSet.Remove(surveyTemplate);

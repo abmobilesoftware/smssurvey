@@ -69,8 +69,7 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
    defaults: {
       QuestionAlertSet: [],
       QuestionType: "",
-      Modal: {},
-      Locations:[]
+      Modal: {}
    },
    initialize: function () {
       _.bindAll(this, "refreshAlerts");
@@ -275,10 +274,12 @@ SurveyModals.AlertView = Backbone.View.extend({
       this.dom.$ALERT_LOCATION_SELECT.chosen({
          width: "45%",
          disable_search_threshold: 10,
-         inherit_select_classes: true
+         inherit_select_classes: true,
+         allow_single_deselect: true
       });
       this.dom.$ALERT_TRIGGER_ANSWER_SELECT_DIV = $("div.alert-trigger-answer-select", this.$el);
-      this.dom.$ALERT_OPERATOR_SELECT_DIV= $("div.alert-operator-select", this.$el);
+      this.dom.$ALERT_OPERATOR_SELECT_DIV = $("div.alert-operator-select", this.$el);
+      this.dom.$ALERT_LOCATION_SELECT_DIV = $("div.alert-location-select", this.$el);
       return this.$el;
    },
    deleteAlert: function (event) {
@@ -307,7 +308,7 @@ SurveyModals.AlertView = Backbone.View.extend({
       this.dom.$ALERT_TRIGGER_ANSWER_INPUT.removeClass(invalidFieldClass);
       this.dom.$ALERT_DISTRIBUTION_LIST_INPUT.removeClass(invalidFieldClass);
       this.dom.$ALERT_OPERATOR_SELECT_DIV.removeClass(invalidFieldClass);
-      this.dom.$ALERT_LOCATION_SELECT.removeClass(invalidFieldClass);
+      this.dom.$ALERT_LOCATION_SELECT_DIV.removeClass(invalidFieldClass);
       if (result != "valid") {
          for (var i = 0; i < result.length; ++i) {
             if (result[i] == this.model.errors.INVALID_DESCRIPTION) {
@@ -320,7 +321,7 @@ SurveyModals.AlertView = Backbone.View.extend({
             } else if (result[i] == this.model.errors.INVALID_OPERATOR) {
                this.dom.$ALERT_OPERATOR_SELECT_DIV.addClass(invalidFieldClass);
             } else if (result[i] == this.model.errors.INVALID_LOCATION) {
-               this.dom.$ALERT_LOCATION_SELECT.addClass(invalidFieldClass);
+               this.dom.$ALERT_LOCATION_SELECT_DIV.addClass(invalidFieldClass);
             }
          }
       }
@@ -348,7 +349,7 @@ SurveyModals.AlertModel = Backbone.Model.extend({
       AlertOperatorsValues: [],
       AlertOperatorsLabels: [],
       AlertNotification: {},
-      Location: ""
+      LocationTag: ""
    },
    updateTriggerAnswer: function (newTriggerAnswer) {
       this.set("TriggerAnswer", newTriggerAnswer);
@@ -373,9 +374,7 @@ SurveyModals.AlertModel = Backbone.Model.extend({
       Backbone.trigger(attributeChangedEvent);
    },
    updateLocation: function (newLocation) {
-      var alertNotification = this.get("AlertNotification");
-      alertNotification.Location = newLocation;
-      this.set("AlertNotification", alertNotification);
+      this.set("LocationTag", newLocation);
       var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
       Backbone.trigger(attributeChangedEvent);
    },
@@ -401,10 +400,6 @@ SurveyModals.AlertModel = Backbone.Model.extend({
       if (this.get("Operator") == "" || this.get("Operator") == Question.noValueAnswer) {
          hasErrors = true;
          errors.push(this.errors.INVALID_OPERATOR);
-      }
-      if (this.get("AlertNotification").Location == "" || this.get("AlertNotification").Location == Question.noValueAnswer) {
-         hasErrors = true;
-         errors.push(this.errors.INVALID_LOCATION);
       }
       if (!areEmailsValid) {
          hasErrors = true;

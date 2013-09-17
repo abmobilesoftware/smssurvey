@@ -492,7 +492,10 @@ Question.QuestionSetModel = Backbone.Model.extend({
          this.questionSetCollection.models[i].setYesNo();
          this.questionSetCollection.models[i].setNumericScale();
       }
-      var questionModel = new Question.QuestionModel({ Id: this.questionTemporaryId });
+      var questionModel = new Question.QuestionModel({
+         Id: this.questionTemporaryId,
+         Locations: this.locations
+      });
       questionModel.updateOrder(this.questionSetCollection.models.length);
       this.questionSetCollection.add(questionModel);
    },
@@ -510,7 +513,8 @@ Question.QuestionSetModel = Backbone.Model.extend({
          ValidAnswers: "1;2;3;4;5",
          ValidAnswersDetails: "Very unlikely;2;3;4;Very likely",
          Text: "How likely are you to recommend our company/product/service to your friends and colleagues?",
-         Type: SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_NUMERIC
+         Type: SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_NUMERIC,
+         Locations: this.locations
       });
       questionModel.updateOrder(this.questionSetCollection.models.length);
       this.questionSetCollection.add(questionModel);
@@ -529,6 +533,7 @@ Question.QuestionSetModel = Backbone.Model.extend({
       return isValid;
    },
    updateQuestionSetCollection: function (jsonQuestions, locations) {
+      this.locations = locations;
       var questionModels = [];
       if (jsonQuestions != undefined) {
          for (var i = 0; i < jsonQuestions.length; ++i) {
@@ -539,5 +544,8 @@ Question.QuestionSetModel = Backbone.Model.extend({
          }
       }
       this.questionSetCollection.reset(questionModels);
+   },
+   setLocations: function (locations) {
+      this.locations = locations;
    }
 });
