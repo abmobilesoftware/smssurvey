@@ -280,7 +280,11 @@ namespace smsSurvery.Surveryer.Controllers
          //questionID = 1;
          //get the question
          var question = db.QuestionSet.Find(questionID);
-         if(question!=null) {
+         if(question!=null &&
+            (question.Type == ReportsController.cRatingsTypeQuestion ||
+            question.Type == ReportsController.cNumericTypeQuestion ||
+            question.Type == ReportsController.cYesNoTypeQuestion ||
+            question.Type == ReportsController.cSelectOneFromManyTypeQuestion)) {
             //create the data structure required by combo chart
             //Documentation can be found at https://developers.google.com/chart/interactive/docs/gallery/combochart
             //create the header
