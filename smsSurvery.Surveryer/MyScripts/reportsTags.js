@@ -64,21 +64,21 @@ window.app.runrunrun = function (firstTime) {
    } else {
       var canGenerateReport = window.app.tags.length >= 2;
       if (canGenerateReport) {
-         $('div[qid]').each(function (index) {           
-               window.app.displayComparisonReportsForQuestion($(this).attr('qid'));
-         });         
-         
+         $('div[qid]').each(function (index) {
+            window.app.displayComparisonReportsForQuestion($(this).attr('qid'));
+         });
+
          $("#noTags-error").fadeOut('fast');
       } else {
          $("#noTags-error").fadeIn('slow');
       }
    }
-}
+};
 
 $(document).ready(function () {  
    window.filterArea.initialize();
    $("#refreshReport").click(function () {
-      $(".graphsContainer label").each(function (index, item) { $(item).hide() });
+      $(".graphsContainer label").each(function (index, item) { $(item).hide(); });
       window.app.runrunrun(false);
    });
    window.app.runrunrun(true);
