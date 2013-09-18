@@ -4,7 +4,7 @@ window.app.overviewPieData = {};
 
 
 
-window.app.displayComparisonReportsForRatingQ = function (questionId) {
+window.app.displayComparisonReportsForQuestion = function (questionId) {
    var chartId = '#barChart_div' + questionId;
    var chartElem = $(chartId);
    var barchart = new google.visualization.ComboChart(chartElem[0]);
@@ -28,7 +28,7 @@ window.app.displayComparisonReportsForRatingQ = function (questionId) {
          tags: window.app.tags
       },
       traditional: true,
-      url: "/Reports/GetTagComparisonReportForRatingQuestion",
+      url: "/Reports/GetTagComparisonReportForFiniteAnswersQuestion",
       dataType: "json",
       async: true,
       success: function (jsonData) {
@@ -64,10 +64,8 @@ window.app.runrunrun = function (firstTime) {
    } else {
       var canGenerateReport = window.app.tags.length >= 2;
       if (canGenerateReport) {
-         $('div[qid]').each(function (index) {
-            if ($(this).attr('qtype') === "Rating") {
-               window.app.displayComparisonReportsForRatingQ($(this).attr('qid'));
-            }
+         $('div[qid]').each(function (index) {           
+               window.app.displayComparisonReportsForQuestion($(this).attr('qid'));
          });         
          
          $("#noTags-error").fadeOut('fast');

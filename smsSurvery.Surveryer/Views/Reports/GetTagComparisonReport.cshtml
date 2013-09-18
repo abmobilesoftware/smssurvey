@@ -1,4 +1,5 @@
-﻿@model smsSurvey.dbInterface.SurveyTemplate
+﻿@using smsSurvery.Surveryer.Controllers
+@model smsSurvey.dbInterface.SurveyTemplate
 @{
     ViewBag.Title = "Location comparison reports";
 }
@@ -13,7 +14,10 @@
 
 @foreach (var q in Model.QuestionSet)
 {
-   if (q.Type == "Rating")
+   if (q.Type == ReportsController.cRatingsTypeQuestion ||
+      q.Type == ReportsController.cYesNoTypeQuestion ||
+      q.Type == ReportsController.cSelectOneFromManyTypeQuestion ||
+      q.Type == ReportsController.cNumericTypeQuestion)
    {
     <fieldset>
     <legend>Question @q.Order</legend>

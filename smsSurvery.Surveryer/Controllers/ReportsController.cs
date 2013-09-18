@@ -47,7 +47,7 @@ namespace smsSurvery.Surveryer.Controllers
                      {
                         DateTime intervalStart = new DateTime(2013, 1, 1);
                         DateTime intervalEnd = new DateTime(2013, 12, 12);
-                        res = GenerateResultForRatingQuestion(question, intervalStart, intervalEnd, new string[0]);
+                        res = GenerateResultForFiniteAnswersQuestion(question, intervalStart, intervalEnd, new string[0]);
                      }
                      break;
                   case cFreeTextTypeQuestion:
@@ -107,7 +107,7 @@ namespace smsSurvery.Surveryer.Controllers
             case cSelectOneFromManyTypeQuestion:
                {
                   string[] optionDef = question.ValidAnswersDetails.Split(';');                
-                  res = GenerateResultForRatingQuestion(question, intervalStart, intervalEnd, tags);
+                  res = GenerateResultForFiniteAnswersQuestion(question, intervalStart, intervalEnd, tags);
                   List<RepDataRow> pieChartContent = new List<RepDataRow>();
                   foreach (var rowData in res.AnswersPerValidOption)
                   {
@@ -145,7 +145,7 @@ namespace smsSurvery.Surveryer.Controllers
       }
 
 
-      private QuestionSurveyResults GenerateResultForRatingQuestion(Question q, DateTime intervalStart, DateTime intervalEnd, string[] tags)
+      private QuestionSurveyResults GenerateResultForFiniteAnswersQuestion(Question q, DateTime intervalStart, DateTime intervalEnd, string[] tags)
       {
          //we need the possible values - only valid answers are to be considered
          /**the output should contain
@@ -267,7 +267,7 @@ namespace smsSurvery.Surveryer.Controllers
           * assume that each tag defines a location
           */
       [HttpGet]
-      public JsonResult GetTagComparisonReportForRatingQuestion(int questionID, String iIntervalStart, String iIntervalEnd, string[] tags = null)
+      public JsonResult GetTagComparisonReportForFiniteAnswersQuestion(int questionID, String iIntervalStart, String iIntervalEnd, string[] tags = null)
       {
          //TODO check if tags are location tags
          DateTime intervalStart = DateTime.ParseExact(iIntervalStart, cDateFormat, CultureInfo.InvariantCulture);
@@ -295,7 +295,7 @@ namespace smsSurvery.Surveryer.Controllers
             QuestionSurveyResults[] results = new QuestionSurveyResults[tags.Count()];
             for (int i = 0; i < tags.Count(); i++)
             {
-               QuestionSurveyResults qRes = GenerateResultForRatingQuestion(question, intervalStart,intervalEnd, new string[1] { tags[i] });
+               QuestionSurveyResults qRes = GenerateResultForFiniteAnswersQuestion(question, intervalStart,intervalEnd, new string[1] { tags[i] });
                results[i] = qRes;
             }
             List<RepDataRow> rows = new List<RepDataRow>();
