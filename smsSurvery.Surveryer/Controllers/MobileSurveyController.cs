@@ -95,7 +95,8 @@ namespace smsSurvery.Surveryer.Controllers
             var surveyToRun = loc.ActiveSurveyTemplate;
             if (surveyToRun != null)
             {
-
+               var surveyLanguage = surveyToRun.DefaultLanguage;
+               System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture(surveyLanguage);
                ViewBag.Id = surveyToRun.Id;
                ViewBag.SurveyTitle = "Feedback";
                ViewBag.IntroMessage = surveyToRun.IntroMessage;
