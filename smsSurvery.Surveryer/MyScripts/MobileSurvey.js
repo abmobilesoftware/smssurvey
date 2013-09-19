@@ -232,7 +232,6 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
           "getHeight", "render", "sendPersonalInfo",
           "setSurveyResultId");
       this.template = _.template($("#thankyoupage-template").html());
-
       this.render();
    },
    setSurveyResultId: function (surveyResultId) {
@@ -251,28 +250,67 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
          this.sendBtn.disable();
       }
    },
+   validateData: function () {
+      this.dom.$ALERT_BOX.hide();
+      var errors = [];
+      var name = $('#name').val();
+      var surname = $('#surname').val();
+      var email = $('#email').val();
+      var telephone = $('#telephone').val();
+
+      var validData = true;
+      if (name.length < 2) {
+         errors.push("Invalid name");
+         validData = false;
+      }
+      if (surname.length < 2) {
+         errors.push("Invalid surname");
+         validData = false;
+      }
+
+      var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+      if (!filter.test(email)) {
+         validData = false;
+         errors.push("Invalid email address");
+      }
+      if (telephone.length < 10) {
+         validData = false;
+         errors.push("Invalid phone number");
+      }
+      if (!validData) {
+         var errorsText = "<span><strong>Check the following errors:</strong><span><br/>";
+         for (var i = 0; i<errors.length; ++i) {
+            errorsText += "<span>" + (i+1) + ". " + errors[i] + "</span><br/>";
+         }
+         this.dom.$VALIDATION_BOX.html(errorsText)
+         this.dom.$ALERT_BOX.show();
+      }
+      return validData;
+   },
    sendPersonalInfo: function (event) {
-      $('#surveyUserInfo').slideToggle('slow');
-      this.sendBtn.setTitle($("#personalInfoSubmitted", this.$el).val());
-      this.sendBtn.disable();
-      var personalInfo = {};
-      personalInfo.Name = $('#name').val();
-      personalInfo.Surname = $('#surname').val();
-      personalInfo.Email = $('#email').val();
-      personalInfo.Telephone = $('#telephone').val();
-      var dataToSend = JSON.stringify({
-         info: personalInfo,
-         surveyResultId: this.surveyResultId
-      });
-      $.ajax({
-         url: "/MobileSurvey/SaveRespondentInfo",
-         data: dataToSend,
-         type: 'post',
-         cache: false,
-         dataType: "json",
-         contentType: 'application/json',
-         traditional: true
-      });
+      if (this.validateData()) {
+         $('#surveyUserInfo').slideToggle('slow');
+         this.sendBtn.setTitle($("#personalInfoSubmitted", this.$el).val());
+         this.sendBtn.disable();
+         var personalInfo = {};
+         personalInfo.Name = $('#name').val();
+         personalInfo.Surname = $('#surname').val();
+         personalInfo.Email = $('#email').val();
+         personalInfo.Telephone = $('#telephone').val();
+         var dataToSend = JSON.stringify({
+            info: personalInfo,
+            surveyResultId: this.surveyResultId
+         });
+         $.ajax({
+            url: "/MobileSurvey/SaveRespondentInfo",
+            data: dataToSend,
+            type: 'post',
+            cache: false,
+            dataType: "json",
+            contentType: 'application/json',
+            traditional: true
+         });
+      }
    },
    getHeight: function () {
       return this.$el.outerHeight();
@@ -282,6 +320,10 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
    },
    render: function () {
       this.$el.append(this.template());
+      this.dom = {
+         $ALERT_BOX: $(".alert", this.$el),
+         $VALIDATION_BOX: $(".personal-info-validation", this.$el)
+      }
       this.sendBtn = new MobileSurvey.ButtonView({ el: $("#sendPersonalDetailsBtn", this.$el) });
 
       this.sendBtn.enable();
