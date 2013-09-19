@@ -202,6 +202,7 @@ Question.QuestionView = Backbone.View.extend({
       this.initializeModals();
       this.model.on("change:Type", this.initializeModals);
       this.model.on("change:Type", this.render);
+      this.model.on("change:Text", this.render);
       this.model.on(this.model.events.VALIDATE, this.validationResult)
    },
    render: function () {
@@ -252,13 +253,15 @@ Question.QuestionView = Backbone.View.extend({
       return this.$el;
    },
    initializeModals: function () {
-      var modalModel = null;
+      this.currentModalModel = null;
       if (this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY
          || this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_MANY_FROM_MANY) {
-         this.answersModalModel = new SurveyModals.AnswersModalModel({ Answers: this.model.get("Answers") });
+         this.answersModalModel = new SurveyModals.AnswersModalModel({
+            Answers: this.model.get("Answers")
+         });
          this.model.setAnswersModalModel(this.answersModalModel);
          this.answersModalView = null;
-         modalModel = this.answersModalModel;
+         this.currentModalModel = this.answersModalModel;
       }
       if (this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_RATING) {
          this.ratingsModalModel = new SurveyModals.RatingsModalModel({
@@ -268,7 +271,7 @@ Question.QuestionView = Backbone.View.extend({
          });
          this.model.setRatingsModalModel(this.ratingsModalModel);
          this.ratingsModalView = null;
-         modalModel = this.ratingsModalModel;
+         this.currentModalModel = this.ratingsModalModel;
       }
       if (this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_NUMERIC) {
          this.numericModalModel = new SurveyModals.NumericModalModel({
@@ -277,17 +280,17 @@ Question.QuestionView = Backbone.View.extend({
          });
          this.model.setNumericModalModel(this.numericModalModel);
          this.numericModalView = null;
-         modalModel = this.numericModalModel;
+         this.currentModalModel = this.numericModalModel;
       }
       this.alertsModalModel = new SurveyModals.AlertsModalModel({
          QuestionAlertSet: this.model.get("QuestionAlertSet"),
          QuestionType: this.model.get("Type"),
-         Modal: modalModel,
+         Modal:  this.currentModalModel,
          Locations: this.model.get("Locations")
       });
       this.model.setAlertsModalModel(this.alertsModalModel);
       this.alertsModalView = null;
-      this.alertsModalModel.refreshAlerts(this.model.get("Type"));
+      this.alertsModalModel.refreshAlerts(this.model.get("Type"));     
    },
    selectQuestionType: function (event) {
       event.preventDefault();

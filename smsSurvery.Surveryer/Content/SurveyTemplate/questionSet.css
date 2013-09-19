@@ -292,6 +292,7 @@ div#preview-content-modal {
    color: #fff;
    height: 68px;
    text-align: center;
+   line-height: 20px;
 }
 
 .question-content {
@@ -373,4 +374,8 @@ input.numeric-radio {
   display: block;
   margin: 0 auto;
   width: 234px;
+}
+
+div.modal-header span.modal-header-title {
+   line-height: 10px;
 }

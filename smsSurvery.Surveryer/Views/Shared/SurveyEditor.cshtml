@@ -45,7 +45,8 @@
          <a href="#multiple-answer-modal<%= Id %>" role="button" class="open-modal-btn btn edit-answers-btn" data-backdrop="static" data-toggle="modal"><img class="icon" src="/Content/images/edit_20.png" />Edit answers</a>   
          <div id="multiple-answer-modal<%= Id %>" class="modal hide fade">
             <div class="modal-header">               
-               <h3> Configure answers </h3>
+               <h3> Configure answers</h3><br />
+               <span class="modal-header-title">For question: <strong>"<%= Text %>"</strong></span>
             </div>
             <div class="modal-body">
                <div style="display:none" class="alert fade in alert-error" id="noTags-error" >
@@ -68,7 +69,8 @@
          <a href="#edit-rating-modal<%=Id %>" role="button" data-backdrop="static" class="open-modal-btn btn edit-ratings-btn" data-toggle="modal"><img class="icon" src="/Content/images/edit_20.png" />Edit rating</a>   
          <div id="edit-rating-modal<%= Id %>" class="modal hide fade">
             <div class="modal-header">
-               <h3>Edit rating</h3>
+               <h3>Edit rating</h3><br />
+               <span class="modal-header-title">For question: <strong>"<%= Text %>"</strong></span>
             </div>
             <div class="modal-body">                                   
             </div>
@@ -81,7 +83,8 @@
          <a href="#numeric-modal<%= Id %>" role="button" class="open-modal-btn btn edit-numeric-btn" data-backdrop="static" data-toggle="modal"><img class="icon" src="/Content/images/edit_20.png" />Edit numeric scale</a>   
          <div id="numeric-modal<%= Id %>" class="modal hide fade">
             <div class="modal-header">               
-               <h3> Configure numeric scale</h3>
+               <h3> Configure numeric scale</h3><br />
+               <span class="modal-header-title">For question: <strong>"<%= Text %>"</strong></span>
             </div>
             <div class="modal-body">
                <div style="display:none" class="alert fade in alert-error" id="noTags-error" >
@@ -102,7 +105,8 @@
    
       <div id="edit-alerts-modal<%= Id %>" class="modal hide fade">
          <div class="modal-header">
-            <h3>Edit alerts</h3>
+            <h3>Edit alerts</h3><br />
+               <span class="modal-header-title">For question: <strong>"<%= Text %>"</strong></span>
          </div>
          <div class="modal-body">
             <div style="display:none" class="alert fade in alert-error" id="noTags-error" >
