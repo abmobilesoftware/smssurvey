@@ -9,6 +9,7 @@ using smsSurvey.dbInterface;
 using smsSurvery.Surveryer.Models;
 using smsSurvery.Surveryer.Models.SmsInterface;
 using smsSurvery.Surveryer.Mailers;
+using smsSurvery.Surveryer.Utilities;
 
 namespace smsSurvery.Surveryer.Controllers
 {   
@@ -110,6 +111,8 @@ namespace smsSurvery.Surveryer.Controllers
             * if yes - continue
             * if not - start the surveyResult and then continue
             */
+           from = Utilities.Utilities.CleanUpPhoneNumber(from);
+           to = Utilities.Utilities.CleanUpPhoneNumber(to);
            var customer = db.CustomerSet.Find(from);           
            if (customer != null)
            {
