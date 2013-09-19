@@ -92,7 +92,7 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
       } else if (type == questionConstants.TYPE_FREE_TEXT) {
          return new Array("contains");
       } else if (type == questionConstants.TYPE_YES_NO) {
-         return new Array("==");
+         return new Array("==", "!=");
       } else if (type == questionConstants.TYPE_SELECT_MANY_FROM_MANY) {
          return new Array("any", "all");
       }
@@ -107,7 +107,7 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
       } else if (type == questionConstants.TYPE_FREE_TEXT) {
          return new Array("contains");
       } else if (type == questionConstants.TYPE_YES_NO) {
-         return new Array("equal");
+         return new Array("equal", "not equal");
       } else if (type == questionConstants.TYPE_SELECT_MANY_FROM_MANY) {
          return new Array("any", "all");
       } 

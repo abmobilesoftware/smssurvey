@@ -88,7 +88,7 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
          var selectedOption = $("select[name='answer']", this.$el).find(":selected").val();
          this.model.set({ "PickedAnswer": selectedOption }, { validate: true });
       } else if (questionType == this.questionConstants.TYPE_YES_NO) {
-         var yesNoAnswer = $('input[name=yes-no-answer]:checked', this.$el).val();
+         var yesNoAnswer = $('input[name=yes-no-answer' + this.model.get("Id") + ']:checked', this.$el).val();
          yesNoAnswer = yesNoAnswer != undefined ? yesNoAnswer : Question.noValueAnswer;
          this.model.set({ "PickedAnswer": yesNoAnswer }, { validate: true });
       } else if (questionType == this.questionConstants.TYPE_SELECT_MANY_FROM_MANY) {
