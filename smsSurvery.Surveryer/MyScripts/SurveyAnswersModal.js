@@ -1,14 +1,19 @@
 ﻿var SurveyModals = SurveyModals || {};
 SurveyModals.AnswersModalView = Backbone.View.extend({
+   keys: {
+      ENTER: 13,
+      ESC: 27
+   },
    events: {
       "click .add-answer-btn": "addAnswer",
-      "click .close-answers-modal-btn": "closeModal",
+      "click .close-answers-modal-btn": "discardModalData",
       "click .save-answers": "saveModal",
       "click .close-answers-notifications": "closeAlertBox"
    },
    initialize: function () {
-      _.bindAll(this, "render", "addAnswer", "closeModal",
-         "saveModal", "openModal", "validationResult", "closeAlertBox");
+      _.bindAll(this, "render", "addAnswer", "discardModalData",
+         "saveModal", "openModal", "validationResult", "closeAlertBox",
+         "processKeyStroke");
       this.template = _.template($("#no-answers-template").html());
       this.dom = {
          $ANSWERS_TABLE: $(".answers-table", this.$el),
@@ -33,18 +38,25 @@ SurveyModals.AnswersModalView = Backbone.View.extend({
    addAnswer: function () {
       this.model.addAnswer();
    },
-   closeModal: function () {
+   discardModalData: function() {
       this.model.restoreAnswersCollection();
+      this.closeModal();
+   },
+   closeModal: function () {
       this.$el.modal("hide");
+      document.removeEventListener("keydown",
+         this.processKeyStroke, false);
    },
    saveModal: function () {
       if (this.model.validate()) {
-         this.$el.modal("hide");
+         this.closeModal();
       }
    },
    openModal: function () {
       this.model.backupAnswersCollection();
       this.dom.$ALERT_BOX.hide();
+      document.addEventListener("keydown",
+         this.processKeyStroke, false);
    },
    validationResult: function(result) {
       if (result == "noAnswersDefined") {
@@ -57,6 +69,15 @@ SurveyModals.AnswersModalView = Backbone.View.extend({
    },
    closeAlertBox: function () {
       this.dom.$ALERT_BOX.hide();
+   },
+   processKeyStroke: function (event) {
+      if (event.keyCode == this.keys.ENTER) {
+         event.preventDefault();
+         this.saveModal();
+      } else if (event.keyCode == this.keys.ESC) {
+         event.preventDefault();
+         this.discardModalData();
+      }
    }
 });
 

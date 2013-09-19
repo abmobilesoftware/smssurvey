@@ -1,13 +1,17 @@
 ﻿SurveyModals.RatingsModalView = Backbone.View.extend({
+   keys: {
+      ENTER: 13,
+      ESC: 27
+   },
    events: {
       "change #rating-select": "changeScaleSize",
-      "click .close-rating-modal-btn": "closeModal",
+      "click .close-rating-modal-btn": "discardModalData",
       "click .save-rating": "saveModal",
       "click .close-ratings-notifications": "closeAlertBox"
    },
    initialize: function () {
-      _.bindAll(this, "changeScaleSize", "render", "closeModal",
-         "validationResult", "closeAlertBox");
+      _.bindAll(this, "changeScaleSize", "render", "discardModalData",
+         "validationResult", "closeAlertBox", "processKeyStroke");
       this.template = _.template($("#rating-modal-content-template").html());
       this.dom = {
          $RATING_MODAL_BODY: $(".modal-body", this.$el)
@@ -31,17 +35,22 @@
       this.model.changeScaleSize(event.currentTarget.value);
    },
    closeModal: function () {
-      this.model.restoreRatingsCollection();
       this.$el.modal("hide");
+      document.removeEventListener("keydown", this.processKeyStroke, false);
+   },
+   discardModalData: function() {
+      this.model.restoreRatingsCollection();
+      this.closeModal();
    },
    saveModal: function () {
       var areRatingsValid = this.model.validate();
       if (areRatingsValid) {
-         this.$el.modal("hide");
+         this.closeModal();
       }
    },
    openModal: function () {
       this.model.backupRatingsCollection();
+      document.addEventListener("keydown", this.processKeyStroke, false);
    },
    validationResult: function(result) {
       if (result == "noRatingsDefined") {
@@ -56,6 +65,15 @@
    },
    closeAlertBox: function () {
       this.dom.$ALERT_BOX.hide();
+   },
+   processKeyStroke: function (event) {
+      if (event.keyCode == this.keys.ENTER) {
+         event.preventDefault();
+         this.saveModal();
+      } else if (event.keyCode == this.keys.ESC) {
+         event.preventDefault();
+         this.discardModalData();
+      }
    }
 });
 
