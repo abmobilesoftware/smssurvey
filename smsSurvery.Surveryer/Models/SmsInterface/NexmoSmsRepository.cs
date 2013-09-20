@@ -20,7 +20,8 @@ namespace smsSurvery.Surveryer.Models.SmsInterface
 
    [Serializable]
    public class NexmoSmsRepository : IExternalSmsRepository
-   {      
+   {
+      private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
       public System.Collections.Generic.IEnumerable<SmsMessage> GetConversationsForNumber(string workingPointsNumber,
                                                                                    DateTime? lastUpdate,
                                                                                    String userName)
@@ -52,14 +53,22 @@ namespace smsSurvery.Surveryer.Models.SmsInterface
          
          var requestModel = RequestModelBuilder.Create(username, password, from, to, textModel);
          var nexmo = new Nexmo_CSharp_lib.Nexmo();
-         JsonResponseModel responseModel = nexmo.Send(requestModel, ResponseObjectType.Json) as JsonResponseModel;
-         var msg = responseModel.MessageModels.First();
-         var status = msg.Status;
-         var sent = msg.Status.Equals("0", StringComparison.InvariantCultureIgnoreCase) ? true : false;
-         var sentDate = DateTime.Now.ToUniversalTime();
-         //DA: atm, when sending the message via nexmo we don't receive the sent date (or created date) so we use the current datestamp of the server (UTC format)        
-         var response = new MessageStatus() { MessageSent = sent, DateSent = sentDate, Status = status, ExternalID=msg.MessageId,Price=msg.MessagePrice };
-         return response;
+         try
+         {
+            JsonResponseModel responseModel = nexmo.Send(requestModel, ResponseObjectType.Json) as JsonResponseModel;
+            var msg = responseModel.MessageModels.First();
+            var status = msg.Status;
+            var sent = msg.Status.Equals("0", StringComparison.InvariantCultureIgnoreCase) ? true : false;
+            var sentDate = DateTime.Now.ToUniversalTime();
+            //DA: atm, when sending the message via nexmo we don't receive the sent date (or created date) so we use the current datestamp of the server (UTC format)        
+            var response = new MessageStatus() { MessageSent = sent, DateSent = sentDate, Status = status, ExternalID = msg.MessageId, Price = msg.MessagePrice };
+            return response;
+         }
+         catch (Exception ex)
+         {
+            logger.Error("Could not send Nexmo message", ex);
+            return null;
+         }
       }
    }
 }

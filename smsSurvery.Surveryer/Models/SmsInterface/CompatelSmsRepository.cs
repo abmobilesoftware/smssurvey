@@ -13,6 +13,7 @@ namespace smsSurvery.Surveryer.Models.SmsInterface
    {
       private static string username = "TXTfeedb1";
       private static string password = "2WaY040";
+      private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
       public IEnumerable<SmsMessage> GetConversationsForNumber(string workingPointsNumber, DateTime? lastUpdate, string userName)
       {
@@ -41,10 +42,18 @@ namespace smsSurvery.Surveryer.Models.SmsInterface
          address[0] = to;         
 
          SMSRequest smsRequest = new SMSRequest(from, message, address);
-         SendMessageResult sendMessageResult = smsClient.SmsMessagingClient.SendSMS(smsRequest);
-         SendMessageResultItem msgResult = sendMessageResult.SendMessageResults[0];
-         MessageStatus result = new MessageStatus() { Status = msgResult.MessageStatus, MessageSent = true, Price = (msgResult.Price / 100).ToString(), ExternalID = msgResult .MessageId, DateSent=DateTime.Now};
-         return result;
+         try
+         {
+            SendMessageResult sendMessageResult = smsClient.SmsMessagingClient.SendSMS(smsRequest);
+            SendMessageResultItem msgResult = sendMessageResult.SendMessageResults[0];
+            MessageStatus result = new MessageStatus() { Status = msgResult.MessageStatus, MessageSent = true, Price = (msgResult.Price / 100).ToString(), ExternalID = msgResult.MessageId, DateSent = DateTime.Now };
+            return result;
+         }
+         catch (Exception ex)
+         {
+            logger.Error("Could not send Compatel message", ex);
+            return null;
+         }
       }
    }
 }
