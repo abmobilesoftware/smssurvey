@@ -14,7 +14,7 @@
         <EntityTypeShape EntityType="smsSurveyModel.Result" Width="1.5" PointX="15.25" PointY="7" />
         <AssociationConnector Association="smsSurveyModel.QuestionResult" />
         <AssociationConnector Association="smsSurveyModel.SurveyResultResult" />
-        <EntityTypeShape EntityType="smsSurveyModel.UserProfile" Width="1.5" PointX="1.125" PointY="2" />
+        <EntityTypeShape EntityType="smsSurveyModel.UserProfile" Width="1.5" PointX="1.125" PointY="2" IsExpanded="true" />
         <EntityTypeShape EntityType="smsSurveyModel.webpages_Membership" Width="2" PointX="1" PointY="4.875" />
         <EntityTypeShape EntityType="smsSurveyModel.webpages_OAuthMembership" Width="2.25" PointX="3.75" PointY="3.75" />
         <EntityTypeShape EntityType="smsSurveyModel.webpages_Roles" Width="1.5" PointX="4.75" PointY="0.75" />
@@ -38,6 +38,7 @@
         <AssociationConnector Association="smsSurveyModel.TagsTagTypes" />
         <AssociationConnector Association="smsSurveyModel.FK_SurveyTemplateTags" />
         <AssociationConnector Association="smsSurveyModel.FK_QuestionAlertSetTags" />
+        <AssociationConnector Association="smsSurveyModel.TagsTags" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

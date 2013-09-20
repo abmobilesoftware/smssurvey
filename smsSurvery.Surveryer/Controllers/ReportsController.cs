@@ -163,7 +163,7 @@ namespace smsSurvery.Surveryer.Controllers
          int validResponses = 0;
          tags = tags ?? new string[0];
          IEnumerable<Result> resultsToAnalyze = q.Result.Where(r =>
-                     !tags.Except(r.SurveyResult.Tags.Select(tag => tag.Name)).Any() &&
+                     tags.Intersect(r.SurveyResult.Tags.Select(tag => tag.Name)).Any() &&
                      intervalStart <= r.SurveyResult.DateRan &&
                      r.SurveyResult.DateRan <= intervalEnd);
          foreach (var result in resultsToAnalyze)
@@ -253,7 +253,8 @@ namespace smsSurvery.Surveryer.Controllers
             var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();            
             var candidateTags = (from tag in user.Company.Tags
                                  select
-                                    (from ct in tag.TagTypes where ct.Type == "Location" && tag.Name.IndexOf(term, StringComparison.InvariantCultureIgnoreCase) != -1 select tag.Name)).SelectMany(x => x);
+                                    (from ct in tag.TagTypes where (ct.Type == "Location" || ct.Type == "Region") && tag.Name.IndexOf(term, StringComparison.InvariantCultureIgnoreCase) != -1 
+                                     select ct.Type.Equals("Region") ? GlobalResources.Global.RegionLabel + ": " + tag.Name : ct.Type.Equals("Location") ? GlobalResources.Global.LocationLabel + ": "+ tag.Name : tag.Name )).SelectMany(x => x);
             return Json(candidateTags, JsonRequestBehavior.AllowGet);
          }
          catch (Exception ex)

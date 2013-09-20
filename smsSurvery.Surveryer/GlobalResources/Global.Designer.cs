@@ -61,6 +61,15 @@ namespace smsSurvery.Surveryer.GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Location.
+        /// </summary>
+        public static string LocationLabel {
+            get {
+                return ResourceManager.GetString("LocationLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Powered by.
         /// </summary>
         public static string MobileSurveyFooterCaption {
@@ -210,6 +219,15 @@ namespace smsSurvery.Surveryer.GlobalResources {
         public static string MobileSurveyYesLabel {
             get {
                 return ResourceManager.GetString("MobileSurveyYesLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Region.
+        /// </summary>
+        public static string RegionLabel {
+            get {
+                return ResourceManager.GetString("RegionLabel", resourceCulture);
             }
         }
         

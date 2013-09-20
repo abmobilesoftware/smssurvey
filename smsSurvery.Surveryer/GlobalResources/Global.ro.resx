@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="LocationLabel" xml:space="preserve">
+    <value>Locatie</value>
+  </data>
   <data name="MobileSurveyFooterCaption" xml:space="preserve">
     <value>Dezvoltat de</value>
   </data>
@@ -167,6 +170,9 @@
   </data>
   <data name="MobileSurveyYesLabel" xml:space="preserve">
     <value>Da</value>
+  </data>
+  <data name="RegionLabel" xml:space="preserve">
+    <value>Regiune</value>
   </data>
   <data name="SmsMobileSurveyTemplate" xml:space="preserve">
     <value>Va rugam sa completati chestionarul de la {0}</value>

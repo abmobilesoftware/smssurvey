@@ -19,6 +19,8 @@ namespace smsSurvey.dbInterface
             this.SurveyResultSet = new HashSet<SurveyResult>();
             this.TagTypes = new HashSet<TagTypes>();
             this.QuestionAlertSet = new HashSet<QuestionAlertSet>();
+            this.Locations = new HashSet<Tags>();
+            this.Regions = new HashSet<Tags>();
         }
     
         public string Description { get; set; }
@@ -32,5 +34,7 @@ namespace smsSurvey.dbInterface
         public virtual ICollection<TagTypes> TagTypes { get; set; }
         public virtual SurveyTemplate ActiveSurveyTemplate { get; set; }
         public virtual ICollection<QuestionAlertSet> QuestionAlertSet { get; set; }
+        public virtual ICollection<Tags> Locations { get; set; }
+        public virtual ICollection<Tags> Regions { get; set; }
     }
 }
