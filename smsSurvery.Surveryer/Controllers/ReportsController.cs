@@ -99,6 +99,12 @@ namespace smsSurvery.Surveryer.Controllers
          QuestionSurveyResults res = null;
          //Return different data for various question types
          tags = tags ?? new string[0];
+         List<Tags> processedTags = new List<Tags>();
+         for (var i = 0; i < tags.Count(); ++i)
+         {
+            processedTags = processedTags.Union(processTag(tags[i])).ToList();
+         }
+         tags = processedTags.Select(x => x.Name).ToArray();
          switch (question.Type)
          {
             case cNumericTypeQuestion:
@@ -163,7 +169,7 @@ namespace smsSurvery.Surveryer.Controllers
          int validResponses = 0;
          tags = tags ?? new string[0];
          IEnumerable<Result> resultsToAnalyze = q.Result.Where(r =>
-                     tags.Intersect(r.SurveyResult.Tags.Select(tag => tag.Name)).Any() &&
+                     tags.Length == 0 ? true : tags.Intersect(r.SurveyResult.Tags.Select(tag => tag.Name)).Any() &&
                      intervalStart <= r.SurveyResult.DateRan &&
                      r.SurveyResult.DateRan <= intervalEnd);
          foreach (var result in resultsToAnalyze)
@@ -192,7 +198,7 @@ namespace smsSurvery.Surveryer.Controllers
          using (smsSurveyEntities  db = new smsSurveyEntities())
          {
             List<string> stuff = new List<string>();
-            var results = q.Result.Where(r => !tags.Except(r.SurveyResult.Tags.Select(tag => tag.Name)).Any() &&
+            var results = q.Result.Where(r => tags.Length == 0 ? true : tags.Intersect(r.SurveyResult.Tags.Select(tag => tag.Name)).Any() &&
                intervalStart <= r.SurveyResult.DateRan && r.SurveyResult.DateRan <= intervalEnd);
             foreach (var item in results)
             {
@@ -313,7 +319,9 @@ namespace smsSurvery.Surveryer.Controllers
             QuestionSurveyResults[] results = new QuestionSurveyResults[tags.Count()];
             for (int i = 0; i < tags.Count(); i++)
             {
-               QuestionSurveyResults qRes = GenerateResultForRatingQuestion(question, intervalStart,intervalEnd, new string[1] { tags[i] });
+               var locationTags = processTag(tags[i]).Select(x => x.Name).ToArray();
+               QuestionSurveyResults qRes = GenerateResultForRatingQuestion(question, 
+                  intervalStart,intervalEnd, locationTags);
                results[i] = qRes;
             }
             List<RepDataRow> rows = new List<RepDataRow>();
@@ -345,6 +353,57 @@ namespace smsSurvery.Surveryer.Controllers
          }
          return null;
       }
+
+      public List<Tags> processTag(string tagName)
+      {
+         if (tagName.StartsWith(GlobalResources.Global.LocationLabel))
+         {
+            // +2 because we want to remove also ":_", ex: Location: Cluj => Cluj
+            tagName = tagName.Remove(0, GlobalResources.Global.LocationLabel.Length + 2);        
+         }
+         else if (tagName.StartsWith(GlobalResources.Global.RegionLabel))
+         {
+            tagName = tagName.Remove(0, GlobalResources.Global.RegionLabel.Length + 2);
+         }
+         var dbTagResult = from t in db.Tags where t.Name.Equals(tagName) select t;
+         if (dbTagResult.Count() > 0)
+         {
+            var dbTag = new List<Tags>();
+            dbTag.Add(dbTagResult.FirstOrDefault());
+            return getLocationsInARegion(dbTag);
+         }
+         else
+         {
+            return null;
+         }
+      }
+
+      public List<Tags> getLocationsInARegion(List<Tags> subRegions)
+      {
+         if (subRegions.Count() == 0)
+         {
+            return new List<Tags>();
+         }
+         else
+         {
+            List<Tags> regions = new List<Tags>();
+            List<Tags> locations = new List<Tags>();
+            for (var i = 0; i < subRegions.Count(); ++i)
+            {
+               if (subRegions.ElementAt(i).TagTypes.FirstOrDefault().Type.Equals("Location"))
+               {
+                  locations.Add(subRegions.ElementAt(i));
+               }
+               else if (subRegions.ElementAt(i).TagTypes.FirstOrDefault().Type.Equals("Region"))
+               {
+                  regions = regions.Union(subRegions.ElementAt(i).Locations.ToList()).ToList();
+               }
+            }
+            List<Tags> result = locations.Union(getLocationsInARegion(regions)).ToList();
+            return result;           
+         }
+      }
+
       [HttpGet]
       public ActionResult GetWordCloud(
          int questionId,
@@ -357,6 +416,12 @@ namespace smsSurvery.Surveryer.Controllers
          DateTime intervalEnd = DateTime.ParseExact(iIntervalEnd, cDateFormat, CultureInfo.InvariantCulture);
          Question question = db.QuestionSet.Find(questionId);
          tags = tags ?? new string[0];
+         List<Tags> processedTags = new List<Tags>();
+         for (var i = 0; i < tags.Count(); ++i)
+         {
+            processedTags = processedTags.Union(processTag(tags[i])).ToList();
+         }
+         tags = processedTags.Select(x => x.Name).ToArray();
          if (question != null && (question.Type == ReportsController.cFreeTextTypeQuestion || question.Type == ReportsController.cRatingsTypeQuestion
             || question.Type == ReportsController.cNumericTypeQuestion))
          {
@@ -377,7 +442,13 @@ namespace smsSurvery.Surveryer.Controllers
          //go through all surveyResults and group them by completion rate
          SurveyTemplate survey = db.SurveyTemplateSet.Find(surveyTemplateId);
          tags = tags ?? new string[0];
-         var surveyResults = (from s in survey.SurveyResult where (!tags.Except(s.Tags.Select(tag => tag.Name)).Any() && intervalStart <= s.DateRan && s.DateRan <= intervalEnd)
+         List<Tags> processedTags = new List<Tags>();
+         for (var i = 0; i < tags.Count(); ++i)
+         {
+            processedTags = processedTags.Union(processTag(tags[i])).ToList();
+         }
+         tags = processedTags.Select(x => x.Name).ToArray();
+         var surveyResults = (from s in survey.SurveyResult where (tags.Length == 0 ? true : tags.Intersect(s.Tags.Select(tag => tag.Name)).Any() && intervalStart <= s.DateRan && s.DateRan <= intervalEnd)
                   group s by s.PercentageComplete into g 
                   select new { PercentageComplete = g.Key, Count = g.Count() }).OrderBy(i => i.PercentageComplete);         
          int totalNumberOfSentSurveys = 0;
