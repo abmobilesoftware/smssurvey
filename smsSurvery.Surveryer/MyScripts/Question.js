@@ -202,7 +202,7 @@ Question.QuestionView = Backbone.View.extend({
       this.initializeModals();
       this.model.on("change:Type", this.initializeModals);
       this.model.on("change:Type", this.render);
-      this.model.on("change:Text", this.render);
+      //this.model.on("change:Text", this.render);
       this.model.on(this.model.events.VALIDATE, this.validationResult)
    },
    render: function () {

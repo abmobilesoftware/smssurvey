@@ -120,6 +120,9 @@
   <data name="alertCauseAllKeywordsDetectedMessage" xml:space="preserve">
     <value>Keywords '{0}' detected</value>
   </data>
+   <data name="LocationLabel" xml:space="preserve">
+    <value>Location</value>
+  </data>
   <data name="alertCauseAnyKeywordDetectedMessage" xml:space="preserve">
     <value>Keyword '{0}' detected</value>
   </data>
@@ -197,6 +200,9 @@
   </data>
   <data name="MobileSurveyYesLabel" xml:space="preserve">
     <value>Yes</value>
+  </data>
+  <data name="RegionLabel" xml:space="preserve">
+    <value>Region</value>
   </data>
   <data name="SmsMobileSurveyTemplate" xml:space="preserve">
     <value>Please fill in the survey at {0}</value>

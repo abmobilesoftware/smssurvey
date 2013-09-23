@@ -68,7 +68,15 @@ namespace smsSurvery.Surveryer.GlobalResources {
                 return ResourceManager.GetString("alertCauseAllKeywordsDetectedMessage", resourceCulture);
             }
         }
-        
+        /// <summary>
+        ///   Looks up a localized string similar to Location.
+        /// </summary>
+        public static string LocationLabel {
+            get {
+                return ResourceManager.GetString("LocationLabel", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Keyword &apos;{0}&apos; detected.
         /// </summary>
@@ -300,6 +308,15 @@ namespace smsSurvery.Surveryer.GlobalResources {
         public static string MobileSurveyYesLabel {
             get {
                 return ResourceManager.GetString("MobileSurveyYesLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Region.
+        /// </summary>
+        public static string RegionLabel {
+            get {
+                return ResourceManager.GetString("RegionLabel", resourceCulture);
             }
         }
         

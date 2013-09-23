@@ -120,6 +120,9 @@
   <data name="alertCauseAllKeywordsDetectedMessage" xml:space="preserve">
     <value>Cuvintele cheie, '{0}', au fost detectate</value>
   </data>
+  <data name="LocationLabel" xml:space="preserve">
+    <value>Locatie</value>
+  </data>
   <data name="alertCauseAnyKeywordDetectedMessage" xml:space="preserve">
     <value>Cuvantul cheie, '{0}', a fost detectat</value>
   </data>
@@ -197,6 +200,9 @@
   </data>
   <data name="MobileSurveyYesLabel" xml:space="preserve">
     <value>Da</value>
+  </data>
+  <data name="RegionLabel" xml:space="preserve">
+    <value>Regiune</value>
   </data>
   <data name="SmsMobileSurveyTemplate" xml:space="preserve">
     <value>Va rugam sa completati chestionarul de la {0}</value>
