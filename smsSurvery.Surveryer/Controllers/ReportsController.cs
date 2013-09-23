@@ -324,7 +324,7 @@ namespace smsSurvery.Surveryer.Controllers
             for (int i = 0; i < tags.Count(); i++)
             {
                var locationTags = processTag(tags[i]).Select(x => x.Name).ToArray();
-               QuestionSurveyResults qRes = GenerateResultForRatingQuestion(question, 
+               QuestionSurveyResults qRes = GenerateResultForFiniteAnswersQuestion(question, 
                   intervalStart,intervalEnd, locationTags);
                results[i] = qRes;
             }
