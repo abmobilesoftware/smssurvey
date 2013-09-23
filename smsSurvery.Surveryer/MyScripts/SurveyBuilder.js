@@ -38,7 +38,10 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
          el: this.dom.$SURVEY_BUILDER,
          model: this.model.getQuestionSetModel()
       });
-      this.model.loadSurvey();
+
+      /* First load locations and then when the locations are loaded 
+      load survey */
+      this.model.loadLocations();
    },
    render: function () {
       this.dom.$SURVEY_INFO.html(this.template(this.model.toJSON()));
@@ -52,7 +55,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       this.updateSaveButton(this.model.getNoOfAttributesChanged());
       this.dom.$SURVEY_LOADER.hide();
       this.dom.$SURVEY_CONTENT.fadeIn();
-      
+
    },
    editSurveyInfo: function (event) {
       event.preventDefault();
@@ -226,8 +229,8 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
 
       var questionSetModelValidity = this.questionSetModel.validateQuestionSetModel();
       if (!questionSetModelValidity) {
-         this.result.push(this.errors.ERROR_IN_QUESTION_SET);         
-      }     
+         this.result.push(this.errors.ERROR_IN_QUESTION_SET);
+      }
       if (this.get("Description").length == 0 || this.get("Description").length > 100) {
          this.result.push(this.errors.INVALID_DESCRIPTION)
          descriptionValidity = false;
@@ -255,7 +258,7 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
             data: "Id=" + this.get("Id"),
             success: function (model, response, options) {
                self.trigger(self.events.SURVEY_LOADED);
-               self.updateQuestionSetModel();               
+               self.updateQuestionSetModel();
             },
             error: function (model, response, options) {
                alert(response)
@@ -263,16 +266,33 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
          });
       } else {
          this.set("Id", -1);
+         this.setLocationsOnQuestionSetModel(this.locations);
          self.trigger(self.events.SURVEY_LOADED);
       }
+   },
+   loadLocations: function () {
+      var self = this;
+      $.ajax({
+         url: "/Reports/GetAllLocationTags",
+         success: function (data, textStatus, jqXHR) {
+            self.locations = data;
+            return self.loadSurvey();
+         },
+         type: "GET",
+         async: false
+      });
+
    },
    getQuestionSetModel: function () {
       return this.questionSetModel;
    },
    updateQuestionSetModel: function () {
-      this.questionSetModel.updateQuestionSetCollection(this.get("QuestionSet"));
+      this.questionSetModel.updateQuestionSetCollection(this.get("QuestionSet"), this.locations);
    },
    getNoOfAttributesChanged: function () {
       return this.noOfAttributesChanged;
+   },
+   setLocationsOnQuestionSetModel: function (locations) {
+      this.questionSetModel.setLocations(locations);
    }
 });

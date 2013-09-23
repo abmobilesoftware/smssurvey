@@ -9,6 +9,7 @@ using smsSurvey.dbInterface;
 using smsSurvery.Surveryer.Models;
 using smsSurvery.Surveryer.Models.SmsInterface;
 using smsSurvery.Surveryer.Mailers;
+using smsSurvery.Surveryer.Utilities;
 
 namespace smsSurvery.Surveryer.Controllers
 {   
@@ -110,6 +111,8 @@ namespace smsSurvery.Surveryer.Controllers
             * if yes - continue
             * if not - start the surveyResult and then continue
             */
+           from = Utilities.Utilities.CleanUpPhoneNumber(from);
+           to = Utilities.Utilities.CleanUpPhoneNumber(to);
            var customer = db.CustomerSet.Find(from);           
            if (customer != null)
            {
@@ -200,7 +203,7 @@ namespace smsSurvery.Surveryer.Controllers
                        surveyLanguage = !String.IsNullOrEmpty(surveyLanguage) ? surveyLanguage : runningSurvey.SurveyTemplate.DefaultLanguage;
                        //DA choose the appropriate language for the survey
                        System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture(surveyLanguage);
-                       SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion, runningSurvey.SurveyTemplate.QuestionSet.Count(),false, db);                      
+                       SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion, runningSurvey.SurveyTemplate.QuestionSet.Count(), false, db);
                     }
                  }
                  else
@@ -211,9 +214,16 @@ namespace smsSurvery.Surveryer.Controllers
                     customer.SurveyInProgress = false;
                     db.SaveChanges();
                     //send ThankYouMessage
-                    SendThankYouToCustomer(customer, numberToSendFrom, surveyToRun);                    
+                    SendThankYouToCustomer(customer, numberToSendFrom, surveyToRun);
                  }
-                 AlertsController.HandleAlertsForQuestion(currentQuestion, text, runningSurvey.Id, this, logger);
+                 var locationTags = from t in latestSurveyResult.Tags 
+                                    where t.TagTypes.First().Type.Equals("Location") select t;
+                 var locationTagsList = new List<string>();
+                 foreach (var locationTag in locationTags)
+                 {
+                    locationTagsList.Add(locationTag.Name);
+                 }
+                 AlertsController.HandleAlertsForQuestion(currentQuestion, text, runningSurvey.Id, locationTagsList, this, logger);
               }
               else
               {

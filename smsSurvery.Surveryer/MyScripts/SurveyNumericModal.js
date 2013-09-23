@@ -1,14 +1,18 @@
 ﻿var SurveyModals = SurveyModals || {};
 SurveyModals.NumericModalView = Backbone.View.extend({
+   keys: {
+      ENTER: 13,
+      ESC: 27
+   },
    events: {
-      "click .close-numeric-modal-btn": "closeModal",
+      "click .close-numeric-modal-btn": "discardModalData",
       "click .save-numeric": "saveModal",
       "click .close-numeric-notifications": "closeAlertBox",
       "change .numeric-select": "changeScale"
    },
    initialize: function () {
-      _.bindAll(this, "closeModal", "saveModal", "closeAlertBox",
-         "validationResult", "render");
+      _.bindAll(this, "discardModalData", "saveModal", "closeAlertBox",
+         "validationResult", "render", "processKeyStroke");
       this.dom = {
          $MODAL_CONTENT : $(".modal-content", this.$el),
          $NUMERIC_NOTIFICATIONS: $(".numeric-notifications", this.$el),
@@ -31,7 +35,7 @@ SurveyModals.NumericModalView = Backbone.View.extend({
    saveModal: function () {
       if (this.model.validate()) {
          this.model.saveNumericScale();
-         this.$el.modal("hide");
+         this.closeModal();
       }
    },
    closeAlertBox: function () {
@@ -40,10 +44,17 @@ SurveyModals.NumericModalView = Backbone.View.extend({
    openModal: function () {
       this.model.backupNumericScaleCollection();
       this.closeAlertBox();
+      document.addEventListener("keydown",
+         this.processKeyStroke, false);
    },
    closeModal: function () {
-      this.model.restoreNumericScaleCollection();
       this.$el.modal("hide");
+      document.removeEventListener("keydown",
+         this.processKeyStroke, false);
+   },
+   discardModalData: function() {
+      this.model.restoreNumericScaleCollection();
+      this.closeModal();
    },
    validationResult: function (result) {
       if (result == "otherErrors") {
@@ -56,6 +67,15 @@ SurveyModals.NumericModalView = Backbone.View.extend({
    },
    changeScale: function (event) {
       this.model.changeScale(event.currentTarget.value)
+   },
+   processKeyStroke: function (event) {
+      if (event.keyCode == this.keys.ENTER) {
+         event.preventDefault();
+         this.saveModal();
+      } else if (event.keyCode == this.keys.ESC) {
+         event.preventDefault();
+         this.discardModalData();
+      }
    }
 });
 

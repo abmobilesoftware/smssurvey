@@ -32,6 +32,7 @@ namespace smsSurvery.Surveryer.Models.SmsInterface
 
       public MessageStatus SendMessage(string from, string to, string message)
       {
+         return null;
          // Initialize Configuration object 
          Configuration configuration = new Configuration(username, password);
 

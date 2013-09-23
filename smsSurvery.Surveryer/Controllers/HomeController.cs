@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using smsSurvery.Surveryer.Utilities;
 
 namespace smsSurvery.Surveryer.Controllers
 {
@@ -155,7 +156,8 @@ namespace smsSurvery.Surveryer.Controllers
          if(surveyToRun != null) {
             foreach (var nr in customerNumbers)
             {
-               answersController.StartSmsSurveyInternal(user.DefaultTelNo, nr, surveyToRun, user, sendMobile, selectedTags, surveyLanguage, db);
+               var cleanNumber = Utilities.Utilities.CleanUpPhoneNumber(nr);
+               answersController.StartSmsSurveyInternal(user.DefaultTelNo, cleanNumber, surveyToRun, user, sendMobile, selectedTags, surveyLanguage, db);
             }
          }
          return Json("Survey started successfully", JsonRequestBehavior.AllowGet);

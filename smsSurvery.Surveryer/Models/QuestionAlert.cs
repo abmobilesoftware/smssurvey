@@ -11,6 +11,7 @@ namespace smsSurvery.Surveryer.ClientModels
       public string Description { get; set; }
       public string Operator { get; set; }
       public string TriggerAnswer { get; set; }
+      public string LocationTag { get; set; }
       public ClientAlertNotification AlertNotification { get; set; }
 
       public ClientQuestionAlert(
@@ -18,6 +19,7 @@ namespace smsSurvery.Surveryer.ClientModels
          string iDescription,
          string iOperator,
          string iTriggerAnswer,
+         string iLocationTag,
          ClientAlertNotification iAlertNotification)
       {
          Id = iId;
@@ -25,6 +27,7 @@ namespace smsSurvery.Surveryer.ClientModels
          Operator = iOperator;
          TriggerAnswer = iTriggerAnswer;
          AlertNotification = iAlertNotification;
+         LocationTag = iLocationTag;
       }
 
       public ClientQuestionAlert() { }

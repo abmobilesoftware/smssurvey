@@ -36,6 +36,10 @@
             <End Role="QuestionAlertSet" EntitySet="QuestionAlertSet" />
             <End Role="AlertNotificationSet" EntitySet="AlertNotificationSet" />
           </AssociationSet>
+          <AssociationSet Name="FK_QuestionAlertSetTags" Association="smsSurveyModel.Store.FK_QuestionAlertSetTags">
+            <End Role="Tags" EntitySet="Tags" />
+            <End Role="QuestionAlertSet" EntitySet="QuestionAlertSet" />
+          </AssociationSet>
           <AssociationSet Name="FK_QuestionQuestionAlert" Association="smsSurveyModel.Store.FK_QuestionQuestionAlert">
             <End Role="QuestionSet" EntitySet="QuestionSet" />
             <End Role="QuestionAlertSet" EntitySet="QuestionAlertSet" />
@@ -149,6 +153,8 @@
           <Property Name="Operator" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="TriggerAnswer" Type="nvarchar(max)" Nullable="false" />
           <Property Name="QuestionId" Type="int" Nullable="false" />
+          <Property Name="Tags_CompanyName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Tags_Id" Type="int" />
         </EntityType>
         <EntityType Name="QuestionSet">
           <Key>
@@ -171,8 +177,8 @@
           <Property Name="QuestionId" Type="int" Nullable="false" />
           <Property Name="SurveyResultId" Type="int" Nullable="false" />
           <Property Name="AdditionalInfo" Type="nvarchar" MaxLength="500" />
-          <Property Name="SubmittedViaSMS" Type="bit" Nullable="false" />
           <Property Name="DateSubmitted" Type="datetime" />
+          <Property Name="SubmittedViaSMS" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="SurveyPlanSet">
           <Key>
@@ -331,6 +337,20 @@
             </Principal>
             <Dependent Role="AlertNotificationSet">
               <PropertyRef Name="QuestionAlertId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QuestionAlertSetTags">
+          <End Role="Tags" Type="smsSurveyModel.Store.Tags" Multiplicity="0..1" />
+          <End Role="QuestionAlertSet" Type="smsSurveyModel.Store.QuestionAlertSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tags">
+              <PropertyRef Name="CompanyName" />
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="QuestionAlertSet">
+              <PropertyRef Name="Tags_CompanyName" />
+              <PropertyRef Name="Tags_Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -633,6 +653,10 @@
             <End Role="SurveyTemplate" EntitySet="SurveyTemplateSet" />
             <End Role="Tags" EntitySet="Tags" />
           </AssociationSet>
+          <AssociationSet Name="FK_QuestionAlertSetTags" Association="smsSurveyModel.FK_QuestionAlertSetTags">
+            <End Role="Tags" EntitySet="Tags" />
+            <End Role="QuestionAlertSet" EntitySet="QuestionAlertSet" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Question">
           <Key>
@@ -895,6 +919,7 @@
           <NavigationProperty Name="TagTypes" Relationship="smsSurveyModel.TagsTagTypes" FromRole="Tags" ToRole="TagTypes" />
           <Property Type="Int32" Name="ActiveSurveyTemplate_Id" />
           <NavigationProperty Name="ActiveSurveyTemplate" Relationship="smsSurveyModel.FK_SurveyTemplateTags" FromRole="Tags" ToRole="SurveyTemplate" />
+          <NavigationProperty Name="QuestionAlertSet" Relationship="smsSurveyModel.FK_QuestionAlertSetTags" FromRole="Tags" ToRole="QuestionAlertSet" />
         </EntityType>
         <EntityType Name="TagTypes">
           <Key>
@@ -948,6 +973,9 @@
           <Property Type="Int32" Name="QuestionId" Nullable="false" />
           <NavigationProperty Name="AlertNotificationSet" Relationship="smsSurveyModel.FK_QuestionAlertAlertNotification" FromRole="QuestionAlertSet" ToRole="AlertNotificationSet" />
           <NavigationProperty Name="QuestionSet" Relationship="smsSurveyModel.FK_QuestionQuestionAlert" FromRole="QuestionAlertSet" ToRole="Question" />
+          <Property Type="String" Name="Tags_CompanyName" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="Tags_Id" />
+          <NavigationProperty Name="LocationTag" Relationship="smsSurveyModel.FK_QuestionAlertSetTags" FromRole="QuestionAlertSet" ToRole="Tags" />
         </EntityType>
         <Association Name="FK_QuestionAlertAlertNotification">
           <End Type="smsSurveyModel.QuestionAlertSet" Role="QuestionAlertSet" Multiplicity="1" >
@@ -996,6 +1024,20 @@
             </Principal>
             <Dependent Role="Tags">
               <PropertyRef Name="ActiveSurveyTemplate_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_QuestionAlertSetTags">
+          <End Type="smsSurveyModel.Tags" Role="Tags" Multiplicity="0..1" />
+          <End Type="smsSurveyModel.QuestionAlertSet" Role="QuestionAlertSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Tags">
+              <PropertyRef Name="CompanyName" />
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="QuestionAlertSet">
+              <PropertyRef Name="Tags_CompanyName" />
+              <PropertyRef Name="Tags_Id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1180,6 +1222,8 @@
           <EntitySetMapping Name="QuestionAlertSet">
             <EntityTypeMapping TypeName="smsSurveyModel.QuestionAlertSet">
               <MappingFragment StoreEntitySet="QuestionAlertSet">
+                <ScalarProperty Name="Tags_Id" ColumnName="Tags_Id" />
+                <ScalarProperty Name="Tags_CompanyName" ColumnName="Tags_CompanyName" />
                 <ScalarProperty Name="QuestionId" ColumnName="QuestionId" />
                 <ScalarProperty Name="TriggerAnswer" ColumnName="TriggerAnswer" />
                 <ScalarProperty Name="Operator" ColumnName="Operator" />

@@ -1,12 +1,17 @@
 ﻿SurveyModals.AlertsModalView = Backbone.View.extend({
+   keys: {
+      ENTER: 13,
+      ESC: 27
+   },
    events: {
       "click .add-alert-btn": "addAlert",
-      "click .close-alerts-modal-btn": "closeModal",
+      "click .close-alerts-modal-btn": "discardModalData",
       "click .save-alerts": "saveModal",
       "click .close-alerts-notifications": "closeAlertBox"
    },
    initialize: function () {
-      _.bindAll(this, "render", "validationResult", "closeAlertBox");
+      _.bindAll(this, "render", "validationResult", "closeAlertBox",
+         "processKeyStroke", "discardModalData");
       this.template = _.template($("#no-alerts-template").html());
       this.dom = {
          $ALERTS_MODAL_CONTENT: $(".alerts-modal-content", this.$el),
@@ -31,21 +36,28 @@
       event.preventDefault();
       this.model.addAlert();
    },
-   closeModal: function (event) {
+   discardModalData: function(event) {
       this.model.restoreAlertsCollection();
-      this.$el.modal("hide");      
+      this.closeModal();
+   },
+   closeModal: function () {
+      this.$el.modal("hide");
+      document.removeEventListener("keydown",
+         this.processKeyStroke, false);
    },
    saveModal: function (event) {
       var isDataValid = this.model.validateAlerts();
       if (isDataValid) {
          this.model.saveAlertsCollection();
-         this.$el.modal("hide");         
+         this.closeModal();
       }
    },
    openModal: function () {
       this.model.backupAlertsCollection();
       this.dom.$ALERT_BOX.hide();
       this.model.refreshAlerts(this.model.get("QuestionType"));
+      document.addEventListener("keydown",
+         this.processKeyStroke, false);
    },
    validationResult: function (result) {
       if (result == this.model.errors.ERROR) {
@@ -55,6 +67,15 @@
    },
    closeAlertBox: function () {
       this.dom.$ALERT_BOX.hide();
+   },
+   processKeyStroke: function (event) {      
+      if (event.keyCode == this.keys.ENTER) {
+         event.preventDefault();
+         this.saveModal();         
+      } else if (event.keyCode == this.keys.ESC) {
+         event.preventDefault();
+         this.discardModalData();
+      }      
    }
 });
 
@@ -92,7 +113,7 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
       } else if (type == questionConstants.TYPE_FREE_TEXT) {
          return new Array("contains");
       } else if (type == questionConstants.TYPE_YES_NO) {
-         return new Array("==");
+         return new Array("==", "!=");
       } else if (type == questionConstants.TYPE_SELECT_MANY_FROM_MANY) {
          return new Array("any", "all");
       }
@@ -107,7 +128,7 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
       } else if (type == questionConstants.TYPE_FREE_TEXT) {
          return new Array("contains");
       } else if (type == questionConstants.TYPE_YES_NO) {
-         return new Array("equal");
+         return new Array("equal", "not equal");
       } else if (type == questionConstants.TYPE_SELECT_MANY_FROM_MANY) {
          return new Array("any", "all");
       } 
@@ -171,6 +192,7 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
             Type: "email"
          },
          QuestionType: this.get("QuestionType"),
+         Locations: this.get("Locations"),
          TriggerAnswerValues: this.getTriggerAnswerValues(this.get("QuestionType"))
       }));
    },
@@ -184,6 +206,7 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
          alert.AlertOperatorsValues = this.getAlertOperators(questionType);
          alert.AlertOperatorsLabels = this.getAlertOperatorsLabels(questionType);
          alert.TriggerAnswerValues = this.getTriggerAnswerValues(questionType);
+         alert.Locations = this.get("Locations")
          alert.QuestionType = questionType;
          var alertModel = new SurveyModals.AlertModel(alert);
          this.alertsCollection.add(alertModel);
@@ -239,7 +262,8 @@ SurveyModals.AlertView = Backbone.View.extend({
       "change .alert-trigger-answer-select": "updateTriggerAnswer",
       "change .alert-operator-select": "updateOperator",
       "keyup .alert-distribution-list-input": "updateDistributionList",
-      "keyup .alert-description-input": "updateDescription"
+      "keyup .alert-description-input": "updateDescription",
+      "change .alert-location-select": "updateLocation"
    },
    initialize: function () {
       _.bindAll(this, "render", "deleteAlert", "validationResult");
@@ -255,7 +279,8 @@ SurveyModals.AlertView = Backbone.View.extend({
          $ALERT_TRIGGER_ANSWER_INPUT: $(".alert-trigger-answer-input", this.$el),
          $ALERT_DISTRIBUTION_LIST_INPUT: $(".alert-distribution-list-input", this.$el),
          $ALERT_OPERATOR_SELECT: $(".alert-operator-select", this.$el),
-         $ALERT_TRIGGER_ANSWER_SELECT: $(".alert-trigger-answer-select", this.$el)         
+         $ALERT_TRIGGER_ANSWER_SELECT: $(".alert-trigger-answer-select", this.$el),
+         $ALERT_LOCATION_SELECT: $(".alert-location-select", this.$el)
       }
       this.dom.$ALERT_TRIGGER_ANSWER_SELECT.chosen({
          width: "45%",
@@ -267,8 +292,15 @@ SurveyModals.AlertView = Backbone.View.extend({
          disable_search_threshold: 10,
          inherit_select_classes: true
       });
+      this.dom.$ALERT_LOCATION_SELECT.chosen({
+         width: "45%",
+         disable_search_threshold: 10,
+         inherit_select_classes: true,
+         allow_single_deselect: true
+      });
       this.dom.$ALERT_TRIGGER_ANSWER_SELECT_DIV = $("div.alert-trigger-answer-select", this.$el);
-      this.dom.$ALERT_OPERATOR_SELECT_DIV= $("div.alert-operator-select", this.$el);
+      this.dom.$ALERT_OPERATOR_SELECT_DIV = $("div.alert-operator-select", this.$el);
+      this.dom.$ALERT_LOCATION_SELECT_DIV = $("div.alert-location-select", this.$el);
       return this.$el;
    },
    deleteAlert: function (event) {
@@ -286,7 +318,10 @@ SurveyModals.AlertView = Backbone.View.extend({
    },
    updateOperator: function (event) {
       this.model.updateOperator(event.currentTarget.value);
-   },   
+   },
+   updateLocation: function(event) {
+      this.model.updateLocation(event.currentTarget.value);
+   },
    validationResult: function (result) {
       var invalidFieldClass = SurveyUtilities.Utilities.CONSTANTS_CLASS.INVALID_FIELD;
       this.dom.$ALERT_DESCRIPTION_INPUT.removeClass(invalidFieldClass);
@@ -294,6 +329,7 @@ SurveyModals.AlertView = Backbone.View.extend({
       this.dom.$ALERT_TRIGGER_ANSWER_INPUT.removeClass(invalidFieldClass);
       this.dom.$ALERT_DISTRIBUTION_LIST_INPUT.removeClass(invalidFieldClass);
       this.dom.$ALERT_OPERATOR_SELECT_DIV.removeClass(invalidFieldClass);
+      this.dom.$ALERT_LOCATION_SELECT_DIV.removeClass(invalidFieldClass);
       if (result != "valid") {
          for (var i = 0; i < result.length; ++i) {
             if (result[i] == this.model.errors.INVALID_DESCRIPTION) {
@@ -305,6 +341,8 @@ SurveyModals.AlertView = Backbone.View.extend({
                this.dom.$ALERT_DISTRIBUTION_LIST_INPUT.addClass(invalidFieldClass);
             } else if (result[i] == this.model.errors.INVALID_OPERATOR) {
                this.dom.$ALERT_OPERATOR_SELECT_DIV.addClass(invalidFieldClass);
+            } else if (result[i] == this.model.errors.INVALID_LOCATION) {
+               this.dom.$ALERT_LOCATION_SELECT_DIV.addClass(invalidFieldClass);
             }
          }
       }
@@ -317,6 +355,7 @@ SurveyModals.AlertModel = Backbone.Model.extend({
       INVALID_TRIGGER_ANSWER: "invalid trigger answer",
       INVALID_DISTRIBUTION_LIST: "invalid distribution list",
       INVALID_OPERATOR: "invalid operator",
+      INVALID_LOCATION: "invalid location",
       VALID: "valid"
    },
    events: {
@@ -330,7 +369,8 @@ SurveyModals.AlertModel = Backbone.Model.extend({
       TriggerAnswer: "",
       AlertOperatorsValues: [],
       AlertOperatorsLabels: [],
-      AlertNotification: {}
+      AlertNotification: {},
+      LocationTag: ""
    },
    updateTriggerAnswer: function (newTriggerAnswer) {
       this.set("TriggerAnswer", newTriggerAnswer);
@@ -351,6 +391,11 @@ SurveyModals.AlertModel = Backbone.Model.extend({
    },
    updateOperator: function (newOperator) {
       this.set("Operator", newOperator);
+      var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
+      Backbone.trigger(attributeChangedEvent);
+   },
+   updateLocation: function (newLocation) {
+      this.set("LocationTag", newLocation);
       var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
       Backbone.trigger(attributeChangedEvent);
    },

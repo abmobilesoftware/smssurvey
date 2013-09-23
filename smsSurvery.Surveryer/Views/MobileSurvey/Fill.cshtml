@@ -23,9 +23,9 @@
             <div class="answerArea">
                <%
                if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_YES_NO) { %>
-                   <input type="radio" id="y-<%= QuestionNumber %>" name="yes-no-answer" value="1">
+                   <input type="radio" id="y-<%= QuestionNumber %>" name="yes-no-answer<%= Id %>" value="1">
                    <label for="y-<%= QuestionNumber %>">@Global.MobileSurveyYesLabel</label>
-                   <input type="radio" id="n-<%= QuestionNumber %>" name="yes-no-answer" value="2">
+                   <input type="radio" id="n-<%= QuestionNumber %>" name="yes-no-answer<%= Id %>" value="2">
                    <label for="n-<%= QuestionNumber %>">@Global.MobileSurveyNoLabel</label>
                <% 
                } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_FREE_TEXT) {
@@ -119,6 +119,10 @@
             <p>
             @ViewBag.ThankYouMessage
             </p>
+            <div style="display:none" class="alert fade in alert-error" id="noTags-error" >
+                  <div class="personal-info-validation">
+                  </div>   
+               </div>
          </section>
       @if ((int) @ViewBag.IsFeedback != 0)
       {
