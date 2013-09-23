@@ -47,7 +47,7 @@ namespace smsSurvery.Surveryer.Controllers
                      {
                         DateTime intervalStart = new DateTime(2013, 1, 1);
                         DateTime intervalEnd = new DateTime(2013, 12, 12);
-                        res = GenerateResultForRatingQuestion(question, intervalStart, intervalEnd, new string[0]);
+                        res = GenerateResultForFiniteAnswersQuestion(question, intervalStart, intervalEnd, new string[0]);
                      }
                      break;
                   case cFreeTextTypeQuestion:
@@ -113,7 +113,7 @@ namespace smsSurvery.Surveryer.Controllers
             case cSelectOneFromManyTypeQuestion:
                {
                   string[] optionDef = question.ValidAnswersDetails.Split(';');                
-                  res = GenerateResultForRatingQuestion(question, intervalStart, intervalEnd, tags);
+                  res = GenerateResultForFiniteAnswersQuestion(question, intervalStart, intervalEnd, tags);
                   List<RepDataRow> pieChartContent = new List<RepDataRow>();
                   foreach (var rowData in res.AnswersPerValidOption)
                   {
@@ -151,7 +151,7 @@ namespace smsSurvery.Surveryer.Controllers
       }
 
 
-      private QuestionSurveyResults GenerateResultForRatingQuestion(Question q, DateTime intervalStart, DateTime intervalEnd, string[] tags)
+      private QuestionSurveyResults GenerateResultForFiniteAnswersQuestion(Question q, DateTime intervalStart, DateTime intervalEnd, string[] tags)
       {
          //we need the possible values - only valid answers are to be considered
          /**the output should contain
@@ -291,7 +291,7 @@ namespace smsSurvery.Surveryer.Controllers
           * assume that each tag defines a location
           */
       [HttpGet]
-      public JsonResult GetTagComparisonReportForRatingQuestion(int questionID, String iIntervalStart, String iIntervalEnd, string[] tags = null)
+      public JsonResult GetTagComparisonReportForFiniteAnswersQuestion(int questionID, String iIntervalStart, String iIntervalEnd, string[] tags = null)
       {
          //TODO check if tags are location tags
          DateTime intervalStart = DateTime.ParseExact(iIntervalStart, cDateFormat, CultureInfo.InvariantCulture);
@@ -304,7 +304,11 @@ namespace smsSurvery.Surveryer.Controllers
          //questionID = 1;
          //get the question
          var question = db.QuestionSet.Find(questionID);
-         if(question!=null) {
+         if(question!=null &&
+            (question.Type == ReportsController.cRatingsTypeQuestion ||
+            question.Type == ReportsController.cNumericTypeQuestion ||
+            question.Type == ReportsController.cYesNoTypeQuestion ||
+            question.Type == ReportsController.cSelectOneFromManyTypeQuestion)) {
             //create the data structure required by combo chart
             //Documentation can be found at https://developers.google.com/chart/interactive/docs/gallery/combochart
             //create the header

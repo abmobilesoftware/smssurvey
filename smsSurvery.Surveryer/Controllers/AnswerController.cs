@@ -260,7 +260,7 @@ namespace smsSurvery.Surveryer.Controllers
            }           
         }
 
-       public void StartSmsSurveyInternal(
+       public MessageStatus StartSmsSurveyInternal(
           string numberToSendFrom,
           string customerPhoneNumber,
           SurveyTemplate surveyToRun,
@@ -287,53 +287,62 @@ namespace smsSurvery.Surveryer.Controllers
              latestSurveyResult.Terminated = true;
           }
           //TODO DA sanity check - only one active survey at a time          
-         if (surveyToRun != null)
-         {
-            SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyTemplate = surveyToRun, Terminated = false, PercentageComplete= 0, LanguageChosenForSurvey= surveyLanguage };            
-            db.SurveyResultSet.Add(newSurvey);
-            //mark that we have started a new survey for the current user
-            customer.SurveyInProgress = true;
-            customer.RunningSurvey = surveyToRun;            
-            var currentQuestion = surveyToRun.QuestionSet.OrderBy(x => x.Order).FirstOrDefault();
-            if (currentQuestion != null)
-            {
-               //cannot start a survey without any questions
-               newSurvey.CurrentQuestion = currentQuestion;
-               //add the tags
-               var companyTags = authenticatedUser.Company.Tags;
-               foreach (var tg in tags)
-               {
-                  var tagToAdd = companyTags.Where(t => t.Name == tg).FirstOrDefault();
-                  if (tagToAdd != null)
-                  {
-                     newSurvey.Tags.Add(tagToAdd);
-                  }
-               }
-               db.SaveChanges();
-               if (sendMobile)
-               {
-                  SendMobileSurveyToCustomer(customer, numberToSendFrom, newSurvey);
-               }
-               else
-               {
-                  SendQuestionToCustomer(customer, numberToSendFrom, currentQuestion,surveyToRun.QuestionSet.Count(),true, db, surveyToRun.IntroMessage);
-               }
-            }
-            else
-            {
-               logger.InfoFormat("Attempting to start a survey, {0}, which has no questions", surveyToRun.Description);
-            }            
-         }          
+          if (surveyToRun != null)
+          {
+             SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyTemplate = surveyToRun, Terminated = false, PercentageComplete = 0, LanguageChosenForSurvey = surveyLanguage };
+             db.SurveyResultSet.Add(newSurvey);
+             //mark that we have started a new survey for the current user
+             customer.SurveyInProgress = true;
+             customer.RunningSurvey = surveyToRun;
+             var currentQuestion = surveyToRun.QuestionSet.OrderBy(x => x.Order).FirstOrDefault();
+             if (currentQuestion != null)
+             {
+                //cannot start a survey without any questions
+                newSurvey.CurrentQuestion = currentQuestion;
+                //add the tags
+                var companyTags = authenticatedUser.Company.Tags;
+                foreach (var tg in tags)
+                {
+                   var tagToAdd = companyTags.Where(t => t.Name == tg).FirstOrDefault();
+                   if (tagToAdd != null)
+                   {
+                      newSurvey.Tags.Add(tagToAdd);
+                   }
+                }
+                db.SaveChanges();
+                if (sendMobile)
+                {
+                   return SendMobileSurveyToCustomer(customer, numberToSendFrom, newSurvey);
+                }
+                else
+                {
+                   return SendQuestionToCustomer(customer, numberToSendFrom, currentQuestion, surveyToRun.QuestionSet.Count(), true, db, surveyToRun.IntroMessage);
+
+                }
+             }
+             else
+             {
+                logger.InfoFormat("Attempting to start a survey, {0}, which has no questions", surveyToRun.Description);
+                return new MessageStatus() { Status ="Success", DateSent= DateTime.Now, Price = "0.0",MessageSent=false };
+             }
+          }
+          else
+          {
+             logger.Error("Attempting to start a null survey");
+             return null;
+          }
        }
 
-       private static void SendQuestionToCustomer(Customer c, string numberToSendFrom, Question q, int totalNumberOfQuestions, bool isFirstQuestion,  smsSurveyEntities db, string introMessage ="")
+       private static MessageStatus SendQuestionToCustomer(Customer c, string numberToSendFrom, Question q, int totalNumberOfQuestions, bool isFirstQuestion,  smsSurveyEntities db, string introMessage ="")
         {
            logger.DebugFormat("question id: {0}, to customer: {1}, from number: {2}", q.Id, c.PhoneNumber, numberToSendFrom);
            
            var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyTemplate(q.SurveyTemplateSet);
            //DA before we send the SMS question we must prepare it - add the expected answers to it
            string smsText = PrepareSMSTextForQuestion(q, totalNumberOfQuestions, isFirstQuestion, introMessage);
-           smsinterface.SendMessage(numberToSendFrom, c.PhoneNumber, smsText);
+          
+           var result = smsinterface.SendMessage(numberToSendFrom, c.PhoneNumber, smsText);
+           return result;
         }
 
         private static string PrepareSMSTextForQuestion(Question q, int totalNumberOfQuestions, bool isFirstQuestion, string introMessage)
@@ -402,14 +411,15 @@ namespace smsSurvery.Surveryer.Controllers
            }
         }
 
-        private  void SendMobileSurveyToCustomer(Customer c, string numberToSendFrom, SurveyResult surveyResult)
+        private  MessageStatus SendMobileSurveyToCustomer(Customer c, string numberToSendFrom, SurveyResult surveyResult)
         {
            var prefix = surveyResult.SurveyTemplate.IntroMessage + System.Environment.NewLine;
            var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyTemplate(surveyResult.SurveyTemplate);
            string mobileSurveyLocation = GetTargetedMobileSurveyLocation(surveyResult, this.ControllerContext.RequestContext);
 
-           string text = String.Format(GlobalResources.Global.SmsMobileSurveyTemplate, mobileSurveyLocation);
-           smsinterface.SendMessage(numberToSendFrom, c.PhoneNumber, prefix + text);
+           string text = String.Format(GlobalResources.Global.SmsMobileSurveyTemplate, mobileSurveyLocation);       
+           var result = smsinterface.SendMessage(numberToSendFrom, c.PhoneNumber, prefix + text);
+           return result;
         }
 
        //TODO refactor to 1 method
@@ -420,11 +430,12 @@ namespace smsSurvery.Surveryer.Controllers
            return mobileSurveyLocation;
         }
       
-        private void SendThankYouToCustomer(Customer c,string numberToSendFrom, SurveyTemplate survey)
-        {
+        private MessageStatus SendThankYouToCustomer(Customer c,string numberToSendFrom, SurveyTemplate survey)
+        {           
            logger.DebugFormat("Send thank you to customer {0}, from number {1}, for surveyId {2}", c.PhoneNumber, numberToSendFrom, survey.Id);
            var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyTemplate(survey);
-           smsinterface.SendMessage(numberToSendFrom, c.PhoneNumber, survey.ThankYouMessage);
+           var result = smsinterface.SendMessage(numberToSendFrom, c.PhoneNumber, survey.ThankYouMessage);
+           return result;
         }
 
         protected override void Dispose(bool disposing)

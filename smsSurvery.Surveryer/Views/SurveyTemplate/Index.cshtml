@@ -28,16 +28,7 @@
             @Html.DisplayNameFor(model => model.Description)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.ThankYouMessage)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.DateStarted)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.DateEnded)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.IsRunning)
+            @Html.DisplayNameFor(model => model.IntroMessage)
         </th>
         <th></th>
     </tr>
@@ -48,28 +39,14 @@
             @Html.DisplayFor(modelItem => item.Description)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.ThankYouMessage)
-        </td>
+            @Html.DisplayFor(modelItem => item.IntroMessage)
+        </td>       
         <td>
-            @Html.DisplayFor(modelItem => item.DateStarted)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.DateEnded)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.IsRunning)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-           @Html.ActionLink("Delete", "Delete", new { id=item.Id }) |
-            @Html.ActionLink("Details", "Details", new { id=item.Id }) |            
-           @if(item.IsRunning) {
-            @Html.ActionLink("Stop", "MakeActive", new { id=item.Id })           
-           } else {
-              @Html.ActionLink("Make active", "MakeActive", new { id=item.Id }) 
-           } |
-            @Html.ActionLink("Report", "Report","SurveyTemplate", new { id=item.Id }, null) |
-            @Html.ActionLink("Comparison report", "GetTagComparisonReport","Reports", new { surveyId=item.Id }, null) |
+            @Html.ActionLink("View & Edit", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id }) |
+                                 
+            @Html.ActionLink("Reports", "Report","SurveyTemplate", new { id=item.Id }, null) |
+            @Html.ActionLink("Comparison reports", "GetTagComparisonReport","Reports", new { surveyId=item.Id }, null) |
             @Html.ActionLink("Responses", "Responses","SurveyTemplate", new { id=item.Id }, null)
         </td>
     </tr>

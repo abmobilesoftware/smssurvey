@@ -113,6 +113,7 @@ window.LocationView = Backbone.View.extend({
       return this.$el;
    },
    saveLocation: function () {
+      var self = this;
       this.closeAlertBox();
       this.clearErrorsFromFields();
       
@@ -127,15 +128,21 @@ window.LocationView = Backbone.View.extend({
          {
             "ActiveSurveyId": activeSurveyId,
             "ActiveSurveyDescription" : activeSurveyDescription
-         }, { validate: false, silent: false });
+         }, { validate: false, silent: true });
 
       //hide to discard button, we will bring it up if validation fails
       $(".discard-location-btn", this.$el).hide();
-      this.model.save();
+      this.model.save(this.model.toJSON(),
+            {
+               success: function (model, response, options) {                 
+                     $(".location-notifications", self.$el).text("Changes saved successfully.");
+                     $(".alert", self.$el).removeClass("alert-error");
+                     $(".alert", self.$el).addClass("alert-success");
+                  $(".alert", self.$el).show();
+               }
+            });
       $(".save-location-btn", this.$el).prop("disabled", true);
-      
-     
-   },
+ },
    discardChanges: function() {
       this.model.restore();
       this.modelModified();
@@ -184,6 +191,8 @@ window.LocationView = Backbone.View.extend({
       }
       var errorMessage = errorsArray.join("\r\n");
       $(".location-notifications", self.$el).html(errorMessage);
+      $(".alert", self.$el).removeClass("alert-success");
+      $(".alert", self.$el).addClass("alert-error");
       $(".alert", self.$el).show();
       $(".discard-location-btn", this.$el).show();
    },
@@ -247,7 +256,7 @@ window.LocationSetView = Backbone.View.extend({
    tag: "div",
    className:"locationsViewContent",
    events: {
-      "click .add-location-btn": "addNewLocation"
+      "click .add-location-btn": "addNewLocation"     
    },
    model: window.LocationSetCollection,
    initialize: function () {
@@ -284,7 +293,7 @@ window.LocationSetView = Backbone.View.extend({
    addNewLocation: function () {
       var newLocation =new window.LocationModel();
       this.collection.add(newLocation);
-   }  
+   }
 });
 
 $(document).ready(function () {

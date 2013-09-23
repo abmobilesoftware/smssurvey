@@ -214,7 +214,7 @@ namespace smsSurvery.Surveryer.Controllers
                      if (answerText != alert.TriggerAnswer)
                      {
                         notificationRequired = true;
-                        alertCause = String.Format("Expected answer, '{0}', not received ", answerText);
+                       alertCause = String.Format("Answer different from expected value '{0}'", GetUserFriendlyAnswerVersion(currentQuestion, answerText, logger));
                      }
                      break;
                   case "<":

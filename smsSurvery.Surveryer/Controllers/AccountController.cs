@@ -54,7 +54,7 @@ namespace smsSurvery.Surveryer.Controllers
       {
          WebSecurity.Logout();
 
-         return RedirectToAction("Index", "Home");
+         return RedirectToAction("Index", "SurveyTemplate");
       }
 
       //
@@ -81,7 +81,7 @@ namespace smsSurvery.Surveryer.Controllers
             {
                WebSecurity.CreateUserAndAccount(model.UserName, model.Password, new { Company_Name = model.CompanyName });
                WebSecurity.Login(model.UserName, model.Password);
-               return RedirectToAction("Index", "Home");
+               return RedirectToAction("Index", "SurveyTemplate");
             }
             catch (MembershipCreateUserException e)
             {
@@ -337,7 +337,7 @@ namespace smsSurvery.Surveryer.Controllers
          }
          else
          {
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "SurveyTemplate");
          }
       }
 
