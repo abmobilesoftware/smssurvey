@@ -61,6 +61,96 @@ namespace smsSurvery.Surveryer.GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Keywords &apos;{0}&apos; detected.
+        /// </summary>
+        public static string alertCauseAllKeywordsDetectedMessage {
+            get {
+                return ResourceManager.GetString("alertCauseAllKeywordsDetectedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keyword &apos;{0}&apos; detected.
+        /// </summary>
+        public static string alertCauseAnyKeywordDetectedMessage {
+            get {
+                return ResourceManager.GetString("alertCauseAnyKeywordDetectedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Keyword &apos;{0}&apos; detected.
+        /// </summary>
+        public static string alertCauseContainsMessage {
+            get {
+                return ResourceManager.GetString("alertCauseContainsMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Expected answer, &apos;{0}&apos;, received.
+        /// </summary>
+        public static string alertCauseEqualMessage {
+            get {
+                return ResourceManager.GetString("alertCauseEqualMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Received answer &apos;{0}&apos; ({1}) &gt; than threshold answer &apos;{2}&apos; ({3}).
+        /// </summary>
+        public static string alertCauseGreaterMessage {
+            get {
+                return ResourceManager.GetString("alertCauseGreaterMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Received answer &apos;{0}&apos; ({1}) &gt;= than threshold answer &apos;{2}&apos; ({3}).
+        /// </summary>
+        public static string alertCauseGreaterOrEqualMessage {
+            get {
+                return ResourceManager.GetString("alertCauseGreaterOrEqualMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Received answer &apos;{0}&apos; ({1}) &lt; than threshold answer &apos;{2}&apos; ({3}).
+        /// </summary>
+        public static string alertCauseLessMessage {
+            get {
+                return ResourceManager.GetString("alertCauseLessMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Received answer &apos;{0}&apos; ({1}) &lt;= than threshold answer &apos;{2}&apos; ({3}).
+        /// </summary>
+        public static string alertCauseLessOrEqualMessage {
+            get {
+                return ResourceManager.GetString("alertCauseLessOrEqualMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Answer different from expected value &apos;{0}&apos;.
+        /// </summary>
+        public static string alertCauseNotEqualMessage {
+            get {
+                return ResourceManager.GetString("alertCauseNotEqualMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Alert &apos;{0}&apos; triggered for question &apos;{1}&apos;.
+        /// </summary>
+        public static string alertEmailSubject {
+            get {
+                return ResourceManager.GetString("alertEmailSubject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Powered by.
         /// </summary>
         public static string MobileSurveyFooterCaption {

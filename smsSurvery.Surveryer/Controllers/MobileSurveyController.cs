@@ -199,6 +199,10 @@ namespace smsSurvery.Surveryer.Controllers
                surveyToAnalyze = surveyToFill;
             }
          }
+         //DA make sure the alerts are sent with the correct language
+         var surveyLanguage = surveyToAnalyze.LanguageChosenForSurvey;
+         surveyLanguage = !String.IsNullOrEmpty(surveyLanguage) ? surveyLanguage : surveyToAnalyze.SurveyTemplate.DefaultLanguage;
+         System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture(surveyLanguage);
          foreach (var q in questions)
          {
             var currentQuestion = db.QuestionSet.Find(q.Id);

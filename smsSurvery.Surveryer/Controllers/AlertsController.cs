@@ -207,14 +207,14 @@ namespace smsSurvery.Surveryer.Controllers
                      if (answerText == alert.TriggerAnswer)
                      {
                         notificationRequired = true;
-                        alertCause = String.Format("Expected answer, '{0}', received ", GetUserFriendlyAnswerVersion(currentQuestion, answerText, logger));
+                        alertCause = String.Format(GlobalResources.Global.alertCauseEqualMessage, GetUserFriendlyAnswerVersion(currentQuestion, answerText, logger));
                      }
                      break;
                   case "!=":
                      if (answerText != alert.TriggerAnswer)
                      {
                         notificationRequired = true;
-                       alertCause = String.Format("Answer different from expected value '{0}'", GetUserFriendlyAnswerVersion(currentQuestion, answerText, logger));
+                        alertCause = String.Format(GlobalResources.Global.alertCauseNotEqualMessage, GetUserFriendlyAnswerVersion(currentQuestion, answerText, logger));
                      }
                      break;
                   case "<":
@@ -224,7 +224,7 @@ namespace smsSurvery.Surveryer.Controllers
                         if (receivedAnswerAsInt < alertTriggerAnswerAsInt)
                         {
                            notificationRequired = true;
-                           alertCause = String.Format("Received answer '{0}' ({1}) < than threshold answer '{2}' ({3})",
+                           alertCause = String.Format(GlobalResources.Global.alertCauseLessMessage,
                               GetUserFriendlyAnswerVersion(currentQuestion, receivedAnswerAsInt, logger), receivedAnswerAsInt,
                               GetUserFriendlyAnswerVersion(currentQuestion, alertTriggerAnswerAsInt, logger), alertTriggerAnswerAsInt);
                         }
@@ -237,7 +237,7 @@ namespace smsSurvery.Surveryer.Controllers
                         if (receivedAnswerAsInt <= alertTriggerAnswerAsInt)
                         {
                            notificationRequired = true;
-                           alertCause = String.Format("Received answer '{0}' ({1}) <= than threshold answer '{2}' ({3})",
+                           alertCause = String.Format(GlobalResources.Global.alertCauseLessOrEqualMessage,
                               GetUserFriendlyAnswerVersion(currentQuestion, receivedAnswerAsInt, logger), receivedAnswerAsInt,
                               GetUserFriendlyAnswerVersion(currentQuestion, alertTriggerAnswerAsInt, logger), alertTriggerAnswerAsInt);
                         }
@@ -250,7 +250,7 @@ namespace smsSurvery.Surveryer.Controllers
                         if (receivedAnswerAsInt > alertTriggerAnswerAsInt)
                         {
                            notificationRequired = true;
-                           alertCause = String.Format("Received answer '{0}' ({1}) > than threshold answer '{2}' ({3})",
+                           alertCause = String.Format(GlobalResources.Global.alertCauseGreaterMessage,
                               GetUserFriendlyAnswerVersion(currentQuestion, receivedAnswerAsInt, logger), receivedAnswerAsInt,
                               GetUserFriendlyAnswerVersion(currentQuestion, alertTriggerAnswerAsInt, logger), alertTriggerAnswerAsInt);
                         }
@@ -263,7 +263,7 @@ namespace smsSurvery.Surveryer.Controllers
                         if (receivedAnswerAsInt >= alertTriggerAnswerAsInt)
                         {
                            notificationRequired = true;
-                           alertCause = String.Format("Received answer '{0}' ({1}) >= than threshold answer '{2}' ({3})",
+                           alertCause = String.Format(GlobalResources.Global.alertCauseGreaterOrEqualMessage,
                               GetUserFriendlyAnswerVersion(currentQuestion, receivedAnswerAsInt, logger), receivedAnswerAsInt,
                               GetUserFriendlyAnswerVersion(currentQuestion, alertTriggerAnswerAsInt, logger), alertTriggerAnswerAsInt);
                         }
@@ -279,7 +279,7 @@ namespace smsSurvery.Surveryer.Controllers
                         if (answerText.Contains(alert.TriggerAnswer))
                         {
                            notificationRequired = true;
-                           alertCause = String.Format("Keyword '{0}' detected'", val);
+                           alertCause = String.Format(GlobalResources.Global.alertCauseAnyKeywordDetectedMessage, val);
                         }
                         break;
                      }
@@ -295,7 +295,7 @@ namespace smsSurvery.Surveryer.Controllers
                      }
                      if (notificationRequired)
                      {
-                        alertCause = String.Format("Keywords '{0}' detected'", string.Join(", ", tValues));
+                        alertCause = String.Format(GlobalResources.Global.alertCauseAllKeywordsDetectedMessage, string.Join(", ", tValues));
                      }
                      break;
                   case "contains":
@@ -303,11 +303,11 @@ namespace smsSurvery.Surveryer.Controllers
                      if (answerText.Contains(alert.TriggerAnswer))
                      {
                         notificationRequired = true;
-                        alertCause = String.Format("Keyword '{0}' detected'", alert.TriggerAnswer);
+                        alertCause = String.Format(GlobalResources.Global.alertCauseContainsMessage, alert.TriggerAnswer);
                      }
                      break;
                   default:
-                     logger.ErrorFormat("invalid operator detected {0} for alert {1}", alert.Operator, alert.Id);
+                     logger.ErrorFormat("Invalid operator detected {0} for alert {1}", alert.Operator, alert.Id);
                      break;
                }
                if (notificationRequired)
@@ -404,7 +404,7 @@ namespace smsSurvery.Surveryer.Controllers
             case "email":
                AlertMailer mailer = new AlertMailer();
                //DA here we compose the email Subject & message
-               var emailSubject = String.Format("Alert '{0}' triggered for question '{1}' ", alert.QuestionAlertSet.Description, alert.QuestionAlertSet.QuestionSet.Text);
+               var emailSubject = String.Format(GlobalResources.Global.alertEmailSubject, alert.QuestionAlertSet.Description, alert.QuestionAlertSet.QuestionSet.Text);
                var message = "";
                //string linkToSurveyResults = String.Format("http://localhost:3288/SurveyResult/Details/{0}", surveyResultId);
                UrlHelper u = new UrlHelper(ctrl.ControllerContext.RequestContext);
