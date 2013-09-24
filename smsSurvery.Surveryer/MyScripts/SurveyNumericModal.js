@@ -79,6 +79,9 @@ SurveyModals.NumericModalView = Backbone.View.extend({
    }
 });
 
+var isBlank = function (str) {
+   return (!str || /^\s*$/.test(str));
+}
 SurveyModals.NumericModalModel = Backbone.Model.extend({
    events: {
       UPDATE_VIEW: "updateViewEvent"
@@ -249,7 +252,7 @@ SurveyModals.NumericEntryModel = Backbone.Model.extend({
       Backbone.trigger(attributeChangedEvent);
    },
    validate: function () {
-      if (this.get("NumericLabel").length == 0) {
+      if (isBlank(this.get("NumericLabel"))) {
          this.trigger(this.events.VALIDATE, this.errors.INVALID_NUMERIC_LABEL);
          return false;
       }

@@ -194,7 +194,9 @@ SurveyModals.AnswerView = Backbone.View.extend({
       }
    }
 });
-
+var isBlank = function (str) {
+   return (!str || /^\s*$/.test(str));
+}
 SurveyModals.AnswerModel = Backbone.Model.extend({
    events: {
       VALIDATE: "validateEvent"
@@ -208,7 +210,7 @@ SurveyModals.AnswerModel = Backbone.Model.extend({
       AnswerLabel: ""
    },
    validate: function () {
-      if (this.get("AnswerLabel").length == 0) {
+      if (isBlank(this.get("AnswerLabel"))) {
          this.trigger(this.events.VALIDATE, this.errors.INVALID_ANSWER_LABEL)
          return false;
       } else {
