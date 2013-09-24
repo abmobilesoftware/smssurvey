@@ -111,6 +111,11 @@ namespace smsSurvery.Surveryer.Controllers
                tag.ActiveSurveyTemplate = activeSurveyTemplate;
             }
          }
+         else
+         {
+            tag.ActiveSurveyTemplate = null;
+            tag.ActiveSurveyTemplate_Id = null;
+         }
          db.Entry(tag).State = EntityState.Modified;
 
          try
