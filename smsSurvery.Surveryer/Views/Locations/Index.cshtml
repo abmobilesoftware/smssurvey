@@ -5,7 +5,7 @@
 
 <h2>Locations</h2>
 <script type="text/template" id="location-template">  
-      <div style="display:none" class="alert fade in alert-error" id="noTags-error" >
+      <div style="display:none" class="alert fade in alert-error" class="noTags-error" >
                   <button type="button" class="close close-location-notifications">×</button>
                   <div class="location-notifications"></div>
       </div>    
@@ -17,7 +17,15 @@
             <option value="<%= ActiveSurveyId %>" selected><%= ActiveSurveyDescription %></option>      
          </select>      
       <button class="btn btn-primary save-location-btn location-button" type="button" disabled>Save</button> 
-      <button style="display:none" class="btn btn-primary discard-location-btn location-button" type="button">Discard</button>               
+      <button style="display:none" class="btn btn-primary discard-location-btn location-button" type="button">Discard</button>
+   <div style="display:none" class="activeSurveyPerLocationLink">
+      <table class="table table-striped table-bordered">
+         <tr>
+            <td width="180px">Active survey link</td>
+            <td><a target="_blank" href="<%= ActiveSurveyPerLocationLink %>"><%= ActiveSurveyPerLocationLink %></a>
+            </td>
+         </tr>        
+   </div>
 </script>
 
 <script type="text/template" id="location-set-template">

@@ -15,7 +15,8 @@ window.LocationModel = Backbone.Model.extend({
          Name: "",
          Description: "",
          ActiveSurveyDescription: "",
-         ActiveSurveyId: 0
+         ActiveSurveyId: 0,
+         ActiveSurveyPerLocationLink: "www.txtfeedback.net"
       }
    },   
    idAttribute: "Id",
@@ -88,11 +89,20 @@ window.LocationView = Backbone.View.extend({
    initialize: function () {
       _.bindAll(this, "render", "saveLocation", "inputDataChanged",
          "closeAlertBox", "validationError", "clearErrorsFromFields",
-         "discardChanges", "modelModified", "loadSurveyTemplateOptions");
+         "discardChanges", "modelModified", "loadSurveyTemplateOptions",
+         "renderActiveSurveyPerLocationInfo");
       this.template = _.template($("#location-template").html());
       var self = this;
       this.model.on("invalid", self.validationError);
       this.model.on("change:Name change:Description change:ActiveSurveyId", self.modelModified);
+   },
+   renderActiveSurveyPerLocationInfo: function () {
+      //DA depending on whether we have an activeSurvey or not show the link or not
+      if (this.model.get("ActiveSurveyId") != 0) {
+         this.$(".activeSurveyPerLocationLink").show();
+      } else {
+         this.$(".activeSurveyPerLocationLink").hide();
+      }
    },
    render: function() {
       this.$el.html(this.template(this.model.toJSON()));
@@ -110,7 +120,8 @@ window.LocationView = Backbone.View.extend({
          $('input[name="Description"]', this.$el).on('input', self.inputDataChanged);
       }
       this.model.backup();
-      return this.$el;
+      this.renderActiveSurveyPerLocationInfo();
+      return this;
    },
    saveLocation: function () {
       var self = this;
@@ -138,7 +149,9 @@ window.LocationView = Backbone.View.extend({
                      $(".location-notifications", self.$el).text("Changes saved successfully.");
                      $(".alert", self.$el).removeClass("alert-error");
                      $(".alert", self.$el).addClass("alert-success");
-                  $(".alert", self.$el).show();
+                     $(".alert", self.$el).show();
+                     self.renderActiveSurveyPerLocationInfo();
+                     self.model.backup();
                }
             });
       $(".save-location-btn", this.$el).prop("disabled", true);
@@ -220,6 +233,7 @@ window.LocationView = Backbone.View.extend({
                optElem.html("");
                var noSelectionElem = '<option value="0"></option>';
                optElem.append(noSelectionElem);
+               window.Location.activeSurveyOptions["0"] = "";
                _.each(data, function (item) {
                   var elem = '<option value="' + item.value + '">' + item.label + '</option>';
                   optElem.append(elem);
@@ -236,9 +250,17 @@ window.LocationView = Backbone.View.extend({
       }
       else {
          var optElem = $(".location-select-active-survey", this.$el);
+         optElem.html("");
          for (var opt in window.Location.activeSurveyOptions) {
             var elem = '<option value="' + opt + '">' + window.Location.activeSurveyOptions[opt] + '</option>';
             optElem.append(elem);
+         };
+         var activeSurveyId = $("option:selected", self.$el).val();
+         var selectedCandidate = $("option", self.$el).filter(function () {
+            return $(this).val() == activeSurveyId;
+         });
+         if (selectedCandidate.length === 1) {
+            selectedCandidate[0].selected = true;
          }
       }     
       this._optionsLoaded = true;
@@ -275,7 +297,7 @@ window.LocationSetView = Backbone.View.extend({
 
       // Render each sub-view and append it to the parent view's element.
       _(self._locationViews).each(function (locView) {
-         $(".locations-set-content",self.el).append(locView.render());
+         $(".locations-set-content",self.el).append(locView.render().el);
       });
       return this.$el;
    },
@@ -287,7 +309,7 @@ window.LocationSetView = Backbone.View.extend({
       //if the view was rendered append the new element
       this._locationViews.push(locView);
       if (self._rendered) {
-         $(".locations-set-content",self.el).append(locView.render());
+         $(".locations-set-content",self.el).append(locView.render().el);
       }
    },
    addNewLocation: function () {

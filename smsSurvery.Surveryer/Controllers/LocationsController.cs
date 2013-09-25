@@ -50,6 +50,14 @@ namespace smsSurvery.Surveryer.Controllers
    {
       private smsSurveyEntities db = new smsSurveyEntities();
 
+      private string GetActiveSurveyLinkLocation(string location, string company)
+      {
+         //UrlHelper u = new UrlHelper(rc);
+         //string mobileSurveyLocation = HttpContext.Current.Request.Url.Scheme + "://" + HttpContext.Current.Request.Url.Authority + u.Action("ActiveSurvey", "MobileSurvey", new { location = location, company= company });
+         string url = HttpContext.Current.Request.Url.Scheme + "://" + HttpContext.Current.Request.Url.Authority + Url.Route("Default", new { controller = "MobileSurvey", action = "ActiveSurvey", location = location, company = company });
+         return url;
+      }
+
       private UserProfile GetConnectedUser()
       {
          var connectedUser = User.Identity.Name;
@@ -66,7 +74,10 @@ namespace smsSurvery.Surveryer.Controllers
           var tags = (from tag in user.Company.Tags
                                  select
                                     (from ct in tag.TagTypes where ct.Type == "Location" select new Location(tag))).SelectMany(x => x);
-         return tags.AsEnumerable();
+          
+         var tagsList =tags.ToList();
+         tagsList.ForEach(x => x.ActiveSurveyPerLocationLink = GetActiveSurveyLinkLocation(x.Name, user.Company_Name));
+         return tagsList;
       }
 
       // GET api/LocationTags/5
