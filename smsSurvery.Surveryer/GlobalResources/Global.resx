@@ -117,8 +117,38 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="LocationLabel" xml:space="preserve">
+  <data name="alertCauseAllKeywordsDetectedMessage" xml:space="preserve">
+    <value>Keywords '{0}' detected</value>
+  </data>
+   <data name="LocationLabel" xml:space="preserve">
     <value>Location</value>
+  </data>
+  <data name="alertCauseAnyKeywordDetectedMessage" xml:space="preserve">
+    <value>Keyword '{0}' detected</value>
+  </data>
+  <data name="alertCauseContainsMessage" xml:space="preserve">
+    <value>Keyword '{0}' detected</value>
+  </data>
+  <data name="alertCauseEqualMessage" xml:space="preserve">
+    <value>Expected answer, '{0}', received</value>
+  </data>
+  <data name="alertCauseGreaterMessage" xml:space="preserve">
+    <value>Received answer '{0}' ({1}) &gt; than threshold answer '{2}' ({3})</value>
+  </data>
+  <data name="alertCauseGreaterOrEqualMessage" xml:space="preserve">
+    <value>Received answer '{0}' ({1}) &gt;= than threshold answer '{2}' ({3})</value>
+  </data>
+  <data name="alertCauseLessMessage" xml:space="preserve">
+    <value>Received answer '{0}' ({1}) &lt; than threshold answer '{2}' ({3})</value>
+  </data>
+  <data name="alertCauseLessOrEqualMessage" xml:space="preserve">
+    <value>Received answer '{0}' ({1}) &lt;= than threshold answer '{2}' ({3})</value>
+  </data>
+  <data name="alertCauseNotEqualMessage" xml:space="preserve">
+    <value>Answer different from expected value '{0}'</value>
+  </data>
+  <data name="alertEmailSubject" xml:space="preserve">
+    <value>Alert '{0}' triggered for question '{1}'</value>
   </data>
   <data name="MobileSurveyFooterCaption" xml:space="preserve">
     <value>Powered by</value>

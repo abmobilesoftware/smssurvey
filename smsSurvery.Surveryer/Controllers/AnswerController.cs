@@ -189,6 +189,12 @@ namespace smsSurvery.Surveryer.Controllers
               }
               if (!receivedMultipleAnswersToSameQuestion)
               {
+                 //DA for compatibility with the old versions make sure that we have a valid survey language
+                 var surveyLanguage = runningSurvey.LanguageChosenForSurvey;
+                 surveyLanguage = !String.IsNullOrEmpty(surveyLanguage) ? surveyLanguage : runningSurvey.SurveyTemplate.DefaultLanguage;
+                 //DA choose the appropriate language for the survey
+                 System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture(surveyLanguage);
+
                  //if we haven't reached the end of the survey then ask the next question
                  if (currentQuestion.Order != numberOfQuestionsInSurvey)
                  {
@@ -198,11 +204,7 @@ namespace smsSurvery.Surveryer.Controllers
                     {
                        runningSurvey.CurrentQuestion = nextQuestion;
                        db.SaveChanges();
-                       //DA for compatibility with the old versions make sure that we have a valid survey language
-                       var surveyLanguage = runningSurvey.LanguageChosenForSurvey;
-                       surveyLanguage = !String.IsNullOrEmpty(surveyLanguage) ? surveyLanguage : runningSurvey.SurveyTemplate.DefaultLanguage;
-                       //DA choose the appropriate language for the survey
-                       System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture(surveyLanguage);
+                       
                        SendQuestionToCustomer(customer, numberToSendFrom, nextQuestion, runningSurvey.SurveyTemplate.QuestionSet.Count(), false, db);
                     }
                  }
@@ -223,6 +225,7 @@ namespace smsSurvery.Surveryer.Controllers
                  {
                     locationTagsList.Add(locationTag.Name);
                  }
+                 //DA make sure the alerts are sent with the correct language                 
                  AlertsController.HandleAlertsForQuestion(currentQuestion, text, runningSurvey.Id, locationTagsList, this, logger);
               }
               else

@@ -222,6 +222,16 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
       return this.$el.outerHeight();
    }
 });
+
+MobileSurvey.PersonalInformationErrors = {
+   INVALID_NAME: "The Name cannot be empty or whitespace only",
+   INVALID_SURNAME: "The Surname cannot be empty or whitespace only",
+   INVALID_EMAIL: "Invalid email"
+};
+
+var isBlank = function (str) {
+   return (!str || /^\s*$/.test(str));
+}
 MobileSurvey.ThankYouPageView = Backbone.View.extend({
    events: {
       "click #sendPersonalDetailsBtn": "sendPersonalInfo"
@@ -230,7 +240,8 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
    initialize: function () {
       _.bindAll(this, "setWidth", "show",
           "getHeight", "render", "sendPersonalInfo",
-          "setSurveyResultId");
+          "setSurveyResultId", "clearErrorsFromFields",
+          "validationError");
       this.template = _.template($("#thankyoupage-template").html());
       this.render();
    },
@@ -251,41 +262,72 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
       }
    },
    validateData: function () {
+      var self = this;
       this.dom.$ALERT_BOX.hide();
       var errors = [];
       var name = $('#name').val();
       var surname = $('#surname').val();
-      var email = $('#email').val();
-      var telephone = $('#telephone').val();
+      var email = $('#email').val();      
 
       var validData = true;
-      if (name.length < 2) {
-         errors.push("Invalid name");
+      if (isBlank(name)) {
+         errors.push(MobileSurvey.PersonalInformationErrors.INVALID_NAME);
          validData = false;
       }
-      if (surname.length < 2) {
-         errors.push("Invalid surname");
+      if (isBlank(surname)) {
+         errors.push(MobileSurvey.PersonalInformationErrors.INVALID_SURNAME);
          validData = false;
       }
 
       var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-      if (!filter.test(email)) {
+      if (!filter.test(email)) {         
+         errors.push(MobileSurvey.PersonalInformationErrors.INVALID_EMAIL);
          validData = false;
-         errors.push("Invalid email address");
       }
-      if (telephone.length < 10) {
-         validData = false;
-         errors.push("Invalid phone number");
-      }
+      //reset all "invalid fields" qualifiers
+      this.clearErrorsFromFields();
       if (!validData) {
-         var errorsText = "<span><strong>Check the following errors:</strong><span><br/>";
-         for (var i = 0; i<errors.length; ++i) {
-            errorsText += "<span>" + (i+1) + ". " + errors[i] + "</span><br/>";
-         }
-         this.dom.$VALIDATION_BOX.html(errorsText)
-         this.dom.$ALERT_BOX.show();
+         self.validationError(errors);
+         //var errorsText = "<span><strong>Check the following errors:</strong><span><br/>";
+         //for (var i = 0; i<errors.length; ++i) {
+         //   errorsText += "<span>" + (i+1) + ". " + errors[i] + "</span><br/>";
+         //}
+         //this.dom.$VALIDATION_BOX.html(errorsText)
+         //this.dom.$ALERT_BOX.show();
       }
       return validData;
+   },
+   clearErrorsFromFields: function () {
+      var nameField = $('#name', this.$el);
+      var surnameField = $('#surname', this.$el);
+      var emailField = $('#email', this.$el);
+      nameField.removeClass(SurveyUtilities.Utilities.CONSTANTS_CLASS.INVALID_FIELD);
+      surnameField.removeClass(SurveyUtilities.Utilities.CONSTANTS_CLASS.INVALID_FIELD);
+      emailField.removeClass(SurveyUtilities.Utilities.CONSTANTS_CLASS.INVALID_FIELD);
+
+      this.dom.$VALIDATION_BOX.html("")
+      this.dom.$ALERT_BOX.hide();
+   },
+   validationError: function (errorsArray) {
+      var self = this;
+      var nameField = $('#name', this.$el);
+      var surnameField = $('#surname', this.$el);
+      var emailField = $('#email', this.$el);
+
+      for (var i = 0; i < errorsArray.length; ++i) {
+         if (errorsArray[i] === MobileSurvey.PersonalInformationErrors.INVALID_NAME) {
+            nameField.addClass(SurveyUtilities.Utilities.CONSTANTS_CLASS.INVALID_FIELD);
+         } else if (errorsArray[i] === MobileSurvey.PersonalInformationErrors.INVALID_SURNAME) {
+            surnameField.addClass(SurveyUtilities.Utilities.CONSTANTS_CLASS.INVALID_FIELD);
+         } else if (errorsArray[i] === MobileSurvey.PersonalInformationErrors.INVALID_EMAIL) {
+            emailField.addClass(SurveyUtilities.Utilities.CONSTANTS_CLASS.INVALID_FIELD);
+         }
+      }
+      var errorMessage = errorsArray.join("\r\n");
+      this.dom.$VALIDATION_BOX.html(errorMessage)           
+      this.dom.$ALERT_BOX.removeClass("alert-success");
+      this.dom.$ALERT_BOX.addClass("alert-error");
+      this.dom.$ALERT_BOX.show();      
    },
    sendPersonalInfo: function (event) {
       if (this.validateData()) {

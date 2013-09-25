@@ -1,4 +1,5 @@
-﻿using smsSurvey.dbInterface;
+﻿using smsSurvery.Surveryer.ClientModels;
+using smsSurvey.dbInterface;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -119,6 +120,95 @@ namespace smsSurvery.Surveryer.Controllers
             return View("InvalidLocation");
          }
       }
+
+      [HttpGet]
+      [AllowAnonymous]
+      public JsonResult ActiveSurveyAsJson(string location, string company)
+      {
+         //DA run the Active Survey identified for this location, if any
+         var loc = db.Tags.Where(t => t.Name == location && t.TagTypes.Any(tt => tt.Type == "Location") && t.CompanyName == company).FirstOrDefault();
+         if (loc != null)
+         {
+            var surveyToRun = loc.ActiveSurveyTemplate;
+            if (surveyToRun != null)
+            {
+               return Json(GetSurveyTemplateObject(surveyToRun.Id), JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+               //no active survey
+               return Json("noActiveSurvey", JsonRequestBehavior.AllowGet);
+            }
+         }
+         else
+         {
+            return Json("invalidLocation", JsonRequestBehavior.AllowGet);
+         }
+      }
+
+      /* This method and the one below should be moved to other file, because are
+       * duplicate methods of the methods in SurveyTemplate class
+       */ 
+
+      public ClientSurveyTemplate GetSurveyTemplateObject(int id)
+      {
+         try
+         {
+            SurveyTemplate surveyTemplate = db.SurveyTemplateSet.Find(id);
+            if (surveyTemplate == null)
+            {
+               return null;
+            }
+
+            List<ClientQuestion> questions =
+               new List<ClientQuestion>();
+            foreach (var question in surveyTemplate.QuestionSet)
+            {
+               List<ClientQuestionAlert> questionAlertSet =
+                  new List<ClientQuestionAlert>();
+               foreach (var questionAlert in question.QuestionAlertSet)
+               {
+                  var efAlertNotification = (questionAlert.AlertNotificationSet.Count() > 0)
+                                              ? questionAlert.AlertNotificationSet.ElementAt(0)
+                                              : null;
+                  var dbAlertNotification = (efAlertNotification != null) ?
+                     new ClientAlertNotification(efAlertNotification.Id,
+                        efAlertNotification.Type, efAlertNotification.DistributionList) : null;
+                  ClientQuestionAlert qa =
+                   new ClientQuestionAlert(questionAlert.Id,
+                      questionAlert.Description, questionAlert.Operator,
+                      questionAlert.TriggerAnswer, (questionAlert.LocationTag != null) ? questionAlert.LocationTag.Name : "", dbAlertNotification);
+                  questionAlertSet.Add(qa);
+               }
+               ClientQuestion q =
+                  new ClientQuestion(question.Id,
+                     question.Text, question.Order, question.Type,
+                     question.ValidAnswers, question.ValidAnswersDetails,
+                     questionAlertSet);
+               questions.Add(q);
+            }
+            ClientSurveyTemplate clientSurveyTemplate =
+                new ClientSurveyTemplate(
+                   surveyTemplate.Id, surveyTemplate.Description, surveyTemplate.IntroMessage,
+                   surveyTemplate.ThankYouMessage, surveyTemplate.DateStarted,
+                   surveyTemplate.DateEnded, surveyTemplate.IsRunning, questions, surveyTemplate.DefaultLanguage);
+
+            clientSurveyTemplate.MobileWebsiteLocation = GetAnonymousMobileSurveyLocation(surveyTemplate, this.ControllerContext.RequestContext);
+            return clientSurveyTemplate;
+         }
+         catch (Exception e)
+         {
+            return null;
+         }
+      }
+
+      private string GetAnonymousMobileSurveyLocation(SurveyTemplate surveyTemplate, System.Web.Routing.RequestContext rc)
+      {
+         UrlHelper u = new UrlHelper(rc);
+         string mobileSurveyLocation = HttpContext.Request.Url.Scheme + "://" + HttpContext.Request.Url.Authority + u.Action("Feedback", "MobileSurvey", new { id = surveyTemplate.Id });
+         return mobileSurveyLocation;
+      }
+
       public class QuestionResponse
       {
          public QuestionResponse()
@@ -199,6 +289,10 @@ namespace smsSurvery.Surveryer.Controllers
                surveyToAnalyze = surveyToFill;
             }
          }
+         //DA make sure the alerts are sent with the correct language
+         var surveyLanguage = surveyToAnalyze.LanguageChosenForSurvey;
+         surveyLanguage = !String.IsNullOrEmpty(surveyLanguage) ? surveyLanguage : surveyToAnalyze.SurveyTemplate.DefaultLanguage;
+         System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture(surveyLanguage);
          foreach (var q in questions)
          {
             var currentQuestion = db.QuestionSet.Find(q.Id);
@@ -239,35 +333,47 @@ namespace smsSurvery.Surveryer.Controllers
          var survey = db.SurveyResultSet.Find(surveyResultId);
          if (survey != null)
          {
-            var customer = survey.Customer;
-            //Since Telephone is the Primary Key
-            var existingCustomer = db.CustomerSet.Find(info.Telephone);
-            if (existingCustomer != null)
+            if (!String.IsNullOrEmpty(info.Telephone))
             {
-               //Should we update this info???
-               //existingCustomer.Name = info.Name;
-               //existingCustomer.Surname = info.Surname;
-               //existingCustomer.Email = info.Email;
+               //Since Telephone is the Primary Key
+               var existingCustomer = db.CustomerSet.Find(info.Telephone);
+               if (existingCustomer != null)
+               {
+                  //Should we update this info???
+                  //existingCustomer.Name = info.Name;
+                  //existingCustomer.Surname = info.Surname;
+                  //existingCustomer.Email = info.Email;
+               }
+               else
+               {
+                  //delete the bogus customer
+                  
+                  
+                  //and add a "realer" one
+                  var moreAccurateCustomer = new Customer()
+                  {
+                     PhoneNumber = info.Telephone,
+                     Name = info.Name,
+                     Surname = info.Surname,
+                     Email = info.Email
+                  };
+                  db.CustomerSet.Add(moreAccurateCustomer);
+                  var bogusCustomer = survey.Customer;
+                  survey.Customer = moreAccurateCustomer;
+                  db.CustomerSet.Remove(bogusCustomer);
+                  db.SaveChanges();
+               }
             }
             else
             {
-               //delete the bogus customer
-
-               //and add a "realer" one
-               var moreAccurateCustomer = new Customer()
-               {
-                  PhoneNumber = info.Telephone,
-                  Name = info.Name,
-                  Surname = info.Surname,
-                  Email = info.Email
-               };
-               db.CustomerSet.Add(moreAccurateCustomer);
-
-               survey.Customer = moreAccurateCustomer;
-               db.CustomerSet.Remove(customer);
+               var customerToUpdate = survey.Customer;
+               customerToUpdate.Name = info.Name;
+               customerToUpdate.Surname = info.Surname;
+               customerToUpdate.Email = info.Email;
                db.SaveChanges();
+
             }
-         }
+         }         
       }
 
       protected override void Dispose(bool disposing)
