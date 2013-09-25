@@ -117,8 +117,38 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="alertCauseAllKeywordsDetectedMessage" xml:space="preserve">
+    <value>Cuvintele cheie, '{0}', au fost detectate</value>
+  </data>
   <data name="LocationLabel" xml:space="preserve">
     <value>Locatie</value>
+  </data>
+  <data name="alertCauseAnyKeywordDetectedMessage" xml:space="preserve">
+    <value>Cuvantul cheie, '{0}', a fost detectat</value>
+  </data>
+  <data name="alertCauseContainsMessage" xml:space="preserve">
+    <value>Cuvantul cheie, '{0}', a fost detectat</value>
+  </data>
+  <data name="alertCauseEqualMessage" xml:space="preserve">
+    <value>Raspunsul cautat, '{0}', a fost primit</value>
+  </data>
+  <data name="alertCauseGreaterMessage" xml:space="preserve">
+    <value>Raspunsul primit '{0}' ({1}) mai mare decat raspunsul limita '{2}' ({3})</value>
+  </data>
+  <data name="alertCauseGreaterOrEqualMessage" xml:space="preserve">
+    <value>Raspunsul primit '{0}' ({1}) mai mare sau egal cu raspunsul limita '{2}' ({3})</value>
+  </data>
+  <data name="alertCauseLessMessage" xml:space="preserve">
+    <value>Raspunsul primit  '{0}' ({1}) mai mic decat raspunsul limita '{2}' ({3})</value>
+  </data>
+  <data name="alertCauseLessOrEqualMessage" xml:space="preserve">
+    <value>Raspunsul primit '{0}' ({1}) mai mic sau egal cu raspunsul limita '{2}' ({3})</value>
+  </data>
+  <data name="alertCauseNotEqualMessage" xml:space="preserve">
+    <value>A fost primit un raspuns diferit de raspunsul asteptat '{0}'</value>
+  </data>
+  <data name="alertEmailSubject" xml:space="preserve">
+    <value>Alerta '{0}' a fost declansata pentru intrebarea '{1}'</value>
   </data>
   <data name="MobileSurveyFooterCaption" xml:space="preserve">
     <value>Dezvoltat de</value>

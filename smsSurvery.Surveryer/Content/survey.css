@@ -355,3 +355,14 @@ input.numeric-radio {
 div.numeric-radio {
    margin:0 auto;
 }
+
+input.invalidField, select.invalidField, a.invalidField, div.invalidField {
+   -webkit-box-shadow: 0 0 5px rgba(255, 0 ,0, 1);
+   -moz-box-shadow: 0 0 5px rgba(255, 0, 0, 1);
+   box-shadow: 0 0 5px rgba(255, 0, 0, 1);   
+}
+
+.personal-info-validation{
+   word-wrap: break-word;
+   white-space: pre;
+}
