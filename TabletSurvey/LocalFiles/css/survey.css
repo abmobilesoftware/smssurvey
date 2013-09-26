@@ -67,16 +67,21 @@ button {
     }
 
     button.enabled {
-        background: #FF5B00;
-        border: 0.1em solid #F54928;
+        background: linear-gradient(to bottom, #eb7a2c, #fe6703) repeat scroll 0 0 transparent;
+        background: -webkit-linear-gradient(top, #eb7a2c 0%,#fe6703 100%);
+        border: 0.1em solid #E18543;
         color: #ffffff;
         font-size: 26px;
-        font-family:serif;
+        font-family:'Domine', serif;
+        border-radius: 7px;
+        padding: 21px;
     }
 
     button.disabled {
         background: #bbb;
         color: #ffffff;
+        font-size: 26px;
+        font-family:serif;
     }
 
     button.small {
@@ -126,7 +131,7 @@ div.question div.answerArea {
 
 textarea.comment {
     color: #000;
-    font-family: 'Arvo', serif;
+    font-family: 'Open Sans', serif;
     width: 100%;
     font-size: 26px;
     line-height: 30px;
@@ -151,7 +156,7 @@ textarea.comment {
 select.list {
     width: 100%;
     font-size: 26px; 
-    padding: 5px;
+    padding: 5px 5px 5px 11px;
     font-family:'Arvo', serif;
 }
 
@@ -177,7 +182,7 @@ footer {
    float:left;
    width: 100%;
    /*font-family:sans-serif;*/
-   font-family: 'Arvo', serif;
+   font-family: 'Open Sans', serif;
 }
 
 /* STAR */
@@ -217,6 +222,7 @@ footer {
    color: #FFF;
    font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
    /*font-size: 20px;*/
+   text-align:center;
 }
 
 .surveyMessage {
@@ -254,6 +260,7 @@ input[type=checkbox].css-checkbox:checked + label.css-label { background-positio
     border: 1px solid #D6DEE3;
     font-size: 1.1em;
     text-indent: 0px;
+    text-align:center;
 }
 
 #userInfo label {
@@ -386,7 +393,7 @@ div.numeric-radio {
 p#introMessageContent {
 	margin-bottom:0;
 	font-size: 26px;
-	font-family:serif;
+	font-family:'Domine';
 	padding:5px 25px 5px 25px;
 }
 
@@ -414,4 +421,8 @@ div.alert-error {
 p#surveySubmitted {
 	background: green;
 	text-align:center;
+}
+
+.btnGlow {
+	box-shadow: 0 5px 9px -1px #FBD3AB;
 }

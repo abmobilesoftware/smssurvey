@@ -12,7 +12,9 @@
 		<title>Wormhole Template App</title>
 		<link rel="stylesheet" href="style.css" type="text/css" media="screen" title="no title" charset="utf-8">
 		<link rel="stylesheet" href="css/survey.css" type="text/css" media="screen" title="no title" charset="utf-8">
-		<link rel="stylesheet" href="css/bootstrap.css" type="text/css" media="screen" title="no title" charset="utf-8">		
+		<link rel="stylesheet" href="css/bootstrap.css" type="text/css" media="screen" title="no title" charset="utf-8">	
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans&subset=latin,cyrillic,latin-ext' rel='stylesheet' type='text/css'>
+		<link href='http://fonts.googleapis.com/css?family=Domine&subset=latin,latin-ext' rel='stylesheet' type='text/css'>	
 		<script type="text/javascript" charset="utf-8" src="js/scripts/jquery-1.10.1.js"></script>
 		<script type="text/javascript" charset="utf-8" src="js/scripts/jquery-ui-1.10.3.js"></script>
 		<script type="text/javascript" charset="utf-8" src="js/scripts/bootstrap.js"></script>
@@ -181,9 +183,9 @@
     	    if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_YES_NO) { %>
         	    <div class="yesNoQuestion">
 					<input type="radio" id="y-<%= QuestionNumber %>" name="yes-no-answer<%= Id %>" value="1">
-                	<label for="y-<%= QuestionNumber %>">Yes</label>
+                	<label for="y-<%= QuestionNumber %>">Da</label>
                 	<input type="radio" id="n-<%= QuestionNumber %>" name="yes-no-answer<%= Id %>" value="2">
-                	<label for="n-<%= QuestionNumber %>">No</label>
+                	<label for="n-<%= QuestionNumber %>">Nu</label>
 				</div>
             <% 
             } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_FREE_TEXT) {
@@ -236,7 +238,7 @@
              	<div class="clear"></div>                           
              </div>
              <fieldset class='additionalInfo invisibleByDefault'>
-             	<legend class='stars-additional-info'>Why?</legend><textarea  class='comment'></textarea>
+             	<textarea  class='comment' placeholder='Va rugam sa va argumentati alegerea'></textarea>
              </fieldset>
              <%   
              } 
@@ -259,7 +261,7 @@
 
    </div>
    <fieldset class='additionalInfo invisibleByDefault'>
-      <legend class='stars-additional-info'>Why?</legend><textarea  class='comment'></textarea>
+      <textarea placeholder='Va rugam sa va argumentati alegerea' class='comment'></textarea>
    </fieldset>
   <input type='hidden' class='answer' value='noValue' />
 </script>
@@ -272,7 +274,7 @@
     	</div>                       
    	</header>
     <section id="thankYouMessage" class="surveyMessage">
-		<p id="surveySubmitted">Sondajul a fost trimis.</p>
+		<p id="surveySubmitted">Sondajul a fost trimis</p>
     	<p id="thankYouMessageContent">
             Aici vine mesajul de multumire
         </p>
@@ -284,15 +286,15 @@
     <div id="userInfo">
 	    <fieldset id="surveyUserInfo">
     	    <label class="followup">
-              	If you like to be informed about the steps taken by us to improve on your feedback please leave us some personal details
-                If you would like to receive the results of this survey please provide us some personal details                       
+              	Daca doriti sa fiti informat despre masurile luate pe baza feedbackului dumneavoastra va rugam sa ne 
+				impartasiti cateva informatii despre dumneavoastra:                   
             </label>
             <div>
-        	    <label for="name">Name</label>
+        	    <label for="name">Nume</label>
                 <input id="name" type="text" /><br />
             </div>
             <div>
-            	<label for="surname">Surname</label>
+            	<label for="surname">Prenume</label>
                 <input id="surname" type="text" /><br />
             </div>
             <div>
@@ -300,12 +302,13 @@
                 <input id="email" type="email" /><br />
             </div>
             <div>
-            	<label for="telephone">Phone</label>
+            	<label for="telephone">Numar de telefon</label>
                 <input id="telephone" type="tel" />
             </div>                    
        	</fieldset>
-        <button id="sendPersonalDetailsBtn" class="enabled">Submit</button>                 
-        <input id="personalInfoSubmitted" type='hidden' value='Information submitted. Thank you!' />
+        <button id="sendPersonalDetailsBtn" class="enabled">Trimiteti informatiile personale</button>                 
+        <input id="personalInfoSubmitted" type='hidden' value='Informatii trimise. Va multumim!' />
+		<input id="sendPersonalDetails" type='hidden' value='Trimiteti informatiile personale' />
 	</div>
 </script>
   	
@@ -330,11 +333,13 @@
             <section id="questions">
             </section>
             <div id="doneBtnWrapper">
-                <button id="doneBtn"></button>
+                <div class="btnGlow">
+                	<button id="doneBtn"></button>
+                </div>
             </div>
             <footer>                
             </footer>
-            <input type="hidden" value="Submit" id="doneBtnTitle" />  
+            <input type="hidden" value="Trimite" id="doneBtnTitle" />  
             <input type="hidden" value="@ViewBag.Location" id="location" />       
         </section>
         <section id="thankYouPage" class="page" style="display:none">

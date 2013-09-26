@@ -42,8 +42,12 @@ MobileSurvey.ButtonView = Backbone.View.extend({
 });
 
 MobileSurvey.QuestionMobileView = Backbone.View.extend({
+	keys: {
+		ENTER: 13
+	},
 	events: {
-		"click .numeric-radio": "numericScaleSelected"
+		"click .numeric-radio": "numericScaleSelected",
+		"keyup .comment": "keyPressListener"
 	},
 	initialize: function () {
 		this.questionMobileTemplate = _.template($("#question-mobile-template").html());
@@ -125,6 +129,12 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
 		} else {
 			$(".additionalInfo", this.$el).hide();
 		}
+	},
+	keyPressListener: function(event) {
+		 if (event.keyCode == this.keys.ENTER) {
+			 event.preventDefault();
+			 $(".comment", this.$el).blur();
+		 }
 	}
 });
 
@@ -224,15 +234,16 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
 		this.doneBtn.enable();
 		this.doneBtn.setTitle(this.doneBtnTitle);
 		this.$el.show();
+		$(document).scrollTop(0);
 	},
 	getHeight: function () {
 		return this.$el.outerHeight();
 	}
 });
 MobileSurvey.PersonalInformationErrors = {
-		INVALID_NAME: "The Name cannot be empty or whitespace only",
-		INVALID_SURNAME: "The Surname cannot be empty or whitespace only",
-		INVALID_EMAIL: "Invalid email"
+		INVALID_NAME: "Campul 'Nume' nu poate fi gol.",
+		INVALID_SURNAME: "Campul 'Prenume' nu poate fi gol.",
+		INVALID_EMAIL: "Adresa de email este invalida."
 };
 var isBlank = function (str) {
 	return (!str || /^\s*$/.test(str));
@@ -264,6 +275,13 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 	},
 	show: function () {
 		this.$el.show();
+		$('#surveyUserInfo').show();
+		this.sendBtn.setTitle($("#sendPersonalDetails", this.$el).val());
+		this.sendBtn.enable();
+		$('#name').val("");
+		$("#surname").val("");
+		$('#email').val("");
+		$('#telephone').val("");
 	},
 	hide: function() {
 		this.dom.$ALERT_BOX.hide();      
