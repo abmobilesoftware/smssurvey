@@ -11,8 +11,8 @@
 		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 		<title>Wormhole Template App</title>
 		<link rel="stylesheet" href="style.css" type="text/css" media="screen" title="no title" charset="utf-8">
-		<link rel="stylesheet" href="css/survey.css" type="text/css" media="screen" title="no title" charset="utf-8">
-		<link rel="stylesheet" href="css/bootstrap.css" type="text/css" media="screen" title="no title" charset="utf-8">	
+		<link rel="stylesheet" href="css/bootstrap.css" type="text/css" media="screen" title="no title" charset="utf-8">
+		<link rel="stylesheet" href="css/survey.css" type="text/css" media="screen" title="no title" charset="utf-8">	
 		<link href='http://fonts.googleapis.com/css?family=Open+Sans&subset=latin,cyrillic,latin-ext' rel='stylesheet' type='text/css'>
 		<link href='http://fonts.googleapis.com/css?family=Domine&subset=latin,latin-ext' rel='stylesheet' type='text/css'>	
 		<script type="text/javascript" charset="utf-8" src="js/scripts/jquery-1.10.1.js"></script>
@@ -121,7 +121,9 @@
 			 */
 			function displayDeviceInfo()
 			{
-				startApp();
+				alert("load file");
+				//window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
+				startApp();				
 			}
 
 			/**
@@ -156,18 +158,44 @@
 
 			// The "deviceready" event is sent when the system
 			// has finished loading.
-			document.addEventListener(
+			/*document.addEventListener(
 				"deviceready",
 				displayDeviceInfo,
-				true);
+				true);*/
 			$(document).ready(function() {
-				startApp();
-			});
-			// Close the application when the back key is pressed.
-			document.addEventListener(
-				"backbutton",
-				function() { mosync.app.exit(); },
-				true);
+				alert("load file");
+				window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
+				startApp();				
+			});	
+			
+			function gotFS(fileSystem) {
+				alert("get file system");
+				fileSystem.root.getFile("surveyconfig.txt", null, gotFileEntry, fail);
+			}
+			
+			function gotFileEntry(fileEntry) {
+				alert("get file")
+				fileEntry.file(gotFile, fail) 
+			}
+			
+			function gotFile(file) {
+				alert("process file");
+				readAsText(file);
+			}
+			
+			function readAsText(file) {
+				alert("parse as text");
+				var reader = new FileReader();
+				reader.onloadend = function(evt) {
+					alert("read as text");
+					alert(evt.target.result);
+				};
+				reader.readAsText(file);
+			}
+			
+			function fail(evt) {
+				alert(evt.target.error.code);
+			}
 		</script>
 		
 <script id="mobileSurveyTemplate" type="text/template">   
@@ -238,7 +266,7 @@
              	<div class="clear"></div>                           
              </div>
              <fieldset class='additionalInfo invisibleByDefault'>
-             	<textarea  class='comment' placeholder='Va rugam sa va argumentati alegerea'></textarea>
+             	<textarea  class='comment' placeholder='Vă rugăm să vă argumentați alegerea'></textarea>
              </fieldset>
              <%   
              } 
@@ -261,7 +289,7 @@
 
    </div>
    <fieldset class='additionalInfo invisibleByDefault'>
-      <textarea placeholder='Va rugam sa va argumentati alegerea' class='comment'></textarea>
+      <textarea placeholder='Vă rugăm să vă argumentați alegerea' class='comment'></textarea>
    </fieldset>
   <input type='hidden' class='answer' value='noValue' />
 </script>
@@ -286,29 +314,31 @@
     <div id="userInfo">
 	    <fieldset id="surveyUserInfo">
     	    <label class="followup">
-              	Daca doriti sa fiti informat despre masurile luate pe baza feedbackului dumneavoastra va rugam sa ne 
-				impartasiti cateva informatii despre dumneavoastra:                   
+              	Dacă doriți să fiți informat despre măsurile luate pe baza feedbackului dumneavoastră vă rugăm să ne 
+				împărtășiți câteva informații despre dumneavoastră:                   
             </label>
-            <div>
-        	    <label for="name">Nume</label>
-                <input id="name" type="text" /><br />
-            </div>
-            <div>
-            	<label for="surname">Prenume</label>
-                <input id="surname" type="text" /><br />
-            </div>
-            <div>
-           		<label for="email">Email</label>
-                <input id="email" type="email" /><br />
-            </div>
-            <div>
-            	<label for="telephone">Numar de telefon</label>
-                <input id="telephone" type="tel" />
-            </div>                    
+	        <div class="personalInfoFields">    
+				<div>
+        	    	<label for="name">Nume</label>
+                	<input id="name" type="text" placeholder="Ex: Popescu" /><br />
+            	</div>
+            	<div>
+	            	<label for="surname">Prenume</label>
+    	            <input id="surname" type="text" placeholder="Ex: Alexandru" /><br />
+        	    </div>
+            	<div>
+           			<label for="email">Email</label>
+                	<input id="email" type="email" placeholder="Ex: mail@gmail.com"/><br />
+            	</div>
+            	<div>
+            		<label for="telephone">Numar de telefon</label>
+                	<input id="telephone" type="tel" placeholder="Ex: 0794175321" />
+            	</div>
+			</div>                    
        	</fieldset>
-        <button id="sendPersonalDetailsBtn" class="enabled">Trimiteti informatiile personale</button>                 
-        <input id="personalInfoSubmitted" type='hidden' value='Informatii trimise. Va multumim!' />
-		<input id="sendPersonalDetails" type='hidden' value='Trimiteti informatiile personale' />
+        <button id="sendPersonalDetailsBtn" class="enabled">Trimiteți informațiile personale</button>                 
+        <input id="personalInfoSubmitted" type='hidden' value='Informațiile au fost trimise. Vă mulțumim!' />
+		<input id="sendPersonalDetails" type='hidden' value='Trimiteți informațiile personale' />
 	</div>
 </script>
   	
