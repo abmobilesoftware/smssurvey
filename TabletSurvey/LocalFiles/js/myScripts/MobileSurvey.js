@@ -180,9 +180,9 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
 			areaToAddContentTo.append(questionPreviewView.render());
 		}, this);
 		$('.numeric-radio').screwDefaultButtons({
-			image: 'url("images/radioSmall80.png")',
-			width: 80,
-			height: 80
+			image: 'url("images/radioSmall77.png")',
+			width: 78,
+			height: 77
 		});
 		return this.$el;
 	},
@@ -416,7 +416,8 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 
 MobileSurvey.SurveyView = Backbone.View.extend({
 	initialize: function () {
-		_.bindAll(this, "goToThankYouPage", "saveSurvey", "updateQuestionSet", "render", "goToQuestionsPage");
+		_.bindAll(this, "goToThankYouPage", "saveSurvey", 
+				"updateQuestionSet", "render", "goToQuestionsPage");
 		this.questionsPage = new MobileSurvey.SurveyMobileView({ el: $("#questionsPage"), model: this.model });
 		this.thankYouPage = new MobileSurvey.ThankYouPageView({ 
 			el: $("#thankYouPage"), 
@@ -468,6 +469,7 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 				self.$el.css("right", "0px");
 				self.thankYouPage.setWidth(normalWidthPercent);
 				self.setWidth(normalWidthPercent);
+				$(document).scrollTop(0);
 			}
 		});
 	},
