@@ -2,16 +2,17 @@
 SurveyElements.Star = Backbone.Model.extend({});
 SurveyElements.StarView = Backbone.View.extend({
    className: "star",
-   events: {
+   /*events: {
       "click .starImg": "click"
-   },
+   },*/
    initialize: function () {
       _.bindAll(this, "click", "render","activeStatusChanged");
       this.template = _.template($("#star-template").html());
-      this.model.on("change:Active", this.activeStatusChanged);
+      this.model.on("change:Active", this.activeStatusChanged);      
    },
    render: function () {
       this.$el.html(this.template(this.model.toJSON()));
+      var starButton = new google.ui.FastButton($(".starImg", this.$el)[0], this.click)
       return this;
    },
    activeStatusChanged: function()
