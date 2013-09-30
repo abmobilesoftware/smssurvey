@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="1.5">
+<active.build.cfg active="Release"/>
+<target-profile/>
+<properties>
+<property key="privileged.access.token" value="D673F0D1C08A607EF5D9F492963933DE"/>
+</properties>
+</project>
