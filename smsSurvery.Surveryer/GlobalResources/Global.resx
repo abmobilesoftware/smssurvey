@@ -120,7 +120,7 @@
   <data name="alertCauseAllKeywordsDetectedMessage" xml:space="preserve">
     <value>Keywords '{0}' detected</value>
   </data>
-   <data name="LocationLabel" xml:space="preserve">
+  <data name="LocationLabel" xml:space="preserve">
     <value>Location</value>
   </data>
   <data name="alertCauseAnyKeywordDetectedMessage" xml:space="preserve">
@@ -226,5 +226,20 @@
     <value>Reply with:
 1 for Yes
 2 for No</value>
+  </data>
+  <data name="MobileSurveyPersonalInfoEmailError" xml:space="preserve">
+    <value>Invalid email</value>
+  </data>
+  <data name="MobileSurveyPersonalInfoNameError" xml:space="preserve">
+    <value>The Name cannot be empty or whitespace only</value>
+  </data>
+  <data name="MobileSurveyPersonalInfoSurnameError" xml:space="preserve">
+    <value>The Surname cannot be empty or whitespace only</value>
+  </data>
+  <data name="MobileSurveySurveySent" xml:space="preserve">
+    <value>Survey sent</value>
+  </data>
+  <data name="MobileSurveyPersonalInfoRetakeSurvey" xml:space="preserve">
+    <value>Retake survey</value>
   </data>
 </root>

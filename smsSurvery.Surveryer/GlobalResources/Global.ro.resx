@@ -154,7 +154,7 @@
     <value>Dezvoltat de</value>
   </data>
   <data name="MobileSurveyLeavePersonalInfoLabel" xml:space="preserve">
-    <value>Daca doriti sa fiti informat despre masurile luate pe baza feedbackului dumneavoastra va rugam sa ne  impartasiti cateva informatii despre dumneavoastra:</value>
+    <value>Dacă doriți să fiți informat despre măsurile luate pe baza feedbackului dumneavoastră vă rugăm să ne împărtașiți câteva informații despre dumneavoastră:</value>
   </data>
   <data name="MobileSurveyNoLabel" xml:space="preserve">
     <value>Nu</value>
@@ -172,16 +172,16 @@
     <value>Numar de telefon</value>
   </data>
   <data name="MobileSurveyPersonalInfoSubmitBtnLabel" xml:space="preserve">
-    <value>Trimiteti informatiile personale</value>
+    <value>Trimiteți informațiile personale</value>
   </data>
   <data name="MobileSurveyPersonalInfoSubmittedLabel" xml:space="preserve">
-    <value>Informatii trimise. Va multumim!</value>
+    <value>Informații trimise. Vă mulțumim!</value>
   </data>
   <data name="MobileSurveyPersonalInfoSurnameLabel" xml:space="preserve">
     <value>Prenume</value>
   </data>
   <data name="MobileSurveyRatingAddionalInfoLabel" xml:space="preserve">
-    <value>Va rugam sa va argumentati alegerea:</value>
+    <value>Vă rugăm să vă argumentați alegerea:</value>
   </data>
   <data name="MobileSurveySelectOneFromManyLabel" xml:space="preserve">
     <value>Selectati un raspuns</value>
@@ -226,5 +226,20 @@
     <value>Raspundeti cu:
 1 pentru Da
 2 pentru Nu</value>
+  </data>
+  <data name="MobileSurveyPersonalInfoEmailError" xml:space="preserve">
+    <value>Adresa de email este invalidă</value>
+  </data>
+  <data name="MobileSurveyPersonalInfoNameError" xml:space="preserve">
+    <value>Câmpul 'Nume' nu poate fi gol</value>
+  </data>
+  <data name="MobileSurveyPersonalInfoRetakeSurvey" xml:space="preserve">
+    <value>Recompletează sondajul</value>
+  </data>
+  <data name="MobileSurveyPersonalInfoSurnameError" xml:space="preserve">
+    <value>Câmpul 'Prenume' nu poate fi gol</value>
+  </data>
+  <data name="MobileSurveySurveySent" xml:space="preserve">
+    <value>Sondajul a fost trimis</value>
   </data>
 </root>
