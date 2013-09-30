@@ -42,8 +42,12 @@ MobileSurvey.ButtonView = Backbone.View.extend({
 });
 
 MobileSurvey.QuestionMobileView = Backbone.View.extend({
+   keys: {
+      ENTER: 13
+   },
    events: {
-      "click .numeric-radio": "numericScaleSelected"
+      "click .numeric-radio": "numericScaleSelected",
+      "keyup .comment": "keyPressListener"
    },
    initialize: function () {
       this.questionMobileTemplate = _.template($("#question-mobile-template").html());
@@ -121,9 +125,15 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
    },
    numericScaleSelected: function (event) {
       if ($(event.currentTarget).children("input").val() < 3) {
-         $(".additionalInfo", this.$el).show();
+         $(".comment", this.$el).show();
       } else {
-         $(".additionalInfo", this.$el).hide();
+         $(".comment", this.$el).hide();
+      }
+   },
+   keyPressListener: function (event) {
+      if (event.keyCode == this.keys.ENTER) {
+         event.preventDefault();
+         $(".comment", this.$el).blur();
       }
    }
 });
@@ -165,11 +175,19 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
          this.questionsViews.push(questionPreviewView);
          areaToAddContentTo.append(questionPreviewView.render());
       }, this);
-      $('.numeric-radio').screwDefaultButtons({
-         image: 'url("/Content/images/screwDefaultButtons/radioSmall.png")',
-         width: 43,
-         height: 43
-      });
+      if (SurveyGlobals.tabletView) {
+         $('.numeric-radio').screwDefaultButtons({
+            image: 'url("/Content/images/screwDefaultButtons/radioSmall77.png")',
+            width: 78,
+            height: 77
+         });
+      } else {
+         $('.numeric-radio').screwDefaultButtons({
+            image: 'url("/Content/images/screwDefaultButtons/radioSmall.png")',
+            width: 43,
+            height: 43
+         });
+      }
       return this.$el;
    },
    isSurveyComplete: function () {
@@ -224,9 +242,9 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
 });
 
 MobileSurvey.PersonalInformationErrors = {
-   INVALID_NAME: "The Name cannot be empty or whitespace only",
-   INVALID_SURNAME: "The Surname cannot be empty or whitespace only",
-   INVALID_EMAIL: "Invalid email"
+   INVALID_NAME: $("#mobileSurveyPersonalInfoNameError").val(),
+   INVALID_SURNAME: $("#mobileSurveyPersonalInfoSurnameError").val(),
+   INVALID_EMAIL: $("#mobileSurveyPersonalInfoEmailError").val()
 };
 
 var isBlank = function (str) {
@@ -383,6 +401,10 @@ MobileSurvey.SurveyView = Backbone.View.extend({
       this.dom = {
          $LOCATION_INPUT: $("#location", this.$el)
       }
+      // if is displayed on tablets 
+      if (SurveyGlobals.tabletView) {
+         Timer.startTimer();
+      }
    },
    goToThankYouPage: function (surveyResultId) {
       var self = this;
@@ -444,9 +466,10 @@ MobileSurvey.SurveyView = Backbone.View.extend({
          contentType: 'application/json',
          traditional: true,
          success: function (surveyResultId) {
-            self.goToThankYouPage(surveyResultId);
+            self.thankYouPage.setSurveyResultId(surveyResultId);            
          }
       });
+      self.goToThankYouPage(-1);
       //this.model.save(this.model.toJSON(),
       //   {
       //      success: function (model, response, options) {
