@@ -330,10 +330,13 @@
     <Content Include="Content\survey.css" />
     <Content Include="Content\SurveyResult\SurveyResult.css" />
     <Content Include="Content\SurveyTemplate\questionSet.css" />
+    <Content Include="Content\tablet\bootstrap.css" />
+    <Content Include="Content\tablet\survey.css" />
     <Content Include="Content\WordCloud.css" />
     <Content Include="MyScripts\DateHelper.js" />
     <Content Include="MyScripts\Locations.js" />
     <Content Include="MyScripts\MobileSurvey.js" />
+    <Content Include="MyScripts\MobileSurveyMain.js" />
     <Content Include="MyScripts\Question.js" />
     <Content Include="MyScripts\ReportsFilterArea.js" />
     <Content Include="MyScripts\SurveyAlertsModal.js" />
@@ -540,6 +543,8 @@
     <Content Include="Views\SurveyTemplate\Index.cshtml" />
     <Content Include="Views\SurveyTemplate\Report.cshtml" />
     <Content Include="Views\SurveyTemplate\Responses.cshtml" />
+    <Content Include="Views\Shared\MobileSurvey.cshtml" />
+    <Content Include="Views\MobileSurvey\FillTablet.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

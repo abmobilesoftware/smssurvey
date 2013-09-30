@@ -9,11 +9,12 @@
 <head>
    <meta name="viewport" content="width=device-width" />
    <title>@Global.MobileSurveyPageTitle</title>
-   <link href='http://fonts.googleapis.com/css?family=Arvo:400,700' rel='stylesheet' type='text/css'>
-</head>   
+   <link href='http://fonts.googleapis.com/css?family=Open+Sans&subset=latin,cyrillic,latin-ext' rel='stylesheet' type='text/css'>
+   <link href='http://fonts.googleapis.com/css?family=Domine&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+</head>
 
 @{Html.RenderPartial("MobileSurvey");}
 
-@Styles.Render("~/bundles/MobileSurveyCss")
+@Styles.Render("~/bundles/MobileSurveyCssTablet")
 @Scripts.Render("~/bundles/jquery")
 @Scripts.Render("~/bundles/mobilesurvey")
