@@ -87,7 +87,7 @@ namespace smsSurvery.Surveryer.Controllers
 
       [HttpGet]
       [AllowAnonymous]
-      public ActionResult ActiveSurvey(string location, string company)
+      public ActionResult ActiveSurvey(string location, string company, bool tabletSurvey=false)
       {
          //DA run the Active Survey identified for this location, if any
          var loc = db.Tags.Where(t => t.Name == location && t.TagTypes.Any(tt => tt.Type== "Location") && t.CompanyName == company).FirstOrDefault();
@@ -99,48 +99,22 @@ namespace smsSurvery.Surveryer.Controllers
                var surveyLanguage = surveyToRun.DefaultLanguage;
                System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture(surveyLanguage);
                ViewBag.Id = surveyToRun.Id;
-               ViewBag.SurveyTitle = "Feedback";
                ViewBag.IntroMessage = surveyToRun.IntroMessage;
                ViewBag.ThankYouMessage = surveyToRun.ThankYouMessage;
                ViewBag.IsFeedback = 1;
                ViewBag.Location = location;
-               return View("Fill");
-            }
-            else
-            {
-               //no active survey
-               return View("NoActiveSurveyForLocation");
-            }
-         }
-         else
-         {
-            //invalid location
-            ViewBag.Location = location;
-            ViewBag.Company = company;
-            return View("InvalidLocation");
-         }
-      }
-
-      [HttpGet]
-      [AllowAnonymous]
-      public ActionResult TabletActiveSurvey(string location, string company)
-      {
-         //DA run the Active Survey identified for this location, if any
-         var loc = db.Tags.Where(t => t.Name == location && t.TagTypes.Any(tt => tt.Type == "Location") && t.CompanyName == company).FirstOrDefault();
-         if (loc != null)
-         {
-            var surveyToRun = loc.ActiveSurveyTemplate;
-            if (surveyToRun != null)
-            {
-               var surveyLanguage = surveyToRun.DefaultLanguage;
-               System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture(surveyLanguage);
-               ViewBag.Id = surveyToRun.Id;
-               ViewBag.SurveyTitle = "Feedback";
-               ViewBag.IntroMessage = surveyToRun.IntroMessage;
-               ViewBag.ThankYouMessage = surveyToRun.ThankYouMessage;
-               ViewBag.IsFeedback = 1;
-               ViewBag.Location = location;
-               return View("FillTablet");
+               if (tabletSurvey)
+               {
+                  ViewBag.TabletView = true;
+                  ViewBag.SurveyTitle = surveyToRun.Description;
+                  return View("FillTablet");
+               }
+               else
+               {
+                  ViewBag.SurveyTitle = "Feedback";
+                  ViewBag.TabletView = false;
+                  return View("Fill");
+               }
             }
             else
             {
