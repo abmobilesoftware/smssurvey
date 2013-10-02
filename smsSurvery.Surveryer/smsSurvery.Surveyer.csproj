@@ -548,6 +548,7 @@
     <Content Include="Views\SurveyTemplate\Responses.cshtml" />
     <Content Include="Views\Shared\MobileSurvey.cshtml" />
     <Content Include="Views\MobileSurvey\FillTablet.cshtml" />
+    <Content Include="Views\MobileSurvey\SurveyTemplate.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

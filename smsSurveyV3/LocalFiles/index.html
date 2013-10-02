@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<!--
+* @file index.html
+*
+* Template application that shows examples of how to access
+* device services from JavaScript using the Wormhole library.
+-->
+<html>
+	<head>
+		<meta name="viewport" content="width=320, user-scalable=no">
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<title>Wormhole Template App</title>
+		<link rel="stylesheet" href="style.css" type="text/css" media="screen" title="no title" charset="utf-8">
+		<link rel="stylesheet" href="css/bootstrap.css" type="text/css" media="screen" title="no title" charset="utf-8">
+		<link rel="stylesheet" href="css/survey.css" type="text/css" media="screen" title="no title" charset="utf-8">	
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans&subset=latin,cyrillic,latin-ext' rel='stylesheet' type='text/css'>
+		<link href='http://fonts.googleapis.com/css?family=Domine&subset=latin,latin-ext' rel='stylesheet' type='text/css'>	
+		<script type="text/javascript" charset="utf-8" src="js/scripts/jquery-1.10.1.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/scripts/jquery-ui-1.10.3.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/scripts/bootstrap.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/scripts/underscore.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/scripts/backbone.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/scripts/chosen.jquery.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/scripts/googleFastButtons.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/scripts/jquery.screwdefaultbuttonsV2.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/wormhole.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/scripts/jquery-ui-1.10.3.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/myScripts/PushNotification.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/myScripts/SurveyUtilities.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/myScripts/SurveyElements.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/myScripts/MobileSurvey.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/myScripts/Question.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/myScripts/SurveyBuilder.js"></script>	
+		
+		<script type="text/javascript">
+			/**
+			 * Displays the device information on the screen.
+			 */
+			function displayDeviceInfo()
+			{
+				
+			}
+
+			document.addEventListener(
+				"deviceready",
+				loadSurveyTemplate,
+				true);	
+			
+			function loadSurveyTemplate() {
+				$.ajax({
+					url: "http://tablet.txtfeedback.net/MobileSurvey/GetSurveyTemplate",
+					type: "GET",
+					contentType:"text/html",
+					success: function(data, textStatus) {
+						$("body").html(data);
+						startApp();
+					}
+				});	
+			};
+			
+			/*
+			$(document).ready(function() {
+				loadSurveyTemplate();
+			});*/
+			
+			function startApp() {
+		         //initialize mobile survey given the id of the survey plan
+		         var pushNotificationHandler = new PushNotificationHandler();
+		         $.ajaxSetup({ cache: false });
+		         var survey = new SurveyBuilder.SurveyModel({
+		            Description: "",
+		            ThankYouMessage: "",
+		            StartDate: "15/6/2013",
+		            EndDate: "17/7/2013",
+		            IsRunning: false
+		         });
+		         var urlParts = document.URL.split("/");
+		         var urlLastPart = urlParts[urlParts.length - 1];
+		         var surveyResultID = -1;
+		         survey.fetch({
+		            crossDomain:true,
+		            headers: {
+						"X-Requested-With": "XMLHttpRequest"
+					},
+		            success: function (model, response, options) {
+		               var surveyModel = new Question.QuestionSetModel(
+		                  {
+		                     SurveyResultId: surveyResultID,
+		                     SurveyTemplateId: model.get("Id"),
+		                     Title: model.get("Description"),
+		                     IntroMessage: model.get("IntroMessage"),
+		                     ThankYouMessage: model.get("ThankYouMessage")
+		                  });
+		               surveyModel.updateQuestionSetCollection(model.get("QuestionSet"));
+		               var surveyView = new MobileSurvey.SurveyView({
+		                  el: $("#survey"),
+		                  model: surveyModel
+		               });
+		               surveyView.render();		               
+		            },
+		            error: function (model, response, options) {
+		               alert(response)
+		            }
+		         });		         
+		      };	
+		</script>
+	</head>
+	<body>
+		
+	</body>
+</html>

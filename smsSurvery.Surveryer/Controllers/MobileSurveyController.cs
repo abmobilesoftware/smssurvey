@@ -133,9 +133,16 @@ namespace smsSurvery.Surveryer.Controllers
 
       [HttpGet]
       [AllowAnonymous]
-      public ActionResult ActiveSurvey(string location, string company, bool tabletSurvey = false)
+      public ActionResult GetSurveyTemplate() 
       {
-
+         ViewBag.Id = -1;
+         ViewBag.IntroMessage = "Welcome";
+         ViewBag.ThankYouMessage = "Thank you!";
+         ViewBag.IsFeedback = 1;
+         ViewBag.Location = "noLocation";
+         ViewBag.TabletView = true;
+         ViewBag.SurveyTitle = "Title";
+         return View("SurveyTemplate");
       }
 
       [HttpGet]
