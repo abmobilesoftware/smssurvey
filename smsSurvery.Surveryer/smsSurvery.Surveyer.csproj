@@ -336,6 +336,7 @@
     <Content Include="Content\tablet\survey.css" />
     <Content Include="Content\WordCloud.css" />
     <Content Include="MyScripts\DateHelper.js" />
+    <Content Include="Scripts\GoogleFastButtons.js" />
     <Content Include="MyScripts\Locations.js" />
     <Content Include="MyScripts\MobileSurvey.js" />
     <Content Include="MyScripts\MobileSurveyMain.js" />

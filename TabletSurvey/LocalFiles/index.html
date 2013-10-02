@@ -21,7 +21,9 @@
 		<script type="text/javascript" charset="utf-8" src="js/scripts/underscore.js"></script>
 		<script type="text/javascript" charset="utf-8" src="js/scripts/backbone.js"></script>
 		<script type="text/javascript" charset="utf-8" src="js/scripts/chosen.jquery.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/scripts/googleFastButtons.js"></script>
 		<script type="text/javascript" charset="utf-8" src="js/scripts/jquery.screwdefaultbuttonsV2.js"></script>
+		<!--<script type="text/javascript" charset="utf-8" src="js/wormhole.js"></script>-->
 		<script type="text/javascript" charset="utf-8" src="js/scripts/jquery-ui-1.10.3.js"></script>
 		<script type="text/javascript" charset="utf-8" src="js/myScripts/SurveyUtilities.js"></script>
 		<script type="text/javascript" charset="utf-8" src="js/myScripts/SurveyElements.js"></script>
@@ -32,9 +34,9 @@
 		function startApp() {
 	         //initialize mobile survey given the id of the survey plan
 	         $.ajaxSetup({ cache: false });
-	         var surveyId = 12;
+	         //var surveyId = 3081;
 	         var survey = new SurveyBuilder.SurveyModel({
-	            Id: surveyId,
+	            //Id: surveyId,
 	            Description: "",
 	            ThankYouMessage: "",
 	            StartDate: "15/6/2013",
@@ -45,9 +47,9 @@
 	         var urlLastPart = urlParts[urlParts.length - 1];
 	         var surveyResultID = -1;
 	         survey.fetch({
-	            data: {
+	            /*data: {
 	               Id: surveyId
-	            },
+	            },*/
 	            crossDomain:true,
 	            headers: {
 					"X-Requested-With": "XMLHttpRequest"
@@ -56,7 +58,7 @@
 	               var surveyModel = new Question.QuestionSetModel(
 	                  {
 	                     SurveyResultId: surveyResultID,
-	                     SurveyTemplateId: surveyId,
+	                     SurveyTemplateId: model.get("Id"),
 	                     Title: model.get("Description"),
 	                     IntroMessage: model.get("IntroMessage"),
 	                     ThankYouMessage: model.get("ThankYouMessage")
@@ -119,12 +121,12 @@
 			/**
 			 * Displays the device information on the screen.
 			 */
-			function displayDeviceInfo()
+			/*function displayDeviceInfo()
 			{
-				alert("load file");
+				//alert("load file");
 				//window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
 				startApp();				
-			}
+			}*/
 
 			/**
 			 * Vibrate device.
@@ -170,7 +172,8 @@
 			
 			function gotFS(fileSystem) {
 				alert("get file system");
-				fileSystem.root.getFile("surveyconfig.txt", null, gotFileEntry, fail);
+				alert(fileSystem.root.fullPath);
+				//fileSystem.root.getFile("surveyconfig.txt", null, gotFileEntry, fail);
 			}
 			
 			function gotFileEntry(fileEntry) {
@@ -232,7 +235,7 @@
             } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY) {
             %>     
             	<select class="answer list" name="answer">
-                	<option value="noValue">Select an option</option>
+                	<option value="noValue">Selectează o opțiune</option>
                     <% _.each(Answers, function(value, key, list) { %>
                         <option value="<%= value.AnswerIdentifier %>"><%= value.AnswerLabel %></option>
                     <% }); %> 

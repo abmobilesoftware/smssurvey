@@ -15,6 +15,7 @@ namespace smsSurvery.Surveryer
                      "~/Scripts/underscore.js",
                      "~/Scripts/backbone.js",
                      "~/Scripts/chosen.jquery.js",
+                     "~/Scripts/GoogleFastButtons.js",
                      "~/Scripts/jquery.screwdefaultbuttonsV2.js"
                      ));
          bundles.Add(new ScriptBundle("~/bundles/mobilesurvey").Include(

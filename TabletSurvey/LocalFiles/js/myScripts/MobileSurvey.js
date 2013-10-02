@@ -241,9 +241,9 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
 	}
 });
 MobileSurvey.PersonalInformationErrors = {
-		INVALID_NAME: "Campul 'Nume' nu poate fi gol.",
-		INVALID_SURNAME: "Campul 'Prenume' nu poate fi gol.",
-		INVALID_EMAIL: "Adresa de email este invalida."
+		INVALID_NAME: "Câmpul 'Nume' nu poate fi gol.",
+		INVALID_SURNAME: "Câmpul 'Prenume' nu poate fi gol.",
+		INVALID_EMAIL: "Adresa de email este invalidă."
 };
 var isBlank = function (str) {
 	return (!str || /^\s*$/.test(str));
@@ -504,10 +504,11 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 			contentType: 'application/json',
 			traditional: true,
 			success: function (surveyResultId) {
-				self.thankYouPage.setSurveyResultId(surveyResultId);            
-			}
+				//self.thankYouPage.setSurveyResultId(surveyResultId);
+				self.goToThankYouPage(surveyResultId);
+			},
+			async: false
 		});
-		self.goToThankYouPage(-1);
 		//this.model.save(this.model.toJSON(),
 		//   {
 		//      success: function (model, response, options) {

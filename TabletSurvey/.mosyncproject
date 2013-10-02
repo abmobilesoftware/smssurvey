@@ -8,8 +8,13 @@
 </filter>
 </criteria>
 <properties>
+<property key="build.prefs:additional.include.paths/Debug" value=""/>
 <property key="build.prefs:additional.libraries" value="MAUtil.lib, NativeUI.lib, MAFS.lib, Wormhole.lib, yajl.lib, Notification.lib"/>
 <property key="build.prefs:additional.libraries/Debug" value="MAUtilD.lib, NativeUID.lib, MAFSD.lib, WormholeD.lib, yajlD.lib, NotificationD.lib"/>
+<property key="build.prefs:additional.library.paths/Debug" value=""/>
+<property key="build.prefs:app.permissions" value="File\ Storage Internet\ Access Vibration"/>
+<property key="build.prefs:extra.link.sw/Debug" value=""/>
+<property key="build.prefs:extra.res.sw/Debug" value=""/>
 <property key="build.prefs:gcc.warnings/Debug" value="10"/>
 <property key="build.prefs:gcc.warnings/Release" value="10"/>
 <property key="build.prefs:memory.data/Debug" value="4096"/>
@@ -18,8 +23,14 @@
 <property key="build.prefs:memory.heap/Release" value="3072"/>
 <property key="build.prefs:memory.stack/Debug" value="512"/>
 <property key="build.prefs:memory.stack/Release" value="512"/>
+<property key="build.prefs:project.type" value=""/>
 <property key="com.mobilesorcery.sdk.html5.support" value="true"/>
+<property key="dependency.strategy" value="0"/>
+<property key="excludes/Debug" value=""/>
 <property key="profile.mgr.type" value="0"/>
+<property key="symbian.uids:uid.s60v2uid" value="0x0a9e447e"/>
+<property key="symbian.uids:uid.s60v3uid" value="0xe101259a"/>
 <property key="template.id" value="project.wormhole.web"/>
+<property key="winmobilecs:guid" value="ff5f1b40-0d7c-1031-80e9-0da4070d0859"/>
 </properties>
 </project>

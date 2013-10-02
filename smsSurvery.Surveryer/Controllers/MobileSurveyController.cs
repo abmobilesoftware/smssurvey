@@ -133,6 +133,13 @@ namespace smsSurvery.Surveryer.Controllers
 
       [HttpGet]
       [AllowAnonymous]
+      public ActionResult ActiveSurvey(string location, string company, bool tabletSurvey = false)
+      {
+
+      }
+
+      [HttpGet]
+      [AllowAnonymous]
       public JsonResult ActiveSurveyAsJson(string location, string company)
       {
          //DA run the Active Survey identified for this location, if any
