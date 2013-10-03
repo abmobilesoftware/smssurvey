@@ -14,6 +14,7 @@ namespace smsSurvery.Surveryer.Controllers
     public class SurveyResultController : Controller
     {
         private smsSurveyEntities db = new smsSurveyEntities();
+        private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
         //
         // GET: /SurveyResult/
@@ -40,6 +41,10 @@ namespace smsSurvery.Surveryer.Controllers
             if (surveyresult == null)
             {
                 return HttpNotFound();
+            }
+            foreach (var res in surveyresult.Result)
+            {
+               res.HumanFriendlyAnswer = AlertsController.GetUserFriendlyAnswerVersion(res.Question, res.Answer, logger);
             }
             return View(surveyresult);
         }

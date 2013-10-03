@@ -1070,3 +1070,7 @@ input.invalidField, select.invalidField, a.invalidField, div.invalidField {
 .activeSurveyPerLocationLink table {
    margin-bottom:0px;
 }
+
+.form-horizontal .display-field {
+   padding-top: 5px;
+}

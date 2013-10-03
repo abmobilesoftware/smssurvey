@@ -58,6 +58,7 @@
     <Compile Include="Extensions\AlertNotificationSet.cs" />
     <Compile Include="Extensions\Question.cs" />
     <Compile Include="Extensions\QuestionAlertSet.cs" />
+    <Compile Include="Extensions\Result.cs" />
     <Compile Include="Extensions\SurveyTemplate.cs" />
     <Compile Include="Extensions\SurveyResult.cs" />
     <Compile Include="Extensions\Tags.cs" />

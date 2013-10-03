@@ -17,18 +17,20 @@
     </div>
 
     <div class="display-label">
-         @Html.DisplayNameFor(model => model.Customer.Name)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Customer.Name)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.SurveyTemplate.Description)
+         Survey description
     </div>
     <div class="display-field">
         @Html.DisplayFor(model => model.SurveyTemplate.Description)
     </div>
+
+    <div class="display-label">
+         Customer
+    </div>
+    <div class="display-field">
+        @Html.ActionLink(Model.Customer.PhoneNumber, "Details", "Customer", new { id = Model.Customer.PhoneNumber }, null)
+    </div>
+
+   
 </fieldset>
 
 <h2>Answers</h2>
@@ -36,6 +38,9 @@
    <tr>
         <th>
             Question
+        </th>
+        <th>
+           Numeric answer
         </th>
         <th>
            Answer
@@ -51,6 +56,9 @@
         </td>  
         <td>
             @Html.DisplayFor(modelItem => item.Answer)
+        </td>
+       <td>
+            @Html.DisplayFor(modelItem => item.HumanFriendlyAnswer)
         </td>
          <td>
             @Html.DisplayFor(modelItem => item.AdditionalInfo)

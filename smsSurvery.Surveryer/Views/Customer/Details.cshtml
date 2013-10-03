@@ -6,31 +6,40 @@
 
 <h2>Details</h2>
 
-<fieldset>
-    <legend>Customer</legend>
+<form class="form-horizontal">
+   <fieldset>
+       <legend>Customer</legend>
+       
+      <div class="control-group">
+      @Html.LabelFor(model => model.Name, new {@class = "control-label"})   
+       <div class="display-field controls ">
+           @Html.DisplayFor(model => model.Name)
+       </div>
+      </div>
+   
+      <div class="control-group">
+      @Html.LabelFor(model => model.Surname, new {@class = "control-label"})
+      <div class="display-field controls">
+           @Html.DisplayFor(model => model.Surname)
+       </div>
+      </div>
 
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.PhoneNumber)
-    </div>
-    <div class="display-field">
-        @Html.HiddenFor(model => model.PhoneNumber)
-        @Html.DisplayFor(model => model.PhoneNumber)
-    </div>
+       <div class="control-group">
+            @Html.LabelFor(model => model.PhoneNumber, new {@class = "control-label"})
+       <div class="display-field controls">
+           @Html.HiddenFor(model => model.PhoneNumber)
+           @Html.DisplayFor(model => model.PhoneNumber)
+       </div>
+       </div>
 
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.Name)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Name)
-    </div>
-
-    <div class="display-label">
-         @Html.DisplayNameFor(model => model.Surname)
-    </div>
-    <div class="display-field">
-        @Html.DisplayFor(model => model.Surname)
-    </div>
-</fieldset>
+      <div class="control-group">
+       @Html.LabelFor(model => model.Email, new {@class = "control-label"})
+      <div class="display-field controls">
+           @Html.DisplayFor(model => model.Email)
+       </div>
+      </div>
+   </fieldset>
+</form>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id=Model.PhoneNumber }) |
     @Html.ActionLink("Go to customers list", "Index")
