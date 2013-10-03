@@ -7,6 +7,7 @@ using System.Web.Http;
 using System.Web.Mvc;
 using System.Web.Optimization;
 using System.Web.Routing;
+using Thinktecture.IdentityModel.Http.Cors.Mvc;
 
 namespace smsSurvery.Surveryer
 {
@@ -22,10 +23,15 @@ namespace smsSurvery.Surveryer
          WebApiConfig.Register(GlobalConfiguration.Configuration);
          FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
          RouteConfig.RegisterRoutes(RouteTable.Routes);
+         RegisterCors(MvcCorsConfiguration.Configuration);
          BundleConfig.RegisterBundles(BundleTable.Bundles);
          AuthConfig.RegisterAuth();
          DataAnnotationsModelValidatorProvider.RegisterAdapter(typeof(RequiredIfAttribute), typeof(RequiredIfValidator));
          log4net.Config.XmlConfigurator.Configure();
+      }
+      private void RegisterCors(MvcCorsConfiguration corsConfig)
+      {
+         corsConfig.AllowAll();
       }
    }
 }
