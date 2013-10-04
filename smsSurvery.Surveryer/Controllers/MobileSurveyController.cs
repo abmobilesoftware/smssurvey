@@ -16,7 +16,7 @@ namespace smsSurvery.Surveryer.Controllers
    {
 
       public const string cNoLocation = "noLocation";
-      private const string cDefaultLogoLocation = @"https://loyaltyinsightslogos.blob.core.windows.net/logos/txtfeedback_logo_small.png";
+      private const string cDefaultLogoLocation = @"https://loyaltyinsightslogos.blob.core.windows.net/logos/logo_txtfeedback_small.png";
       public MobileSurveyController()
       {
 
