@@ -31,7 +31,13 @@ namespace smsSurvery.Surveryer.Controllers
          ViewBag.pagingDetails = pagingDetails;
          return View(pageRes.ToList());
       }
-
+      
+      [Authorize]
+      public ActionResult Create()
+      {
+         ViewBag.Action = "Create";
+         return View();
+      }
       public ActionResult Search(string text, int page = 1)
       {
          int currentPageIndex = page - 1;
@@ -55,33 +61,7 @@ namespace smsSurvery.Surveryer.Controllers
          db.Entry(surveyTemplate).Collection(s => s.QuestionSet).Load();
          return View(surveyTemplate);
       }
-
-      [Authorize]
-      public ActionResult Create()
-      {
-         ViewBag.Action = "Create";
-         return View();
-      }
-
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      [Authorize]
-      public ActionResult Create(SurveyTemplate surveyTemplate)
-      {
-         if (ModelState.IsValid)
-         {
-            //associate with the current user
-            UserProfile user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-            surveyTemplate.Provider = user.DefaultProvider;
-            db.SurveyTemplateSet.Add(surveyTemplate);
-            user.SurveyTemplateSet.Add(surveyTemplate);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-         }
-
-         return View(surveyTemplate);
-      }
-
+  
       [HttpGet]
       [Authorize]
       public ActionResult MakeActive(int id)
@@ -430,7 +410,11 @@ namespace smsSurvery.Surveryer.Controllers
                }
                surveyTemplate.QuestionSet = dbQuestions;
                db.SurveyTemplateSet.Add(surveyTemplate);
-               user.SurveyTemplateSet.Add(surveyTemplate);
+               //DA make sure that all users in the same company can view the new template
+               foreach (var u in user.Company.UserProfiles)
+               {
+                  u.SurveyTemplateSet.Add(surveyTemplate);
+               }               
                try
                {
                   db.SaveChanges();
@@ -516,7 +500,11 @@ namespace smsSurvery.Surveryer.Controllers
 
          db.SurveyTemplateSet.Remove(surveyTemplate);
          var connectedUser = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-         connectedUser.SurveyTemplateSet.Remove(surveyTemplate);
+         //DA make sure that all users in the same company can view the new template
+         foreach (var u in connectedUser.Company.UserProfiles)
+         {
+            u.SurveyTemplateSet.Remove(surveyTemplate);
+         }         
          db.SaveChanges();
          return RedirectToAction("Index");
       }
