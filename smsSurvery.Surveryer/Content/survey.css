@@ -40,14 +40,14 @@ header {
     font-weight: bold;    
     margin: 0.4em 0 0 0 !important;    
     vertical-align: middle;     
-    line-height: 20px;
+    line-height: 26px;
 }
 
 #pageIcon {
     float:left;
     display:inline;
-    width:45px;
-    /*height:45px;*/
+    max-width:150px;
+    max-height:45px;
     vertical-align: middle;
 }
 
