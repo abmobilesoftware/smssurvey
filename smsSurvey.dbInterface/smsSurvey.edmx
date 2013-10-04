@@ -141,6 +141,7 @@
           <Property Name="VATID" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="Bank" Type="nvarchar" MaxLength="50" />
           <Property Name="BankAccount" Type="nvarchar" MaxLength="70" />
+          <Property Name="MobileLogoUrl" Type="nvarchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="CustomerSet">
           <Key>
@@ -957,6 +958,7 @@
           <Property Type="String" Name="BankAccount" MaxLength="70" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Tags" Relationship="smsSurveyModel.FK_CompanyTag" FromRole="Companies" ToRole="Tags" />
           <NavigationProperty Name="UserProfiles" Relationship="smsSurveyModel.FK_UserProfileCompanies" FromRole="Companies" ToRole="UserProfile" />
+          <Property Type="String" Name="MobileLogoUrl" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Tags">
           <Key>
@@ -1237,6 +1239,7 @@
           <EntitySetMapping Name="Companies">
             <EntityTypeMapping TypeName="smsSurveyModel.Companies">
               <MappingFragment StoreEntitySet="Companies">
+                <ScalarProperty Name="MobileLogoUrl" ColumnName="MobileLogoUrl" />
                 <ScalarProperty Name="BankAccount" ColumnName="BankAccount" />
                 <ScalarProperty Name="Bank" ColumnName="Bank" />
                 <ScalarProperty Name="VATID" ColumnName="VATID" />

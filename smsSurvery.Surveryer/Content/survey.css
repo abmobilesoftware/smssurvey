@@ -47,7 +47,7 @@ header {
     float:left;
     display:inline;
     width:45px;
-    height:45px;
+    /*height:45px;*/
     vertical-align: middle;
 }
 

@@ -1,7 +1,10 @@
-﻿using smsSurvery.Surveryer.ClientModels;
+﻿using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Blob;
+using smsSurvery.Surveryer.ClientModels;
 using smsSurvey.dbInterface;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -13,6 +16,7 @@ namespace smsSurvery.Surveryer.Controllers
    {
 
       public const string cNoLocation = "noLocation";
+      private const string cDefaultLogoLocation = @"https://loyaltyinsightslogos.blob.core.windows.net/logos/txtfeedback_logo_small.png";
       public MobileSurveyController()
       {
 
@@ -24,7 +28,7 @@ namespace smsSurvery.Surveryer.Controllers
       [AllowAnonymous]
       public ActionResult Fill(int id)
       {
-
+         ViewBag.LogoLocation = cDefaultLogoLocation;
          //should only be valid for survey result that is not yet terminated
          SurveyResult runningSurvey = db.SurveyResultSet.Find(id);
          int idToUse = 1;
@@ -35,6 +39,7 @@ namespace smsSurvery.Surveryer.Controllers
             surveyLanguage = !String.IsNullOrEmpty(surveyLanguage) ? surveyLanguage : runningSurvey.SurveyTemplate.DefaultLanguage;
             System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture(surveyLanguage);
             idToUse = runningSurvey.SurveyTemplate.Id;
+            ViewBag.LogoLocation = GetLogoUrl(runningSurvey.SurveyTemplate);
             if (runningSurvey.Terminated != true)
             {
                ViewBag.Id = idToUse;
@@ -43,6 +48,7 @@ namespace smsSurvery.Surveryer.Controllers
                ViewBag.IntroMessage = runningSurvey.SurveyTemplate.IntroMessage;
                ViewBag.ThankYouMessage = runningSurvey.SurveyTemplate.ThankYouMessage;
                ViewBag.Location = cNoLocation;
+               
                return View();
             }
             else
@@ -59,10 +65,25 @@ namespace smsSurvery.Surveryer.Controllers
          }
       }
 
+      private string GetLogoUrl(SurveyTemplate st)
+      {
+         //DA if we cannot find a custom logo, use the TxtFeedbackLogo
+         var urlCandidate = st.UserProfile.First().Company.MobileLogoUrl;
+         if (!String.IsNullOrEmpty(urlCandidate))
+         {
+            return urlCandidate;
+         }
+         else
+         {
+            return cDefaultLogoLocation;
+         }
+      }
+
       [HttpGet]
       [AllowAnonymous]
       public ActionResult Feedback(int id, string location = cNoLocation)
       {
+         ViewBag.LogoLocation = cDefaultLogoLocation;
          SurveyTemplate survey = db.SurveyTemplateSet.Find(id);
          if (survey != null)
          {
@@ -75,6 +96,7 @@ namespace smsSurvery.Surveryer.Controllers
             ViewBag.ThankYouMessage = survey.ThankYouMessage;
             ViewBag.IsFeedback = 1;
             ViewBag.Location = location;
+            ViewBag.LogoLocation = GetLogoUrl(survey);
             return View("Fill");
          }
          else
@@ -89,6 +111,7 @@ namespace smsSurvery.Surveryer.Controllers
       [AllowAnonymous]
       public ActionResult ActiveSurvey(string location, string company)
       {
+         ViewBag.LogoLocation = cDefaultLogoLocation;
          //DA run the Active Survey identified for this location, if any
          var loc = db.Tags.Where(t => t.Name == location && t.TagTypes.Any(tt => tt.Type== "Location") && t.CompanyName == company).FirstOrDefault();
          if (loc != null)
@@ -104,6 +127,7 @@ namespace smsSurvery.Surveryer.Controllers
                ViewBag.ThankYouMessage = surveyToRun.ThankYouMessage;
                ViewBag.IsFeedback = 1;
                ViewBag.Location = location;
+               ViewBag.LogoLocation = GetLogoUrl(surveyToRun);
                return View("Fill");
             }
             else
