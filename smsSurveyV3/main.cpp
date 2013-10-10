@@ -31,6 +31,10 @@ public:
 		// Set the sound used by the PhoneGap beep notification API.
 		// BEEP_WAV is defined in file Resources/Resources.lst.
 		setBeepSound(BEEP_WAV);
+		maScreenSetOrientation(SCREEN_ORIENTATION_DYNAMIC);
+								maScreenSetSupportedOrientations(MA_SCREEN_ORIENTATION_LANDSCAPE_LEFT |
+								  MA_SCREEN_ORIENTATION_LANDSCAPE_RIGHT);
+						maScreenSetFullscreen(1);
 	}
 };
 

@@ -43,6 +43,7 @@ namespace smsSurvery.Surveryer.Controllers
                ViewBag.IntroMessage = runningSurvey.SurveyTemplate.IntroMessage;
                ViewBag.ThankYouMessage = runningSurvey.SurveyTemplate.ThankYouMessage;
                ViewBag.Location = cNoLocation;
+               ViewBag.TabletView = false;
                return View();
             }
             else
@@ -75,6 +76,7 @@ namespace smsSurvery.Surveryer.Controllers
             ViewBag.ThankYouMessage = survey.ThankYouMessage;
             ViewBag.IsFeedback = 1;
             ViewBag.Location = location;
+            ViewBag.TabletView = false;
             return View("Fill");
          }
          else

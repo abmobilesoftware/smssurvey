@@ -189,8 +189,8 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
       this.questionSetModel = new Question.QuestionSetModel();
    },
    urlByMethod: {
-      "read": "http://tablet.txtfeedback.net/MobileSurvey/ActiveSurveyAsJson?company=TestAbMobile&location=TestTableta",
-      "update": "http://tablet.txtfeedback.net/SurveyTemplate/SaveSurvey"
+      "read": "http://dev.txtfeedback.net/MobileSurvey/ActiveSurveyAsJson?company=TestAbMobile&location=TestTableta",
+      "update": "http://dev.txtfeedback.net/SurveyTemplate/SaveSurvey"
    },
    idAttribute: "Id",
    updateThankYouMessage: function (thankYouMessage) {
@@ -207,7 +207,9 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
    },
    sync: function (method, model, options) {
       options = options || {};
-      options.url = this.urlByMethod[method];
+      if (method == "update") {
+    	  options.url = this.urlByMethod[method];
+      }
       parsedMethod = method == "update" ? "create" : method;
       Backbone.sync(parsedMethod, model, options);
    },

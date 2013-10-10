@@ -55,6 +55,9 @@
     <Compile Include="Customer.cs">
       <DependentUpon>smsSurvey.tt</DependentUpon>
     </Compile>
+    <Compile Include="Device.cs">
+      <DependentUpon>smsSurvey.tt</DependentUpon>
+    </Compile>
     <Compile Include="Extensions\AlertNotificationSet.cs" />
     <Compile Include="Extensions\Question.cs" />
     <Compile Include="Extensions\QuestionAlertSet.cs" />
@@ -113,7 +116,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.Config" />
+    <None Include="App.Config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <EntityDeploy Include="smsSurvey.edmx">
       <Generator>EntityModelCodeGenerator</Generator>

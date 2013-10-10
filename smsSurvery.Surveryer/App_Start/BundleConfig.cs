@@ -41,6 +41,10 @@ namespace smsSurvery.Surveryer
                      "~/MyScripts/SurveyBuilder.js",
                      "~/MyScripts/SurveyMain.js"
             ));
+
+         bundles.Add(new ScriptBundle("~/bundles/devices").Include(
+                  "~/MyScripts/ManageDevices.js"
+            ));
          bundles.Add(new ScriptBundle("~/bundles/referencescripts").Include(
                      "~/Scripts/jquery.tagsinput.js"));                     
 

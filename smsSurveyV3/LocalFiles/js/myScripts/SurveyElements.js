@@ -75,7 +75,7 @@ SurveyElements.StarBarView = Backbone.View.extend({
 
       
       this.dom = {
-         $ADDITIONAL_INFO: $(".additionalInfo", this.$el),
+         $ADDITIONAL_INFO: $(".comment", this.$el),
          $ANSWER: $(".answer", this.$el)
       };
       if (this.dom.$ANSWER.val() == Question.noValueAnswer) {

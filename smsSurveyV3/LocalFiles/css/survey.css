@@ -46,6 +46,7 @@ header {
     line-height: 20px;
     display:inline;
     font-size:37px;
+    color:#fff;
 }
 
 #pageIcon {
@@ -118,6 +119,7 @@ div.question {
             font-size:22px;
             line-height: 1.3em;
             padding: 5px 25px 5px 25px;
+            font-weight:normal;
         }
 
 div.invalidAnswer h4.questionTitle {
@@ -166,10 +168,22 @@ select.list {
 }
 
 #doneBtnWrapper {
-    margin-bottom: 0.6em;
+    margin: 0 auto;
+    width: 1024px;
     text-indent: 0px;
     padding-left: 1em;
     padding-right: 1em;
+}
+
+#doneBtn {
+	width: 100%;
+	margin: 0 auto;
+	font-family: 'Open Sans';
+	font-size: 26px;
+	padding-top:19px;
+	padding-bottom: 18px;
+	background: -webkit-linear-gradient(top, #eb7a2c 0%,#fe6703 100%);
+	background: linear-gradient(to bottom, #eb7a2c, #fe6703) repeat scroll 0 0 transparent;
 }
 
 footer {
@@ -188,6 +202,8 @@ footer {
    width: 100%;
    /*font-family:sans-serif;*/
    font-family: 'Open Sans', serif;
+   background-image: linear-gradient(to bottom, #071D2D, #122A3B);
+	background: #071D2D;
 }
 
 /* STAR */
@@ -226,10 +242,11 @@ footer {
    background: -webkit-linear-gradient(top, #EB7A2C 0%,#FE6703 100%);
    line-height: 35px;
    color: #FFF;
-   font-family: 'Source Sans Pro', 'Helvetica Neue', Helvetica, Arial, sans-serif;
-   /*font-size: 20px;*/
+   font-family: 'Domine', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+   font-size: 20px;
    text-align:center;
    border-radius:7px 7px 0 0;
+   margin-bottom:0;
 }
 
 .surveyMessage {

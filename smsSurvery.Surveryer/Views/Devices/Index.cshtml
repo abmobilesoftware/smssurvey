@@ -1,0 +1,54 @@
+﻿@model IEnumerable<smsSurvey.dbInterface.Device>
+@{
+   ViewBag.Title = "Index";
+}
+<h2>Devices</h2>
+<table>
+   <thead>
+      <tr>
+         <td>Id</td>
+         <td>Device Id</td>
+         <td>Company name</td>
+         <td>Survey link</td>
+      </tr>
+   </thead>
+   @foreach (var item in Model)
+   {
+      <tr>
+         <td>
+            @Html.DisplayFor(modelItem => item.Id)
+         </td>
+         <td>
+            @Html.DisplayFor(modelItem => item.DeviceId)
+         </td>
+         <td>
+            @Html.DisplayFor(modelItem => item.CompaniesName)
+         </td>
+         <td>
+            @Html.DisplayFor(modelItem => item.SurveyLink)
+         </td>
+         <td>
+            <a href="#" class="set-new-link-btn" deviceId="@item.DeviceId">Set new link</a>
+         </td>
+         <td>
+            <a href="#" class="refresh-survey" deviceId="@item.DeviceId">Refresh survey</a>
+         </td>
+         <td>
+            <a href="#" class="release-device" deviceId="@item.DeviceId">Release device</a>
+         </td>
+      </tr>
+   }
+</table>
+<div class="modal hide fade link-modal">
+   <div class="modal-header">
+      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+      <h3>Setup new link</h3>
+   </div>
+   <div class="modal-body">
+      <input type="text" id="link-input" />
+      <input type="hidden" value="" id="device-id-input" />
+      <button class="btn btn-primary" id="update-link-btn" type="button">Update link</button>
+   </div>   
+</div>
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/devices")

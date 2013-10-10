@@ -381,7 +381,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 				surveyResultId: this.surveyResultId
 			});
 			$.ajax({
-				url: "http://tablet.txtfeedback.net/MobileSurvey/SaveRespondentInfo",
+				url: "http://dev.txtfeedback.net/MobileSurvey/SaveRespondentInfo",
 				data: dataToSend,
 				type: 'post',
 				cache: false,
@@ -399,7 +399,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 		this.$el.css("top", value);
 	},
 	render: function () {
-		this.$el.append(this.template());
+		this.$el.html(this.template());
 		this.dom = {
 				$ALERT_BOX: $(".alert", this.$el),
 				$VALIDATION_BOX: $(".personal-info-validation", this.$el),
@@ -433,45 +433,13 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 		}
 	},
 	goToQuestionsPage: function() {
-		var pageWidthInPixels = this.thankYouPage.getWidth() + "px";
-		this.thankYouPage.hide();
 		this.questionsPage.render();
-		this.questionsPage.show();
-		var normalWidthPercent = "100%";
-		this.setWidth(normalWidthPercent);
-		this.questionsPage.setWidth(pageWidthInPixels);
+		$.mobile.changePage("#questionsPage");
 		Timer.startTimer();
 	},
 	goToThankYouPage: function (surveyResultId) {
-		var self = this;
-		var pageWidthInPixels = this.questionsPage.getWidth() + "px";
-		var expandedWidthPercent = "200%"; // width of two pages side by side
-		var normalWidthPercent = "100%";
-		this.questionsPage.setWidth(pageWidthInPixels);
-		this.setWidth(expandedWidthPercent);
-		this.thankYouPage.setSurveyResultId(surveyResultId);
-		this.thankYouPage.show();
-		this.thankYouPage.setWidth(pageWidthInPixels);
-		/*
-          thankYouPage.setTop - make thank you page visible during the transition.
-          For devices with small display, where the survey doesn't fit entirely 
-          on the screen and you have to scroll down.
-		 */
-		var topPadding = this.questionsPage.getHeight() - window.innerHeight;
-		this.thankYouPage.setTop(topPadding > 0 ? topPadding + "px" : 0);
-		this.$el.animate({
-			right: this.questionsPage.getWidth()
-		}, {
-			duration: 600,
-			complete: function () {
-				self.questionsPage.hide();
-				self.thankYouPage.setTop(0);
-				self.$el.css("right", "0px");
-				self.thankYouPage.setWidth(normalWidthPercent);
-				self.setWidth(normalWidthPercent);
-				$(document).scrollTop(0);
-			}
-		});
+		this.thankYouPage.render();
+		$.mobile.changePage("#thankYouPage");
 	},
 	setWidth: function (value) {
 		this.$el.css("width", value);

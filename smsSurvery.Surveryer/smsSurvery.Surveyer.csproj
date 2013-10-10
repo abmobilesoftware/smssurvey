@@ -230,6 +230,7 @@
     <Compile Include="Controllers\AlertsController.cs" />
     <Compile Include="Controllers\AnswerController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
+    <Compile Include="Controllers\DevicesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LocationsController.cs" />
     <Compile Include="Controllers\MobileSurveyController.cs" />
@@ -336,6 +337,7 @@
     <Content Include="Content\tablet\survey.css" />
     <Content Include="Content\WordCloud.css" />
     <Content Include="MyScripts\DateHelper.js" />
+    <Content Include="MyScripts\ManageDevices.js" />
     <Content Include="Scripts\GoogleFastButtons.js" />
     <Content Include="MyScripts\Locations.js" />
     <Content Include="MyScripts\MobileSurvey.js" />
@@ -436,6 +438,7 @@
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <None Include="Properties\PublishProfiles\dev.txtfeedback.pubxml" />
     <None Include="Properties\PublishProfiles\loyaltydemo.pubxml" />
     <None Include="Properties\PublishProfiles\smssurvey.pubxml" />
     <None Include="Properties\PublishProfiles\smssurveytest.pubxml" />
@@ -549,6 +552,7 @@
     <Content Include="Views\Shared\MobileSurvey.cshtml" />
     <Content Include="Views\MobileSurvey\FillTablet.cshtml" />
     <Content Include="Views\MobileSurvey\SurveyTemplate.cshtml" />
+    <Content Include="Views\Devices\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

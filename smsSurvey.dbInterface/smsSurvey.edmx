@@ -9,6 +9,7 @@
           <EntitySet Name="AlertNotificationSet" EntityType="smsSurveyModel.Store.AlertNotificationSet" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Companies" EntityType="smsSurveyModel.Store.Companies" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="CustomerSet" EntityType="smsSurveyModel.Store.CustomerSet" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="DeviceSet" EntityType="smsSurveyModel.Store.DeviceSet" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="QuestionAlertSet" EntityType="smsSurveyModel.Store.QuestionAlertSet" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="QuestionSet" EntityType="smsSurveyModel.Store.QuestionSet" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="ResultSet" EntityType="smsSurveyModel.Store.ResultSet" store:Type="Tables" Schema="dbo" />
@@ -25,6 +26,10 @@
           <EntitySet Name="webpages_OAuthMembership" EntityType="smsSurveyModel.Store.webpages_OAuthMembership" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="webpages_Roles" EntityType="smsSurveyModel.Store.webpages_Roles" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="webpages_UsersInRoles" EntityType="smsSurveyModel.Store.webpages_UsersInRoles" store:Type="Tables" Schema="dbo" />
+          <AssociationSet Name="FK_CompaniesDevice" Association="smsSurveyModel.Store.FK_CompaniesDevice">
+            <End Role="Companies" EntitySet="Companies" />
+            <End Role="DeviceSet" EntitySet="DeviceSet" />
+          </AssociationSet>
           <AssociationSet Name="FK_CompanyTag" Association="smsSurveyModel.Store.FK_CompanyTag">
             <End Role="Companies" EntitySet="Companies" />
             <End Role="Tags" EntitySet="Tags" />
@@ -152,6 +157,15 @@
           <Property Name="SurveyInProgress" Type="bit" Nullable="false" />
           <Property Name="SurveyPlan_Id" Type="int" />
           <Property Name="Email" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="DeviceSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="DeviceId" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="CompaniesName" Type="nvarchar" Nullable="false" MaxLength="50" />
+          <Property Name="SurveyLink" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="QuestionAlertSet">
           <Key>
@@ -323,6 +337,18 @@
           <Property Name="UserId" Type="int" Nullable="false" />
           <Property Name="RoleId" Type="int" Nullable="false" />
         </EntityType>
+        <Association Name="FK_CompaniesDevice">
+          <End Role="Companies" Type="smsSurveyModel.Store.Companies" Multiplicity="1" />
+          <End Role="DeviceSet" Type="smsSurveyModel.Store.DeviceSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Companies">
+              <PropertyRef Name="Name" />
+            </Principal>
+            <Dependent Role="DeviceSet">
+              <PropertyRef Name="CompaniesName" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_CompanyTag">
           <End Role="Companies" Type="smsSurveyModel.Store.Companies" Multiplicity="1" />
           <End Role="Tags" Type="smsSurveyModel.Store.Tags" Multiplicity="*" />
@@ -710,6 +736,11 @@
             <End Role="Tags" EntitySet="Tags" />
             <End Role="Tags1" EntitySet="Tags" />
           </AssociationSet>
+          <EntitySet Name="DeviceSet" EntityType="smsSurveyModel.Device" />
+          <AssociationSet Name="CompaniesDevice" Association="smsSurveyModel.CompaniesDevice">
+            <End Role="Companies" EntitySet="Companies" />
+            <End Role="Device" EntitySet="DeviceSet" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Question">
           <Key>
@@ -774,7 +805,7 @@
           <NavigationProperty Name="SurveyTemplate" Relationship="smsSurveyModel.SurveyPlanSurveyResult" FromRole="SurveyResult" ToRole="SurveyPlan" />
           <Property Type="Int32" Name="SurveyPlanId" Nullable="false" />
           <NavigationProperty Name="Result" Relationship="smsSurveyModel.SurveyResultResult" FromRole="SurveyResult" ToRole="Result" />
-          <Property Type="Boolean" Name="Terminated" Nullable="false" />
+          <Property Name="Terminated" Nullable="false" Type="Boolean" />
           <Property Type="Int32" Name="CurrentQuestion_Id" />
           <NavigationProperty Name="CurrentQuestion" Relationship="smsSurveyModel.FK_SurveyResultQuestion" FromRole="SurveyResult" ToRole="Question" />
           <Property Type="Double" Name="PercentageComplete" Nullable="false" DefaultValue="0" />
@@ -957,6 +988,7 @@
           <Property Type="String" Name="BankAccount" MaxLength="70" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Tags" Relationship="smsSurveyModel.FK_CompanyTag" FromRole="Companies" ToRole="Tags" />
           <NavigationProperty Name="UserProfiles" Relationship="smsSurveyModel.FK_UserProfileCompanies" FromRole="Companies" ToRole="UserProfile" />
+          <NavigationProperty Name="Device" Relationship="smsSurveyModel.CompaniesDevice" FromRole="Companies" ToRole="Device" />
         </EntityType>
         <EntityType Name="Tags">
           <Key>
@@ -1100,6 +1132,28 @@
           <End Type="smsSurveyModel.Tags" Role="Tags" Multiplicity="*" />
           <End Type="smsSurveyModel.Tags" Role="Tags1" Multiplicity="*" />
         </Association>
+        <EntityType Name="Device">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="DeviceId" Nullable="false" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="Companies" Relationship="smsSurveyModel.CompaniesDevice" FromRole="Device" ToRole="Companies" />
+          <Property Type="String" Name="CompaniesName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="SurveyLink" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
+        </EntityType>
+        <Association Name="CompaniesDevice">
+          <End Type="smsSurveyModel.Companies" Role="Companies" Multiplicity="1" />
+          <End Type="smsSurveyModel.Device" Role="Device" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Companies">
+              <PropertyRef Name="Name" />
+            </Principal>
+            <Dependent Role="Device">
+              <PropertyRef Name="CompaniesName" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1109,19 +1163,200 @@
     <EntitySetMapping Name="QuestionSet">
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.Question)">
         <MappingFragment StoreEntitySet="QuestionSet">
-                <ScalarProperty Name="SurveyPlan_Id" ColumnName="SurveyPlan_Id" />
-                <ScalarProperty Name="ValidAnswersDetails" ColumnName="ValidAnswersDetails" />
-                <ScalarProperty Name="ValidAnswers" ColumnName="ValidAnswers" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Text" ColumnName="Text" />
           <ScalarProperty Name="Order" ColumnName="Order" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="ValidAnswers" ColumnName="ValidAnswers" />
+          <ScalarProperty Name="ValidAnswersDetails" ColumnName="ValidAnswersDetails" />
+          <ScalarProperty Name="SurveyPlan_Id" ColumnName="SurveyPlan_Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="CustomerSet">
+      <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.Customer)">
+        <MappingFragment StoreEntitySet="CustomerSet">
+          <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Surname" ColumnName="Surname" />
+          <ScalarProperty Name="SurveyInProgress" ColumnName="SurveyInProgress" />
+          <ScalarProperty Name="SurveyPlan_Id" ColumnName="SurveyPlan_Id" />
+          <ScalarProperty Name="Email" ColumnName="Email" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ResultSet">
+      <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.Result)">
+        <MappingFragment StoreEntitySet="ResultSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Answer" ColumnName="Answer" />
+          <ScalarProperty Name="QuestionId" ColumnName="QuestionId" />
+          <ScalarProperty Name="SurveyResultId" ColumnName="SurveyResultId" />
+          <ScalarProperty Name="AdditionalInfo" ColumnName="AdditionalInfo" />
+          <ScalarProperty Name="DateSubmitted" ColumnName="DateSubmitted" />
+          <ScalarProperty Name="SubmittedViaSMS" ColumnName="SubmittedViaSMS" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="UserProfile">
+      <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.UserProfile)">
+        <MappingFragment StoreEntitySet="UserProfile">
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="UserName" ColumnName="UserName" />
+          <ScalarProperty Name="DefaultProvider" ColumnName="DefaultProvider" />
+          <ScalarProperty Name="DefaultTelNo" ColumnName="DefaultTelNo" />
+          <ScalarProperty Name="Company_Name" ColumnName="Company_Name" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="webpages_Membership">
+      <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.webpages_Membership)">
+        <MappingFragment StoreEntitySet="webpages_Membership">
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+          <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+          <ScalarProperty Name="ConfirmationToken" ColumnName="ConfirmationToken" />
+          <ScalarProperty Name="IsConfirmed" ColumnName="IsConfirmed" />
+          <ScalarProperty Name="LastPasswordFailureDate" ColumnName="LastPasswordFailureDate" />
+          <ScalarProperty Name="PasswordFailuresSinceLastSuccess" ColumnName="PasswordFailuresSinceLastSuccess" />
+          <ScalarProperty Name="Password" ColumnName="Password" />
+          <ScalarProperty Name="PasswordChangedDate" ColumnName="PasswordChangedDate" />
+          <ScalarProperty Name="PasswordSalt" ColumnName="PasswordSalt" />
+          <ScalarProperty Name="PasswordVerificationToken" ColumnName="PasswordVerificationToken" />
+          <ScalarProperty Name="PasswordVerificationTokenExpirationDate" ColumnName="PasswordVerificationTokenExpirationDate" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="webpages_OAuthMembership">
+      <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.webpages_OAuthMembership)">
+        <MappingFragment StoreEntitySet="webpages_OAuthMembership">
+          <ScalarProperty Name="Provider" ColumnName="Provider" />
+          <ScalarProperty Name="ProviderUserId" ColumnName="ProviderUserId" />
+          <ScalarProperty Name="UserId" ColumnName="UserId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="webpages_Roles">
+      <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.webpages_Roles)">
+        <MappingFragment StoreEntitySet="webpages_Roles">
+          <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+          <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Companies">
+      <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.Companies)">
+        <MappingFragment StoreEntitySet="Companies">
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Address" ColumnName="Address" />
+          <ScalarProperty Name="RegistrationNumber" ColumnName="RegistrationNumber" />
+          <ScalarProperty Name="PostalCode" ColumnName="PostalCode" />
+          <ScalarProperty Name="City" ColumnName="City" />
+          <ScalarProperty Name="Notes" ColumnName="Notes" />
+          <ScalarProperty Name="VATID" ColumnName="VATID" />
+          <ScalarProperty Name="Bank" ColumnName="Bank" />
+          <ScalarProperty Name="BankAccount" ColumnName="BankAccount" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="Tags">
+      <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.Tags)">
+        <MappingFragment StoreEntitySet="Tags">
+          <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="ActiveSurveyTemplate_Id" ColumnName="ActiveSurveyTemplate_Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TagTypes">
+      <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.TagTypes)">
+        <MappingFragment StoreEntitySet="TagTypes">
           <ScalarProperty Name="Type" ColumnName="Type" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="SurveyTemplateSet">
-      <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.SurveyTemplate)">
-        <MappingFragment StoreEntitySet="SurveyPlanSet">
+    <EntitySetMapping Name="AlertNotificationSet">
+      <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.AlertNotificationSet)">
+        <MappingFragment StoreEntitySet="AlertNotificationSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Type" ColumnName="Type" />
+          <ScalarProperty Name="DistributionList" ColumnName="DistributionList" />
+          <ScalarProperty Name="QuestionAlertId" ColumnName="QuestionAlertId" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="QuestionAlertSet">
+      <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.QuestionAlertSet)">
+        <MappingFragment StoreEntitySet="QuestionAlertSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Operator" ColumnName="Operator" />
+          <ScalarProperty Name="TriggerAnswer" ColumnName="TriggerAnswer" />
+          <ScalarProperty Name="QuestionId" ColumnName="QuestionId" />
+          <ScalarProperty Name="Tags_CompanyName" ColumnName="Tags_CompanyName" />
+          <ScalarProperty Name="Tags_Id" ColumnName="Tags_Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="DeviceSet">
+      <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.Device)">
+        <MappingFragment StoreEntitySet="DeviceSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="DeviceId" ColumnName="DeviceId" />
+          <ScalarProperty Name="CompaniesName" ColumnName="CompaniesName" />
+          <ScalarProperty Name="SurveyLink" ColumnName="SurveyLink" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <AssociationSetMapping Name="webpages_UsersInRoles" TypeName="smsSurveyModel.webpages_UsersInRoles" StoreEntitySet="webpages_UsersInRoles">
+            <EndProperty Name="UserProfile">
+              <ScalarProperty Name="UserId" ColumnName="UserId" />
+            </EndProperty>
+            <EndProperty Name="webpages_Roles">
+              <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+            </EndProperty>
+          </AssociationSetMapping>
+    <AssociationSetMapping Name="UserProfileSurveyPlan" TypeName="smsSurveyModel.UserProfileSurveyPlan" StoreEntitySet="UserProfileSurveyPlan">
+      <EndProperty Name="SurveyPlan">
+              <ScalarProperty Name="Id" ColumnName="SurveyPlan_Id" />
+            </EndProperty>
+            <EndProperty Name="UserProfile">
+        <ScalarProperty Name="UserId" ColumnName="UserProfile_UserId" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="SurveyResultTags" TypeName="smsSurveyModel.SurveyResultTags" StoreEntitySet="SurveyResultTags">
+      <EndProperty Name="SurveyResult">
+        <ScalarProperty Name="Id" ColumnName="SurveyResultSet_Id" />
+      </EndProperty>
+      <EndProperty Name="Tags">
+        <ScalarProperty Name="CompanyName" ColumnName="Tags_CompanyName" />
+        <ScalarProperty Name="Id" ColumnName="Tags_Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="TagsTagTypes" TypeName="smsSurveyModel.TagsTagTypes" StoreEntitySet="TagsTagTypes">
+      <EndProperty Name="Tags">
+        <ScalarProperty Name="CompanyName" ColumnName="Tags_CompanyName" />
+        <ScalarProperty Name="Id" ColumnName="Tags_Id" />
+      </EndProperty>
+      <EndProperty Name="TagTypes">
+        <ScalarProperty Name="Type" ColumnName="TagTypes_Type" />
+      </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="TagsTags" TypeName="smsSurveyModel.TagsTags" StoreEntitySet="TagsTags">
+      <EndProperty Name="Tags">
+        <ScalarProperty Name="CompanyName" ColumnName="Regions_CompanyName" />
+        <ScalarProperty Name="Id" ColumnName="Regions_Id" />
+      </EndProperty>
+      <EndProperty Name="Tags1">
+        <ScalarProperty Name="CompanyName" ColumnName="Locations_CompanyName" />
+        <ScalarProperty Name="Id" ColumnName="Locations_Id" />
+      </EndProperty>
+    </AssociationSetMapping>
+          <EntitySetMapping Name="SurveyTemplateSet">
+            <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.SurveyTemplate)">
+              <MappingFragment StoreEntitySet="SurveyPlanSet">
                 <ScalarProperty Name="DefaultLanguage" ColumnName="DefaultLanguage" />
                 <ScalarProperty Name="IntroMessage" ColumnName="IntroMessage" />
                 <ScalarProperty Name="Provider" ColumnName="Provider" />
@@ -1131,194 +1366,23 @@
                 <ScalarProperty Name="ThankYouMessage" ColumnName="ThankYouMessage" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="CustomerSet">
-      <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.Customer)">
-        <MappingFragment StoreEntitySet="CustomerSet">
-          <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="SurveyPlan_Id" ColumnName="SurveyPlan_Id" />
-                <ScalarProperty Name="SurveyInProgress" ColumnName="SurveyInProgress" />
-                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
-          <ScalarProperty Name="Name" ColumnName="Name" />
-          <ScalarProperty Name="Surname" ColumnName="Surname" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="SurveyResultSet">
-      <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.SurveyResult)">
-        <MappingFragment StoreEntitySet="SurveyResultSet">
-                <ScalarProperty Name="LanguageChosenForSurvey" ColumnName="LanguageChosenForSurvey" />
-                <ScalarProperty Name="PercentageComplete" ColumnName="PercentageComplete" />
-                <ScalarProperty Name="CurrentQuestion_Id" ColumnName="CurrentQuestion_Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SurveyResultSet">
+            <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.SurveyResult)">
+              <MappingFragment StoreEntitySet="SurveyResultSet">
                 <ScalarProperty Name="Terminated" ColumnName="Complete" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="DateRan" ColumnName="DateRan" />
-          <ScalarProperty Name="CustomerPhoneNumber" ColumnName="CustomerPhoneNumber" />
-          <ScalarProperty Name="SurveyPlanId" ColumnName="SurveyPlanId" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-    <EntitySetMapping Name="ResultSet">
-      <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.Result)">
-        <MappingFragment StoreEntitySet="ResultSet">
-          <ScalarProperty Name="AdditionalInfo" ColumnName="AdditionalInfo" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-          <ScalarProperty Name="Answer" ColumnName="Answer" />
-          <ScalarProperty Name="QuestionId" ColumnName="QuestionId" />
-          <ScalarProperty Name="SurveyResultId" ColumnName="SurveyResultId" />
-           <ScalarProperty Name="DateSubmitted" ColumnName="DateSubmitted" />
-           <ScalarProperty Name="SubmittedViaSMS" ColumnName="SubmittedViaSMS" />
-        </MappingFragment>
-      </EntityTypeMapping>
-    </EntitySetMapping>
-          <EntitySetMapping Name="UserProfile">
-            <EntityTypeMapping TypeName="smsSurveyModel.UserProfile">
-              <MappingFragment StoreEntitySet="UserProfile">
-                <ScalarProperty Name="Company_Name" ColumnName="Company_Name" />
-                <ScalarProperty Name="DefaultTelNo" ColumnName="DefaultTelNo" />
-                <ScalarProperty Name="DefaultProvider" ColumnName="DefaultProvider" />
-                <ScalarProperty Name="UserName" ColumnName="UserName" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="webpages_Membership">
-            <EntityTypeMapping TypeName="smsSurveyModel.webpages_Membership">
-              <MappingFragment StoreEntitySet="webpages_Membership">
-                <ScalarProperty Name="PasswordVerificationTokenExpirationDate" ColumnName="PasswordVerificationTokenExpirationDate" />
-                <ScalarProperty Name="PasswordVerificationToken" ColumnName="PasswordVerificationToken" />
-                <ScalarProperty Name="PasswordSalt" ColumnName="PasswordSalt" />
-                <ScalarProperty Name="PasswordChangedDate" ColumnName="PasswordChangedDate" />
-                <ScalarProperty Name="Password" ColumnName="Password" />
-                <ScalarProperty Name="PasswordFailuresSinceLastSuccess" ColumnName="PasswordFailuresSinceLastSuccess" />
-                <ScalarProperty Name="LastPasswordFailureDate" ColumnName="LastPasswordFailureDate" />
-                <ScalarProperty Name="IsConfirmed" ColumnName="IsConfirmed" />
-                <ScalarProperty Name="ConfirmationToken" ColumnName="ConfirmationToken" />
-                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="webpages_OAuthMembership">
-            <EntityTypeMapping TypeName="smsSurveyModel.webpages_OAuthMembership">
-              <MappingFragment StoreEntitySet="webpages_OAuthMembership">
-                <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="ProviderUserId" ColumnName="ProviderUserId" />
-                <ScalarProperty Name="Provider" ColumnName="Provider" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="webpages_Roles">
-            <EntityTypeMapping TypeName="smsSurveyModel.webpages_Roles">
-              <MappingFragment StoreEntitySet="webpages_Roles">
-                <ScalarProperty Name="RoleName" ColumnName="RoleName" />
-                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <AssociationSetMapping Name="webpages_UsersInRoles" TypeName="smsSurveyModel.webpages_UsersInRoles" StoreEntitySet="webpages_UsersInRoles">
-            <EndProperty Name="UserProfile">
-              <ScalarProperty Name="UserId" ColumnName="UserId" />
-            </EndProperty>
-            <EndProperty Name="webpages_Roles">
-              <ScalarProperty Name="RoleId" ColumnName="RoleId" />
-            </EndProperty>
-          </AssociationSetMapping>
-          <AssociationSetMapping Name="UserProfileSurveyPlan" TypeName="smsSurveyModel.UserProfileSurveyPlan" StoreEntitySet="UserProfileSurveyPlan">
-            <EndProperty Name="UserProfile">
-              <ScalarProperty Name="UserId" ColumnName="UserProfile_UserId" />
-            </EndProperty>
-            <EndProperty Name="SurveyPlan">
-              <ScalarProperty Name="Id" ColumnName="SurveyPlan_Id" />
-            </EndProperty>
-          </AssociationSetMapping>
-          <EntitySetMapping Name="Companies">
-            <EntityTypeMapping TypeName="smsSurveyModel.Companies">
-              <MappingFragment StoreEntitySet="Companies">
-                <ScalarProperty Name="BankAccount" ColumnName="BankAccount" />
-                <ScalarProperty Name="Bank" ColumnName="Bank" />
-                <ScalarProperty Name="VATID" ColumnName="VATID" />
-                <ScalarProperty Name="Notes" ColumnName="Notes" />
-                <ScalarProperty Name="City" ColumnName="City" />
-                <ScalarProperty Name="PostalCode" ColumnName="PostalCode" />
-                <ScalarProperty Name="RegistrationNumber" ColumnName="RegistrationNumber" />
-                <ScalarProperty Name="Address" ColumnName="Address" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="Tags">
-            <EntityTypeMapping TypeName="smsSurveyModel.Tags">
-              <MappingFragment StoreEntitySet="Tags">
-                <ScalarProperty Name="ActiveSurveyTemplate_Id" ColumnName="ActiveSurveyTemplate_Id" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TagTypes">
-            <EntityTypeMapping TypeName="smsSurveyModel.TagTypes">
-              <MappingFragment StoreEntitySet="TagTypes">
-                <ScalarProperty Name="Type" ColumnName="Type" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="AlertNotificationSet">
-            <EntityTypeMapping TypeName="smsSurveyModel.AlertNotificationSet">
-              <MappingFragment StoreEntitySet="AlertNotificationSet">
-                <ScalarProperty Name="QuestionAlertId" ColumnName="QuestionAlertId" />
-                <ScalarProperty Name="DistributionList" ColumnName="DistributionList" />
-                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="LanguageChosenForSurvey" ColumnName="LanguageChosenForSurvey" />
+                <ScalarProperty Name="CurrentQuestion_Id" ColumnName="CurrentQuestion_Id" />
+                <ScalarProperty Name="PercentageComplete" ColumnName="PercentageComplete" />
+                <ScalarProperty Name="SurveyPlanId" ColumnName="SurveyPlanId" />
+                <ScalarProperty Name="CustomerPhoneNumber" ColumnName="CustomerPhoneNumber" />
+                <ScalarProperty Name="DateRan" ColumnName="DateRan" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="QuestionAlertSet">
-            <EntityTypeMapping TypeName="smsSurveyModel.QuestionAlertSet">
-              <MappingFragment StoreEntitySet="QuestionAlertSet">
-                <ScalarProperty Name="Tags_Id" ColumnName="Tags_Id" />
-                <ScalarProperty Name="Tags_CompanyName" ColumnName="Tags_CompanyName" />
-                <ScalarProperty Name="QuestionId" ColumnName="QuestionId" />
-                <ScalarProperty Name="TriggerAnswer" ColumnName="TriggerAnswer" />
-                <ScalarProperty Name="Operator" ColumnName="Operator" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <AssociationSetMapping Name="SurveyResultTags" TypeName="smsSurveyModel.SurveyResultTags" StoreEntitySet="SurveyResultTags">
-            <EndProperty Name="Tags">
-              <ScalarProperty Name="Id" ColumnName="Tags_Id" />
-              <ScalarProperty Name="CompanyName" ColumnName="Tags_CompanyName" />
-            </EndProperty>
-            <EndProperty Name="SurveyResult">
-              <ScalarProperty Name="Id" ColumnName="SurveyResultSet_Id" />
-            </EndProperty>
-          </AssociationSetMapping>
-          <AssociationSetMapping Name="TagsTagTypes" TypeName="smsSurveyModel.TagsTagTypes" StoreEntitySet="TagsTagTypes">
-            <EndProperty Name="TagTypes">
-              <ScalarProperty Name="Type" ColumnName="TagTypes_Type" />
-            </EndProperty>
-            <EndProperty Name="Tags">
-              <ScalarProperty Name="Id" ColumnName="Tags_Id" />
-              <ScalarProperty Name="CompanyName" ColumnName="Tags_CompanyName" />
-            </EndProperty>
-          </AssociationSetMapping>
-          <AssociationSetMapping Name="TagsTags" TypeName="smsSurveyModel.TagsTags" StoreEntitySet="TagsTags">
-            <EndProperty Name="Tags1">
-              <ScalarProperty Name="Id" ColumnName="Locations_Id" />
-              <ScalarProperty Name="CompanyName" ColumnName="Locations_CompanyName" />
-            </EndProperty>
-            <EndProperty Name="Tags">
-              <ScalarProperty Name="Id" ColumnName="Regions_Id" />
-              <ScalarProperty Name="CompanyName" ColumnName="Regions_CompanyName" />
-            </EndProperty>
-          </AssociationSetMapping>
           </EntityContainerMapping>
 </Mapping></edmx:Mappings>
   </edmx:Runtime>

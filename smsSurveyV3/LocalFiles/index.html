@@ -6,106 +6,306 @@
 * device services from JavaScript using the Wormhole library.
 -->
 <html>
-	<head>
-		<meta name="viewport" content="width=320, user-scalable=no">
-		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-		<title>Wormhole Template App</title>
-		<link rel="stylesheet" href="style.css" type="text/css" media="screen" title="no title" charset="utf-8">
-		<link rel="stylesheet" href="css/bootstrap.css" type="text/css" media="screen" title="no title" charset="utf-8">
-		<link rel="stylesheet" href="css/survey.css" type="text/css" media="screen" title="no title" charset="utf-8">	
-		<link href='http://fonts.googleapis.com/css?family=Open+Sans&subset=latin,cyrillic,latin-ext' rel='stylesheet' type='text/css'>
-		<link href='http://fonts.googleapis.com/css?family=Domine&subset=latin,latin-ext' rel='stylesheet' type='text/css'>	
-		<script type="text/javascript" charset="utf-8" src="js/scripts/jquery-1.10.1.js"></script>
-		<script type="text/javascript" charset="utf-8" src="js/scripts/jquery-ui-1.10.3.js"></script>
-		<script type="text/javascript" charset="utf-8" src="js/scripts/bootstrap.js"></script>
-		<script type="text/javascript" charset="utf-8" src="js/scripts/underscore.js"></script>
-		<script type="text/javascript" charset="utf-8" src="js/scripts/backbone.js"></script>
-		<script type="text/javascript" charset="utf-8" src="js/scripts/chosen.jquery.js"></script>
-		<script type="text/javascript" charset="utf-8" src="js/scripts/googleFastButtons.js"></script>
-		<script type="text/javascript" charset="utf-8" src="js/scripts/jquery.screwdefaultbuttonsV2.js"></script>
-		<script type="text/javascript" charset="utf-8" src="js/wormhole.js"></script>
-		<script type="text/javascript" charset="utf-8" src="js/scripts/jquery-ui-1.10.3.js"></script>
-		<script type="text/javascript" charset="utf-8" src="js/myScripts/PushNotification.js"></script>
-		<script type="text/javascript" charset="utf-8" src="js/myScripts/SurveyUtilities.js"></script>
-		<script type="text/javascript" charset="utf-8" src="js/myScripts/SurveyElements.js"></script>
-		<script type="text/javascript" charset="utf-8" src="js/myScripts/MobileSurvey.js"></script>
-		<script type="text/javascript" charset="utf-8" src="js/myScripts/Question.js"></script>
-		<script type="text/javascript" charset="utf-8" src="js/myScripts/SurveyBuilder.js"></script>	
-		
-		<script type="text/javascript">
-			/**
-			 * Displays the device information on the screen.
-			 */
-			function displayDeviceInfo()
-			{
-				
-			}
+<head>
+<meta name="viewport" content="width=320, user-scalable=no">
+<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+<title>Wormhole Template App</title>
+<link rel="stylesheet" href="style.css" type="text/css" media="screen"
+	title="no title" charset="utf-8">
+<link rel="stylesheet" href="css/jquery.mobile-1.3.1.css" />
+<link rel="stylesheet" href="css/bootstrap.css" type="text/css"
+	media="screen" title="no title" charset="utf-8">
+<link rel="stylesheet" href="css/survey.css" type="text/css"
+	media="screen" title="no title" charset="utf-8">
+<link rel="stylesheet" href="css/logon.css" type="text/css"
+	media="screen" title="no title" charset="utf-8">
+<link rel="stylesheet" href="css/app.css" />
+<link
+	href='http://fonts.googleapis.com/css?family=Open+Sans&subset=latin,cyrillic,latin-ext'
+	rel='stylesheet' type='text/css'>
+<link
+	href='http://fonts.googleapis.com/css?family=Domine&subset=latin,latin-ext'
+	rel='stylesheet' type='text/css'>
+<script type="text/javascript" charset="utf-8"
+	src="js/scripts/jquery-1.10.1.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="js/scripts/jquery-ui-1.10.3.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="js/scripts/bootstrap.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="js/scripts/underscore.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="js/scripts/backbone.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="js/scripts/chosen.jquery.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="js/scripts/googleFastButtons.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="js/scripts/jquery.screwdefaultbuttonsV2.js"></script>
+<script type="text/javascript" charset="utf-8" src="js/wormhole.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="js/scripts/jquery-ui-1.10.3.js"></script>
 
-			document.addEventListener(
-				"deviceready",
-				loadSurveyTemplate,
-				true);	
+<script type="text/javascript" charset="utf-8"
+	src="js/myScripts/PushNotification.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="js/myScripts/SurveyUtilities.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="js/myScripts/SurveyElements.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="js/myScripts/MobileSurvey.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="js/myScripts/Question.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="js/myScripts/SurveyBuilder.js"></script>
+<script type="text/javascript" charset="utf-8"
+	src="js/myScripts/LogOn.js"></script>
+
+
+<script type="text/javascript">
+	/**
+	 * Displays the device information on the screen.
+	 */
+	function displayDeviceInfo() {
+
+	}
+
+	/*document.addEventListener(
+		"deviceready",
+		loadSurveyTemplate,
+		true);*/
+
+	
+	
+	var App = Backbone.Model.extend({
+		initialize: function() {
+			_.bindAll(this, "loadSurveyTemplate", "startLogOnPage", 
+					"refreshSurvey", "startSurvey",
+					"updateSurveyLink", "releaseDevice",
+					"checkForInternetConnection");
+			this.storage = window.localStorage;			
+			this.pushNotificationHandler = new PushNotificationHandler();
+			this.pushNotificationHandler.on(this.pushNotificationHandler.events.REFRESH, this.refreshSurvey);
+			this.pushNotificationHandler.on(this.pushNotificationHandler.events.UPDATE_LINK, this.updateSurveyLink);
+			this.pushNotificationHandler.on(this.pushNotificationHandler.events.RELEASE, this.releaseDevice);
+			$(document).on("pagebeforecreate", this.loadSurveyTemplate());			
+			$("#logOnPage").on("pageinit", this.checkForInternetConnection);			
+			//this.refreshSurvey();
 			
-			function loadSurveyTemplate() {
+		},
+		loadSurveyTemplate: function() {			
+			var template;		
+			if (this.storage.getItem("template") != "undefined"
+				&& this.storage.getItem("template") != "null") {
+				template = this.storage.getItem("template");
+			} else {
+				template = this.loadTemplateFromServer();
+				this.storage.setItem("template", template);
+			}
+			$("body").append(template);
+		},
+		checkForInternetConnection: function() {
+			var self = this;
+			var isConnectionOn = false;
+			$.ajax({				
+				url: "http://dev.txtfeedback.net",
+				//async: false,
+				crossDomain:true,
+				type: "GET",				
+				success: function(data, textStatus, jqXHR) {	
+					self.startLogOnPage();	
+				}, 
+				error: function(jqXHR, textStatus, errorThrown) {
+					if (self.storage.getItem("surveyData") != "undefined" &&
+							self.storage.getItem("surveyData") != "null" &&
+							self.storage.getItem("template") != "undefined" && 
+							self.storage.getItem("template") != "null") {
+							self.startSurvey();
+						}
+				}    		
+			});			
+		},
+		refreshSurvey: function() {
+			surveyData = this.loadSurveyData();
+			this.storage.setItem("surveyData", JSON.stringify(surveyData));	
+			template = this.loadTemplateFromServer();
+			this.storage.setItem("template", template);
+			var homeLocation = location.href.substring(0, location.href.indexOf("#", 0));
+			location.href = homeLocation;			
+		},
+		updateSurveyLink: function(newLink) {
+			this.storage.setItem("surveyLink", newLink);
+			this.refreshSurvey();
+		},
+		releaseDevice: function() {
+			this.storage.setItem("surveyData", null);
+			this.storage.setItem("template", null);
+			this.storage.setItem("GCMKey", null);
+			this.logOnModel.logOff();
+			var homeLocation = location.href.substring(0, location.href.indexOf("#", 0));
+			location.href = homeLocation;
+		},
+		startLogOnPage: function() {
+			alert("start log on page");
+			this.logOnModel = new LogOnModel({}, {
+				pushNotificationHandler : this.pushNotificationHandler
+			});
+			this.logOnPage = new LogOnPage({
+				el : $("#logOnPage"),
+				model : this.logOnModel
+			});
+			//this.releaseDevice();
+			this.logOnModel.on(this.logOnModel.events.LOGON_SUCCESS, this.startSurvey);			
+		},
+		startSurvey: function() {
+			alert("now i start survey");
+			$.ajaxSetup({
+				cache : false
+			});
+			var surveyResultID = -1;
+			var surveyData;
+			if (this.storage.getItem("surveyData") != "undefined"
+				&& this.storage.getItem("surveyData") != "null") {
+				surveyData = JSON.parse(this.storage.getItem("surveyData"));
+			} else {
+				surveyData = this.loadSurveyData();
+				this.storage.setItem("surveyData", JSON.stringify(surveyData));
+			}		
+			alert("Survey data is = " + surveyData);
+			var surveyDataWrapper = new SurveyBuilder.SurveyModel(surveyData);
+			alert(surveyDataWrapper.get("Description"));
+			var surveyModel = new Question.QuestionSetModel({
+				SurveyResultId : surveyResultID,
+				SurveyTemplateId : surveyDataWrapper.get("Id"),
+				Title : surveyDataWrapper.get("Description"),
+				IntroMessage : surveyDataWrapper.get("IntroMessage"),
+				ThankYouMessage : surveyDataWrapper.get("ThankYouMessage")
+			});
+			surveyModel.updateQuestionSetCollection(surveyDataWrapper.get("QuestionSet"));
+			var surveyView = new MobileSurvey.SurveyView({
+				el : $("#survey"),
+				model : surveyModel
+			});
+			surveyView.render();
+			alert("Now go to questions page");
+			$.mobile.changePage("#questionsPage");
+		},
+		loadSurveyLink: function() {
+			var surveyLink = this.storage.getItem("surveyLink");
+			alert("Load survey link din storage = " + surveyLink);
+			if (surveyLink != "undefined" && surveyLink != "null" && surveyLink != null) {
+				return surveyLink;
+			} else {
 				$.ajax({
-					url: "http://tablet.txtfeedback.net/MobileSurvey/GetSurveyTemplate",
-					type: "GET",
-					contentType:"text/html",
-					success: function(data, textStatus) {
-						$("body").html(data);
-						startApp();
-					}
-				});	
-			};
-			
-			/*
-			$(document).ready(function() {
-				loadSurveyTemplate();
-			});*/
-			
-			function startApp() {
-		         //initialize mobile survey given the id of the survey plan
-		         var pushNotificationHandler = new PushNotificationHandler();
-		         $.ajaxSetup({ cache: false });
-		         var survey = new SurveyBuilder.SurveyModel({
-		            Description: "",
-		            ThankYouMessage: "",
-		            StartDate: "15/6/2013",
-		            EndDate: "17/7/2013",
-		            IsRunning: false
-		         });
-		         var urlParts = document.URL.split("/");
-		         var urlLastPart = urlParts[urlParts.length - 1];
-		         var surveyResultID = -1;
-		         survey.fetch({
-		            crossDomain:true,
-		            headers: {
-						"X-Requested-With": "XMLHttpRequest"
+					url: "http://dev.txtfeedback.net/Devices/GetSurveyLink",
+					data: {
+						deviceId: this.pushNotificationHandler.getGCMKey()
 					},
-		            success: function (model, response, options) {
-		               var surveyModel = new Question.QuestionSetModel(
-		                  {
-		                     SurveyResultId: surveyResultID,
-		                     SurveyTemplateId: model.get("Id"),
-		                     Title: model.get("Description"),
-		                     IntroMessage: model.get("IntroMessage"),
-		                     ThankYouMessage: model.get("ThankYouMessage")
-		                  });
-		               surveyModel.updateQuestionSetCollection(model.get("QuestionSet"));
-		               var surveyView = new MobileSurvey.SurveyView({
-		                  el: $("#survey"),
-		                  model: surveyModel
-		               });
-		               surveyView.render();		               
-		            },
-		            error: function (model, response, options) {
-		               alert(response)
-		            }
-		         });		         
-		      };	
-		</script>
-	</head>
-	<body>
-		
-	</body>
+					type: "GET",
+					xhrFields: {
+						withCredentials: true
+					},
+					async: false,
+					crossDomain: true,
+					success: function(data) {
+						alert("survey link incarcat de pe server" + data);
+						surveyLink = data;
+					}
+				});
+			}
+			this.storage.setItem("surveyLink", surveyLink);
+			return surveyLink;
+		},
+		loadTemplateFromServer: function() {
+			var template;
+			$.ajax({
+				url : "http://dev.txtfeedback.net/MobileSurvey/GetSurveyTemplate",
+				type : "GET",
+				contentType : "text/html",
+				async : false,
+				success : function(data, textStatus) {
+					template = data;
+				}
+			});
+			return template;
+		},
+		loadSurveyData: function() {
+			var surveyData;
+			var surveyDataLoader = new SurveyBuilder.SurveyModel({
+				Description : "",
+				ThankYouMessage : "",
+				StartDate : "15/6/2013",
+				EndDate : "17/7/2013",
+				IsRunning : false
+			});
+			var urlParts = document.URL.split("/");
+			var urlLastPart = urlParts[urlParts.length - 1];
+			var surveyResultID = -1;
+			var surveyLink = this.loadSurveyLink();
+			surveyDataLoader.fetch({
+				url: surveyLink,
+				crossDomain : true,
+				headers : {
+					"X-Requested-With" : "XMLHttpRequest"
+				},
+				async: false,
+				success : function(model, response, options) {
+					surveyData = model;
+				},
+				error : function(model, response, options) {
+					alert(response)
+				}
+			});
+			return surveyData;
+		}		
+	});
+	
+	$(document).ready(function() {
+		var appInit = new App();	
+	});
+	
+	function configureJQMobile() {
+		$.extend($.mobile, {
+			defaultPageTransition : "none",
+			ignoreContentEnabled : true
+		});
+	}
+	$(document).on("mobileinit", configureJQMobile);
+	
+</script>
+<script type="text/javascript" charset="UTF-8"
+	src="js/scripts/jquery.mobile-1.3.1.js"></script>
+</head>
+<body>
+	<div id="logOnPage" data-role="page" data-enhance="false">
+		<!-- DEV http://www.dev.txtfeedback.net/Account/AjaxLogOn -->
+		<!-- LOCAL DEBUG: In VS2012 Project -> Web -> Use Visual Studio Development Server -->
+		<!-- EMULATOR http://10.0.2.2:4631/Account/AjaxLogOn -->
+		<!-- BROWSER http://localhost:4631/Account/AjaxLogOn -->
+		<div data-role="content">
+			<div id="logo">
+				<img src="images/logo_300x75.png"
+					data-android-medium="images/logo_300x75.png"
+					data-android-large="images/logo_300x75.png"
+					data-android-hdpi="images/logo_300x75.png"
+					alt="Welcome to Txtfeedback!" />
+			</div>
+			<form id="logOnForm" data-ajax="false"
+				action="http://www.dev.txtfeedback.net/Account/AjaxLogOn"
+				method="POST">
+				<label for="username" class="ui-hidden-accessible">Username</label>
+				<input type="text" name="username" id="username"
+					placeholder="Username" /> <label for="password"
+					class="ui-hidden-accessible">Password</label> <input
+					type="password" name="password" id="password"
+					placeholder="Password" /><br />
+				<!--  <input type="submit" id="logOnBtn" data-theme="b" value="Login"/>-->
+				<a href="#" id="logOnBtn" class="btn btn-primary">Login</a>
+			</form>
+		</div>
+	</div>
+</body>
+
+
 </html>
+
