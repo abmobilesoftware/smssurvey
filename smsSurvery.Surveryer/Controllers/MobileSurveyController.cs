@@ -364,10 +364,12 @@ namespace smsSurvery.Surveryer.Controllers
                var existingCustomer = db.CustomerSet.Find(info.Telephone);
                if (existingCustomer != null)
                {
-                  //Should we update this info???
-                  //existingCustomer.Name = info.Name;
-                  //existingCustomer.Surname = info.Surname;
-                  //existingCustomer.Email = info.Email;
+                  //Associate this survey result to this customer
+                  existingCustomer.Name = info.Name;
+                  existingCustomer.Surname = info.Surname;
+                  existingCustomer.Email = info.Email;
+                  survey.Customer = existingCustomer;              
+                  db.SaveChanges();                  
                }
                else
                {
