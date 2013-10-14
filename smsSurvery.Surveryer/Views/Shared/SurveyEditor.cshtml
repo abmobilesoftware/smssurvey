@@ -33,8 +33,7 @@
                   <li><a href="#" value="YesNo" class="question-type">Yes/No</a></li>
                   <li><a href="#" value="FreeText" class="question-type">Free text</a></li>
                   <li><a href="#" value="Rating" class="question-type">Rating</a></li>
-                  <li><a href="#" value="SelectOneFromMany" class="question-type">Select one from many</a></li>
-                  <li><a href="#" value="SelectManyFromMany" class="question-type">Select many from many</a></li>  
+                  <li><a href="#" value="SelectOneFromMany" class="question-type">Select one from many</a></li>                 
                   <li><a href="#" value="Numeric" class="question-type">Numeric scale</a></li>               
                </ul>
             </div>
@@ -378,6 +377,26 @@
                   <li><a href="#" value="ro-RO" class="languageSelect">Romanian</a></li>                  
             </ul>
             </div>          
+      </tr>
+      <tr>
+         <td>Logo</td>
+         <td>
+            @* <img class="logo" src="<%= LogoLink %>"/>
+            <button class="btn btn-primary change-logo" type="button">Change survey logo</button>*@
+            <div class="fileupload fileupload-new" data-provides="fileupload">
+               <div class="fileupload-new thumbnail" style="width: 150; max-width:150; height: 50; max-height:150">
+                  <img class="logo" src="<%= LogoLink %>"/>
+               </div>
+               <div class="fileupload-preview fileupload-exists thumbnail" style="width: 150; max-width:150; height: 50; max-height:150"></div>
+               <div>                  
+                   <span class="btn btn-file">
+                      <span class="fileupload-new">Change</span>                      
+                      <span class="fileupload-exists">Change</span>
+                      <input type="file" />
+                   </span>      
+               </div>
+            </div>
+         </td>
       </tr>
       <tr>
          <% var idRepresentation = Id == -1 ? "-" : Id; %>

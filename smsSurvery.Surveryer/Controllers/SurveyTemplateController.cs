@@ -159,10 +159,12 @@ namespace smsSurvery.Surveryer.Controllers
                    surveyTemplate.DateEnded, surveyTemplate.IsRunning, questions, surveyTemplate.DefaultLanguage);
 
             clientSurveyTemplate.MobileWebsiteLocation = GetAnonymousMobileSurveyLocation(surveyTemplate, this.ControllerContext.RequestContext);
+            clientSurveyTemplate.LogoLink = surveyTemplate.UserProfile.FirstOrDefault().Company.MobileLogoUrl;
             return clientSurveyTemplate;
          }
          catch (Exception e)
          {
+            logger.Error("Error getting the survey", e);
             return null;
          }
       }

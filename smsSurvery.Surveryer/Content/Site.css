@@ -1074,3 +1074,9 @@ input.invalidField, select.invalidField, a.invalidField, div.invalidField {
 .form-horizontal .display-field {
    padding-top: 5px;
 }
+
+.logo {
+   max-width:150px;
+   max-height:45px;
+    vertical-align: middle;
+}

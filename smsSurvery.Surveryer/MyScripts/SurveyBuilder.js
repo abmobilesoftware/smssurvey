@@ -176,7 +176,8 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
       DisplayInfoTable: false,
       HasChanged: false,
       MobileWebsiteLocation: "",
-      DefaultLanguage: ""
+      DefaultLanguage: "",
+      LogoLink: ""
    },
    initialize: function () {
       _.bindAll(this, "attributeChanged", "modelSynced", "updateSurveyLanguage");
