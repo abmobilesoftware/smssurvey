@@ -17,7 +17,7 @@ namespace smsSurvery.Surveryer
                      "~/Scripts/chosen.jquery.js",
                      "~/Scripts/jquery.screwdefaultbuttonsV2.js"
                      ));
-         bundles.Add(new ScriptBundle("~/bundles/mobilesurvey").Include(
+         bundles.Add(new ScriptBundle("~/bundles/mobilesurvey").Include(            
             "~/MyScripts/SurveyUtilities.js",
             "~/MyScripts/SurveyElements.js",
             "~/MyScripts/MobileSurvey.js",
@@ -28,6 +28,7 @@ namespace smsSurvery.Surveryer
             "~/MyScripts/SurveyBuilder.js"
             ));
          bundles.Add(new ScriptBundle("~/bundles/myscripts").Include(
+                      "~/Scripts/bootstrap-fileupload.js",
                      "~/MyScripts/SurveyUtilities.js",
                      "~/MyScripts/SurveyElements.js",
                      "~/MyScripts/SurveyPreview.js",
@@ -72,7 +73,9 @@ namespace smsSurvery.Surveryer
 
          bundles.Add(new StyleBundle("~/Content/css").Include(
             "~/Content/site.css",
-            "~/Content/bootstrap.css"));
+            "~/Content/bootstrap.css",
+            "~/Content/bootstrap-fileupload.css"));
+
          bundles.Add(new StyleBundle("~/bundles/SurveyTemplate").Include(
             "~/Content/SurveyTemplate/questionSet.css",            
             "~/Content/chosen/chosen.css"
