@@ -161,9 +161,11 @@ namespace smsSurvery.Surveryer.Controllers
                }
             }
             db.SaveChanges();
-
-            HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.Created, location);
-            response.Headers.Location = new Uri(Url.Link("DefaultApi", new { id = location.Name }));
+            //DA refresh the location information now that we have a "real survey"
+            db.Entry(tag).Reload();
+            location.Id = tag.Id;
+            location.ActiveSurveyPerLocationLink = GetActiveSurveyLinkLocation(location.Name, companyName);
+            HttpResponseMessage response = Request.CreateResponse(HttpStatusCode.Created, location);            
             return response;
          }
          else

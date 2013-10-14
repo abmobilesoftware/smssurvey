@@ -16,7 +16,7 @@ window.LocationModel = Backbone.Model.extend({
          Description: "",
          ActiveSurveyDescription: "",
          ActiveSurveyId: 0,
-         ActiveSurveyPerLocationLink: "www.txtfeedback.net"
+         ActiveSurveyPerLocationLink: ""
       }
    },   
    idAttribute: "Id",
@@ -99,6 +99,9 @@ window.LocationView = Backbone.View.extend({
    renderActiveSurveyPerLocationInfo: function () {
       //DA depending on whether we have an activeSurvey or not show the link or not
       if (this.model.get("ActiveSurveyId") != 0) {
+         var activeSurveyLocation = this.model.get("ActiveSurveyPerLocationLink");
+         this.$(".activeSurveyPerLocationLink a").attr("href", activeSurveyLocation);
+         this.$(".activeSurveyPerLocationLink a").text(activeSurveyLocation);
          this.$(".activeSurveyPerLocationLink").show();
       } else {
          this.$(".activeSurveyPerLocationLink").hide();
