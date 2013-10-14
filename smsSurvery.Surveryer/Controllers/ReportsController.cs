@@ -224,7 +224,19 @@ namespace smsSurvery.Surveryer.Controllers
             var weightedWords = new List<IWord>();
 
             //TODO adapt algorithm for non English language
-            Language lg = Language.RomanianTxt;
+            Language lg = Language.AnyTxt;
+            switch (q.SurveyTemplateSet.DefaultLanguage)
+	         {
+               case "en-US":
+                  lg = Language.EnglishTxt;
+                  break;
+               case "ro-RO":
+                  lg  = Language.RomanianTxt;
+                  break;
+		         default:
+                  lg = Language.EnglishTxt;
+                    break;
+	         }                       
             IBlacklist blacklist = ByLanguageFactory.GetBlacklist(lg);
             IWordStemmer stemmer = ByLanguageFactory.GetStemmer(lg);
             //DA make sure that we don't take words of less than 3 characters
