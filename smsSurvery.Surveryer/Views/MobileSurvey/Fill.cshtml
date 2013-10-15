@@ -127,6 +127,7 @@
       @if ((int) @ViewBag.IsFeedback != 0)
       {
          <div id="userInfo">
+               <form id="personalInfo">
                   <fieldset id="surveyUserInfo">
                      <label class="followup">
                         @* If you like to be informed about the steps taken by us to improve on your feedback please leave us some personal details *@
@@ -135,23 +136,24 @@
                      </label>
                      <div>
                         <label for="name">@Global.MobileSurveyPersonalInfoNameLabel</label>
-                        <input id="name" type="text" /><br />
+                        <input id="name" type="text" placeholder="e.g. John/Jane" /><br />
                      </div>
                      <div>
                         <label for="surname">@Global.MobileSurveyPersonalInfoSurnameLabel</label>
-                        <input id="surname" type="text" /><br />
+                        <input id="surname" type="text" placeholder="e.g. Smith" /><br />
                      </div>
                      <div>
                         <label for="email">@Global.MobileSurveyPersonalInfoEmailLabel</label>
-                        <input id="email" type="email" /><br />
+                        <input id="email" type="email" placeholder="e.g. john@smith.com"/><br />
                      </div>
                      <div>
                         <label for="telephone">@Global.MobileSurveyPersonalInfoPhoneLabel</label>
                         <input id="telephone" type="tel" />
                      </div>                    
                   </fieldset>
-                  <button id="sendPersonalDetailsBtn" class="enabled">@Global.MobileSurveyPersonalInfoSubmitBtnLabel</button>                 
+                  <button id="sendPersonalDetailsBtn" type="button" class="enabled">@Global.MobileSurveyPersonalInfoSubmitBtnLabel</button>                 
                   <input id="personalInfoSubmitted" type='hidden' value='@Global.MobileSurveyPersonalInfoSubmittedLabel' />
+               </form>
          </div>
       }    
 </script>   
