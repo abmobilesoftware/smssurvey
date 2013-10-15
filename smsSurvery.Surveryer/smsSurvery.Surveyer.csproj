@@ -351,6 +351,7 @@
     <Content Include="Scripts\bootstrap-fileupload.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\chosen.jquery.js" />
+    <Content Include="Scripts\googleFastButtons.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.js" />
     <Content Include="MyScripts\reportsTags.js" />
     <Content Include="Scripts\jquery-1.10.1.js" />

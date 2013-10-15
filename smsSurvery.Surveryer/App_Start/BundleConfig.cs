@@ -8,6 +8,7 @@ namespace smsSurvery.Surveryer
       // For more information on Bundling, visit http://go.microsoft.com/fwlink/?LinkId=254725
       public static void RegisterBundles(BundleCollection bundles)
       {
+         //DA lazy MB, lazy DA - move googleFastButtons and screwdefaultbuttonsV2 to a less general bundle
          bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                      "~/Scripts/jquery-{version}.js",
                      "~/Scripts/jquery-ui-1.10.3.js",
@@ -15,10 +16,11 @@ namespace smsSurvery.Surveryer
                      "~/Scripts/underscore.js",
                      "~/Scripts/backbone.js",
                      "~/Scripts/chosen.jquery.js",
+                     "~/Scripts/googleFastButtons.js",
                      "~/Scripts/jquery.screwdefaultbuttonsV2.js"
                      ));
          bundles.Add(new ScriptBundle("~/bundles/mobilesurvey").Include(            
-            "~/MyScripts/SurveyUtilities.js",
+            "~/MyScripts/SurveyUtilities.js",          
             "~/MyScripts/SurveyElements.js",
             "~/MyScripts/MobileSurvey.js",
             "~/MyScripts/SurveyNumericModal.js",
@@ -29,7 +31,7 @@ namespace smsSurvery.Surveryer
             ));
          bundles.Add(new ScriptBundle("~/bundles/myscripts").Include(
                       "~/Scripts/bootstrap-fileupload.js",
-                     "~/MyScripts/SurveyUtilities.js",
+                     "~/MyScripts/SurveyUtilities.js",                     
                      "~/MyScripts/SurveyElements.js",
                      "~/MyScripts/SurveyPreview.js",
                      "~/MyScripts/SurveyAnswersModal.js",
