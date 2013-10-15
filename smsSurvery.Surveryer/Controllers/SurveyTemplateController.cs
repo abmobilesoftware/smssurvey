@@ -301,6 +301,16 @@ namespace smsSurvery.Surveryer.Controllers
                               }
                            }
                         }
+                        else
+                        {
+                           //DA - this could mean that we removed all alerts
+                            var prevAlerts = dbQuestion.QuestionAlertSet.ToList();
+                           foreach (var prevAlert in prevAlerts)
+                           {
+                              db.QuestionAlertSet.Remove(prevAlert);
+                           }
+                           dbQuestion.QuestionAlertSet.Clear();
+                        }
                         dbQuestion.Order = clientQuestion.Order;
                         dbQuestion.Text = clientQuestion.Text;
                         dbQuestion.Type = clientQuestion.Type;
@@ -347,7 +357,25 @@ namespace smsSurvery.Surveryer.Controllers
                      }
                   }
                }
-               db.SaveChanges();
+               try
+               {
+                  db.SaveChanges();
+               }
+               catch (DbEntityValidationException ex)
+               {
+                  StringBuilder sb = new StringBuilder();
+                  foreach (var failure in ex.EntityValidationErrors)
+                  {
+                     sb.AppendFormat("{0} failed validation\n", failure.Entry.Entity.GetType());
+                     foreach (var error in failure.ValidationErrors)
+                     {
+                        sb.AppendFormat("- {0} : {1}", error.PropertyName, error.ErrorMessage);
+                        sb.AppendLine();
+                     }
+                  }
+                  logger.Error(sb.ToString());
+                  return Json(new smsSurvery.Surveryer.Models.RequestResult("error", "save", sb.ToString()), JsonRequestBehavior.AllowGet);
+               }
                var mobileWebsiteLocation = GetAnonymousMobileSurveyLocation(surveyTemplate, this.ControllerContext.RequestContext);
                return Json(GetSurveyTemplateObject(clientSurveyTemplate.Id), JsonRequestBehavior.AllowGet);
             }
@@ -442,6 +470,7 @@ namespace smsSurvery.Surveryer.Controllers
          }
          catch (Exception e)
          {
+            logger.Error(e);
             return Json(new smsSurvery.Surveryer.Models.RequestResult("error", "save", e.Message),
             JsonRequestBehavior.AllowGet);
          }
