@@ -8,11 +8,13 @@ SurveyElements.StarView = Backbone.View.extend({
    initialize: function () {
       _.bindAll(this, "click", "render","activeStatusChanged");
       this.template = _.template($("#star-template").html());
-      this.model.on("change:Active", this.activeStatusChanged);      
+      this.model.on("change:Active", this.activeStatusChanged);
+      this.starButton = null;
    },
    render: function () {
       this.$el.html(this.template(this.model.toJSON()));
-      var starButton = new google.ui.FastButton($(".starImg", this.$el)[0], this.click)
+      $(".starImg", this.$el).off();
+      this.starButton = new google.ui.FastButton($(".starImg", this.$el)[0], this.click);
       return this;
    },
    activeStatusChanged: function()
@@ -27,6 +29,7 @@ SurveyElements.StarView = Backbone.View.extend({
    click: function (event) {
       event.preventDefault();
       this.model.trigger("starClickedEvent", this.model);
+      Backbone.trigger("touch");
    }
 });
 
@@ -63,13 +66,17 @@ SurveyElements.StarBarView = Backbone.View.extend({
       this.starsCollection = new SurveyElements.StarsCollection(starsArray);
       this.starsCollection.on("resultEvent", this.starClicked);
       this.result = -1;
-      this.render();
+      this.starViews = [];
+      this.render();      
    },
    render: function () {
       this.$el.append(this.template());
+      this.starViews.length = 0;
+      
       _.each(this.starsCollection.models, function (value, index, list) {
          var starView = new SurveyElements.StarView({ model: value });
-         $(".starsArea",this.$el).append(starView.render().el);         
+         $(".starsArea",this.$el).append(starView.render().el);
+         this.starViews.push(starView);
       }, this);
       $(".starsArea", this.$el).append("<div class='clear'></div>");
 
@@ -101,5 +108,30 @@ SurveyElements.StarBarView = Backbone.View.extend({
       /* save the result in .answer input field value attribute */      
       this.dom.$ANSWER.val(pValue);      
       this.dom.$ADDITIONAL_INFO.val(pAdditionalInfo);
+   },
+   close: function() {
+	   _.each(this.starViews, function(starView) {
+		   starView.$el.off();
+		   starView.remove();		   
+	   });
+	   this.starViews.length = 0;
    }
+});
+
+SurveyElements.Loader = Backbone.View.extend({
+	initialize: function() {
+		$('#loading-modal').modal({
+			  backdrop: 'static',
+			  keyboard: false
+		});
+		$('#loading-modal').modal("hide");
+		var loadingAnimation = new imageLoader(cImageSrc, 'startAnimation()');
+	},
+	showLoader: function() {
+		$('#loading-modal').modal("show");
+		$("#loading-modal").css("visibility", "visible");
+	},
+	hideLoader: function() {
+		$('#loading-modal').modal("hide");
+	}
 });

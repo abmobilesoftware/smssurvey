@@ -56,16 +56,19 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
 		_.bindAll(this, "render", "toggleDisplay", "updateQuestionDisplay", "updateAnswer",
 		"numericScaleSelected");
 		this.model.on("change:ValidAnswer", this.updateQuestionDisplay);
+		this.childViews = [];
 	},
 	render: function () {
 		this.$el.html(this.questionMobileTemplate(this.model.toJSON()));
+		this.childViews.length = 0;
 		if (this.model.get("Type") == this.questionConstants.TYPE_RATING) {
 			var ratingsSeparator = SurveyUtilities.Utilities.CONSTANTS_MISC.SEPARATOR_ANSWERS;
 			var noOfRatings = this.model.get("ValidAnswersDetails") != null ?
 					this.model.get("ValidAnswersDetails").split(ratingsSeparator).length
 					: 5;
 					noOfRatings = noOfRatings == 1 ? 0 : noOfRatings;
-					var starBarView = new SurveyElements.StarBarView({ el: $(".answerArea", this.$el), noOfElements: noOfRatings });
+			var starBarView = new SurveyElements.StarBarView({ el: $(".answerArea", this.$el), noOfElements: noOfRatings });
+			this.childViews.push(starBarView);
 		}
 		return this.$el;
 	},
@@ -135,13 +138,17 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
 			 event.preventDefault();
 			 $(".comment", this.$el).blur();
 		 }
+	},
+	close: function() {
+		this.remove();
+		_.each(this.childViews, function(childView) {
+			childView.close();
+		}, this);
+		this.childViews.length = 0;
 	}
 });
 
 MobileSurvey.SurveyMobileView = Backbone.View.extend({
-	events: {
-		"click #doneBtn": "saveSurvey"
-	},
 	initialize: function () {
 		_.bindAll(this, "render", "saveSurvey");
 		this.surveyPreviewModel = this.options.surveyPreviewModel;
@@ -166,12 +173,17 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
 		this.doneBtn.enable();
 		this.doneBtn.setTitle(this.doneBtnTitle);
 		this.questionsViews = [];
+		var retakeSurveyButton = new google.ui.FastButton($("#doneBtn", this.$el)[0],
+				this.saveSurvey);
 	},
 	render: function () {
 		var self = this;
 		this.el.html(this.surveyMobileTemplate());
-		this.questionsViews.length = 0;
 		var areaToAddContentTo = $(".questionsArea", this.$el);
+		_.each(this.questionsViews, function(questionView){
+			questionView.close();
+		});
+		this.questionsViews.length = 0;
 		_.each(this.model.getQuestionSetCollection(), function (question, index) {
 			//DA now that the collection is sorted (due to the comparator on the collection) we can correctly set the QuestionNumber
 			question.set("QuestionNumber", index + 1);
@@ -185,6 +197,10 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
 			height: 77
 		});
 		return this.$el;
+	},
+	refresh: function() {
+		this.render();
+		this.doneBtn.setTitle(this.doneBtnTitle);
 	},
 	isSurveyComplete: function () {
 		var answeredQuestions = 0;
@@ -240,26 +256,21 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
 		return this.$el.outerHeight();
 	}
 });
-MobileSurvey.PersonalInformationErrors = {
-		INVALID_NAME: "Câmpul 'Nume' nu poate fi gol.",
-		INVALID_SURNAME: "Câmpul 'Prenume' nu poate fi gol.",
-		INVALID_EMAIL: "Adresa de email este invalidă."
-};
+
 var isBlank = function (str) {
 	return (!str || /^\s*$/.test(str));
 }
 
 MobileSurvey.ThankYouPageView = Backbone.View.extend({
-	events: {
-		"click #sendPersonalDetailsBtn": "sendPersonalInfo"
-
-	},
 	initialize: function () {
 		_.bindAll(this, "setWidth", "show",
 				"getHeight", "render", "sendPersonalInfo",
 				"setSurveyResultId", "clearErrorsFromFields",
-		"validationError");
+				"validationError", "retakeSurvey");
 		this.template = _.template($("#thankyoupage-template").html());
+		this.pageEvents = {
+			RETAKE_SURVEY : "retakeSurveyEvent"	
+		};
 		this.thankYouMessage = this.options.thankYouMessage;
 		this.surveyTitle = this.options.surveyTitle;
 		this.render();
@@ -364,6 +375,10 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 		this.dom.$ALERT_BOX.addClass("alert-error");
 		this.dom.$ALERT_BOX.show();      
 	},
+	retakeSurvey: function(event) {
+		event.preventDefault();
+		this.trigger(this.pageEvents.RETAKE_SURVEY);
+	},
 	sendPersonalInfo: function (event) {
 		if (this.validateData()) {
 			Timer.stopTimer();
@@ -410,6 +425,11 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 		this.dom.$THANK_YOU_MESSAGE.html(this.thankYouMessage);
 		this.dom.$PAGE_TITLE.html(this.surveyTitle);
 		this.sendBtn.enable();
+		var retakeSurveyButton = new google.ui.FastButton($(".retakeBtn", this.$el)[0],
+				this.retakeSurvey);
+		var sendPersonalnfoButton = new google.ui.FastButton($("#sendPersonalDetailsBtn", this.$el)[0],
+				this.sendPersonalInfo);
+		
 		return this.$el;
 	}
 });
@@ -417,28 +437,42 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 MobileSurvey.SurveyView = Backbone.View.extend({
 	initialize: function () {
 		_.bindAll(this, "goToThankYouPage", "saveSurvey", 
-				"updateQuestionSet", "render", "goToQuestionsPage");
-		this.questionsPage = new MobileSurvey.SurveyMobileView({ el: $("#questionsPage"), model: this.model });
+				"updateQuestionSet", "render", "goToQuestionsPage",
+				"saveAListOfSurveys", "makeSaveRequest");
+		this.questionsPage = new MobileSurvey.SurveyMobileView(
+				{ 
+					el: $("#questionsPage"),
+					model: this.model 
+				});
 		this.thankYouPage = new MobileSurvey.ThankYouPageView({ 
 			el: $("#thankYouPage"), 
 			thankYouMessage: this.model.get("ThankYouMessage"),
 			surveyTitle: this.model.get("Title")
 		});
+		this.storage = this.options.localStorage;
 		Timer.startTimer();
 		$(Timer).on(Timer.events.RESTART_SURVEY, this.goToQuestionsPage);
 		this.questionsPage.on(this.questionsPage.pageEvents.THANK_YOU_PAGE,
 				this.saveSurvey);
+		this.thankYouPage.on(this.thankYouPage.pageEvents.RETAKE_SURVEY,
+				this.goToQuestionsPage);
 		this.dom = {
 				$LOCATION_INPUT: $("#location", this.$el)
 		}
 	},
 	goToQuestionsPage: function() {
-		this.questionsPage.render();
+		this.questionsPage.refresh();
 		$.mobile.changePage("#questionsPage");
 		Timer.startTimer();
 	},
-	goToThankYouPage: function (surveyResultId) {
+	goToThankYouPage: function (surveyResult) {
+		//alert("success");
+		if (surveyResult != undefined) {
+			this.thankYouPage.setSurveyResultId(surveyResult.DbId);
+		}
 		this.thankYouPage.render();
+		/*$("#loading-modal").modal("hide");*/
+		loader.hideLoader();
 		$.mobile.changePage("#thankYouPage");
 	},
 	setWidth: function (value) {
@@ -451,50 +485,76 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 		this.model.set("QuestionSet", this.model.getQuestionSetCollectionAsJson(false));
 	},
 	saveSurvey: function (event) {
+		/*$("#loading-modal").modal("show");
+		$("#loading-modal").css("visibility", "visible");*/
+		loader.showLoader();
 		var self = this;
 		this.updateQuestionSet();
 		//DA now we have in this.model.get("QuestionSet") the required information
 		var infoToUpload = this.model.getQuestionSetCollectionAsJson(false);
 		var location = this.dom.$LOCATION_INPUT.val();
-		var sendData = JSON.stringify({
-			questions: infoToUpload,
-			surveyResultId: this.model.get("SurveyResultId"),
-			surveyTemplateId: this.model.get("SurveyTemplateId"),
-			location: location
+		var sendDataObject = {
+				questions: infoToUpload,
+				surveyResultId: this.model.get("SurveyResultId"),
+				surveyTemplateId: this.model.get("SurveyTemplateId"),
+				location: location
+			};	
+		this.makeSaveRequest(sendDataObject, this.goToThankYouPage,
+		function() {	
+			//alert("error");
+			var surveyResults = JSON.parse(self.storage.getItem("surveyResults"));
+			if (surveyResults == null || surveyResults == "null"
+				|| surveyResults == undefined || surveyResults == "undefined") {
+				var results = [];
+				sendDataObject.Id = SurveyUtilities.Utilities.generateUUID();
+				results.push(sendDataObject);
+				self.storage.setItem("surveyResults",JSON.stringify(results));
+			} else {
+				sendDataObject.Id = SurveyUtilities.Utilities.generateUUID();
+				surveyResults.push(sendDataObject);
+				self.storage.setItem("surveyResults",JSON.stringify(surveyResults));
+			}
+			self.goToThankYouPage();				
 		});
+	},
+	saveAListOfSurveys: function(surveys) {
+		var self = this;
+		for (var i=0; i<surveys.length; ++i) {
+			this.makeSaveRequest(surveys[i], function(result) {
+				if (result.DbId > -1) {
+					var surveyResults = JSON.parse(self.storage.getItem("surveyResults"));
+					if (surveyResults != null && surveyResults != undefined &&
+							surveyResults != "null" && surveyResults != "undefined") {
+						var k=-1;
+						for (var j=0; j<surveyResults.length; ++j) {
+							if (surveyResults[j].Id == result.LocalId) {
+								k=j;
+							}
+						}
+						if (k>-1) {
+							surveyResults.splice(k,1);
+							self.storage.setItem("surveyResults",JSON.stringify(surveyResults));
+						}
+					}
+				}
+			}, function() {});
+		}
+	},
+	makeSaveRequest: function(sendDataObject, successCallback, errorCallback) {
+		var sendData = JSON.stringify(sendDataObject);
 		$.ajax({
-			url: "http://tablet.txtfeedback.net/MobileSurvey/SaveSurvey",
+			url: "http://dev.txtfeedback.net/MobileSurvey/SaveSurvey",
 			data: sendData,
 			crossDomain: true,
 			type: 'post',
 			cache: false,
 			dataType: "json",
 			contentType: 'application/json',
-			traditional: true,
-			success: function (surveyResultId) {
-				//self.thankYouPage.setSurveyResultId(surveyResultId);
-				self.goToThankYouPage(surveyResultId);
-			},
-			async: false
-		});
-		//this.model.save(this.model.toJSON(),
-		//   {
-		//      success: function (model, response, options) {
-		//         if (response.Result == "success") {
-		//            self.dom.$NOTIFICATION_TEXT.text("Changes saved successfully.");
-		//            self.dom.$NOTIFICATION_TEXT.
-		//               removeClass("notification-success notification-error").addClass("notification-success");
-		//            if (response.Operation == "create") {
-		//               self.model.set("Id", response.Details);
-		//            }
-		//            self.model.set("DataChanged", false);
-		//         } else if (response.Result == "error") {
-		//            self.dom.$NOTIFICATION_TEXT.text("Errors while saving.");
-		//            self.dom.$NOTIFICATION_TEXT.
-		//               removeClass("notification-success notification-error").addClass("notification-error");
-		//         }
-		//         self.dom.$NOTIFICATION.show();
-		//      }
-		//   });
+			traditional: true/*,
+			success: successCallback,
+			error: errorCallback*/
+		})
+		.done(successCallback)
+		.fail(errorCallback);
 	}
 });

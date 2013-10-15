@@ -19,7 +19,11 @@
                link: newLink
             },
             success: function (response) {
-               alert(response);
+               if (response == "success") {
+                  location.reload();
+               } else {
+                  alert(response);
+               }
             }
          });
       } else {
@@ -54,6 +58,8 @@
          success: function (response) {
             if (response == "success") {
                location.reload();
+            } else {
+               alert(response);
             }
          }
       });

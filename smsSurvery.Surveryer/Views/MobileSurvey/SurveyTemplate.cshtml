@@ -22,7 +22,7 @@
          <% 
             } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_FREE_TEXT) {
          %>
-                  <textarea class="answer comment"></textarea>
+                  <textarea class="answer comment" placeholder="Your answer is..."></textarea>
          <%
             } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_RATING) {
          %>
@@ -95,7 +95,7 @@
 <script type="text/template" id="thankyoupage-template">
    <header>
       <div class="headerContainer">
-         <img id="pageIcon" src="/Content/images/small-icon.png" />
+         <img id="pageIcon" src="images/small-icon.png" />
          <h3 id="pageTitle">@ViewBag.SurveyTitle</h3>
       </div>
    </header>
@@ -118,32 +118,34 @@
                @* If you would like to receive the results of this survey please provide us some personal details *@
                @Global.MobileSurveyLeavePersonalInfoLabel
             </label>
-            <div class="personalInfoFields">
-               <div>
-                  <label for="name">@Global.MobileSurveyPersonalInfoNameLabel</label>
-                  <input id="name" type="text" /><br />
+            <form>
+               <div class="personalInfoFields">
+                  <div>
+                     <label for="name">@Global.MobileSurveyPersonalInfoNameLabel</label>
+                     <input id="name" type="text" /><br />
+                  </div>
+                  <div>
+                     <label for="surname">@Global.MobileSurveyPersonalInfoSurnameLabel</label>
+                     <input id="surname" type="text" /><br />
+                  </div>
+                  <div>
+                     <label for="email">@Global.MobileSurveyPersonalInfoEmailLabel</label>
+                     <input id="email" type="email" /><br />
+                  </div>
+                  <div>
+                     <label for="telephone">@Global.MobileSurveyPersonalInfoPhoneLabel</label>
+                     <input id="telephone" type="tel" />
+                  </div>
                </div>
-               <div>
-                  <label for="surname">@Global.MobileSurveyPersonalInfoSurnameLabel</label>
-                  <input id="surname" type="text" /><br />
-               </div>
-               <div>
-                  <label for="email">@Global.MobileSurveyPersonalInfoEmailLabel</label>
-                  <input id="email" type="email" /><br />
-               </div>
-               <div>
-                  <label for="telephone">@Global.MobileSurveyPersonalInfoPhoneLabel</label>
-                  <input id="telephone" type="tel" />
-               </div>
-            </div>
+            </form>
          </div>
-         <button id="sendPersonalDetailsBtn" class="enabled">@Global.MobileSurveyPersonalInfoSubmitBtnLabel</button>
+         <a id="sendPersonalDetailsBtn" class="btn btn-primary enabled">@Global.MobileSurveyPersonalInfoSubmitBtnLabel</a>
          <input id="personalInfoSubmitted" type='hidden' value='@Global.MobileSurveyPersonalInfoSubmittedLabel' />
       </div>
    }
    @if (@ViewBag.TabletView)
    {
-      <a class="retakeBtn" href="#" onclick="location.reload()">@Global.MobileSurveyPersonalInfoRetakeSurvey</a>
+      <a class="retakeBtn btn btn-primary" href="#">@Global.MobileSurveyPersonalInfoRetakeSurvey</a>
    }
 </script>
 
@@ -153,7 +155,7 @@
 <div id="questionsPage" class="page" data-role="page" data-enhance="false">
    <header>
       <div class="headerContainer">
-         <img id="pageIcon" src="/Content/images/small-icon.png" />
+         <img id="pageIcon" src="images/small-icon.png" />
          <h3 id="pageTitle">@ViewBag.SurveyTitle</h3>
       </div>
    </header>
@@ -168,11 +170,7 @@
    <div id="doneBtnWrapper">
       <a class="btn btn-primary" id="doneBtn"></a>
    </div>
-   <footer>
-      <span>@Global.MobileSurveyFooterCaption
-         <a href="http://www.txtfeedback.net">TxtFeedback
-         </a>
-      </span>
+   <footer>      
    </footer>
    <input type="hidden" value="@Global.MobileSurveySubmitButtonCaption" id="doneBtnTitle" />
    <input type="hidden" value="@ViewBag.Location" id="location" />

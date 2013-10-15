@@ -5,11 +5,8 @@
  * TODO: Move checkLoggedOnStatus logic in LogOnPage model.
  */
 var LogOnPage = Backbone.View.extend({
-	events: {
-		"click #logOnBtn": "logOn"
-	},
 	initialize: function () {
-		_.bindAll(this, "logOn", "checkLoggedOnStatus",
+		_.bindAll(this, "logOn", "loggedOnStatus",
 				"hide", "clearFields");
 		var self = this;
 		this.domElements = {
@@ -19,9 +16,10 @@ var LogOnPage = Backbone.View.extend({
 				$FORM: $("#logOnForm", this.$el)
 		};
 		this.model.on(this.model.events.LOGON_SUCCESS,
-				this.clearFields);			
-		//this.$el.on("pageinit", this.checkLoggedOnStatus);
-		this.checkLoggedOnStatus();
+				this.clearFields);	
+		// Check if the user is logged on
+		this.model.isLoggedOn(this.loggedOnStatus)
+		var logOnButton = new google.ui.FastButton($("#logOnBtn", this.$el)[0], this.logOn);
 	},
 	logOn: function(event) {
 		event.preventDefault();
@@ -30,10 +28,8 @@ var LogOnPage = Backbone.View.extend({
 				this.domElements.$FORM.prop("action"),
 				this.domElements.$FORM.prop("method"));		
 	},
-	checkLoggedOnStatus: function() {
-		alert("check logged on status. Logged on = " + this.model.isLoggedOn());
-		var self = this;
-		if (this.model.isLoggedOn()) {
+	loggedOnStatus: function(data, a, b) {
+		if (data == "success") {
 			this.model.registerDevice();
 		} else {
 			this.show();
@@ -86,7 +82,9 @@ var LogOnModel = Backbone.Model.extend({
 		}		
 	},
 	logOn: function(username, password, action, method) {
-		alert("Press login btn. GCM key is = " + this.pushNotificationHandler.getGCMKey());
+		/*$("#loading-modal").modal("show");
+		$("#loading-modal").css("visibility", "visible");*/
+		loader.showLoader();
 		if (this.pushNotificationHandler.getGCMKey() != null && 
 				this.pushNotificationHandler.getGCMKey() != "null") {
 			var self = this;
@@ -106,10 +104,14 @@ var LogOnModel = Backbone.Model.extend({
 					if (data === self.response.LOGON_SUCCESS) {						
 						self.registerDevice();						
 					} else {
-						alert("Invalid credentials");
+						/*$("#loading-modal").modal("hide");*/
+						loader.hideLoader();
+						alert("Invalid credentials");						
 					}  				
 				}, 
 				error: function(jqXHR, textStatus, errorThrown) {
+					/*$("#loading-modal").modal("hide");*/
+					loader.hideLoader();
 					alert("Network error. Please check your " +
 							"internet connection and try again later.");
 				}    		
@@ -133,7 +135,7 @@ var LogOnModel = Backbone.Model.extend({
 			async: false,
 			success: function(data) {
 				if (data == self.response.LOGOFF_SUCCESS) {
-					//self.trigger(self.events.LOGOFF_SUCCESS);
+					//self.trigger(self.eavents.LOGOFF_SUCCESS);
 				}
 			},
 			error: function(jqXHR, textStatus, errorThrown) {
@@ -142,29 +144,20 @@ var LogOnModel = Backbone.Model.extend({
 			}
 		});
 	},
-	isLoggedOn: function() {
-		var loggedOn = false;
+	isLoggedOn: function(callback) {
+		var loggedOn = false;		
 		$.ajax({
 			url: this.url.checkLoggedOnStatus,
 			method: "GET",
 			xhrFields: {
 				withCredentials: true
 			},
-			async: false,
 			crossDomain: true,
-			statusCode: {
-				403: function() {
-					loggedOn = false;
-				}, 
-				200: function() {
-					loggedOn = true;
-				}
-			}
+			success: callback			
 		});
-		return loggedOn;
+		
 	},
 	registerDevice: function() {
-		alert("Register device");
 		var deviceId = this.pushNotificationHandler.getGCMKey()
 		var self = this;
 		$.ajax({
@@ -181,10 +174,10 @@ var LogOnModel = Backbone.Model.extend({
 			/*contentType: "application/json; charset=utf-8",*/
 			success: function(data) {
 				if (data == self.response.REGISTER_SUCCESS) {
-					alert("Am inregistrat deviceul. merg mai departe.")
 					self.trigger(self.events.LOGON_SUCCESS);
 					return true;
 				} else if (data == self.response.REGISTER_FAIL) {
+					alert("register failed");
 					return false;
 				}
 			},

@@ -14,6 +14,7 @@ namespace smsSurvery.Surveryer.Controllers
    {
       private smsSurveyEntities db = new smsSurveyEntities();
 
+      [Authorize]
       [HttpPost]
       public JsonResult AddDevice(string deviceId)
       {
@@ -87,8 +88,26 @@ namespace smsSurvery.Surveryer.Controllers
 
       public JsonResult SendLinkToDevice(string deviceId, string link)
       {
-         var response = Utilities.Utilities.SendDataToGoogleDevice(deviceId, link);
-         return Json(response, JsonRequestBehavior.AllowGet);              
+         try
+         {
+            var connectedUser = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            if (connectedUser != null)
+            {
+               var deviceResults = connectedUser.Company.Device.Where(x => x.DeviceId.Equals(deviceId));
+               if (deviceResults.Count() > 0)
+               {
+                  var device = deviceResults.First();
+                  device.SurveyLink = link;
+                  db.SaveChanges();
+               }
+            }
+            var response = Utilities.Utilities.SendDataToGoogleDevice(deviceId, link);
+            return Json("success", JsonRequestBehavior.AllowGet);
+         }
+         catch (Exception e)
+         {
+            return Json(e.InnerException.Message, JsonRequestBehavior.AllowGet);
+         }
       }
 
       public JsonResult SendRefreshCommandToDevice(string deviceId)
@@ -99,23 +118,40 @@ namespace smsSurvery.Surveryer.Controllers
 
       public JsonResult ReleaseDevice(string deviceId)
       {
-         ReleaseDeviceFromCompany(deviceId);
-         var response = Utilities.Utilities.SendDataToGoogleDevice(deviceId, "release");
-         return Json("success", JsonRequestBehavior.AllowGet);
+         try
+         {
+            ReleaseDeviceFromCompany(deviceId);
+            var response = Utilities.Utilities.SendDataToGoogleDevice(deviceId, "release");
+            return Json("success", JsonRequestBehavior.AllowGet);
+         }
+         catch (Exception e)
+         {
+            return Json(e.InnerException.Message, JsonRequestBehavior.AllowGet);
+         }
       }
 
+      [Authorize]
       public JsonResult GetSurveyLink(string deviceId)
       {
          var connectedUser = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
          var device = connectedUser.Company.Device.Where(x => x.DeviceId.Equals(deviceId));
+         string surveyLink = "no link";
          if (device.Count() > 0)
          {
-            return Json(device.FirstOrDefault().SurveyLink, JsonRequestBehavior.AllowGet);
+            if (device.FirstOrDefault().SurveyLink != null &&
+               !device.FirstOrDefault().SurveyLink.Equals(""))
+            {
+               surveyLink = device.FirstOrDefault().SurveyLink; 
+               
+            }
+            else
+            {
+               UrlHelper u = new UrlHelper(this.ControllerContext.RequestContext);
+               string surveyLocation = HttpContext.Request.Url.Scheme + "://" + HttpContext.Request.Url.Authority + u.Action("GetSurvey", "SurveyTemplate", new { id = connectedUser.SurveyTemplateSet.FirstOrDefault().Id });
+               surveyLink = surveyLocation;
+            }
          }
-         else
-         {
-            return Json("no device matching this id " + deviceId, JsonRequestBehavior.AllowGet);
-         }
+         return Json(surveyLink, JsonRequestBehavior.AllowGet);
       }
    }
 }

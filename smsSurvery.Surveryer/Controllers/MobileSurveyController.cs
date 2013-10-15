@@ -249,7 +249,7 @@ namespace smsSurvery.Surveryer.Controllers
 
       [HttpPost]
       [AllowAnonymous]
-      public JsonResult SaveSurvey(List<QuestionResponse> questions, int surveyResultId, int surveyTemplateId, string location)
+      public JsonResult SaveSurvey(List<QuestionResponse> questions, int surveyResultId, int surveyTemplateId, string location, string Id)
       {
          //for mobile surveys the survey language is the default Survey definition language
          //we return the Id of the save surveyResult
@@ -340,7 +340,15 @@ namespace smsSurvery.Surveryer.Controllers
             surveyToAnalyze.Tags.Add(locationTag);
             db.SaveChanges();
          }
-         return Json(savedSurveyResult, JsonRequestBehavior.AllowGet);
+         var result = new SaveSurveyResult();
+         result.DbId = savedSurveyResult;
+         result.LocalId = Id;
+         return Json(result, JsonRequestBehavior.AllowGet);
+      }
+      public class SaveSurveyResult
+      {
+         public int DbId { get; set; }
+         public string LocalId { get; set; }
       }
 
       public class RespondentInfo

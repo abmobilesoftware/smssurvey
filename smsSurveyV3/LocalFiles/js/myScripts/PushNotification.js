@@ -9,11 +9,14 @@ var PushNotificationHandler = Backbone.Model.extend({
 				"pushNotificationListener",
 				"pushNotificationRegisterSuccess",
 				"pushNotificationRegisterError",
-				"getGCMKey");
+				"getGCMKey", "checkGCMKey");
 		this.storage = window.localStorage;
 		this.pushNotificationManager = new PushNotificationManager();
 		// GCM project id
 		this.pushNotificationManager.accountID("92320531700");
+		this.checkGCMKey();
+	},
+	checkGCMKey: function() {
 		if (this.storage.getItem("GCMKey") == null || this.storage.getItem("GCMKey") == "null") {
 			this.pushNotificationManager.register(
 					this.pushNotificationRegisterSuccess,
@@ -24,7 +27,7 @@ var PushNotificationHandler = Backbone.Model.extend({
 		}
 	},
 	pushNotificationListener: function(notification) {
-		alert("Notification received" + notification.message);
+		//alert("Notification received" + notification.message);
 		if (notification.message == "refresh") {
 			this.trigger(this.events.REFRESH);
 		} else if (notification.message == "release") {
@@ -42,6 +45,6 @@ var PushNotificationHandler = Backbone.Model.extend({
 	},
 	getGCMKey: function() {
 		//return this.storage.getItem("GCMKey");
-		return "test pe chrome";
+		return "noudevice";
 	}
 });
