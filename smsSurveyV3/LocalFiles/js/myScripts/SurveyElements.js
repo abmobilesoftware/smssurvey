@@ -13,7 +13,6 @@ SurveyElements.StarView = Backbone.View.extend({
    },
    render: function () {
       this.$el.html(this.template(this.model.toJSON()));
-      $(".starImg", this.$el).off();
       this.starButton = new google.ui.FastButton($(".starImg", this.$el)[0], this.click);
       return this;
    },
@@ -30,6 +29,10 @@ SurveyElements.StarView = Backbone.View.extend({
       event.preventDefault();
       this.model.trigger("starClickedEvent", this.model);
       Backbone.trigger("touch");
+   },
+   close: function() {
+	   $(".starImg", this.$el)[0].removeEventListener("click", this.starButton, false);
+	   this.remove();
    }
 });
 
@@ -111,8 +114,7 @@ SurveyElements.StarBarView = Backbone.View.extend({
    },
    close: function() {
 	   _.each(this.starViews, function(starView) {
-		   starView.$el.off();
-		   starView.remove();		   
+		   starView.close();		   
 	   });
 	   this.starViews.length = 0;
    }

@@ -67,10 +67,8 @@ namespace smsSurvery.Surveryer.Controllers
          else
          {
             return "error";
-         }
-         
+         }         
       }
-
 
       public ActionResult Index()
       {

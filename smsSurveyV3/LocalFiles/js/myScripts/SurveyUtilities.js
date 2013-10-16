@@ -56,13 +56,13 @@ var Timer = (function () {
 	};
 	innerClass.startTimer = function (filename) {
 		noOfMouseMoves = 0;
-		alert("Valoarea de la timer 1 inainte de stop " + timer1);
+		//alert("Valoarea de la timer 1 inainte de stop " + timer1);
 		if (timer1 != null && timer1 != undefined) {
 			//innerClass.stopTimer();
 			timer1 = clearInterval(timer1);
-			alert("Stop pe timer 1 = " + timer1);
+			//alert("Stop pe timer 1 = " + timer1);
 		}
-		alert("Valoarea de la timer 1 dupa stop " + timer1);
+		//alert("Valoarea de la timer 1 dupa stop " + timer1);
 		document.addEventListener("touchend", innerClass.trackMouseMovement);
 		Backbone.on("touch", innerClass.trackMouseMovement);
 		timer1 = setInterval(innerClass.checkIfUserIsActive, mouseDetectionInterval);	      
@@ -71,11 +71,11 @@ var Timer = (function () {
 		clearInterval(timer1);
 	};
 	innerClass.trackMouseMovement = function () {
-		alert("No of moves = " + noOfMouseMoves);
+		//alert("No of moves = " + noOfMouseMoves);
 		++noOfMouseMoves;
 	};
 	innerClass.checkIfUserIsActive = function () {
-		alert("No of touches " + noOfMouseMoves);
+		//alert("No of touches " + noOfMouseMoves);
 		var isUserAwayFromPage = noOfMouseMoves == 0 ? true : false;
 	    if (isUserAwayFromPage) {
 	    	document.removeEventListener("touchstart", innerClass.trackMouseMovement);

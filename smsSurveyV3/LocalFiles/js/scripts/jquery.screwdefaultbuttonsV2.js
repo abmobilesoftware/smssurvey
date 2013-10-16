@@ -119,16 +119,16 @@
 					
 					var $thisName = $this.attr('name');
 					
-					/*$thisParent.on('click', function(){
-						if (!($this.prop('checked')) && !($this.is(':disabled'))){
-							$this.change();
-						}
-					});*/
-					var fastRadioButton = new google.ui.FastButton($thisParent[0], function(){
+					$thisParent.on('click', function(){
 						if (!($this.prop('checked')) && !($this.is(':disabled'))){
 							$this.change();
 						}
 					});
+					/*var fastRadioButton = new google.ui.FastButton($thisParent[0], function(){
+						if (!($this.prop('checked')) && !($this.is(':disabled'))){
+							$this.change();
+						}
+					});*/
 					
 					
 					$this.on('change', function(){

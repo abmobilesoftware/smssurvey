@@ -47,7 +47,7 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
 	},
 	events: {
 		"click .numeric-radio": "numericScaleSelected",
-		"keyup .comment": "keyPressListener"
+		"keydown .comment": "keyPressListener"
 	},
 	initialize: function () {
 		this.questionMobileTemplate = _.template($("#question-mobile-template").html());
@@ -69,7 +69,7 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
 					noOfRatings = noOfRatings == 1 ? 0 : noOfRatings;
 			var starBarView = new SurveyElements.StarBarView({ el: $(".answerArea", this.$el), noOfElements: noOfRatings });
 			this.childViews.push(starBarView);
-		}
+		}		
 		return this.$el;
 	},
 	updateQuestionDisplay: function () {
@@ -128,9 +128,9 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
 	},
 	numericScaleSelected: function (event) {
 		if ($(event.currentTarget).children("input").val() < 3) {
-			$(".additionalInfo", this.$el).show();
+			$(".comment", this.$el).show();
 		} else {
-			$(".additionalInfo", this.$el).hide();
+			$(".comment", this.$el).hide();
 		}
 	},
 	keyPressListener: function(event) {
@@ -266,11 +266,12 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 		_.bindAll(this, "setWidth", "show",
 				"getHeight", "render", "sendPersonalInfo",
 				"setSurveyResultId", "clearErrorsFromFields",
-				"validationError", "retakeSurvey");
+				"validationError", "retakeSurvey", "sendPersonalInfoResponse");
 		this.template = _.template($("#thankyoupage-template").html());
 		this.pageEvents = {
 			RETAKE_SURVEY : "retakeSurveyEvent"	
 		};
+		this.storage = this.options.localStorage;
 		this.thankYouMessage = this.options.thankYouMessage;
 		this.surveyTitle = this.options.surveyTitle;
 		this.render();
@@ -379,33 +380,58 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 		event.preventDefault();
 		this.trigger(this.pageEvents.RETAKE_SURVEY);
 	},
+	sendPersonalInfoResponse: function() {
+		Timer.stopTimer();
+		Timer.restartSurvey();
+		$('#surveyUserInfo').slideToggle('slow');
+		this.sendBtn.setTitle($("#personalInfoSubmitted", this.$el).val());
+		this.sendBtn.disable();
+		loader.hideLoader();
+	},
 	sendPersonalInfo: function (event) {
+		var self = this;
 		if (this.validateData()) {
-			Timer.stopTimer();
-			Timer.restartSurvey();
-			$('#surveyUserInfo').slideToggle('slow');
-			this.sendBtn.setTitle($("#personalInfoSubmitted", this.$el).val());
-			this.sendBtn.disable();
+			loader.showLoader();
 			var personalInfo = {};
 			personalInfo.Name = $('#name').val();
 			personalInfo.Surname = $('#surname').val();
 			personalInfo.Email = $('#email').val();
 			personalInfo.Telephone = $('#telephone').val();
-			var dataToSend = JSON.stringify({
+			var dataToSendObject = {
 				info: personalInfo,
-				surveyResultId: this.surveyResultId
+				surveyResultId: this.surveyResultId,
+				LocalId: "noLocalId"
+			};
+			this.makeSendPersonalInfoRequest(dataToSendObject, this.sendPersonalInfoResponse, function() {
+				var surveyResults = JSON.parse(self.storage.getItem("surveyResults"));
+				if (surveyResults != null && surveyResults != "null"
+					|| surveyResults != undefined || surveyResults != "undefined") {
+					for (var i=0; i<surveyResults.length; ++i) {
+						if (surveyResults[i].Id == self.surveyResultId) {
+							surveyResults[i].PersonalInfo = dataToSendObject;
+						}
+					}
+					self.storage.setItem("surveyResults",JSON.stringify(surveyResults));
+				}
+				self.sendPersonalInfoResponse();
 			});
-			$.ajax({
-				url: "http://dev.txtfeedback.net/MobileSurvey/SaveRespondentInfo",
-				data: dataToSend,
-				type: 'post',
-				cache: false,
-				dataType: "json",
-				contentType: 'application/json',
-				traditional: true,
-				crossDomain: true
-			});
+			
 		}
+	},
+	makeSendPersonalInfoRequest: function(dataToSendObject, successCallback, errorCallback) {
+		var dataToSend = JSON.stringify(dataToSendObject);
+		$.ajax({
+			url: "http://dev.txtfeedback.net/MobileSurvey/SaveRespondentInfo",
+			data: dataToSend,
+			type: 'post',
+			cache: false,
+			dataType: "json",
+			contentType: 'application/json',
+			traditional: true,
+			crossDomain: true,
+			success: successCallback,
+			error: errorCallback
+		});
 	},
 	getHeight: function () {
 		return this.$el.outerHeight();
@@ -439,6 +465,7 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 		_.bindAll(this, "goToThankYouPage", "saveSurvey", 
 				"updateQuestionSet", "render", "goToQuestionsPage",
 				"saveAListOfSurveys", "makeSaveRequest");
+		this.storage = this.options.localStorage;
 		this.questionsPage = new MobileSurvey.SurveyMobileView(
 				{ 
 					el: $("#questionsPage"),
@@ -447,9 +474,9 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 		this.thankYouPage = new MobileSurvey.ThankYouPageView({ 
 			el: $("#thankYouPage"), 
 			thankYouMessage: this.model.get("ThankYouMessage"),
-			surveyTitle: this.model.get("Title")
+			surveyTitle: this.model.get("Title"),
+			localStorage: this.storage
 		});
-		this.storage = this.options.localStorage;
 		Timer.startTimer();
 		$(Timer).on(Timer.events.RESTART_SURVEY, this.goToQuestionsPage);
 		this.questionsPage.on(this.questionsPage.pageEvents.THANK_YOU_PAGE,
@@ -514,10 +541,13 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 				surveyResults.push(sendDataObject);
 				self.storage.setItem("surveyResults",JSON.stringify(surveyResults));
 			}
-			self.goToThankYouPage();				
+			self.goToThankYouPage({DbId: sendDataObject.Id});				
 		});
 	},
 	saveAListOfSurveys: function(surveys) {
+		/* first save the results and then if everything worked just fine save
+		 * the personal info
+		 */
 		var self = this;
 		for (var i=0; i<surveys.length; ++i) {
 			this.makeSaveRequest(surveys[i], function(result) {
@@ -532,11 +562,33 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 							}
 						}
 						if (k>-1) {
-							surveyResults.splice(k,1);
-							self.storage.setItem("surveyResults",JSON.stringify(surveyResults));
+							if (surveyResults[k].PersonalInfo != undefined) {
+								var personalInfo = surveyResults[k].PersonalInfo;
+								personalInfo.surveyResultId = result.DbId;
+								personalInfo.LocalId = result.LocalId;
+								self.thankYouPage.makeSendPersonalInfoRequest(personalInfo,	function(LocalId) {
+									var surveyResults = JSON.parse(self.storage.getItem("surveyResults"));
+									if (surveyResults != null && surveyResults != undefined &&
+										surveyResults != "null" && surveyResults != "undefined") {
+										var t=-1;
+										for (var l=0; l<surveyResults.length; ++l) {
+											if (surveyResults[l].Id == LocalId) {
+												t=l;
+											}
+										}
+										if (t>-1) {
+											surveyResults.splice(t,1);
+											self.storage.setItem("surveyResults",JSON.stringify(surveyResults));
+										}
+									}									
+								}, function() {});
+							} else {
+								surveyResults.splice(k,1);
+								self.storage.setItem("surveyResults",JSON.stringify(surveyResults));
+							}
 						}
 					}
-				}
+				}				
 			}, function() {});
 		}
 	},

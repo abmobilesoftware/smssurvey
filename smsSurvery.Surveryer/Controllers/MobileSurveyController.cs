@@ -361,53 +361,61 @@ namespace smsSurvery.Surveryer.Controllers
 
       [HttpPost]
       [AllowAnonymous]
-      public void SaveRespondentInfo(RespondentInfo info, int surveyResultId)
+      public JsonResult SaveRespondentInfo(RespondentInfo info, int surveyResultId, string localId)
       {
-         //get the customer corresponding to the survey result and update its info
-         var survey = db.SurveyResultSet.Find(surveyResultId);
-         if (survey != null)
+         try
          {
-            if (!String.IsNullOrEmpty(info.Telephone))
+            //get the customer corresponding to the survey result and update its info
+            var survey = db.SurveyResultSet.Find(surveyResultId);
+            if (survey != null)
             {
-               //Since Telephone is the Primary Key
-               var existingCustomer = db.CustomerSet.Find(info.Telephone);
-               if (existingCustomer != null)
+               if (!String.IsNullOrEmpty(info.Telephone))
                {
-                  //Should we update this info???
-                  //existingCustomer.Name = info.Name;
-                  //existingCustomer.Surname = info.Surname;
-                  //existingCustomer.Email = info.Email;
+                  //Since Telephone is the Primary Key
+                  var existingCustomer = db.CustomerSet.Find(info.Telephone);
+                  if (existingCustomer != null)
+                  {
+                     //Should we update this info???
+                     //existingCustomer.Name = info.Name;
+                     //existingCustomer.Surname = info.Surname;
+                     //existingCustomer.Email = info.Email;
+                  }
+                  else
+                  {
+                     //delete the bogus customer
+
+
+                     //and add a "realer" one
+                     var moreAccurateCustomer = new Customer()
+                     {
+                        PhoneNumber = info.Telephone,
+                        Name = info.Name,
+                        Surname = info.Surname,
+                        Email = info.Email
+                     };
+                     db.CustomerSet.Add(moreAccurateCustomer);
+                     var bogusCustomer = survey.Customer;
+                     survey.Customer = moreAccurateCustomer;
+                     db.CustomerSet.Remove(bogusCustomer);
+                     db.SaveChanges();
+                  }
                }
                else
                {
-                  //delete the bogus customer
-                  
-                  
-                  //and add a "realer" one
-                  var moreAccurateCustomer = new Customer()
-                  {
-                     PhoneNumber = info.Telephone,
-                     Name = info.Name,
-                     Surname = info.Surname,
-                     Email = info.Email
-                  };
-                  db.CustomerSet.Add(moreAccurateCustomer);
-                  var bogusCustomer = survey.Customer;
-                  survey.Customer = moreAccurateCustomer;
-                  db.CustomerSet.Remove(bogusCustomer);
+                  var customerToUpdate = survey.Customer;
+                  customerToUpdate.Name = info.Name;
+                  customerToUpdate.Surname = info.Surname;
+                  customerToUpdate.Email = info.Email;
                   db.SaveChanges();
                }
+               return Json(localId, JsonRequestBehavior.AllowGet);
             }
-            else
-            {
-               var customerToUpdate = survey.Customer;
-               customerToUpdate.Name = info.Name;
-               customerToUpdate.Surname = info.Surname;
-               customerToUpdate.Email = info.Email;
-               db.SaveChanges();
-
-            }
-         }         
+            return Json(-1, JsonRequestBehavior.AllowGet);
+         }
+         catch (Exception e)
+         {
+            return Json(e.InnerException.Message, JsonRequestBehavior.AllowGet);
+         }
       }
 
       protected override void Dispose(bool disposing)
