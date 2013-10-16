@@ -364,7 +364,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
             contentType: 'application/json',
             traditional: true,
             success: function () {
-               loader.hideLoader();
+              loader.hideLoader();
             },
             error: function () {
                loader.hideLoader();

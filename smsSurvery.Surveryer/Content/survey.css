@@ -383,3 +383,11 @@ input.invalidField, select.invalidField, a.invalidField, div.invalidField {
 .loading-modal-body {
 	text-align: center;
 }
+
+body {
+   position:relative;
+}
+
+.modal-backdrop {
+   position: absolute !important;
+}
