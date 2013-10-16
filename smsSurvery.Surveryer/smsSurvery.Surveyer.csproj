@@ -333,6 +333,7 @@
     <Content Include="Content\SurveyResult\SurveyResult.css" />
     <Content Include="Content\SurveyTemplate\questionSet.css" />
     <Content Include="Content\WordCloud.css" />
+    <Content Include="Images\sprites.gif" />
     <Content Include="MyScripts\DateHelper.js" />
     <Content Include="MyScripts\Locations.js" />
     <Content Include="MyScripts\MobileSurvey.js" />
@@ -350,6 +351,7 @@
     <Content Include="Scripts\backbone.js" />
     <Content Include="Scripts\bootstrap-fileupload.js" />
     <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\canvas.js" />
     <Content Include="Scripts\chosen.jquery.js" />
     <Content Include="Scripts\googleFastButtons.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.js" />

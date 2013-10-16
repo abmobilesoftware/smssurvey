@@ -160,6 +160,11 @@
 </head>
 
 <body>
+      <div id="loading-modal" class="modal hide">
+            <div class="modal-body loading-modal-body">				
+				<div id="loaderImage"></div>				
+            </div>            
+     </div>
      <input type="hidden" value="@ViewBag.Id" id="surveyTemplateId"/>
      <input type="hidden" value="@ViewBag.IsFeedback" id="isFeedback"/>
      <section id="survey">
@@ -212,6 +217,7 @@
          });
          var urlParts = document.URL.split("/");
          var urlLastPart = urlParts[urlParts.length - 1];
+         loader = new SurveyElements.Loader();
          var surveyResultID = parseInt($("#isFeedback").val()) === 1 ? -1 : urlLastPart;
          survey.fetch({
             data: {

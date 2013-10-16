@@ -332,6 +332,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
    sendPersonalInfo: function (event) {
       event.preventDefault();
       if (this.validateData()) {
+         loader.showLoader();
          $('#surveyUserInfo').slideToggle('slow');
          this.sendBtn.setTitle($("#personalInfoSubmitted", this.$el).val());
          this.sendBtn.disable();
@@ -351,7 +352,13 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
             cache: false,
             dataType: "json",
             contentType: 'application/json',
-            traditional: true
+            traditional: true,
+            success: function () {
+               loader.hideLoader();
+            },
+            error: function () {
+               loader.hideLoader();
+            }
          });
       }
    },
@@ -467,27 +474,10 @@ MobileSurvey.SurveyView = Backbone.View.extend({
          contentType: 'application/json',
          traditional: true,
          success: function (surveyResultId) {
+            loader.hideLoader();
             self.goToThankYouPage(surveyResultId);
          }
       });
-      //this.model.save(this.model.toJSON(),
-      //   {
-      //      success: function (model, response, options) {
-      //         if (response.Result == "success") {
-      //            self.dom.$NOTIFICATION_TEXT.text("Changes saved successfully.");
-      //            self.dom.$NOTIFICATION_TEXT.
-      //               removeClass("notification-success notification-error").addClass("notification-success");
-      //            if (response.Operation == "create") {
-      //               self.model.set("Id", response.Details);
-      //            }
-      //            self.model.set("DataChanged", false);
-      //         } else if (response.Result == "error") {
-      //            self.dom.$NOTIFICATION_TEXT.text("Errors while saving.");
-      //            self.dom.$NOTIFICATION_TEXT.
-      //               removeClass("notification-success notification-error").addClass("notification-error");
-      //         }
-      //         self.dom.$NOTIFICATION.show();
-      //      }
-      //   });
+      loader.showLoader();    
    }
 });

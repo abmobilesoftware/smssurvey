@@ -352,7 +352,7 @@ namespace smsSurvery.Surveryer.Controllers
 
       [HttpPost]
       [AllowAnonymous]
-      public void SaveRespondentInfo(RespondentInfo info, int surveyResultId)
+      public JsonResult SaveRespondentInfo(RespondentInfo info, int surveyResultId)
       {
          //get the customer corresponding to the survey result and update its info
          var survey = db.SurveyResultSet.Find(surveyResultId);
@@ -398,9 +398,9 @@ namespace smsSurvery.Surveryer.Controllers
                customerToUpdate.Surname = info.Surname;
                customerToUpdate.Email = info.Email;
                db.SaveChanges();
-
             }
-         }         
+         }
+         return Json("Success", JsonRequestBehavior.AllowGet);
       }
 
       protected override void Dispose(bool disposing)

@@ -20,6 +20,7 @@ namespace smsSurvery.Surveryer
                      "~/Scripts/jquery.screwdefaultbuttonsV2.js"
                      ));
          bundles.Add(new ScriptBundle("~/bundles/mobilesurvey").Include(            
+            "~/Scripts/canvas.js",
             "~/MyScripts/SurveyUtilities.js",          
             "~/MyScripts/SurveyElements.js",
             "~/MyScripts/MobileSurvey.js",
