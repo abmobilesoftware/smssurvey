@@ -42,15 +42,19 @@ MobileSurvey.ButtonView = Backbone.View.extend({
 });
 
 MobileSurvey.QuestionMobileView = Backbone.View.extend({
+   keys: {
+      ENTER: 13
+   },
    events: {
-      "click .numeric-radio": "numericScaleSelected"
+      "click .numeric-radio": "numericScaleSelected",
+      "keydown .comment": "keyPressListener"
    },
    initialize: function () {
       this.questionMobileTemplate = _.template($("#question-mobile-template").html());
       this.questionConstants = SurveyUtilities.Utilities.CONSTANTS_QUESTION;
 
       _.bindAll(this, "render", "toggleDisplay", "updateQuestionDisplay", "updateAnswer",
-         "numericScaleSelected");
+         "numericScaleSelected", "keyPressListener");
       this.model.on("change:ValidAnswer", this.updateQuestionDisplay);
    },
    render: function () {
@@ -124,6 +128,12 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
          $(".additionalInfo", this.$el).show();
       } else {
          $(".additionalInfo", this.$el).hide();
+      }
+   },
+   keyPressListener: function (event) {
+      if (event.keyCode == this.keys.ENTER) {
+         event.preventDefault();
+         $(".comment", this.$el).blur();
       }
    }
 });
