@@ -132,6 +132,11 @@ namespace smsSurvery.Surveryer.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             SurveyResult surveyresult = db.SurveyResultSet.Find(id);
+            var individualResults = surveyresult.Result.ToList();
+            foreach (var item in individualResults)
+            {
+               db.ResultSet.Remove(item);
+            }
             db.SurveyResultSet.Remove(surveyresult);
             db.SaveChanges();
             return RedirectToAction("Index");
