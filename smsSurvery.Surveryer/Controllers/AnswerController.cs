@@ -10,6 +10,7 @@ using smsSurvery.Surveryer.Models;
 using smsSurvery.Surveryer.Models.SmsInterface;
 using smsSurvery.Surveryer.Mailers;
 using smsSurvery.Surveryer.Utilities;
+using WebMatrix.WebData;
 
 namespace smsSurvery.Surveryer.Controllers
 {   
@@ -262,6 +263,67 @@ namespace smsSurvery.Surveryer.Controllers
               }
            }           
         }
+
+       [HttpGet]
+       [smsSurvery.Surveryer.Filters.InitializeSimpleMembership]
+       public JsonResult StartSurvey(string userName, string password, 
+                                        string numberToSendFrom, string customerPhoneNumber, bool isSMS,
+                                        string[] tags = null)
+       {          
+          if (WebSecurity.Login(userName, password, persistCookie: false))
+          {
+             //DA we are logged in so we can start a survey
+             return Json("Success", JsonRequestBehavior.AllowGet);
+          }
+          else
+          {
+             return Json("Failure", JsonRequestBehavior.AllowGet);
+          }          
+       }
+       
+       [HttpGet]
+       [AllowAnonymous]
+       [smsSurvery.Surveryer.Filters.InitializeSimpleMembership]
+       public JsonResult StartSurveyForLocation(string userName, string password,
+                                         string customerPhoneNumber,
+                                        bool isSMS, string location,
+                                        string numberToSendFrom =null,
+                                        string[] tags = null)
+       {
+          if (WebSecurity.Login(userName, password, persistCookie: false))
+          {
+             //check if location exists
+             //The DB is case insensitive so no need to perform "toLowers"
+             var dbUser = db.UserProfile.Where(u => u.UserName == userName).FirstOrDefault();
+             var company = dbUser.Company_Name;
+             var loc = db.Tags.Where(t => t.Name == location && t.TagTypes.Any(tt => tt.Type == "Location") && t.CompanyName == company).FirstOrDefault();
+             if (loc != null)
+             {
+                var surveyToRun = loc.ActiveSurveyTemplate;
+                if (surveyToRun != null)
+                {
+                   tags = tags != null ? tags : new string[0];
+                   StartSmsSurveyInternal(dbUser.DefaultTelNo, customerPhoneNumber, surveyToRun, dbUser, !isSMS, tags, surveyToRun.DefaultLanguage, db);
+                   return Json("Success", JsonRequestBehavior.AllowGet);
+                }
+                else
+                {
+                   return Json("No active survey per location", JsonRequestBehavior.AllowGet);
+                }
+                
+             }
+             else
+             {
+                return Json("Location not found", JsonRequestBehavior.AllowGet);
+             }
+             
+          }
+          else
+          {
+             return Json("Login failed", JsonRequestBehavior.AllowGet);
+          }
+       }
+
 
        public MessageStatus StartSmsSurveyInternal(
           string numberToSendFrom,
