@@ -34,7 +34,7 @@ public:
 		maScreenSetOrientation(SCREEN_ORIENTATION_DYNAMIC);
 								maScreenSetSupportedOrientations(MA_SCREEN_ORIENTATION_LANDSCAPE_LEFT |
 								  MA_SCREEN_ORIENTATION_LANDSCAPE_RIGHT);
-						maScreenSetFullscreen(1);
+		maScreenSetFullscreen(1);
 	}
 };
 

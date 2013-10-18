@@ -31,6 +31,7 @@ namespace smsSurvey.dbInterface
         public string VATID { get; set; }
         public string Bank { get; set; }
         public string BankAccount { get; set; }
+        public string MobileLogoUrl { get; set; }
     
         public virtual ICollection<Tags> Tags { get; set; }
         public virtual ICollection<UserProfile> UserProfiles { get; set; }

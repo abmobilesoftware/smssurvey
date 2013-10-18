@@ -146,6 +146,7 @@
           <Property Name="VATID" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="Bank" Type="nvarchar" MaxLength="50" />
           <Property Name="BankAccount" Type="nvarchar" MaxLength="70" />
+          <Property Name="MobileLogoUrl" Type="nvarchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="CustomerSet">
           <Key>
@@ -166,6 +167,7 @@
           <Property Name="DeviceId" Type="nvarchar(max)" Nullable="false" />
           <Property Name="CompaniesName" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="SurveyLink" Type="nvarchar(max)" />
+          <Property Name="FriendlyName" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="QuestionAlertSet">
           <Key>
@@ -805,12 +807,12 @@
           <NavigationProperty Name="SurveyTemplate" Relationship="smsSurveyModel.SurveyPlanSurveyResult" FromRole="SurveyResult" ToRole="SurveyPlan" />
           <Property Type="Int32" Name="SurveyPlanId" Nullable="false" />
           <NavigationProperty Name="Result" Relationship="smsSurveyModel.SurveyResultResult" FromRole="SurveyResult" ToRole="Result" />
-          <Property Name="Terminated" Nullable="false" Type="Boolean" />
           <Property Type="Int32" Name="CurrentQuestion_Id" />
           <NavigationProperty Name="CurrentQuestion" Relationship="smsSurveyModel.FK_SurveyResultQuestion" FromRole="SurveyResult" ToRole="Question" />
           <Property Type="Double" Name="PercentageComplete" Nullable="false" DefaultValue="0" />
           <Property Type="String" Name="LanguageChosenForSurvey" MaxLength="10" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Tags" Relationship="smsSurveyModel.SurveyResultTags" FromRole="SurveyResult" ToRole="Tags" />
+          <Property Type="Boolean" Name="Terminated" Nullable="false" />
         </EntityType>
         <Association Name="CustomerSurveyResult">
           <End Type="smsSurveyModel.Customer" Role="Customer" Multiplicity="1" />
@@ -989,6 +991,7 @@
           <NavigationProperty Name="Tags" Relationship="smsSurveyModel.FK_CompanyTag" FromRole="Companies" ToRole="Tags" />
           <NavigationProperty Name="UserProfiles" Relationship="smsSurveyModel.FK_UserProfileCompanies" FromRole="Companies" ToRole="UserProfile" />
           <NavigationProperty Name="Device" Relationship="smsSurveyModel.CompaniesDevice" FromRole="Companies" ToRole="Device" />
+          <Property Type="String" Name="MobileLogoUrl" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Tags">
           <Key>
@@ -1141,6 +1144,7 @@
           <NavigationProperty Name="Companies" Relationship="smsSurveyModel.CompaniesDevice" FromRole="Device" ToRole="Companies" />
           <Property Type="String" Name="CompaniesName" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="SurveyLink" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Type="String" Name="FriendlyName" Nullable="true" MaxLength="50" Unicode="true" FixedLength="false" />
         </EntityType>
         <Association Name="CompaniesDevice">
           <End Type="smsSurveyModel.Companies" Role="Companies" Multiplicity="1" />
@@ -1182,6 +1186,20 @@
           <ScalarProperty Name="SurveyInProgress" ColumnName="SurveyInProgress" />
           <ScalarProperty Name="SurveyPlan_Id" ColumnName="SurveyPlan_Id" />
           <ScalarProperty Name="Email" ColumnName="Email" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="SurveyResultSet">
+      <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.SurveyResult)">
+        <MappingFragment StoreEntitySet="SurveyResultSet">
+          <ScalarProperty Name="Terminated" ColumnName="Complete" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="DateRan" ColumnName="DateRan" />
+          <ScalarProperty Name="CustomerPhoneNumber" ColumnName="CustomerPhoneNumber" />
+          <ScalarProperty Name="SurveyPlanId" ColumnName="SurveyPlanId" />
+          <ScalarProperty Name="CurrentQuestion_Id" ColumnName="CurrentQuestion_Id" />
+          <ScalarProperty Name="PercentageComplete" ColumnName="PercentageComplete" />
+          <ScalarProperty Name="LanguageChosenForSurvey" ColumnName="LanguageChosenForSurvey" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1246,7 +1264,8 @@
     <EntitySetMapping Name="Companies">
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.Companies)">
         <MappingFragment StoreEntitySet="Companies">
-          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="MobileLogoUrl" ColumnName="MobileLogoUrl" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Description" ColumnName="Description" />
           <ScalarProperty Name="Address" ColumnName="Address" />
           <ScalarProperty Name="RegistrationNumber" ColumnName="RegistrationNumber" />
@@ -1307,6 +1326,7 @@
           <ScalarProperty Name="DeviceId" ColumnName="DeviceId" />
           <ScalarProperty Name="CompaniesName" ColumnName="CompaniesName" />
           <ScalarProperty Name="SurveyLink" ColumnName="SurveyLink" />
+          <ScalarProperty Name="FriendlyName" ColumnName="FriendlyName" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1369,21 +1389,7 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="SurveyResultSet">
-            <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.SurveyResult)">
-              <MappingFragment StoreEntitySet="SurveyResultSet">
-                <ScalarProperty Name="Terminated" ColumnName="Complete" />
-                <ScalarProperty Name="LanguageChosenForSurvey" ColumnName="LanguageChosenForSurvey" />
-                <ScalarProperty Name="CurrentQuestion_Id" ColumnName="CurrentQuestion_Id" />
-                <ScalarProperty Name="PercentageComplete" ColumnName="PercentageComplete" />
-                <ScalarProperty Name="SurveyPlanId" ColumnName="SurveyPlanId" />
-                <ScalarProperty Name="CustomerPhoneNumber" ColumnName="CustomerPhoneNumber" />
-                <ScalarProperty Name="DateRan" ColumnName="DateRan" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          </EntityContainerMapping>
+  </EntityContainerMapping>
 </Mapping></edmx:Mappings>
   </edmx:Runtime>
   <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->

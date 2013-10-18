@@ -2,13 +2,13 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, and Azure
 -- --------------------------------------------------
--- Date Created: 10/02/2013 19:07:52
+-- Date Created: 10/17/2013 09:42:41
 -- Generated from EDMX file: D:\Work\Txtfeedback\Repository Git\smsSurvey\smssurvey\smsSurvey.dbInterface\smsSurvey.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
 GO
-USE [smssurveydemo];
+USE [smsSurvey];
 GO
 IF SCHEMA_ID(N'dbo') IS NULL EXECUTE(N'CREATE SCHEMA [dbo]');
 GO
@@ -17,6 +17,9 @@ GO
 -- Dropping existing FOREIGN KEY constraints
 -- --------------------------------------------------
 
+IF OBJECT_ID(N'[dbo].[FK_CompaniesDevice]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[DeviceSet] DROP CONSTRAINT [FK_CompaniesDevice];
+GO
 IF OBJECT_ID(N'[dbo].[FK_CompanyTag]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Tags] DROP CONSTRAINT [FK_CompanyTag];
 GO
@@ -99,6 +102,9 @@ IF OBJECT_ID(N'[dbo].[Companies]', 'U') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[CustomerSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[CustomerSet];
+GO
+IF OBJECT_ID(N'[dbo].[DeviceSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[DeviceSet];
 GO
 IF OBJECT_ID(N'[dbo].[QuestionAlertSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[QuestionAlertSet];
@@ -308,6 +314,15 @@ CREATE TABLE [dbo].[QuestionAlertSet] (
 );
 GO
 
+-- Creating table 'DeviceSet'
+CREATE TABLE [dbo].[DeviceSet] (
+    [Id] int IDENTITY(1,1) NOT NULL,
+    [DeviceId] nvarchar(max)  NOT NULL,
+    [CompaniesName] nvarchar(50)  NOT NULL,
+    [SurveyLink] nvarchar(max)  NULL
+);
+GO
+
 -- Creating table 'webpages_UsersInRoles'
 CREATE TABLE [dbo].[webpages_UsersInRoles] (
     [webpages_Roles_RoleId] int  NOT NULL,
@@ -432,6 +447,12 @@ GO
 -- Creating primary key on [Id] in table 'QuestionAlertSet'
 ALTER TABLE [dbo].[QuestionAlertSet]
 ADD CONSTRAINT [PK_QuestionAlertSet]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'DeviceSet'
+ALTER TABLE [dbo].[DeviceSet]
+ADD CONSTRAINT [PK_DeviceSet]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
@@ -759,6 +780,20 @@ ADD CONSTRAINT [FK_TagsTags_Tags1]
 CREATE INDEX [IX_FK_TagsTags_Tags1]
 ON [dbo].[TagsTags]
     ([Locations_CompanyName], [Locations_Id]);
+GO
+
+-- Creating foreign key on [CompaniesName] in table 'DeviceSet'
+ALTER TABLE [dbo].[DeviceSet]
+ADD CONSTRAINT [FK_CompaniesDevice]
+    FOREIGN KEY ([CompaniesName])
+    REFERENCES [dbo].[Companies]
+        ([Name])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_CompaniesDevice'
+CREATE INDEX [IX_FK_CompaniesDevice]
+ON [dbo].[DeviceSet]
+    ([CompaniesName]);
 GO
 
 -- --------------------------------------------------

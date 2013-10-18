@@ -135,8 +135,14 @@ namespace smsSurvery.Surveryer.Controllers
 
       [HttpGet]
       [AllowAnonymous]
-      public ActionResult GetSurveyTemplate() 
+      public ActionResult GetSurveyTemplate(int surveyId) 
       {
+         var surveyToRun = db.SurveyTemplateSet.Where(x => x.Id.Equals(surveyId)).FirstOrDefault();
+         if (surveyToRun != null)
+         {
+            var surveyLanguage = surveyToRun.DefaultLanguage;
+            System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture(surveyLanguage);
+         }
          ViewBag.Id = -1;
          ViewBag.IntroMessage = "Welcome";
          ViewBag.ThankYouMessage = "Thank you!";

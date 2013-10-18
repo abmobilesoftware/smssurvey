@@ -37,3 +37,45 @@
 	background: -webkit-linear-gradient(top, #eb7a2c 0%,#fe6703 100%);
 	background: linear-gradient(to bottom, #eb7a2c, #fe6703) repeat scroll 0 0 transparent;
 }
+
+/* Device name */
+.device-group {
+	position: fixed;
+	top:10px;
+	right:10px;	
+}
+
+.device-name, .device-dropdown {
+	padding:17px;
+	font-family: 'Open Sans';
+}
+
+.device-group span.device-name {
+	font-size:18px;
+}
+
+.device-dropdown {
+	width: inherit;
+}
+
+.device-settings {
+	left: -94px;
+}
+
+input.device-name-input {
+	display: block;
+	font-family: 'Open Sans';
+	font-size:18px;
+	height:32px;
+	
+}
+
+.device-settings-inner {
+	padding: 10px;
+}
+
+button.device-save-btn {
+	font-family: 'Open Sans';
+	font-size:18px;
+	padding: 10px;
+}
