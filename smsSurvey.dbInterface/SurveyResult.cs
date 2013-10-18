@@ -25,10 +25,10 @@ namespace smsSurvey.dbInterface
         public System.DateTime DateRan { get; set; }
         public string CustomerPhoneNumber { get; set; }
         public int SurveyPlanId { get; set; }
-        public bool Terminated { get; set; }
         public Nullable<int> CurrentQuestion_Id { get; set; }
         public double PercentageComplete { get; set; }
         public string LanguageChosenForSurvey { get; set; }
+        public bool Terminated { get; set; }
     
         public virtual Customer Customer { get; set; }
         public virtual SurveyTemplate SurveyTemplate { get; set; }

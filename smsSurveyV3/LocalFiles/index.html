@@ -69,7 +69,7 @@
 	 * Displays the device information on the screen.
 	 */
 	/* LOADER */
-	var cSpeed=8;
+	/*var cSpeed=8;
 	var cWidth=150;
 	var cHeight=75;
 	var cTotalFrames=7;
@@ -103,6 +103,67 @@
 		genImage.onerror=new Function('alert(\'Could not load the image\')');
 		genImage.src=s;
 	}
+	*/
+	var cSpeed=9;
+	var cWidth=150;
+	var cHeight=75;
+	var cTotalFrames=7;
+	var cFrameWidth=150;
+	var cImageSrc='images/sprites.gif';
+	
+	var cImageTimeout=false;
+	var cIndex=0;
+	var cXpos=0;
+	var cPreloaderTimeout=false;
+	var SECONDS_BETWEEN_FRAMES=0;
+	
+	function startAnimation(){
+		
+		document.getElementById('loaderImage').style.backgroundImage='url('+cImageSrc+')';
+		document.getElementById('loaderImage').style.width=cWidth+'px';
+		document.getElementById('loaderImage').style.height=cHeight+'px';
+		
+		//FPS = Math.round(100/(maxSpeed+2-speed));
+		FPS = Math.round(100/cSpeed);
+		SECONDS_BETWEEN_FRAMES = 1 / FPS;
+		
+		cPreloaderTimeout=setTimeout('continueAnimation()', SECONDS_BETWEEN_FRAMES/1000);
+		
+	}
+	
+	function continueAnimation(){
+		
+		cXpos += cFrameWidth;
+		//increase the index so we know which frame of our animation we are currently on
+		cIndex += 1;
+		 
+		//if our cIndex is higher than our total number of frames, we're at the end and should restart
+		if (cIndex >= cTotalFrames) {
+			cXpos =0;
+			cIndex=0;
+		}
+		
+		if(document.getElementById('loaderImage'))
+			document.getElementById('loaderImage').style.backgroundPosition=(-cXpos)+'px 0';
+		
+		cPreloaderTimeout=setTimeout('continueAnimation()', SECONDS_BETWEEN_FRAMES*1000);
+	}
+	
+	function stopAnimation(){//stops animation
+		clearTimeout(cPreloaderTimeout);
+		cPreloaderTimeout=false;
+	}
+	
+	function imageLoader(s, fun)//Pre-loads the sprites image
+	{
+		clearTimeout(cImageTimeout);
+		cImageTimeout=0;
+		genImage = new Image();
+		genImage.onload=function (){cImageTimeout=setTimeout(fun, 0)};
+		genImage.onerror=new Function('alert(\'Could not load the image\')');
+		genImage.src=s;
+	}
+	
 	var loader;
 	
 	function displayDeviceInfo() {
@@ -154,7 +215,7 @@
 									var warning = "There is no survey saved on device. "+
 									"Connect to internet, login in in your "+
 									"account and then you can run surveys offline.";
-									alert(warning);
+									alert("No survey:: " + warning);
 								}
 						});	
 			});
@@ -170,7 +231,7 @@
 				this.storage.getItem("template") != undefined) {
 				template = this.storage.getItem("template");
 			} else {
-				template = this.loadTemplateFromServer();
+				template = this.loadTemplateFromServer(-1);
 				this.storage.setItem("template", template);
 			}
 			$("body").append(template);
@@ -196,7 +257,7 @@
 		refreshSurvey: function() {
 			surveyData = this.loadSurveyData();
 			this.storage.setItem("surveyData", JSON.stringify(surveyData));	
-			template = this.loadTemplateFromServer();
+			template = this.loadTemplateFromServer(surveyData.get("Id"));
 			this.storage.setItem("template", template);
 			var homeLocation = location.href.substring(0, location.href.indexOf("#", 0));
 			location.href = homeLocation;			
@@ -284,11 +345,14 @@
 			this.storage.setItem("surveyLink", surveyLink);
 			return surveyLink;
 		},
-		loadTemplateFromServer: function() {
+		loadTemplateFromServer: function(surveyId) {
 			var template;
 			$.ajax({
 				url : "http://dev.txtfeedback.net/MobileSurvey/GetSurveyTemplate",
 				type : "GET",
+				data: {
+					surveyId: surveyId
+				},
 				contentType : "text/html",
 				async : false,
 				success : function(data, textStatus) {
@@ -321,7 +385,7 @@
 					surveyData = model;
 				},
 				error : function(model, response, options) {
-					alert(response)
+					alert("Fetch survey data: " + response)
 				}
 			});
 			return surveyData;
@@ -382,6 +446,20 @@
 					data-android-hdpi="images/logo_300x75.png"
 					alt="Welcome to Txtfeedback!" />
 			</div>
+			<!-- 
+			<div class="btn-group device-group">
+  				<span class="btn btn-primary device-name">Graphene</span>
+  				<button type="button" class="btn btn-primary dropdown-toggle device-dropdown">
+    				<span class="caret"></span>
+  				</button>
+  				<ul class="dropdown-menu device-settings" role="menu">
+    				<div class="device-settings-inner">
+    					<input type="text" class="device-name-input"/ value="Graphene">
+    					<button type="button" class="btn btn-success device-save-btn">Save</button>
+    				</div>
+  				</ul>
+			</div>
+			-->
 			<form id="logOnForm" data-ajax="false"
 				action="http://www.dev.txtfeedback.net/Account/AjaxLogOn"
 				method="POST">

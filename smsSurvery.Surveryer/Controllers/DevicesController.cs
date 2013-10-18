@@ -54,6 +54,7 @@ namespace smsSurvery.Surveryer.Controllers
          }
       }
 
+      [Authorize]
       [HttpPost]
       public string ReleaseDeviceFromCompany(string deviceId)
       {
@@ -67,11 +68,10 @@ namespace smsSurvery.Surveryer.Controllers
          else
          {
             return "error";
-         }
-         
+         }         
       }
 
-
+      [Authorize]
       public ActionResult Index()
       {
          var connectedUser = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
@@ -82,10 +82,11 @@ namespace smsSurvery.Surveryer.Controllers
          }
          else
          {
-            return View("error");
+            return View(new List<Device>());
          }
       }
 
+      [Authorize]
       public JsonResult SendLinkToDevice(string deviceId, string link)
       {
          try
@@ -110,12 +111,14 @@ namespace smsSurvery.Surveryer.Controllers
          }
       }
 
+      [Authorize]
       public JsonResult SendRefreshCommandToDevice(string deviceId)
       {
          var response = Utilities.Utilities.SendDataToGoogleDevice(deviceId, "refresh");
          return Json(response, JsonRequestBehavior.AllowGet);
       }
 
+      [Authorize]
       public JsonResult ReleaseDevice(string deviceId)
       {
          try

@@ -18,6 +18,7 @@ namespace smsSurvey.dbInterface
         public string DeviceId { get; set; }
         public string CompaniesName { get; set; }
         public string SurveyLink { get; set; }
+        public string FriendlyName { get; set; }
     
         public virtual Companies Companies { get; set; }
     }

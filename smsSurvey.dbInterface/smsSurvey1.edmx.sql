@@ -2,13 +2,13 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, and Azure
 -- --------------------------------------------------
--- Date Created: 10/02/2013 19:22:15
+-- Date Created: 10/17/2013 09:45:14
 -- Generated from EDMX file: D:\Work\Txtfeedback\Repository Git\smsSurvey\smssurvey\smsSurvey.dbInterface\smsSurvey.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
 GO
-USE [smssurveydemo];
+USE [smsSurvey];
 GO
 IF SCHEMA_ID(N'dbo') IS NULL EXECUTE(N'CREATE SCHEMA [dbo]');
 GO
@@ -319,7 +319,8 @@ CREATE TABLE [dbo].[DeviceSet] (
     [Id] int IDENTITY(1,1) NOT NULL,
     [DeviceId] nvarchar(max)  NOT NULL,
     [CompaniesName] nvarchar(50)  NOT NULL,
-    [SurveyLink] nvarchar(max)  NULL
+    [SurveyLink] nvarchar(max)  NULL,
+    [FriendlyName] nvarchar(max)  NULL
 );
 GO
 

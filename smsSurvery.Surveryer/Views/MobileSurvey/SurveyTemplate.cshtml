@@ -95,7 +95,7 @@
 <script type="text/template" id="thankyoupage-template">
    <header>
       <div class="headerContainer">
-         <img id="pageIcon" src="images/small-icon.png" />
+         <div class="header-img-wrapper"><img id="pageIcon" src="images/logo_txtfeedback_small.png" /></div>
          <h3 id="pageTitle">@ViewBag.SurveyTitle</h3>
       </div>
    </header>
@@ -122,15 +122,15 @@
                <div class="personalInfoFields">
                   <div>
                      <label for="name">@Global.MobileSurveyPersonalInfoNameLabel</label>
-                     <input id="name" type="text" /><br />
+                     <input id="name" type="text" placeholder="e.g. John/Jane"/><br />
                   </div>
                   <div>
                      <label for="surname">@Global.MobileSurveyPersonalInfoSurnameLabel</label>
-                     <input id="surname" type="text" /><br />
+                     <input id="surname" type="text" placeholder="e.g. Smith"/><br />
                   </div>
                   <div>
                      <label for="email">@Global.MobileSurveyPersonalInfoEmailLabel</label>
-                     <input id="email" type="email" /><br />
+                     <input id="email" type="email" placeholder="e.g. john@smith.com"/><br />
                   </div>
                   <div>
                      <label for="telephone">@Global.MobileSurveyPersonalInfoPhoneLabel</label>
@@ -155,7 +155,7 @@
 <div id="questionsPage" class="page" data-role="page" data-enhance="false">
    <header>
       <div class="headerContainer">
-         <img id="pageIcon" src="images/small-icon.png" />
+         <div class="header-img-wrapper"><img id="pageIcon" src="images/logo_txtfeedback_small.png" /></div>
          <h3 id="pageTitle">@ViewBag.SurveyTitle</h3>
       </div>
    </header>
@@ -170,7 +170,8 @@
    <div id="doneBtnWrapper">
       <a class="btn btn-primary" id="doneBtn"></a>
    </div>
-   <footer>      
+   <footer>
+      <span>@Global.MobileSurveyFooterCaption TxtFeedback </span>      
    </footer>
    <input type="hidden" value="@Global.MobileSurveySubmitButtonCaption" id="doneBtnTitle" />
    <input type="hidden" value="@ViewBag.Location" id="location" />
