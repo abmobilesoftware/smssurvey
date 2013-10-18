@@ -32,9 +32,9 @@ public:
 		// BEEP_WAV is defined in file Resources/Resources.lst.
 		setBeepSound(BEEP_WAV);
 		maScreenSetOrientation(SCREEN_ORIENTATION_DYNAMIC);
-								maScreenSetSupportedOrientations(MA_SCREEN_ORIENTATION_LANDSCAPE_LEFT |
+		maScreenSetSupportedOrientations(MA_SCREEN_ORIENTATION_LANDSCAPE_LEFT |
 								  MA_SCREEN_ORIENTATION_LANDSCAPE_RIGHT);
-		maScreenSetFullscreen(1);
+		maScreenSetFullscreen(0);
 	}
 };
 
