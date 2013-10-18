@@ -45,6 +45,34 @@ namespace smsSurvery.Surveryer.Controllers
          return View(model);
       }
 
+      [AllowAnonymous]
+      [HttpPost]
+      public JsonResult AjaxLogOn(LoginModel model)
+      {
+         if (ModelState.IsValid)
+         {
+            if (Membership.ValidateUser(model.UserName, model.Password))
+            {
+               FormsAuthentication.SetAuthCookie(model.UserName, model.RememberMe);
+               return Json("success", JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+               ModelState.AddModelError("", "user si parola invalida");
+            }
+         }
+         // If we got this far, something failed
+         return Json("error", JsonRequestBehavior.AllowGet);
+      }
+
+      [AllowAnonymous]
+      [HttpPost]
+      public JsonResult AjaxLogOff()
+      {
+         FormsAuthentication.SignOut();
+         return Json("success", JsonRequestBehavior.AllowGet);
+      }
+
       //
       // POST: /Account/LogOff
 

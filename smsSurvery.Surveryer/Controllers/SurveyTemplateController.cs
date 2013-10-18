@@ -561,5 +561,10 @@ namespace smsSurvery.Surveryer.Controllers
          return View(res);
       }
 
+      [Authorize]
+      public JsonResult IsUserConnected()
+      {
+         return Json("success", JsonRequestBehavior.AllowGet);
+      }
    }
 }

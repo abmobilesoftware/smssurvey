@@ -231,6 +231,7 @@
     <Compile Include="Controllers\AlertsController.cs" />
     <Compile Include="Controllers\AnswerController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
+    <Compile Include="Controllers\DevicesController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LocationsController.cs" />
     <Compile Include="Controllers\MobileSurveyController.cs" />
@@ -305,10 +306,12 @@
     <Content Include="Content\images\loader.gif" />
     <Content Include="Content\images\logo1.png" />
     <Content Include="Content\images\screwDefaultButtons\radioSmall.png" />
+    <Content Include="Content\images\screwDefaultButtons\radioSmall77.png" />
     <Content Include="Content\images\small-icon.png" />
     <Content Include="Content\images\star50.png" />
     <Content Include="Content\images\star50_inactive.png" />
     <Content Include="Content\images\stars.png" />
+    <Content Include="Content\images\stars80.png" />
     <Content Include="Content\images\stars_little.png" />
     <Content Include="Content\images\ui-bg_diagonals-thick_15_0b3e6f_40x40.png" />
     <Content Include="Content\images\ui-bg_dots-medium_30_0b58a2_4x4.png" />
@@ -332,11 +335,16 @@
     <Content Include="Content\survey.css" />
     <Content Include="Content\SurveyResult\SurveyResult.css" />
     <Content Include="Content\SurveyTemplate\questionSet.css" />
+    <Content Include="Content\tablet\bootstrap.css" />
+    <Content Include="Content\tablet\survey.css" />
     <Content Include="Content\WordCloud.css" />
     <Content Include="Images\sprites.gif" />
     <Content Include="MyScripts\DateHelper.js" />
+    <Content Include="MyScripts\ManageDevices.js" />
+    <Content Include="Scripts\GoogleFastButtons.js" />
     <Content Include="MyScripts\Locations.js" />
     <Content Include="MyScripts\MobileSurvey.js" />
+    <Content Include="MyScripts\MobileSurveyMain.js" />
     <Content Include="MyScripts\Question.js" />
     <Content Include="MyScripts\ReportsFilterArea.js" />
     <Content Include="MyScripts\SurveyAlertsModal.js" />
@@ -436,9 +444,11 @@
     <Content Include="Content\themes\base\minified\jquery.ui.theme.min.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
+    <None Include="Properties\PublishProfiles\dev.txtfeedback.pubxml" />
     <None Include="Properties\PublishProfiles\loyaltydemo.pubxml" />
     <None Include="Properties\PublishProfiles\smssurvey.pubxml" />
     <None Include="Properties\PublishProfiles\smssurveytest.pubxml" />
+    <None Include="Properties\PublishProfiles\tablet.pubxml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />
@@ -545,6 +555,10 @@
     <Content Include="Views\SurveyTemplate\Index.cshtml" />
     <Content Include="Views\SurveyTemplate\Report.cshtml" />
     <Content Include="Views\SurveyTemplate\Responses.cshtml" />
+    <Content Include="Views\Shared\MobileSurvey.cshtml" />
+    <Content Include="Views\MobileSurvey\FillTablet.cshtml" />
+    <Content Include="Views\MobileSurvey\SurveyTemplate.cshtml" />
+    <Content Include="Views\Devices\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

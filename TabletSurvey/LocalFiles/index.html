@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<!--
+* @file index.html
+*
+* Template application that shows examples of how to access
+* device services from JavaScript using the Wormhole library.
+-->
+<html>
+	<head>
+		<meta name="viewport" content="width=320, user-scalable=no">
+		<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+		<title>Wormhole Template App</title>
+		<link rel="stylesheet" href="style.css" type="text/css" media="screen" title="no title" charset="utf-8">
+		<link rel="stylesheet" href="css/bootstrap.css" type="text/css" media="screen" title="no title" charset="utf-8">
+		<link rel="stylesheet" href="css/survey.css" type="text/css" media="screen" title="no title" charset="utf-8">	
+		<link href='http://fonts.googleapis.com/css?family=Open+Sans&subset=latin,cyrillic,latin-ext' rel='stylesheet' type='text/css'>
+		<link href='http://fonts.googleapis.com/css?family=Domine&subset=latin,latin-ext' rel='stylesheet' type='text/css'>	
+		<script type="text/javascript" charset="utf-8" src="js/scripts/jquery-1.10.1.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/scripts/jquery-ui-1.10.3.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/scripts/bootstrap.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/scripts/underscore.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/scripts/backbone.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/scripts/chosen.jquery.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/scripts/googleFastButtons.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/scripts/jquery.screwdefaultbuttonsV2.js"></script>
+		<!--<script type="text/javascript" charset="utf-8" src="js/wormhole.js"></script>-->
+		<script type="text/javascript" charset="utf-8" src="js/scripts/jquery-ui-1.10.3.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/myScripts/SurveyUtilities.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/myScripts/SurveyElements.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/myScripts/MobileSurvey.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/myScripts/Question.js"></script>
+		<script type="text/javascript" charset="utf-8" src="js/myScripts/SurveyBuilder.js"></script>		
+		<script type="text/javascript">
+		function startApp() {
+	         //initialize mobile survey given the id of the survey plan
+	         $.ajaxSetup({ cache: false });
+	         //var surveyId = 3081;
+	         var survey = new SurveyBuilder.SurveyModel({
+	            //Id: surveyId,
+	            Description: "",
+	            ThankYouMessage: "",
+	            StartDate: "15/6/2013",
+	            EndDate: "17/7/2013",
+	            IsRunning: false
+	         });
+	         var urlParts = document.URL.split("/");
+	         var urlLastPart = urlParts[urlParts.length - 1];
+	         var surveyResultID = -1;
+	         survey.fetch({
+	            /*data: {
+	               Id: surveyId
+	            },*/
+	            crossDomain:true,
+	            headers: {
+					"X-Requested-With": "XMLHttpRequest"
+				},
+	            success: function (model, response, options) {
+	               var surveyModel = new Question.QuestionSetModel(
+	                  {
+	                     SurveyResultId: surveyResultID,
+	                     SurveyTemplateId: model.get("Id"),
+	                     Title: model.get("Description"),
+	                     IntroMessage: model.get("IntroMessage"),
+	                     ThankYouMessage: model.get("ThankYouMessage")
+	                  });
+	               surveyModel.updateQuestionSetCollection(model.get("QuestionSet"));
+	               //DA sure they are ordered
+	               var surveyView = new MobileSurvey.SurveyView({
+	                  el: $("#survey"),
+	                  model: surveyModel
+	               });
+	               surveyView.render();
+	               //location code
+	               //if (navigator.geolocation)
+	               //{
+	               //   navigator.geolocation.getCurrentPosition(function (position) {
+	               //      alert("Latitude: " + position.coords.latitude + " Longitude: " + position.coords.longitude);
+	               //   });
+	               //}
+	               //else
+	               //{ alert("no location available") }
+	            },
+	            error: function (model, response, options) {
+	               alert(response)
+	            }
+	         });
+	         
+	         /*$.ajax({
+					data: {
+						Id: surveyId
+					},
+					url: "http://tablet.txtfeedback.net/SurveyTemplate/GetSurvey",
+					xhrFields: {
+						withCredentials: true
+					},
+					crossDomain:true,
+					type: "GET",
+					contentType: "application/json; charset=utf-8",
+					success: function(data, textStatus, jqXHR) {									
+						var surveyModel = new Question.QuestionSetModel(
+				                  {
+				                     SurveyResultId: surveyResultID,
+				                     SurveyTemplateId: surveyId
+				                  });
+				               surveyModel.updateQuestionSetCollection(model.get("QuestionSet"));
+				               //DA sure they are ordered
+				               var surveyView = new MobileSurvey.SurveyView({
+				                  el: $("#survey"),
+				                  model: surveyModel
+				               });
+				               surveyView.render();		
+					}, 
+					error: function(jqXHR, textStatus, errorThrown) {
+						alert("Network error. Please check your " +
+								"internet connection and try again later.");
+					}    		
+				});*/
+	      };	      
+		</script>
+		<script type="text/javascript">
+			/**
+			 * Displays the device information on the screen.
+			 */
+			/*function displayDeviceInfo()
+			{
+				//alert("load file");
+				//window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
+				startApp();				
+			}*/
+
+			/**
+			 * Vibrate device.
+			 */
+			function vibrate()
+			{
+				navigator.notification.vibrate(500);
+			}
+
+			/**
+			 * Play one beep sound.
+			 */
+			function beep()
+			{
+				navigator.notification.beep(1);
+			}
+
+			/**
+			 * Change page background to a random color.
+			 */
+			function changeColor()
+			{
+				var color = "#" +
+					(Math.random() * 0xFFFFFF + 0x1000000)
+						.toString(16).substr(1,6);
+				document.documentElement.style.backgroundColor = color;
+				document.body.style.backgroundColor = color;
+			}
+
+			// Register event listeners.
+
+			// The "deviceready" event is sent when the system
+			// has finished loading.
+			/*document.addEventListener(
+				"deviceready",
+				displayDeviceInfo,
+				true);*/
+			$(document).ready(function() {
+				//alert("load file");
+				//window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
+				startApp();				
+			});	
+			
+			function gotFS(fileSystem) {
+				alert("get file system");
+				alert(fileSystem.root.fullPath);
+				//fileSystem.root.getFile("surveyconfig.txt", null, gotFileEntry, fail);
+			}
+			
+			function gotFileEntry(fileEntry) {
+				alert("get file")
+				fileEntry.file(gotFile, fail) 
+			}
+			
+			function gotFile(file) {
+				alert("process file");
+				readAsText(file);
+			}
+			
+			function readAsText(file) {
+				alert("parse as text");
+				var reader = new FileReader();
+				reader.onloadend = function(evt) {
+					alert("read as text");
+					alert(evt.target.result);
+				};
+				reader.readAsText(file);
+			}
+			
+			function fail(evt) {
+				alert(evt.target.error.code);
+			}
+		</script>
+		
+<script id="mobileSurveyTemplate" type="text/template">   
+	<div class="questionsArea">
+	</div>
+</script>
+
+<script id="question-mobile-template" type="text/template">
+	<div class="question">
+    	<h4 class="questionTitle"> <%= QuestionNumber %>. <%= Text %> </h4>            
+        <div class="answerArea">
+        <%
+    	    if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_YES_NO) { %>
+        	    <div class="yesNoQuestion">
+					<input type="radio" id="y-<%= QuestionNumber %>" name="yes-no-answer<%= Id %>" value="1">
+                	<label for="y-<%= QuestionNumber %>">Da</label>
+                	<input type="radio" id="n-<%= QuestionNumber %>" name="yes-no-answer<%= Id %>" value="2">
+                	<label for="n-<%= QuestionNumber %>">Nu</label>
+				</div>
+            <% 
+            } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_FREE_TEXT) {
+            %>
+            <textarea class="answer comment"></textarea>
+            <%
+            } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_RATING) {
+            %>
+               
+            <%
+            } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_MANY_FROM_MANY) { 
+            	_.each(Answers, function(answer, index) {  %>                     
+            		<input type="checkbox" id="m-a-<%= answer.AnswerIdentifier %>" class="css-checkbox"  value="<%= answer.AnswerIdentifier %>" />
+                    <label for="m-a-<%= answer.AnswerIdentifier %>" name="multiple-answers-label"  class="css-label"><%=answer.AnswerLabel %></label>  
+            <% });
+            } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY) {
+            %>     
+            	<select class="answer list" name="answer">
+                	<option value="noValue">Selectează o opțiune</option>
+                    <% _.each(Answers, function(value, key, list) { %>
+                        <option value="<%= value.AnswerIdentifier %>"><%= value.AnswerLabel %></option>
+                    <% }); %> 
+                </select>
+            <%
+            } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_NUMERIC) {
+            	var numericValues = ValidAnswers.split(";");
+                var numericLabels = ValidAnswersDetails.split(";");
+                if (numericValues.length > 0) {
+            %>
+            	<div class="scale-legend-wrapper">
+                	<div class="scale-legend">
+                    	<div class="low-scale"><< <%= numericLabels[0] %></div>
+                        <div class="high-scale"><%= numericLabels[numericLabels.length - 1] %> >></div>
+                        <div class="clear"></div>
+                     </div>
+                </div>
+                <div class="scale-wrapper">
+                <%
+                	for (var i=0; i < numericValues.length; ++i) {
+               	%>                        
+                	<div class="numeric-entry">                           
+                    	<label for="radio<%= numericValues[i] %><%= Id %>" class="numeric-value-label">
+                        	<span class="numeric-value"><%= numericValues[i] %></span>
+                    	</label>
+                        <input class="numeric-radio" id="radio<%= numericValues[i] %><%= Id %>" type="radio" value="<%= numericValues[i] %>" name="numeric-scale-answer<%= Id %>" />                                                
+                    </div>
+                    <%
+                    } 
+             }%>
+             	<div class="clear"></div>                           
+             </div>
+             <fieldset class='additionalInfo invisibleByDefault'>
+             	<textarea  class='comment' placeholder='Vă rugăm să vă argumentați alegerea'></textarea>
+             </fieldset>
+             <%   
+             } 
+             %>      
+
+            </div>
+        </div>
+</script>
+
+<script type="text/template" id="star-template">
+	<% if (Active) { %>
+    	<a href="#" class="starImg starActive" src="/Content/images/stars.png" />
+    <% } else { %>
+        <a href="#"  class="starImg" src="/Content/images/stars.png" />
+	<% } %>
+</script>
+
+<script type="text/template" id="star-bar-template">
+   <div class="starsArea">
+
+   </div>
+   <fieldset class='additionalInfo invisibleByDefault'>
+      <textarea placeholder='Vă rugăm să vă argumentați alegerea' class='comment'></textarea>
+   </fieldset>
+  <input type='hidden' class='answer' value='noValue' />
+</script>
+
+<script type="text/template" id="thankyoupage-template">  
+    <header>
+    	<div class="headerContainer">
+    		<img id="pageIcon" src="images/small-icon.png" />
+        	<h3 id="pageTitle"></h3>
+    	</div>                       
+   	</header>
+    <section id="thankYouMessage" class="surveyMessage">
+		<p id="surveySubmitted">Sondajul a fost trimis</p>
+    	<p id="thankYouMessageContent">
+            Aici vine mesajul de multumire
+        </p>
+       	<div style="display:none" class="alert fade in alert-error" id="noTags-error" >
+        	<div class="personal-info-validation">
+            </div>   
+        </div>
+    </section>
+    <div id="userInfo">
+	    <fieldset id="surveyUserInfo">
+    	    <label class="followup">
+              	Dacă doriți să fiți informat despre măsurile luate pe baza feedbackului dumneavoastră vă rugăm să ne 
+				împărtășiți câteva informații despre dumneavoastră:                   
+            </label>
+	        <div class="personalInfoFields">    
+				<div>
+        	    	<label for="name">Nume</label>
+                	<input id="name" type="text" placeholder="Ex: Popescu" /><br />
+            	</div>
+            	<div>
+	            	<label for="surname">Prenume</label>
+    	            <input id="surname" type="text" placeholder="Ex: Alexandru" /><br />
+        	    </div>
+            	<div>
+           			<label for="email">Email</label>
+                	<input id="email" type="email" placeholder="Ex: mail@gmail.com"/><br />
+            	</div>
+            	<div>
+            		<label for="telephone">Numar de telefon</label>
+                	<input id="telephone" type="tel" placeholder="Ex: 0794175321" />
+            	</div>
+			</div>                    
+       	</fieldset>
+        <button id="sendPersonalDetailsBtn" class="enabled">Trimiteți informațiile personale</button>                 
+        <input id="personalInfoSubmitted" type='hidden' value='Informațiile au fost trimise. Vă mulțumim!' />
+		<input id="sendPersonalDetails" type='hidden' value='Trimiteți informațiile personale' />
+	</div>
+</script>
+  	
+	</head>
+	<body>
+		<input type="hidden" value="@ViewBag.Id" id="surveyTemplateId"/>
+     	<input type="hidden" value="@ViewBag.IsFeedback" id="isFeedback"/>
+     	<section id="survey">
+        	<section id="questionsPage" class="page">
+            	<header>
+               		<div class="headerContainer">
+                  		<img id="pageIcon" src="images/small-icon.png" />
+	                  	<h3 id="pageTitle">Mobile survey title</h3>                  		                 
+                	</div>                       
+            	</header>
+           	<div class="clear" />
+           	<section id="introMessage" class="surveyMessage">
+            	<p id="introMessageContent">
+            		Intro message here
+                </p>
+           	</section>
+            <section id="questions">
+            </section>
+            <div id="doneBtnWrapper">
+                <div class="btnGlow">
+                	<button id="doneBtn"></button>
+                </div>
+            </div>
+            <footer>                
+            </footer>
+            <input type="hidden" value="Trimite" id="doneBtnTitle" />  
+            <input type="hidden" value="@ViewBag.Location" id="location" />       
+        </section>
+        <section id="thankYouPage" class="page" style="display:none">
+          
+        </section>
+        <div class="clear" />
+    </section>
+	</body>
+</html>

@@ -27,7 +27,12 @@ namespace smsSurvery.Surveryer
          BundleConfig.RegisterBundles(BundleTable.Bundles);
          AuthConfig.RegisterAuth();
          DataAnnotationsModelValidatorProvider.RegisterAdapter(typeof(RequiredIfAttribute), typeof(RequiredIfValidator));
-         log4net.Config.XmlConfigurator.Configure();
+         log4net.Config.XmlConfigurator.Configure();         
+      }
+
+      private void RegisterCors(MvcCorsConfiguration corsConfig)
+      {
+         corsConfig.AllowAll();
       }
       private void RegisterCors(MvcCorsConfiguration corsConfig)
       {

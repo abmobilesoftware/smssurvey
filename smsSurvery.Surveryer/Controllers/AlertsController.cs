@@ -155,24 +155,6 @@ namespace smsSurvery.Surveryer.Controllers
       //
       // POST: /Alerts/Delete/5
 
-      [HttpPost, ActionName("Delete")]
-      [ValidateAntiForgeryToken]
-      public ActionResult DeleteConfirmed(int id)
-      {
-         QuestionAlertSet questionalertset = db.QuestionAlertSet.Find(id);
-         db.QuestionAlertSet.Remove(questionalertset);
-         db.SaveChanges();
-         return RedirectToAction("Index");
-      }
-
-      #region Handle Alerts
-      /// <summary>
-      /// When possible an alert should provide as much information as possible, as friendly as possible - that's why we try to convert the received answer to the "user friendly format"
-      /// </summary>
-      /// <param name="currentQuestion"></param>
-      /// <param name="answerText"></param>
-      /// <param name="surveyResultId"></param>
-      /// <param name="ctrl"></param>
       public static void HandleAlertsForQuestion(Question currentQuestion, String answerText, int surveyResultId, List<string> locationTags, Controller ctrl, log4net.ILog logger)
       {
          //triggerAnswer, when containing more values, should be ; separated
@@ -419,7 +401,7 @@ namespace smsSurvery.Surveryer.Controllers
                break;
          }
       }
-      #endregion
+   
 
       protected override void Dispose(bool disposing)
       {

@@ -1,10 +1,7 @@
-﻿using Microsoft.WindowsAzure.Storage;
-using Microsoft.WindowsAzure.Storage.Blob;
-using smsSurvery.Surveryer.ClientModels;
+﻿using smsSurvery.Surveryer.ClientModels;
 using smsSurvey.dbInterface;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -16,7 +13,6 @@ namespace smsSurvery.Surveryer.Controllers
    {
 
       public const string cNoLocation = "noLocation";
-      private const string cDefaultLogoLocation = @"https://loyaltyinsightslogos.blob.core.windows.net/logos/logo_txtfeedback_small.png";
       public MobileSurveyController()
       {
 
@@ -28,7 +24,7 @@ namespace smsSurvery.Surveryer.Controllers
       [AllowAnonymous]
       public ActionResult Fill(int id)
       {
-         ViewBag.LogoLocation = cDefaultLogoLocation;
+
          //should only be valid for survey result that is not yet terminated
          SurveyResult runningSurvey = db.SurveyResultSet.Find(id);
          int idToUse = 1;
@@ -39,7 +35,6 @@ namespace smsSurvery.Surveryer.Controllers
             surveyLanguage = !String.IsNullOrEmpty(surveyLanguage) ? surveyLanguage : runningSurvey.SurveyTemplate.DefaultLanguage;
             System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture(surveyLanguage);
             idToUse = runningSurvey.SurveyTemplate.Id;
-            ViewBag.LogoLocation = GetLogoUrl(runningSurvey.SurveyTemplate);
             if (runningSurvey.Terminated != true)
             {
                ViewBag.Id = idToUse;
@@ -48,7 +43,7 @@ namespace smsSurvery.Surveryer.Controllers
                ViewBag.IntroMessage = runningSurvey.SurveyTemplate.IntroMessage;
                ViewBag.ThankYouMessage = runningSurvey.SurveyTemplate.ThankYouMessage;
                ViewBag.Location = cNoLocation;
-               
+               ViewBag.TabletView = false;
                return View();
             }
             else
@@ -65,25 +60,10 @@ namespace smsSurvery.Surveryer.Controllers
          }
       }
 
-      private string GetLogoUrl(SurveyTemplate st)
-      {
-         //DA if we cannot find a custom logo, use the TxtFeedbackLogo
-         var urlCandidate = st.UserProfile.First().Company.MobileLogoUrl;
-         if (!String.IsNullOrEmpty(urlCandidate))
-         {
-            return urlCandidate;
-         }
-         else
-         {
-            return cDefaultLogoLocation;
-         }
-      }
-
       [HttpGet]
       [AllowAnonymous]
       public ActionResult Feedback(int id, string location = cNoLocation)
       {
-         ViewBag.LogoLocation = cDefaultLogoLocation;
          SurveyTemplate survey = db.SurveyTemplateSet.Find(id);
          if (survey != null)
          {
@@ -96,7 +76,7 @@ namespace smsSurvery.Surveryer.Controllers
             ViewBag.ThankYouMessage = survey.ThankYouMessage;
             ViewBag.IsFeedback = 1;
             ViewBag.Location = location;
-            ViewBag.LogoLocation = GetLogoUrl(survey);
+            ViewBag.TabletView = false;
             return View("Fill");
          }
          else
@@ -109,9 +89,8 @@ namespace smsSurvery.Surveryer.Controllers
 
       [HttpGet]
       [AllowAnonymous]
-      public ActionResult ActiveSurvey(string location, string company)
+      public ActionResult ActiveSurvey(string location, string company, bool tabletSurvey=false)
       {
-         ViewBag.LogoLocation = cDefaultLogoLocation;
          //DA run the Active Survey identified for this location, if any
          var loc = db.Tags.Where(t => t.Name == location && t.TagTypes.Any(tt => tt.Type== "Location") && t.CompanyName == company).FirstOrDefault();
          if (loc != null)
@@ -122,13 +101,22 @@ namespace smsSurvery.Surveryer.Controllers
                var surveyLanguage = surveyToRun.DefaultLanguage;
                System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture(surveyLanguage);
                ViewBag.Id = surveyToRun.Id;
-               ViewBag.SurveyTitle = "Feedback";
                ViewBag.IntroMessage = surveyToRun.IntroMessage;
                ViewBag.ThankYouMessage = surveyToRun.ThankYouMessage;
                ViewBag.IsFeedback = 1;
                ViewBag.Location = location;
-               ViewBag.LogoLocation = GetLogoUrl(surveyToRun);
-               return View("Fill");
+               if (tabletSurvey)
+               {
+                  ViewBag.TabletView = true;
+                  ViewBag.SurveyTitle = surveyToRun.Description;
+                  return View("FillTablet");
+               }
+               else
+               {
+                  ViewBag.SurveyTitle = "Feedback";
+                  ViewBag.TabletView = false;
+                  return View("Fill");
+               }
             }
             else
             {
@@ -143,6 +131,20 @@ namespace smsSurvery.Surveryer.Controllers
             ViewBag.Company = company;
             return View("InvalidLocation");
          }
+      }
+
+      [HttpGet]
+      [AllowAnonymous]
+      public ActionResult GetSurveyTemplate() 
+      {
+         ViewBag.Id = -1;
+         ViewBag.IntroMessage = "Welcome";
+         ViewBag.ThankYouMessage = "Thank you!";
+         ViewBag.IsFeedback = 1;
+         ViewBag.Location = "noLocation";
+         ViewBag.TabletView = true;
+         ViewBag.SurveyTitle = "Title";
+         return View("SurveyTemplate");
       }
 
       [HttpGet]
@@ -172,7 +174,7 @@ namespace smsSurvery.Surveryer.Controllers
 
       /* This method and the one below should be moved to other file, because are
        * duplicate methods of the methods in SurveyTemplate class
-       */
+       */ 
 
       public ClientSurveyTemplate GetSurveyTemplateObject(int id)
       {
@@ -233,7 +235,6 @@ namespace smsSurvery.Surveryer.Controllers
          return mobileSurveyLocation;
       }
 
-
       public class QuestionResponse
       {
          public QuestionResponse()
@@ -248,7 +249,7 @@ namespace smsSurvery.Surveryer.Controllers
 
       [HttpPost]
       [AllowAnonymous]
-      public JsonResult SaveSurvey(List<QuestionResponse> questions, int surveyResultId, int surveyTemplateId, string location)
+      public JsonResult SaveSurvey(List<QuestionResponse> questions, int surveyResultId, int surveyTemplateId, string location, string Id)
       {
          //for mobile surveys the survey language is the default Survey definition language
          //we return the Id of the save surveyResult
@@ -339,7 +340,15 @@ namespace smsSurvery.Surveryer.Controllers
             surveyToAnalyze.Tags.Add(locationTag);
             db.SaveChanges();
          }
-         return Json(savedSurveyResult, JsonRequestBehavior.AllowGet);
+         var result = new SaveSurveyResult();
+         result.DbId = savedSurveyResult;
+         result.LocalId = Id;
+         return Json(result, JsonRequestBehavior.AllowGet);
+      }
+      public class SaveSurveyResult
+      {
+         public int DbId { get; set; }
+         public string LocalId { get; set; }
       }
 
       public class RespondentInfo
@@ -352,7 +361,7 @@ namespace smsSurvery.Surveryer.Controllers
 
       [HttpPost]
       [AllowAnonymous]
-      public JsonResult SaveRespondentInfo(RespondentInfo info, int surveyResultId)
+      public void SaveRespondentInfo(RespondentInfo info, int surveyResultId)
       {
          //get the customer corresponding to the survey result and update its info
          var survey = db.SurveyResultSet.Find(surveyResultId);
@@ -364,12 +373,10 @@ namespace smsSurvery.Surveryer.Controllers
                var existingCustomer = db.CustomerSet.Find(info.Telephone);
                if (existingCustomer != null)
                {
-                  //Associate this survey result to this customer
-                  existingCustomer.Name = info.Name;
-                  existingCustomer.Surname = info.Surname;
-                  existingCustomer.Email = info.Email;
-                  survey.Customer = existingCustomer;              
-                  db.SaveChanges();                  
+                  //Should we update this info???
+                  //existingCustomer.Name = info.Name;
+                  //existingCustomer.Surname = info.Surname;
+                  //existingCustomer.Email = info.Email;
                }
                else
                {
@@ -398,9 +405,9 @@ namespace smsSurvery.Surveryer.Controllers
                customerToUpdate.Surname = info.Surname;
                customerToUpdate.Email = info.Email;
                db.SaveChanges();
+
             }
-         }
-         return Json("Success", JsonRequestBehavior.AllowGet);
+         }         
       }
 
       protected override void Dispose(bool disposing)

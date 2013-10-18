@@ -14,5 +14,8 @@
     <copyright>Copyright 2013</copyright>
     <language>en-US</language>
     <tags>JWT JSON Web Token WIF Windows Identity Foundation OAuth OAuth2 Bearer TokenHandler Azure Active Directory Claims Identity Authentication</tags>
+    <references>
+      <reference file="System.IdentityModel.Tokens.Jwt.dll" />
+    </references>
   </metadata>
 </package>

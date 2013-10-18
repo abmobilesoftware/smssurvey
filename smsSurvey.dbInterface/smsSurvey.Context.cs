@@ -39,5 +39,6 @@ namespace smsSurvey.dbInterface
         public DbSet<TagTypes> TagTypes { get; set; }
         public DbSet<AlertNotificationSet> AlertNotificationSet { get; set; }
         public DbSet<QuestionAlertSet> QuestionAlertSet { get; set; }
+        public DbSet<Device> DeviceSet { get; set; }
     }
 }

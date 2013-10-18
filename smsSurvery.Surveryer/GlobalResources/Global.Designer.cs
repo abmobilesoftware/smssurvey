@@ -68,15 +68,7 @@ namespace smsSurvery.Surveryer.GlobalResources {
                 return ResourceManager.GetString("alertCauseAllKeywordsDetectedMessage", resourceCulture);
             }
         }
-        /// <summary>
-        ///   Looks up a localized string similar to Location.
-        /// </summary>
-        public static string LocationLabel {
-            get {
-                return ResourceManager.GetString("LocationLabel", resourceCulture);
-            }
-        }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Keyword &apos;{0}&apos; detected.
         /// </summary>
@@ -159,6 +151,15 @@ namespace smsSurvery.Surveryer.GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Location.
+        /// </summary>
+        public static string LocationLabel {
+            get {
+                return ResourceManager.GetString("LocationLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Powered by.
         /// </summary>
         public static string MobileSurveyFooterCaption {
@@ -195,11 +196,29 @@ namespace smsSurvery.Surveryer.GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid email.
+        /// </summary>
+        public static string MobileSurveyPersonalInfoEmailError {
+            get {
+                return ResourceManager.GetString("MobileSurveyPersonalInfoEmailError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Email.
         /// </summary>
         public static string MobileSurveyPersonalInfoEmailLabel {
             get {
                 return ResourceManager.GetString("MobileSurveyPersonalInfoEmailLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Name cannot be empty or whitespace only.
+        /// </summary>
+        public static string MobileSurveyPersonalInfoNameError {
+            get {
+                return ResourceManager.GetString("MobileSurveyPersonalInfoNameError", resourceCulture);
             }
         }
         
@@ -222,6 +241,15 @@ namespace smsSurvery.Surveryer.GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Retake survey.
+        /// </summary>
+        public static string MobileSurveyPersonalInfoRetakeSurvey {
+            get {
+                return ResourceManager.GetString("MobileSurveyPersonalInfoRetakeSurvey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Submit personal info.
         /// </summary>
         public static string MobileSurveyPersonalInfoSubmitBtnLabel {
@@ -236,6 +264,15 @@ namespace smsSurvery.Surveryer.GlobalResources {
         public static string MobileSurveyPersonalInfoSubmittedLabel {
             get {
                 return ResourceManager.GetString("MobileSurveyPersonalInfoSubmittedLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Surname cannot be empty or whitespace only.
+        /// </summary>
+        public static string MobileSurveyPersonalInfoSurnameError {
+            get {
+                return ResourceManager.GetString("MobileSurveyPersonalInfoSurnameError", resourceCulture);
             }
         }
         
@@ -299,6 +336,15 @@ namespace smsSurvery.Surveryer.GlobalResources {
         public static string MobileSurveySubmittedTitle {
             get {
                 return ResourceManager.GetString("MobileSurveySubmittedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Survey sent.
+        /// </summary>
+        public static string MobileSurveySurveySent {
+            get {
+                return ResourceManager.GetString("MobileSurveySurveySent", resourceCulture);
             }
         }
         
