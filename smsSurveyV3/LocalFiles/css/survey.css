@@ -178,7 +178,9 @@ select.list {
     font-size: 18px; 
   	text-indent: 10px;
     font-family:'Open Sans';
-    height:50px;
+    height:50px !important;
+    display:block;
+    margin:0 auto;
 }
 
 #doneBtnWrapper {
@@ -329,9 +331,9 @@ input[type=radio] + label {
     width: 140px;
     display:inline-block;
     margin:-2px;
-    padding: 4px 12px;
+    padding: 4px 37px;
     margin-bottom: 0;
-    font-size: 26px;
+    font-size: 22px;
     line-height: 37px;
     color: #333;
     text-align: center;
@@ -348,21 +350,26 @@ input[type=radio] + label {
     border: 1px solid #ccc;
     border-color: #e6e6e6 #e6e6e6 #bfbfbf;
     border-color: rgba(0,0,0,0.1) rgba(0,0,0,0.1) rgba(0,0,0,0.25);
-    border-bottom-color: #b3b3b3;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ffffffff',endColorstr='#ffe6e6e6',GradientType=0);
     filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
     -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,0.2),0 1px 2px rgba(0,0,0,0.05);
     -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,0.2),0 1px 2px rgba(0,0,0,0.05);
     box-shadow: inset 0 1px 0 rgba(255,255,255,0.2),0 1px 2px rgba(0,0,0,0.05);
+    border-radius:4px;
+    margin-left:18px;
+    margin-right:18px;
 }
  
 input[type=radio]:checked + label {
-       background-image: none;
+    background-image: none;
     outline: 0;
     -webkit-box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
     -moz-box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
     box-shadow: inset 0 2px 4px rgba(0,0,0,0.15),0 1px 2px rgba(0,0,0,0.05);
-        background-color:#e0e0e0;
+    background: linear-gradient(to bottom, #eb7a2c, #fe6703) repeat scroll 0 0 transparent;
+    background: -webkit-linear-gradient(top, #eb7a2c 0%,#fe6703 100%);
+    color: #fff;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 }
 
 .starsArea {
@@ -595,4 +602,11 @@ div.invalidAnswer div.answerArea {
 
 .warning {
 	color: #fff;
+}
+
+#slider-modal {
+	width:1024px;
+	height:768px;
+	top:0;
+	left:280px;
 }
