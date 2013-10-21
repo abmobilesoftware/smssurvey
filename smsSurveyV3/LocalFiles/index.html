@@ -180,7 +180,8 @@
 	var App = Backbone.Model.extend({
 		initialize: function() {
 			$.ajaxSetup({
-				cache : false
+				cache : false,
+				timeout: 5000
 			});
 			var self = this;
 			_.bindAll(this, "loadSurveyTemplate", "startLogOnPage", 
@@ -212,10 +213,12 @@
 									self.storage.getItem("template") != "null") {
 									self.startSurvey();
 								} else {
-									var warning = "There is no survey saved on device. "+
+									var warning = "<div class='warning'>There is no survey saved on device. "+
 									"Connect to internet, login in in your "+
-									"account and then you can run surveys offline.";
-									alert("No survey:: " + warning);
+									"account and then you can run surveys offline.</div>";
+									$(".loading-modal-body").append(warning);
+									$("#loading-modal").modal("show");
+									$("#loading-modal").css("visibility", "visible");
 								}
 						});	
 			});
