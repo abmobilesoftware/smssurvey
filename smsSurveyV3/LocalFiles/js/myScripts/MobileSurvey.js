@@ -5,7 +5,7 @@ MobileSurvey.ButtonView = Backbone.View.extend({
 		"click": "click"
 	},
 	initialize: function () {
-		_.bindAll(this, "click");
+		_.bindAll(this, "click", "close");
 		this.constants = {
 				PROP_DISABLED: "disabled",
 				CLASS_DISABLED: "disabled",
@@ -38,6 +38,9 @@ MobileSurvey.ButtonView = Backbone.View.extend({
 	},
 	setTitle: function (title) {
 		this.$el.html(title);
+	},
+	close: function () {
+		this.remove();
 	}
 });
 
@@ -50,16 +53,16 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
 		"keydown .comment": "keyPressListener"
 	},
 	initialize: function () {
-		this.questionMobileTemplate = _.template($("#question-mobile-template").html());
-		this.questionConstants = SurveyUtilities.Utilities.CONSTANTS_QUESTION;
-
 		_.bindAll(this, "render", "toggleDisplay", "updateQuestionDisplay", "updateAnswer",
-		"numericScaleSelected");
-		this.model.on("change:ValidAnswer", this.updateQuestionDisplay);
+		"numericScaleSelected", "close");
+		this.questionMobileTemplate = _.template($("#question-mobile-template").html());
+		this.questionConstants = SurveyUtilities.Utilities.CONSTANTS_QUESTION;			
+		this.listenTo(this.model, "change:ValidAnswer", this.updateQuestionDisplay);
 		this.childViews = [];
 	},
 	render: function () {
 		this.$el.html(this.questionMobileTemplate(this.model.toJSON()));
+		
 		this.childViews.length = 0;
 		if (this.model.get("Type") == this.questionConstants.TYPE_RATING) {
 			var ratingsSeparator = SurveyUtilities.Utilities.CONSTANTS_MISC.SEPARATOR_ANSWERS;
@@ -70,7 +73,7 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
 			var starBarView = new SurveyElements.StarBarView({ el: $(".answerArea", this.$el), noOfElements: noOfRatings });
 			this.childViews.push(starBarView);
 		}		
-		return this.$el;
+		return this;
 	},
 	updateQuestionDisplay: function () {
 		if (this.model.get("ValidAnswer")) {
@@ -127,6 +130,7 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
 		}
 	},
 	numericScaleSelected: function (event) {
+		//DA 3 is again hardcoded - it should be configurable
 		if ($(event.currentTarget).children("input").val() < 3) {
 			$(".comment", this.$el).show();
 		} else {
@@ -139,18 +143,18 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
 			 $(".comment", this.$el).blur();
 		 }
 	},
-	close: function() {
-		this.remove();
+	close: function() {		
 		_.each(this.childViews, function(childView) {
 			childView.close();
 		}, this);
 		this.childViews.length = 0;
+		this.remove();
 	}
 });
 
 MobileSurvey.SurveyMobileView = Backbone.View.extend({
 	initialize: function () {
-		_.bindAll(this, "render", "saveSurvey");
+		_.bindAll(this, "render", "saveSurvey", "close", "refresh");
 		this.surveyPreviewModel = this.options.surveyPreviewModel;
 		this.surveyMobileTemplate = _.template($("#mobileSurveyTemplate").html());
 		this.el = $("#questions");
@@ -166,42 +170,46 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
 		this.pageEvents = {
 				THANK_YOU_PAGE: "goToThankYouPageEvent"
 		};
+		this.questionsViews = [];
+		
+		//SubmitButton style
 		this.doneBtn = new MobileSurvey.ButtonView({
 			el: this.pageElements.$DONE_BTN
 		});
 		this.doneBtnTitle = $("#doneBtnTitle").val();
 		this.doneBtn.enable();
 		this.doneBtn.setTitle(this.doneBtnTitle);
-		this.questionsViews = [];
-		var retakeSurveyButton = new google.ui.FastButton($("#doneBtn", this.$el)[0],
+				
+		//SubmitButton functionality
+		this.submitSurveyButton = new google.ui.FastButton($("#doneBtn", this.$el)[0],
 				this.saveSurvey);
 	},
 	render: function () {
 		var self = this;
 		this.el.html(this.surveyMobileTemplate());
+		
 		var areaToAddContentTo = $(".questionsArea", this.$el);
-		_.each(this.questionsViews, function(questionView){
-			questionView.close();
-		});
-		this.questionsViews.length = 0;
+		//http://ozkatz.github.io/avoiding-common-backbonejs-pitfalls.html?tagref=js
+	    var questionsContainer = document.createDocumentFragment();
 		_.each(this.model.getQuestionSetCollection(), function (question, index) {
 			//DA now that the collection is sorted (due to the comparator on the collection) we can correctly set the QuestionNumber
 			question.set("QuestionNumber", index + 1);
 			var questionPreviewView = new MobileSurvey.QuestionMobileView({ model: question });
-			this.questionsViews.push(questionPreviewView);
-			areaToAddContentTo.append(questionPreviewView.render());
+			self.questionsViews.push(questionPreviewView);
+			questionsContainer.appendChild(questionPreviewView.render().el)		
 		}, this);
+		
+		//once we have all the questions, append them to the DOM
+		areaToAddContentTo.append(questionsContainer);
+		
+		//DA this may still be leaking handlers
 		$('.numeric-radio').screwDefaultButtons({
 			image: 'url("images/radioSmall77.png")',
 			width: 78,
 			height: 77
-		});
-		return this.$el;
-	},
-	refresh: function() {
-		this.render();
-		this.doneBtn.setTitle(this.doneBtnTitle);
-	},
+		});		
+		return this;
+	},	
 	isSurveyComplete: function () {
 		var answeredQuestions = 0;
 		_.each(this.model.getQuestionSetCollection(), function (value, key, list) {
@@ -254,6 +262,26 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
 	},
 	getHeight: function () {
 		return this.$el.outerHeight();
+	},
+	refresh: function() {
+		//clean up the inner views here
+		_.each(this.questionsViews, function(questionView){
+			questionView.close();
+		}, this);
+		this.questionsViews.length = 0;
+		
+		//and then move on with redrawing
+		this.render();
+		this.doneBtn.setTitle(this.doneBtnTitle);
+	},
+	close: function() {
+		_.each(this.questionsViews, function(childView) {
+			childView.close();
+		}, this);
+		this.questionsViews.length = 0;
+		
+		this.doneBtn.close();
+		this.submitSurveyButton.reset();
 	}
 });
 
@@ -266,7 +294,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 		_.bindAll(this, "setWidth", "show",
 				"getHeight", "render", "sendPersonalInfo",
 				"setSurveyResultId", "clearErrorsFromFields",
-				"validationError", "retakeSurvey", "sendPersonalInfoResponse");
+				"validationError", "retakeSurvey", "sendPersonalInfoResponse","close");
 		this.template = _.template($("#thankyoupage-template").html());
 		this.pageEvents = {
 			RETAKE_SURVEY : "retakeSurveyEvent"	
@@ -274,7 +302,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 		this.storage = this.options.localStorage;
 		this.thankYouMessage = this.options.thankYouMessage;
 		this.surveyTitle = this.options.surveyTitle;
-		this.render();
+		
 	},
 	setSurveyResultId: function (surveyResultId) {
 		this.surveyResultId = surveyResultId;
@@ -290,6 +318,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 		$('#surveyUserInfo').show();
 		this.sendBtn.setTitle($("#sendPersonalDetails", this.$el).val());
 		this.sendBtn.enable();
+		
 		$('#name').val("");
 		$("#surname").val("");
 		$('#email').val("");
@@ -383,6 +412,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 	sendPersonalInfoResponse: function() {
 		Timer.stopTimer();
 		Timer.restartSurvey();
+		
 		$('#surveyUserInfo').slideToggle('slow');
 		this.sendBtn.setTitle($("#personalInfoSubmitted", this.$el).val());
 		this.sendBtn.disable();
@@ -436,7 +466,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 	makeSendPersonalInfoRequest: function(dataToSendObject, successCallback, errorCallback) {
 		var dataToSend = JSON.stringify(dataToSendObject);
 		$.ajax({
-			url: "http://dev.txtfeedback.net/MobileSurvey/SaveRespondentInfo",
+			url: "http://dev.txtfeedback.net/MobileSurvey/SaveRespondentInfo1",
 			data: dataToSend,
 			type: 'post',
 			cache: false,
@@ -467,12 +497,18 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 		this.dom.$THANK_YOU_MESSAGE.html(this.thankYouMessage);
 		this.dom.$PAGE_TITLE.html(this.surveyTitle);
 		this.sendBtn.enable();
-		var retakeSurveyButton = new google.ui.FastButton($(".retakeBtn", this.$el)[0],
+		this.retakeSurveyButton = new google.ui.FastButton($(".retakeBtn", this.$el)[0],
 				this.retakeSurvey);
-		var sendPersonalnfoButton = new google.ui.FastButton($("#sendPersonalDetailsBtn", this.$el)[0],
+		this.sendPersonalnfoButton = new google.ui.FastButton($("#sendPersonalDetailsBtn", this.$el)[0],
 				this.sendPersonalInfo);
 		
-		return this.$el;
+		return this;
+	},
+	close: function() {
+		this.sendBtn.close();
+		this.retakeSurveyButton.reset();
+		this.sendPersonalnfoButton.reset();
+		//this.remove();
 	}
 });
 
@@ -504,8 +540,9 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 		}
 	},
 	goToQuestionsPage: function() {
-		this.questionsPage.refresh();
+		this.questionsPage.refresh();		
 		$.mobile.changePage("#questionsPage");
+		this.thankYouPage.close();
 		Timer.startTimer();
 	},
 	goToThankYouPage: function (surveyResult) {
@@ -631,7 +668,7 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 	makeSaveRequest: function(sendDataObject, successCallback, errorCallback) {
 		var sendData = JSON.stringify(sendDataObject);
 		$.ajax({
-			url: "http://dev.txtfeedback.net/MobileSurvey/SaveSurvey",
+			url: "http://dev.txtfeedback.net/MobileSurvey/SaveSurvey1",
 			data: sendData,
 			crossDomain: true,
 			type: 'post',

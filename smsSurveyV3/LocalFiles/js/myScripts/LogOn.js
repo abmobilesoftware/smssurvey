@@ -7,7 +7,7 @@
 var LogOnPage = Backbone.View.extend({
 	initialize: function () {
 		_.bindAll(this, "logOn", "loggedOnStatus",
-				"hide", "clearFields");
+				"hide", "clearFields", "close");
 		var self = this;
 		this.domElements = {
 				$INPUT_USERNAME : $("#username", this.$el),
@@ -15,11 +15,11 @@ var LogOnPage = Backbone.View.extend({
 				$INPUT_SUBMIT: $("#logOnBtn", this.$el),
 				$FORM: $("#logOnForm", this.$el)
 		};
-		this.model.on(this.model.events.LOGON_SUCCESS,
+		this.listenTo(this.model, this.model.events.LOGON_SUCCESS,
 				this.clearFields);	
 		// Check if the user is logged on
 		this.model.isLoggedOn(this.loggedOnStatus)
-		var logOnButton = new google.ui.FastButton($("#logOnBtn", this.$el)[0], this.logOn);
+		this.logOnButton = new google.ui.FastButton($("#logOnBtn", this.$el)[0], this.logOn);
 	},
 	logOn: function(event) {
 		event.preventDefault();
@@ -44,6 +44,10 @@ var LogOnPage = Backbone.View.extend({
 	clearFields: function() {
 		this.domElements.$INPUT_USERNAME.val("");
 		this.domElements.$INPUT_PASSWORD.val("");
+	},
+	close: function() {		
+		this.logOnButton.reset();
+		this.remove();
 	}
 });
 

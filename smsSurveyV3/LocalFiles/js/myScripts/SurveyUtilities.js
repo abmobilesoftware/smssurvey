@@ -63,7 +63,10 @@ var Timer = (function () {
 			//alert("Stop pe timer 1 = " + timer1);
 		}
 		//alert("Valoarea de la timer 1 dupa stop " + timer1);
+		//DA make sure we only listen once to each event
+		document.removeEventListener("touchend", innerClass.trackMouseMovement);
 		document.addEventListener("touchend", innerClass.trackMouseMovement);
+		Backbone.off("touch", innerClass.trackMouseMovement);
 		Backbone.on("touch", innerClass.trackMouseMovement);
 		timer1 = setInterval(innerClass.checkIfUserIsActive, mouseDetectionInterval);	      
 	};
