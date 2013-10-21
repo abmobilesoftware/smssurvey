@@ -68,15 +68,7 @@ namespace smsSurvery.Surveryer.GlobalResources {
                 return ResourceManager.GetString("alertCauseAllKeywordsDetectedMessage", resourceCulture);
             }
         }
-        /// <summary>
-        ///   Looks up a localized string similar to Location.
-        /// </summary>
-        public static string LocationLabel {
-            get {
-                return ResourceManager.GetString("LocationLabel", resourceCulture);
-            }
-        }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Keyword &apos;{0}&apos; detected.
         /// </summary>
@@ -155,6 +147,15 @@ namespace smsSurvery.Surveryer.GlobalResources {
         public static string alertEmailSubject {
             get {
                 return ResourceManager.GetString("alertEmailSubject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Location.
+        /// </summary>
+        public static string LocationLabel {
+            get {
+                return ResourceManager.GetString("LocationLabel", resourceCulture);
             }
         }
         
@@ -340,6 +341,24 @@ namespace smsSurvery.Surveryer.GlobalResources {
         
         /// <summary>
         ///   Looks up a localized string similar to {0} for {1}.
+        /// </summary>
+        public static string SmsQuestionNumericSuffixJoinTemplate {
+            get {
+                return ResourceManager.GetString("SmsQuestionNumericSuffixJoinTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reply with:.
+        /// </summary>
+        public static string SmsQuestionNumericSuffixTemplate {
+            get {
+                return ResourceManager.GetString("SmsQuestionNumericSuffixTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} for {1} out of {2} stars.
         /// </summary>
         public static string SmsQuestionRatingSuffixJoinTemplate {
             get {

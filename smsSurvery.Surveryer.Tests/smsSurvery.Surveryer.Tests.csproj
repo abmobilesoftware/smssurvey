@@ -113,8 +113,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\AnswerControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Controllers\HomeControllerTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config" />
@@ -126,6 +126,10 @@
     <ProjectReference Include="..\smsSurvery.Surveryer\smsSurvery.Surveyer.csproj">
       <Project>{F1735F5A-6122-4503-9FF9-031F1F6E78DC}</Project>
       <Name>smsSurvery.Surveyer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\smsSurvey.dbInterface\smsSurvey.dbInterface.csproj">
+      <Project>{ce8ff7ed-dfb9-4908-bf2e-a3699a3512ff}</Project>
+      <Name>smsSurvey.dbInterface</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ServiceDefinition name="AzureLoyaltyInsights" xmlns="http://schemas.microsoft.com/ServiceHosting/2008/10/ServiceDefinition" schemaVersion="2012-10.1.8">
-  <WebRole name="smsSurvery.Surveyer" vmsize="Small" enableNativeCodeExecution="true">
+  <WebRole name="smsSurvery.Surveyer" vmsize="ExtraLarge" enableNativeCodeExecution="true">
     <Sites>
       <Site name="Web">
         <Bindings>

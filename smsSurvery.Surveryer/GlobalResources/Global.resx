@@ -120,7 +120,7 @@
   <data name="alertCauseAllKeywordsDetectedMessage" xml:space="preserve">
     <value>Keywords '{0}' detected</value>
   </data>
-   <data name="LocationLabel" xml:space="preserve">
+  <data name="LocationLabel" xml:space="preserve">
     <value>Location</value>
   </data>
   <data name="alertCauseAnyKeywordDetectedMessage" xml:space="preserve">
@@ -211,7 +211,7 @@
     <value>Q{0}/{1}: </value>
   </data>
   <data name="SmsQuestionRatingSuffixJoinTemplate" xml:space="preserve">
-    <value>{0} for {1}</value>
+    <value>{0} for {1} out of {2} stars</value>
   </data>
   <data name="SmsQuestionRatingSuffixTemplate" xml:space="preserve">
     <value>Reply with:</value>
@@ -226,5 +226,11 @@
     <value>Reply with:
 1 for Yes
 2 for No</value>
+  </data>
+  <data name="SmsQuestionNumericSuffixJoinTemplate" xml:space="preserve">
+    <value>{0} for {1}</value>
+  </data>
+  <data name="SmsQuestionNumericSuffixTemplate" xml:space="preserve">
+    <value>Reply with:</value>
   </data>
 </root>

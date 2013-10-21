@@ -211,7 +211,7 @@
     <value>Intrebarea {0}/{1}: </value>
   </data>
   <data name="SmsQuestionRatingSuffixJoinTemplate" xml:space="preserve">
-    <value>{0} pentru {1}</value>
+    <value>{0} pentru {1} din {2} stele</value>
   </data>
   <data name="SmsQuestionRatingSuffixTemplate" xml:space="preserve">
     <value>Raspundeti cu:</value>
@@ -226,5 +226,11 @@
     <value>Raspundeti cu:
 1 pentru Da
 2 pentru Nu</value>
+  </data>
+  <data name="SmsQuestionNumericSuffixJoinTemplate" xml:space="preserve">
+    <value>{0} pentru {1}</value>
+  </data>
+  <data name="SmsQuestionNumericSuffixTemplate" xml:space="preserve">
+    <value>Raspundeti cu:</value>
   </data>
 </root>

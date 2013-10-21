@@ -410,7 +410,7 @@ namespace smsSurvery.Surveryer.Controllers
            return result;
         }
 
-        private static string PrepareSMSTextForQuestion(Question q, int totalNumberOfQuestions, bool isFirstQuestion, string introMessage)
+        public static string PrepareSMSTextForQuestion(Question q, int totalNumberOfQuestions, bool isFirstQuestion, string introMessage)
         {
            /*For the first question we will be adding the IntroMessage 
             * IntroMessage
@@ -428,16 +428,45 @@ namespace smsSurvery.Surveryer.Controllers
               case ReportsController.cFreeTextTypeQuestion:
                  return prefix + q.Text;
               case ReportsController.cNumericTypeQuestion:
+                 try
+                 {
+                    var validAnswer = q.ValidAnswers.Split(';');
+                    var validAnswerDetails = q.ValidAnswersDetails.Split(';');
+                    var pairs = new string[validAnswer.Length];
+                    for (int i = 0; i < validAnswer.Length; i++)
+                    {
+                       pairs[i] = String.Format(GlobalResources.Global.SmsQuestionNumericSuffixJoinTemplate, validAnswer[i], validAnswerDetails[i]);
+                    }
+                    var answers = GlobalResources.Global.SmsQuestionNumericSuffixTemplate + System.Environment.NewLine + String.Join(System.Environment.NewLine, pairs);
+                    return prefix + q.Text + System.Environment.NewLine + answers;
+                 }
+                 catch (IndexOutOfRangeException ex)
+                 {
+                    //most probably ValidAnswers and ValidAnswerDetails were not aligned
+                    logger.Error(String.Format("ValidAnswers and ValidAnswerDetails not aligned for question {0}", q.Id), ex);
+                    return prefix + q.Text;
+                 }                    
               case ReportsController.cRatingsTypeQuestion:
                  {
+                    /*
+                     * We are aiming for:
+                     * Reply with:
+                     * 1 for 1 out of 5 stars
+                     * 2 for 2 out of 5 stars
+                     * 3 for 3 out of 5 stars
+                     * 4 for 4 out of 5 stars
+                     * 5 for 5 out of 5 stars
+                     */ 
                     try
                     {
                        var validAnswer = q.ValidAnswers.Split(';');
                        var validAnswerDetails = q.ValidAnswersDetails.Split(';');
                        var pairs = new string[validAnswer.Length];
+                       var totalNumberOfStars = validAnswerDetails.Length;
                        for (int i = 0; i < validAnswer.Length; i++)
                        {
-                          pairs[i] = String.Format(GlobalResources.Global.SmsQuestionRatingSuffixJoinTemplate, validAnswer[i], validAnswerDetails[i]);
+                          var starsSelectAnswer = String.Format(GlobalResources.Global.SmsQuestionRatingSuffixJoinTemplate, validAnswer[i], validAnswer[i], totalNumberOfStars);
+                          pairs[i] = starsSelectAnswer;
                        }
                        var answers = GlobalResources.Global.SmsQuestionRatingSuffixTemplate + System.Environment.NewLine + String.Join(System.Environment.NewLine, pairs);
                        return prefix + q.Text + System.Environment.NewLine + answers;
