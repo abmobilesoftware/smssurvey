@@ -10,8 +10,7 @@ namespace smsSurvey.dbInterface
 {
     [MetadataType(typeof(SurveyResult_Validation))]
    partial class SurveyResult
-   {
-
+   {     
    }
 
    #region Validation

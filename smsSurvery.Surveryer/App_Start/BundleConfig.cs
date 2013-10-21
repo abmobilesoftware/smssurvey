@@ -8,6 +8,7 @@ namespace smsSurvery.Surveryer
       // For more information on Bundling, visit http://go.microsoft.com/fwlink/?LinkId=254725
       public static void RegisterBundles(BundleCollection bundles)
       {
+         //DA lazy MB, lazy DA - move googleFastButtons and screwdefaultbuttonsV2 to a less general bundle
          bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                      "~/Scripts/jquery-{version}.js",
                      "~/Scripts/jquery-ui-1.10.3.js",
@@ -15,11 +16,12 @@ namespace smsSurvery.Surveryer
                      "~/Scripts/underscore.js",
                      "~/Scripts/backbone.js",
                      "~/Scripts/chosen.jquery.js",
-                     "~/Scripts/GoogleFastButtons.js",
+                     "~/Scripts/googleFastButtons.js",
                      "~/Scripts/jquery.screwdefaultbuttonsV2.js"
                      ));
-         bundles.Add(new ScriptBundle("~/bundles/mobilesurvey").Include(
-            "~/MyScripts/SurveyUtilities.js",
+         bundles.Add(new ScriptBundle("~/bundles/mobilesurvey").Include(            
+            "~/Scripts/canvas.js",
+            "~/MyScripts/SurveyUtilities.js",          
             "~/MyScripts/SurveyElements.js",
             "~/MyScripts/MobileSurvey.js",
             "~/MyScripts/SurveyNumericModal.js",
@@ -30,7 +32,8 @@ namespace smsSurvery.Surveryer
             "~/MyScripts/MobileSurveyMain.js"
             ));
          bundles.Add(new ScriptBundle("~/bundles/myscripts").Include(
-                     "~/MyScripts/SurveyUtilities.js",
+                      "~/Scripts/bootstrap-fileupload.js",
+                     "~/MyScripts/SurveyUtilities.js",                     
                      "~/MyScripts/SurveyElements.js",
                      "~/MyScripts/SurveyPreview.js",
                      "~/MyScripts/SurveyAnswersModal.js",
@@ -78,7 +81,9 @@ namespace smsSurvery.Surveryer
 
          bundles.Add(new StyleBundle("~/Content/css").Include(
             "~/Content/site.css",
-            "~/Content/bootstrap.css"));
+            "~/Content/bootstrap.css",
+            "~/Content/bootstrap-fileupload.css"));
+
          bundles.Add(new StyleBundle("~/bundles/SurveyTemplate").Include(
             "~/Content/SurveyTemplate/questionSet.css",            
             "~/Content/chosen/chosen.css"

@@ -33,8 +33,7 @@
                   <li><a href="#" value="YesNo" class="question-type">Yes/No</a></li>
                   <li><a href="#" value="FreeText" class="question-type">Free text</a></li>
                   <li><a href="#" value="Rating" class="question-type">Rating</a></li>
-                  <li><a href="#" value="SelectOneFromMany" class="question-type">Select one from many</a></li>
-                  <li><a href="#" value="SelectManyFromMany" class="question-type">Select many from many</a></li>  
+                  <li><a href="#" value="SelectOneFromMany" class="question-type">Select one from many</a></li>                 
                   <li><a href="#" value="Numeric" class="question-type">Numeric scale</a></li>               
                </ul>
             </div>
@@ -45,8 +44,7 @@
          <a href="#multiple-answer-modal<%= Id %>" role="button" class="open-modal-btn btn edit-answers-btn" data-backdrop="static" data-toggle="modal"><img class="icon" src="/Content/images/edit_20.png" />Edit answers</a>   
          <div id="multiple-answer-modal<%= Id %>" class="modal hide fade">
             <div class="modal-header">               
-               <h3> Configure answers</h3><br />
-               <span class="modal-header-title">For question: <strong>"<%= Text %>"</strong></span>
+               <h3> Configure answers</h3><br />               
             </div>
             <div class="modal-body">
                <div style="display:none" class="alert fade in alert-error" id="noTags-error" >
@@ -69,8 +67,7 @@
          <a href="#edit-rating-modal<%=Id %>" role="button" data-backdrop="static" class="open-modal-btn btn edit-ratings-btn" data-toggle="modal"><img class="icon" src="/Content/images/edit_20.png" />Edit rating</a>   
          <div id="edit-rating-modal<%= Id %>" class="modal hide fade">
             <div class="modal-header">
-               <h3>Edit rating</h3><br />
-               <span class="modal-header-title">For question: <strong>"<%= Text %>"</strong></span>
+               <h3>Edit rating</h3><br />               
             </div>
             <div class="modal-body">                                   
             </div>
@@ -83,8 +80,7 @@
          <a href="#numeric-modal<%= Id %>" role="button" class="open-modal-btn btn edit-numeric-btn" data-backdrop="static" data-toggle="modal"><img class="icon" src="/Content/images/edit_20.png" />Edit numeric scale</a>   
          <div id="numeric-modal<%= Id %>" class="modal hide fade">
             <div class="modal-header">               
-               <h3> Configure numeric scale</h3><br />
-               <span class="modal-header-title">For question: <strong>"<%= Text %>"</strong></span>
+               <h3> Configure numeric scale</h3><br />               
             </div>
             <div class="modal-body">
                <div style="display:none" class="alert fade in alert-error" id="noTags-error" >
@@ -105,8 +101,7 @@
    
       <div id="edit-alerts-modal<%= Id %>" class="modal hide fade">
          <div class="modal-header">
-            <h3>Edit alerts</h3><br />
-               <span class="modal-header-title">For question: <strong>"<%= Text %>"</strong></span>
+            <h3>Edit alerts</h3><br />               
          </div>
          <div class="modal-body">
             <div style="display:none" class="alert fade in alert-error" id="noTags-error" >
@@ -384,13 +379,33 @@
             </div>          
       </tr>
       <tr>
+         <td>Logo</td>
+         <td>
+            @* <img class="logo" src="<%= LogoLink %>"/>
+            <button class="btn btn-primary change-logo" type="button">Change survey logo</button>*@
+            <div class="fileupload fileupload-new" data-provides="fileupload">
+               <div class="fileupload-new thumbnail" style="width: 150; max-width:150; height: 50; max-height:150">
+                  <img class="logo" src="<%= LogoLink %>"/>
+               </div>
+               <div class="fileupload-preview fileupload-exists thumbnail" style="width: 150; max-width:150; height: 50; max-height:150"></div>
+               <div>                  
+                   <span class="btn btn-file">
+                      <span class="fileupload-new">Change</span>                      
+                      <span class="fileupload-exists">Change</span>
+                      <input type="file" />
+                   </span>      
+               </div>
+            </div>
+         </td>
+      </tr>
+      <tr>
          <% var idRepresentation = Id == -1 ? "-" : Id; %>
          <td>ID</td>
          <td><%= idRepresentation %></td>
       </tr>
       <tr>
          <td>Mobile website location</td>
-         <td><a href="<%= MobileWebsiteLocation %>"><%= MobileWebsiteLocation %></a></td>
+         <td><a target="_blank" href="<%= MobileWebsiteLocation %>"><%= MobileWebsiteLocation %></a></td>
       </tr>
       </table>
    <% } %>

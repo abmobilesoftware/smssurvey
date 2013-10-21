@@ -64,8 +64,11 @@
          @Html.DropDownList("Language", new SelectList(new List<SelectListItem>() {  new SelectListItem(){Text ="English", Value="en-US"}, new SelectListItem() {Text="Romanian",Value="ro-RO"} },"Value", "Text"))
       </div>
     
-      <input id="sendMobileSurvey" class="css-checkbox" type="checkbox" value="type" />
-      <label for="sendMobileSurvey" name="dsurveyType"  class="css-label">Send mobile survey</label>     
+      <label>Survey type</label> 
+      <div>
+         @Html.DropDownList("SurveyType", new SelectList(new List<SelectListItem>() {  new SelectListItem(){Text ="Mobile survey", Value="mobile"}, new SelectListItem() {Text="Full SMS survey",Value="sms"} },"Value", "Text"))
+      </div>
+                
       <p>
           <button id="run" class="btn btn-primary"> Run</button> 
       </p>
@@ -143,11 +146,13 @@
             tags = [];
          }
 
+         var surveyType = $('#SurveyType').find(":selected").attr('value');
+         var sendMobile = surveyType === "sms" ? false : true;
          $.ajax({
             data: {
                surveyid: selSurveyId,
                customerNumbers: numbers,
-               sendMobile: $('#sendMobileSurvey').is(':checked'),
+               sendMobile: sendMobile,
                tags: tags,
                surveyLanguage: surveyLanguage
             },

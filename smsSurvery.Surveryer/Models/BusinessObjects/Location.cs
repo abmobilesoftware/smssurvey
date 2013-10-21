@@ -41,5 +41,8 @@ namespace smsSurvery.Surveryer.Models.BusinessObjects
 
       [DataMember]
       public string ActiveSurveyDescription { get; set; }
+
+      [DataMember]
+      public string ActiveSurveyPerLocationLink { get;set;}      
    }
 }

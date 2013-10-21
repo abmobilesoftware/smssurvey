@@ -59,8 +59,9 @@
     <Reference Include="Microsoft.WindowsAzure.ServiceRuntime, Version=1.8.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35">
       <Private>False</Private>
     </Reference>
-    <Reference Include="Microsoft.WindowsAzure.StorageClient, Version=1.7.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\WindowsAzure.Storage.1.7.0.0\lib\net35-full\Microsoft.WindowsAzure.StorageClient.dll</HintPath>
+    <Reference Include="Microsoft.WindowsAzure.Storage, Version=2.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\WindowsAzure.Storage.2.1.0.0\lib\net40\Microsoft.WindowsAzure.Storage.dll</HintPath>
     </Reference>
     <Reference Include="Mvc.Mailer">
       <HintPath>..\packages\MvcMailer.4.5\lib\45\Mvc.Mailer.dll</HintPath>
@@ -285,6 +286,7 @@
     <Content Include="App_Readme\Elmah.SqlServer.sql" />
     <Content Include="App_Readme\Elmah.SqlServer.txt" />
     <Content Include="App_Readme\Elmah.txt" />
+    <Content Include="Content\bootstrap-fileupload.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\chosen\chosen-sprite.png" />
     <Content Include="Content\chosen\chosen.css" />
@@ -336,6 +338,7 @@
     <Content Include="Content\tablet\bootstrap.css" />
     <Content Include="Content\tablet\survey.css" />
     <Content Include="Content\WordCloud.css" />
+    <Content Include="Images\sprites.gif" />
     <Content Include="MyScripts\DateHelper.js" />
     <Content Include="MyScripts\ManageDevices.js" />
     <Content Include="Scripts\GoogleFastButtons.js" />
@@ -354,8 +357,11 @@
     <Content Include="MyScripts\SurveyRatingsModal.js" />
     <Content Include="MyScripts\SurveyUtilities.js" />
     <Content Include="Scripts\backbone.js" />
+    <Content Include="Scripts\bootstrap-fileupload.js" />
     <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\canvas.js" />
     <Content Include="Scripts\chosen.jquery.js" />
+    <Content Include="Scripts\googleFastButtons.js" />
     <Content Include="Scripts\jquery-ui-1.10.3.js" />
     <Content Include="MyScripts\reportsTags.js" />
     <Content Include="Scripts\jquery-1.10.1.js" />

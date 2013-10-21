@@ -40,15 +40,19 @@ header {
     font-weight: bold;    
     margin: 0.4em 0 0 0 !important;    
     vertical-align: middle;     
-    line-height: 20px;
+    line-height: 26px;
+    text-align: center;
 }
 
 #pageIcon {
     float:left;
-    display:inline;
-    width:45px;
-    height:45px;
-    vertical-align: middle;
+    display:inline;    
+}
+
+.logo {
+   max-width:150px;
+   max-height:45px;
+   vertical-align: middle;
 }
 
 button {
@@ -365,4 +369,25 @@ input.invalidField, select.invalidField, a.invalidField, div.invalidField {
 .personal-info-validation{
    word-wrap: break-word;
    white-space: pre;
+}
+
+/* LOADING MODAL */
+#loading-modal {
+	border:0;
+	-webkit-box-shadow:0 0 0 rgba(0,0,0,0);
+	box-shadow:0 0 0 rgba(0,0,0,0);
+   background-color: transparent;
+   top: 25%;
+}
+
+.loading-modal-body {
+	text-align: center;
+}
+
+body {
+   position:relative;
+}
+
+.modal-backdrop {
+   position: absolute !important;
 }

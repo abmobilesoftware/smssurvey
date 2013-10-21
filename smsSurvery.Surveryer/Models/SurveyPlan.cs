@@ -16,9 +16,10 @@ namespace smsSurvery.Surveryer.ClientModels
       public Nullable<DateTime> DateEnded { get; set; }
       public bool IsRunning { get; set; }
       public List<ClientQuestion> QuestionSet { get; set; }
+      public string LogoLink { get; set; }
 
       #region Calculated properties
-      public string MobileWebsiteLocation { get; set; }
+      public string MobileWebsiteLocation { get; set; }      
       #endregion
 
       public ClientSurveyTemplate() { }

@@ -34,5 +34,9 @@ namespace smsSurvery.Surveryer
       {
          corsConfig.AllowAll();
       }
+      private void RegisterCors(MvcCorsConfiguration corsConfig)
+      {
+         corsConfig.AllowAll();
+      }
    }
 }

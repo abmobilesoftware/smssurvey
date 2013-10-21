@@ -27,8 +27,8 @@
         <td>
             @Html.DisplayFor(modelItem => item.DateRan)
         </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Customer.PhoneNumber)
+        <td>           
+           @Html.ActionLink(item.Customer.PhoneNumber, "Details", "Customer", new { id = item.Customer.PhoneNumber }, null)
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.SurveyTemplate.Description)

@@ -31,7 +31,13 @@ namespace smsSurvery.Surveryer.Controllers
          ViewBag.pagingDetails = pagingDetails;
          return View(pageRes.ToList());
       }
-
+      
+      [Authorize]
+      public ActionResult Create()
+      {
+         ViewBag.Action = "Create";
+         return View();
+      }
       public ActionResult Search(string text, int page = 1)
       {
          int currentPageIndex = page - 1;
@@ -55,33 +61,7 @@ namespace smsSurvery.Surveryer.Controllers
          db.Entry(surveyTemplate).Collection(s => s.QuestionSet).Load();
          return View(surveyTemplate);
       }
-
-      [Authorize]
-      public ActionResult Create()
-      {
-         ViewBag.Action = "Create";
-         return View();
-      }
-
-      [HttpPost]
-      [ValidateAntiForgeryToken]
-      [Authorize]
-      public ActionResult Create(SurveyTemplate surveyTemplate)
-      {
-         if (ModelState.IsValid)
-         {
-            //associate with the current user
-            UserProfile user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-            surveyTemplate.Provider = user.DefaultProvider;
-            db.SurveyTemplateSet.Add(surveyTemplate);
-            user.SurveyTemplateSet.Add(surveyTemplate);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-         }
-
-         return View(surveyTemplate);
-      }
-
+  
       [HttpGet]
       [Authorize]
       public ActionResult MakeActive(int id)
@@ -179,10 +159,12 @@ namespace smsSurvery.Surveryer.Controllers
                    surveyTemplate.DateEnded, surveyTemplate.IsRunning, questions, surveyTemplate.DefaultLanguage);
 
             clientSurveyTemplate.MobileWebsiteLocation = GetAnonymousMobileSurveyLocation(surveyTemplate, this.ControllerContext.RequestContext);
+            clientSurveyTemplate.LogoLink = surveyTemplate.UserProfile.FirstOrDefault().Company.MobileLogoUrl;
             return clientSurveyTemplate;
          }
          catch (Exception e)
          {
+            logger.Error("Error getting the survey", e);
             return null;
          }
       }
@@ -319,6 +301,16 @@ namespace smsSurvery.Surveryer.Controllers
                               }
                            }
                         }
+                        else
+                        {
+                           //DA - this could mean that we removed all alerts
+                            var prevAlerts = dbQuestion.QuestionAlertSet.ToList();
+                           foreach (var prevAlert in prevAlerts)
+                           {
+                              db.QuestionAlertSet.Remove(prevAlert);
+                           }
+                           dbQuestion.QuestionAlertSet.Clear();
+                        }
                         dbQuestion.Order = clientQuestion.Order;
                         dbQuestion.Text = clientQuestion.Text;
                         dbQuestion.Type = clientQuestion.Type;
@@ -365,7 +357,25 @@ namespace smsSurvery.Surveryer.Controllers
                      }
                   }
                }
-               db.SaveChanges();
+               try
+               {
+                  db.SaveChanges();
+               }
+               catch (DbEntityValidationException ex)
+               {
+                  StringBuilder sb = new StringBuilder();
+                  foreach (var failure in ex.EntityValidationErrors)
+                  {
+                     sb.AppendFormat("{0} failed validation\n", failure.Entry.Entity.GetType());
+                     foreach (var error in failure.ValidationErrors)
+                     {
+                        sb.AppendFormat("- {0} : {1}", error.PropertyName, error.ErrorMessage);
+                        sb.AppendLine();
+                     }
+                  }
+                  logger.Error(sb.ToString());
+                  return Json(new smsSurvery.Surveryer.Models.RequestResult("error", "save", sb.ToString()), JsonRequestBehavior.AllowGet);
+               }
                var mobileWebsiteLocation = GetAnonymousMobileSurveyLocation(surveyTemplate, this.ControllerContext.RequestContext);
                return Json(GetSurveyTemplateObject(clientSurveyTemplate.Id), JsonRequestBehavior.AllowGet);
             }
@@ -430,7 +440,11 @@ namespace smsSurvery.Surveryer.Controllers
                }
                surveyTemplate.QuestionSet = dbQuestions;
                db.SurveyTemplateSet.Add(surveyTemplate);
-               user.SurveyTemplateSet.Add(surveyTemplate);
+               //DA make sure that all users in the same company can view the new template
+               foreach (var u in user.Company.UserProfiles)
+               {
+                  u.SurveyTemplateSet.Add(surveyTemplate);
+               }               
                try
                {
                   db.SaveChanges();
@@ -456,6 +470,7 @@ namespace smsSurvery.Surveryer.Controllers
          }
          catch (Exception e)
          {
+            logger.Error(e);
             return Json(new smsSurvery.Surveryer.Models.RequestResult("error", "save", e.Message),
             JsonRequestBehavior.AllowGet);
          }
@@ -516,7 +531,11 @@ namespace smsSurvery.Surveryer.Controllers
 
          db.SurveyTemplateSet.Remove(surveyTemplate);
          var connectedUser = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-         connectedUser.SurveyTemplateSet.Remove(surveyTemplate);
+         //DA make sure that all users in the same company can view the new template
+         foreach (var u in connectedUser.Company.UserProfiles)
+         {
+            u.SurveyTemplateSet.Remove(surveyTemplate);
+         }         
          db.SaveChanges();
          return RedirectToAction("Index");
       }

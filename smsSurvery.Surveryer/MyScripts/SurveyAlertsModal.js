@@ -349,6 +349,9 @@ SurveyModals.AlertView = Backbone.View.extend({
    }
 });
 
+var isBlank = function (str) {
+   return (!str || /^\s*$/.test(str));
+}
 SurveyModals.AlertModel = Backbone.Model.extend({
    errors: {
       INVALID_DESCRIPTION: "invalid description",
@@ -402,11 +405,11 @@ SurveyModals.AlertModel = Backbone.Model.extend({
    validateAlert: function () {
       var errors = [];
       var hasErrors = false;
-      if (this.get("TriggerAnswer").length == 0) {
+      if (isBlank(this.get("TriggerAnswer"))) {
          hasErrors = true;
          errors.push(this.errors.INVALID_TRIGGER_ANSWER);
       }
-      if (this.get("Description").length == 0 || this.get("Description").length > 160) {
+      if (isBlank(this.get("Description")) || this.get("Description").length > 160) {
          hasErrors = true;
          errors.push(this.errors.INVALID_DESCRIPTION);
       }

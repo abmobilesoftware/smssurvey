@@ -83,7 +83,7 @@ SurveyModals.RatingsModalModel = Backbone.Model.extend({
    },
    defaults: {
       Ratings: "",
-      ScaleSize: "",
+      ScaleSize: ""
    },
    initialize: function () {
       this.initializeRatingScale(this.get("ScaleSize"));
@@ -162,6 +162,10 @@ SurveyModals.RatingsModalModel = Backbone.Model.extend({
    }
 });
 
+var isBlank = function (str) {
+   return (!str || /^\s*$/.test(str));
+}
+
 SurveyModals.RatingModel = Backbone.Model.extend({
    events: {
       VALIDATE: "validateEvent"
@@ -175,7 +179,7 @@ SurveyModals.RatingModel = Backbone.Model.extend({
       RatingLabel: ""
    },
    validate: function () {
-      if (this.get("RatingLabel").length == 0) {
+      if (isBlank(this.get("RatingLabel"))) {
          this.trigger(this.events.VALIDATE, this.errors.INVALID_RATING_LABEL);
          return false;
       }
