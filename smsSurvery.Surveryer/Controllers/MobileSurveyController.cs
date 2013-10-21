@@ -127,13 +127,11 @@ namespace smsSurvery.Surveryer.Controllers
                ViewBag.IsFeedback = 1;
                ViewBag.Location = location;
                ViewBag.LogoLocation = GetLogoUrl(surveyToRun);
-               {
+               if (tabletSurvey) {               
                   ViewBag.TabletView = true;
                   ViewBag.SurveyTitle = surveyToRun.Description;
                   return View("FillTablet");
-               }
-               else
-               {
+               } else {
                   ViewBag.SurveyTitle = "Feedback";
                   ViewBag.TabletView = false;
                   return View("Fill");

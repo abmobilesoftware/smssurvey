@@ -33,10 +33,6 @@ namespace smsSurvery.Surveryer
       private void RegisterCors(MvcCorsConfiguration corsConfig)
       {
          corsConfig.AllowAll();
-      }
-      private void RegisterCors(MvcCorsConfiguration corsConfig)
-      {
-         corsConfig.AllowAll();
-      }
+      }      
    }
 }
