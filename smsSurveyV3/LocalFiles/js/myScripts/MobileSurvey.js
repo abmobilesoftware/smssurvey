@@ -466,7 +466,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 	makeSendPersonalInfoRequest: function(dataToSendObject, successCallback, errorCallback) {
 		var dataToSend = JSON.stringify(dataToSendObject);
 		$.ajax({
-			url: "http://dev.txtfeedback.net/MobileSurvey/SaveRespondentInfo1",
+			url: "http://dev.txtfeedback.net/MobileSurvey/SaveRespondentInfo",
 			data: dataToSend,
 			type: 'post',
 			cache: false,
@@ -672,7 +672,7 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 	makeSaveRequest: function(sendDataObject, successCallback, errorCallback) {
 		var sendData = JSON.stringify(sendDataObject);
 		$.ajax({
-			url: "http://dev.txtfeedback.net/MobileSurvey/SaveSurvey1",
+			url: "http://dev.txtfeedback.net/MobileSurvey/SaveSurvey",
 			data: sendData,
 			crossDomain: true,
 			type: 'post',
