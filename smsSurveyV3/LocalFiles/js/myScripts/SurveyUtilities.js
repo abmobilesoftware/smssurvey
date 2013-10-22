@@ -47,7 +47,7 @@ var Timer = (function () {
 	var innerClass = {};
 	var noOfMouseMoves = 0;
 	// 
-	var mouseDetectionInterval = 30000; // ms
+	var mouseDetectionInterval = 20000; // ms
 	var restartInterval = 3000;
 	var timer1 = null;
 		

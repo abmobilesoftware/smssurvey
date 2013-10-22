@@ -189,7 +189,8 @@
 					"refreshSurvey", "startSurvey",
 					"updateSurveyLink", "releaseDevice",
 					"checkForInternetConnection",
-					"saveSurveysInDb");
+					"saveSurveysInDb",
+					"logOnSuccessfully");
 			
 			$('#loading-modal').modal({
 				  backdrop: 'static',
@@ -201,7 +202,7 @@
 			this.pushNotificationHandler.on(this.pushNotificationHandler.events.REFRESH, this.refreshSurvey);
 			this.pushNotificationHandler.on(this.pushNotificationHandler.events.UPDATE_LINK, this.updateSurveyLink);
 			this.pushNotificationHandler.on(this.pushNotificationHandler.events.RELEASE, this.releaseDevice);
-			$(document).on("pagebeforecreate", this.loadSurveyTemplate());			
+			//$(document).on("pagebeforecreate", this.loadSurveyTemplate());			
 			$("#logOnPage").on("pageinit", function() { 
 					self.checkForInternetConnection(
 						function(data, textStatus, jqXHR) {	
@@ -226,6 +227,40 @@
 			setInterval(this.saveSurveysInDb, 60000);
 			//this.refreshSurvey();			
 			
+		},
+		logOnSuccessfully: function() {
+			// If the local storage is empty first grab the data and then the template
+			var surveyDataWrapper;
+			if (this.storage.getItem("surveyData") != "undefined"
+				&& this.storage.getItem("surveyData") != "null" && 
+				this.storage.getItem("surveyData") != null  && 
+				this.storage.getItem("surveyData") != undefined) {
+				surveyData = JSON.parse(this.storage.getItem("surveyData"));
+				surveyDataWrapper = new SurveyBuilder.SurveyModel(surveyData);
+			} else {
+				surveyData = this.loadSurveyData();
+				this.storage.setItem("surveyData", JSON.stringify(surveyData));
+				surveyDataWrapper = surveyData;
+			}		
+			
+			if (this.storage.getItem("template") != "undefined"
+				&& this.storage.getItem("template") != "null" && 
+				this.storage.getItem("template") != null && 
+				this.storage.getItem("template") != undefined) {
+				template = this.storage.getItem("template");
+			} else {
+				template = this.loadTemplateFromServer(surveyDataWrapper.get("Id"));
+				this.storage.setItem("template", template);
+			}
+			$("body").append(template);
+			
+			// Global variables, this doesn't smells good
+			MobileSurvey.PersonalInformationErrors = {
+					INVALID_NAME: $("#mobileSurveyPersonalInfoNameError").val(),
+					INVALID_SURNAME: $("#mobileSurveyPersonalInfoSurnameError").val(),
+					INVALID_EMAIL: $("#mobileSurveyPersonalInfoEmailError").val()
+			};
+			this.startSurvey();			
 		},
 		loadSurveyTemplate: function() {			
 			var template;		
@@ -288,7 +323,7 @@
 				model : this.logOnModel
 			});
 			//this.releaseDevice();
-			this.logOnModel.on(this.logOnModel.events.LOGON_SUCCESS, this.startSurvey);			
+			this.logOnModel.on(this.logOnModel.events.LOGON_SUCCESS, this.logOnSuccessfully);			
 		},
 		startSurvey: function() {
 			var surveyResultID = -1;
@@ -447,9 +482,9 @@
 		    </ol>
 		    <!-- Carousel items -->
 		    <div class="carousel-inner">
-		    <div class="active item"><img src="images/pic1.jpg" /></div>
-		    <div class="item"><img src="images/pic2.jpg" /></div>
-		    <div class="item"><img src="images/pic3.jpg" /></div>
+		    <div class="active item"><img class="slider-img" src="images/Picture1.png" /></div>
+		    <div class="item"><img class="slider-img" src="images/Picture2.png" /></div>
+		    <div class="item"><img class="slider-img" src="images/Picture3.png" /></div>
 	    </div>
 	</div>
 	<!-- end slider -->		
