@@ -486,6 +486,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 		this.$el.css("top", value);
 	},
 	render: function () {
+		this._rendered = false;
 		this.$el.html(this.template());
 		this.dom = {
 				$ALERT_BOX: $(".alert", this.$el),
@@ -501,13 +502,16 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 				this.retakeSurvey);
 		this.sendPersonalnfoButton = new google.ui.FastButton($("#sendPersonalDetailsBtn", this.$el)[0],
 				this.sendPersonalInfo);
-		
+		this._rendered = true;
 		return this;
 	},
 	close: function() {
-		this.sendBtn.close();
-		this.retakeSurveyButton.reset();
-		this.sendPersonalnfoButton.reset();
+		//DA could be that the view was never rendered (if reset is called on expired timer)
+		if(this._rendered) {		
+			this.sendBtn.close();
+			this.retakeSurveyButton.reset();
+			this.sendPersonalnfoButton.reset();
+		}
 		//this.remove();
 	}
 });
