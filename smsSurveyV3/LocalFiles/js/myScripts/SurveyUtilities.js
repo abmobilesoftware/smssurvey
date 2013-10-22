@@ -51,6 +51,14 @@ var Timer = (function () {
 	var restartInterval = 3000;
 	var timer1 = null;
 		
+	innerClass.showSlider = function() {
+		$("#slider-modal").modal("show");
+		$("#slider-modal").css("visibility", "visible");
+		$('.carousel').carousel();
+	};
+	innerClass.hideSlider = function() {
+		$("#slider-modal").modal("hide");
+	};
 	innerClass.events = {
 		RESTART_SURVEY : "restartSurveyEvent"	
 	};
@@ -84,6 +92,7 @@ var Timer = (function () {
 	    	document.removeEventListener("touchstart", innerClass.trackMouseMovement);
 	    	innerClass.stopTimer();
 	    	innerClass.startSurvey();
+	    	innerClass.showSlider();
 	    } else {
 	    	noOfMouseMoves = 0;
 	    }
@@ -94,5 +103,6 @@ var Timer = (function () {
 	innerClass.startSurvey = function() {
 		$(innerClass).trigger(innerClass.events.RESTART_SURVEY);
 	}
+	$(document).on("touchstart", innerClass.hideSlider);
 	return innerClass;
 })();

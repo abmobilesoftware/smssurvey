@@ -47,14 +47,14 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
    },
    events: {
       "click .numeric-radio": "numericScaleSelected",
-      "keyup .comment": "keyPressListener"
+      "keydown .comment": "keyPressListener"
    },
    initialize: function () {
       this.questionMobileTemplate = _.template($("#question-mobile-template").html());
       this.questionConstants = SurveyUtilities.Utilities.CONSTANTS_QUESTION;
 
       _.bindAll(this, "render", "toggleDisplay", "updateQuestionDisplay", "updateAnswer",
-         "numericScaleSelected");
+         "numericScaleSelected", "keyPressListener");
       this.model.on("change:ValidAnswer", this.updateQuestionDisplay);
    },
    render: function () {
@@ -125,9 +125,9 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
    },
    numericScaleSelected: function (event) {
       if ($(event.currentTarget).children("input").val() < 3) {
-         $(".comment", this.$el).show();
+         $(".additionalInfo", this.$el).show();
       } else {
-         $(".comment", this.$el).hide();
+         $(".additionalInfo", this.$el).hide();
       }
    },
    keyPressListener: function (event) {
@@ -259,7 +259,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
       _.bindAll(this, "setWidth", "show",
           "getHeight", "render", "sendPersonalInfo",
           "setSurveyResultId", "clearErrorsFromFields",
-          "validationError");
+          "validationError", "dontSubmitOnEnter", "sendPersonalInfoOnEnter");
       this.template = _.template($("#thankyoupage-template").html());
       this.render();
    },
@@ -348,7 +348,9 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
       this.dom.$ALERT_BOX.show();      
    },
    sendPersonalInfo: function (event) {
+      event.preventDefault();
       if (this.validateData()) {
+         loader.showLoader();
          $('#surveyUserInfo').slideToggle('slow');
          this.sendBtn.setTitle($("#personalInfoSubmitted", this.$el).val());
          this.sendBtn.disable();
@@ -368,7 +370,13 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
             cache: false,
             dataType: "json",
             contentType: 'application/json',
-            traditional: true
+            traditional: true,
+            success: function () {
+              loader.hideLoader();
+            },
+            error: function () {
+               loader.hideLoader();
+            }
          });
       }
    },
@@ -387,7 +395,29 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
       this.sendBtn = new MobileSurvey.ButtonView({ el: $("#sendPersonalDetailsBtn", this.$el) });
 
       this.sendBtn.enable();
+      //make sure we don't submit on enter
+      $('#name').off("keydown", this.dontSubmitOnEnter);
+      $('#name').on("keydown", this.dontSubmitOnEnter);
+      $('#surname').off("keydown", this.dontSubmitOnEnter);
+      $('#surname').on("keydown", this.dontSubmitOnEnter);
+      $('#email').off("keydown", this.dontSubmitOnEnter);
+      $('#email').on("keydown", this.dontSubmitOnEnter);
+      $('#telephone').off("keydown", this.sendPersonalInfoOnEnter);
+      $('#telephone').on("keydown", this.sendPersonalInfoOnEnter);
+
       return this.$el;
+   },
+   sendPersonalInfoOnEnter: function (event) {      
+      if (event.keyCode == 13) {
+         this.sendPersonalInfo(event)
+         return false;
+      }
+   },
+   dontSubmitOnEnter: function (event) {
+      if (event.keyCode == 13) {
+         event.preventDefault();
+         return false;
+      }
    }
 });
 

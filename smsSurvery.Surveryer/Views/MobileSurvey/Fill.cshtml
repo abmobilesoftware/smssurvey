@@ -1,23 +1,108 @@
 ﻿@using smsSurvery.Surveryer.GlobalResources
 @{
-   Layout = null;
+    Layout = null;
 }
 
 <!DOCTYPE html>
 
 <html>
 <head>
-   <meta name="viewport" content="width=device-width" />
-   <title>@Global.MobileSurveyPageTitle</title>
-   <link href='http://fonts.googleapis.com/css?family=Arvo:400,700' rel='stylesheet' type='text/css'>
-    <script type="text/javascript">
-       var SurveyGlobals = SurveyGlobals || {};
-       SurveyGlobals.tabletView = false;
-   </script>
-</head>   
+    <meta name="viewport" content="width=device-width" />
+    <title>@Global.MobileSurveyPageTitle</title>   
+    @Styles.Render("~/bundles/MobileSurveyCss")
+    <link href='http://fonts.googleapis.com/css?family=Arvo:400,700' rel='stylesheet' type='text/css'>
+<script id="mobileSurveyTemplate" type="text/template">   
+   <div class="questionsArea">
 
-@{Html.RenderPartial("MobileSurvey");}
+   </div>
+</script>
 
-@Styles.Render("~/bundles/MobileSurveyCss")
-@Scripts.Render("~/bundles/jquery")
-@Scripts.Render("~/bundles/mobilesurvey")
+<script id="question-mobile-template" type="text/template">
+        <div class="question">
+            <h4 class="questionTitle"> <%= QuestionNumber %>. <%= Text %> </h4>            
+            <div class="answerArea">
+               <%
+               if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_YES_NO) { %>
+                   <input type="radio" id="y-<%= QuestionNumber %>" name="yes-no-answer<%= Id %>" value="1">
+                   <label for="y-<%= QuestionNumber %>">@Global.MobileSurveyYesLabel</label>
+                   <input type="radio" id="n-<%= QuestionNumber %>" name="yes-no-answer<%= Id %>" value="2">
+                   <label for="n-<%= QuestionNumber %>">@Global.MobileSurveyNoLabel</label>
+               <% 
+               } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_FREE_TEXT) {
+               %>
+                   <textarea class="answer comment"></textarea>
+               <%
+               } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_RATING) {
+               %>
+                
+               <%
+               } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_MANY_FROM_MANY) { 
+                  _.each(Answers, function(answer, index) {  %>                     
+                     <input type="checkbox" id="m-a-<%= answer.AnswerIdentifier %>" class="css-checkbox"  value="<%= answer.AnswerIdentifier %>" />
+                     <label for="m-a-<%= answer.AnswerIdentifier %>" name="multiple-answers-label"  class="css-label"><%=answer.AnswerLabel %></label>  
+               <% });
+               } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY) {
+               %>     
+                     <select class="answer list" name="answer">
+                        <option value="noValue">@Global.MobileSurveySelectOneFromManyLabel</option>
+                    <% _.each(Answers, function(value, key, list) { %>
+                        <option value="<%= value.AnswerIdentifier %>"><%= value.AnswerLabel %></option>
+                    <% }); %> 
+                </select>
+               <%
+                } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_NUMERIC) {
+                        var numericValues = ValidAnswers.split(";");
+                        var numericLabels = ValidAnswersDetails.split(";");
+                        if (numericValues.length > 0) {
+                     %>
+                     <div class="scale-legend-wrapper">
+                        <div class="scale-legend">
+                           <div class="low-scale"><< <%= numericLabels[0] %></div>
+                           <div class="high-scale"><%= numericLabels[numericLabels.length - 1] %> >></div>
+                           <div class="clear"></div>
+                        </div>
+                     </div>
+                        <div class="scale-wrapper">
+                        <%
+                           for (var i=0; i < numericValues.length; ++i) {
+                        %>                        
+                           <div class="numeric-entry">                           
+                              <label for="radio<%= numericValues[i] %><%= Id %>" class="numeric-value-label">
+                                 <span class="numeric-value"><%= numericValues[i] %></span>
+                              </label>
+                              <input class="numeric-radio" id="radio<%= numericValues[i] %><%= Id %>" type="radio" value="<%= numericValues[i] %>" name="numeric-scale-answer<%= Id %>" />                                                
+                           </div>
+                       <%
+                           } 
+                       }%>
+                           <div class="clear"></div>                           
+                        </div>
+                        <fieldset class='additionalInfo invisibleByDefault'>
+                           <legend class='stars-additional-info'>@Global.MobileSurveyRatingAddionalInfoLabel</legend><textarea  class='comment'></textarea>
+                        </fieldset>
+               <%   
+                  } 
+               %>      
+
+            </div>
+        </div>
+</script>
+
+<script type="text/template" id="star-template">
+        <% if (Active) { %>
+            <a href="#" class="starImg starActive" src="/Content/images/stars.png" />
+
+            <% } else { %>
+            <a href="#"  class="starImg" src="/Content/images/stars.png" />
+            <% } %>
+</script>
+
+<script type="text/template" id="star-bar-template">
+   <div class="starsArea">
+
+   </div>
+   <fieldset class='additionalInfo invisibleByDefault'>
+      <legend class='stars-additional-info'>@Global.MobileSurveyRatingAddionalInfoLabel</legend><textarea  class='comment'></textarea>
+   </fieldset>
+  <input type='hidden' class='answer' value='noValue' />
+</script>
