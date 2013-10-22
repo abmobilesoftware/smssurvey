@@ -9,8 +9,7 @@ SurveyElements.StarView = Backbone.View.extend({
    },
    render: function () {
       this.$el.html(this.template(this.model.toJSON()));
-      $(".starImg", this.$el).off();
-      var starButton = new google.ui.FastButton($(".starImg", this.$el)[0], this.click);
+      var starButton = new google.ui.FastButton($(".starImg", this.$el)[0], this.click)
       return this;
    },
    activeStatusChanged: function()

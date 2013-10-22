@@ -6,9 +6,9 @@ SurveyElements.StarView = Backbone.View.extend({
       "click .starImg": "click"
    },*/
    initialize: function () {
-      _.bindAll(this, "click", "render","activeStatusChanged");
+      _.bindAll(this, "click", "render","activeStatusChanged", "close");
       this.template = _.template($("#star-template").html());
-      this.model.on("change:Active", this.activeStatusChanged);
+      this.listenTo(this.model,"change:Active", this.activeStatusChanged);
       this.starButton = null;
    },
    render: function () {
@@ -30,8 +30,10 @@ SurveyElements.StarView = Backbone.View.extend({
       this.model.trigger("starClickedEvent", this.model);
       Backbone.trigger("touch");
    },
-   close: function() {
-	   $(".starImg", this.$el)[0].removeEventListener("click", this.starButton, false);
+   close: function() {	
+	   //to make sure we clean up all the handlers for the FastButton call reset
+	   this.starButton.reset();
+	   //all events declared in events {} and all events to which we binded with listenTo will be removed
 	   this.remove();
    }
 });
@@ -67,7 +69,7 @@ SurveyElements.StarBarView = Backbone.View.extend({
          starsArray.push({ id: i, Active: false });
       }
       this.starsCollection = new SurveyElements.StarsCollection(starsArray);
-      this.starsCollection.on("resultEvent", this.starClicked);
+      this.listenTo(this.starsCollection, "resultEvent", this.starClicked);
       this.result = -1;
       this.starViews = [];
       this.render();      
@@ -75,14 +77,19 @@ SurveyElements.StarBarView = Backbone.View.extend({
    render: function () {
       this.$el.append(this.template());
       this.starViews.length = 0;
-      
+      //to avoid DOM reflows we append only the full starBar
+      //http://ozkatz.github.io/avoiding-common-backbonejs-pitfalls.html?tagref=js
+      var starsContainer = document.createDocumentFragment();
       _.each(this.starsCollection.models, function (value, index, list) {
          var starView = new SurveyElements.StarView({ model: value });
-         $(".starsArea",this.$el).append(starView.render().el);
+         starsContainer.appendChild(starView.render().el);
          this.starViews.push(starView);
       }, this);
-      $(".starsArea", this.$el).append("<div class='clear'></div>");
-
+      //reason for the following line: http://stackoverflow.com/questions/9284117/inserting-arbitrary-html-into-a-documentfragment
+      var separator = document.createElement('tmp');
+      separator.innerHTML = "<div class='clear'></div>";      
+      starsContainer.appendChild(separator.firstChild); //no loop required as we only have 1 child
+      $(".starsArea",this.$el).append(starsContainer);      
       
       this.dom = {
          $ADDITIONAL_INFO: $(".comment", this.$el),
@@ -91,6 +98,7 @@ SurveyElements.StarBarView = Backbone.View.extend({
       if (this.dom.$ANSWER.val() == Question.noValueAnswer) {
          this.dom.$ADDITIONAL_INFO.hide();
       }
+      return this;
    },
    //TODO DA - don't hardcode the 2 value - it should be configurable (we should move this at db level as WhyThreshold)
    starClicked: function (value) {
@@ -113,10 +121,13 @@ SurveyElements.StarBarView = Backbone.View.extend({
       this.dom.$ADDITIONAL_INFO.val(pAdditionalInfo);
    },
    close: function() {
+	   //dispose of all the child views
 	   _.each(this.starViews, function(starView) {
 		   starView.close();		   
 	   });
 	   this.starViews.length = 0;
+	 //all events declared in events {} and all events to which we binded with listenTo will be removed
+	   this.remove();
    }
 });
 
