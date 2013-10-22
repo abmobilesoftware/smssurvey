@@ -547,7 +547,6 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 		this.questionsPage.refresh();		
 		$.mobile.changePage("#questionsPage");
 		this.thankYouPage.close();
-		Timer.startTimer();
 	},
 	goToThankYouPage: function (surveyResult) {
 		//alert("success");

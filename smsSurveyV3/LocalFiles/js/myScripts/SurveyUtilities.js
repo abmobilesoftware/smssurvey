@@ -58,11 +58,12 @@ var Timer = (function () {
 	};
 	innerClass.hideSlider = function() {
 		$("#slider-modal").modal("hide");
+		innerClass.startTimer();
 	};
 	innerClass.events = {
 		RESTART_SURVEY : "restartSurveyEvent"	
 	};
-	innerClass.startTimer = function (filename) {
+	innerClass.startTimer = function () {
 		noOfMouseMoves = 0;
 		//alert("Valoarea de la timer 1 inainte de stop " + timer1);
 		if (timer1 != null && timer1 != undefined) {
@@ -103,6 +104,6 @@ var Timer = (function () {
 	innerClass.startSurvey = function() {
 		$(innerClass).trigger(innerClass.events.RESTART_SURVEY);
 	}
-	$(document).on("touchstart", innerClass.hideSlider);
+	$(document).on("click", innerClass.hideSlider);
 	return innerClass;
 })();
