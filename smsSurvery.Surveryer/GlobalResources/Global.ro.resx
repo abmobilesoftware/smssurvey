@@ -181,7 +181,7 @@
     <value>Prenume</value>
   </data>
   <data name="MobileSurveyRatingAddionalInfoLabel" xml:space="preserve">
-    <value>Vă rugăm să vă argumentați alegerea:</value>
+    <value>Vă rugăm să vă argumentați alegerea pentru a deveni mai buni</value>
   </data>
   <data name="MobileSurveySelectOneFromManyLabel" xml:space="preserve">
     <value>Selectati un raspuns</value>

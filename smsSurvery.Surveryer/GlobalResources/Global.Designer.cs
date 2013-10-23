@@ -286,7 +286,7 @@ namespace smsSurvery.Surveryer.GlobalResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please qualify your answer:.
+        ///   Looks up a localized string similar to Qualify your answer and help us improve.
         /// </summary>
         public static string MobileSurveyRatingAddionalInfoLabel {
             get {
