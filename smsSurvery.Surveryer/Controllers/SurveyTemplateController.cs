@@ -189,6 +189,8 @@ namespace smsSurvery.Surveryer.Controllers
       public JsonResult SaveSurvey(
          ClientSurveyTemplate clientSurveyTemplate)
       {
+         logger.Error("blabla");
+         return null;
          //DA TODO we should have some check that the new language is a valid language identifier ( global-LOCAL)
          try
          {

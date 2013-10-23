@@ -331,6 +331,15 @@ namespace smsSurvery.Surveryer.GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Please reply.
+        /// </summary>
+        public static string SmsQuestionFreeTextSuffix {
+            get {
+                return ResourceManager.GetString("SmsQuestionFreeTextSuffix", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Q{0}/{1}: .
         /// </summary>
         public static string SmsQuestionIndexTemplate {

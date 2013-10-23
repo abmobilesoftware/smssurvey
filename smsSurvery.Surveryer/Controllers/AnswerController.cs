@@ -426,7 +426,9 @@ namespace smsSurvery.Surveryer.Controllers
            switch (q.Type)
            {
               case ReportsController.cFreeTextTypeQuestion:
-                 return prefix + q.Text;
+                 //DA see tests for expected answer
+                 var callForFreeTextQuestion = GlobalResources.Global.SmsQuestionFreeTextSuffix;
+                 return prefix + q.Text + System.Environment.NewLine + callForFreeTextQuestion;
               case ReportsController.cNumericTypeQuestion:
                  try
                  {

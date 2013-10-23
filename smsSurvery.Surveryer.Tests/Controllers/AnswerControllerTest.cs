@@ -162,5 +162,45 @@ Raspundeti cu:
          Assert.AreEqual(expectedAnswer, result);
       }
 
+
+      [TestMethod]
+      public void PrepareSMSTextForQuestion_En_FreeText_NotFirstQuestion_QuestionConformsToTemplate()
+      {
+         var expectedAnswer =
+@"Q1/5: What did we do good?
+Please reply";
+         var q = new Question();
+         q.Order = 1;
+         q.Text = "What did we do good?";
+         q.Type = ReportsController.cFreeTextTypeQuestion;
+         q.ValidAnswers = "1;2;3;4;5";
+         q.ValidAnswersDetails = "Very bad;Bad;OK;Good;Very good";
+         var intro = "Hello";
+         var totalNrOfQuestions = 5;
+         var isFirstQuestion = false;
+         System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture("en-US");
+         var result = AnswerController.PrepareSMSTextForQuestion(q, totalNrOfQuestions, isFirstQuestion, intro);
+         Assert.AreEqual(expectedAnswer, result);
+      }
+
+      [TestMethod]
+      public void PrepareSMSTextForQuestion_Ro_FreeText_NotFirstQuestion_QuestionConformsToTemplate()
+      {
+         var expectedAnswer =
+@"Intrebarea 1/5: Text intrebare
+Va rugam sa raspundeti";
+         var q = new Question();
+         q.Order = 1;
+         q.Text = "Text intrebare";
+         q.Type = ReportsController.cFreeTextTypeQuestion;
+         q.ValidAnswers = "1;2;3;4;5";
+         q.ValidAnswersDetails = "Very bad;Bad;OK;Good;Very good";
+         var intro = "Hello";
+         var totalNrOfQuestions = 5;
+         var isFirstQuestion = false;
+         System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture("ro-RO");
+         var result = AnswerController.PrepareSMSTextForQuestion(q, totalNrOfQuestions, isFirstQuestion, intro);
+         Assert.AreEqual(expectedAnswer, result);
+      }
    }
 }

@@ -233,4 +233,7 @@
   <data name="SmsQuestionNumericSuffixTemplate" xml:space="preserve">
     <value>Reply with:</value>
   </data>
+  <data name="SmsQuestionFreeTextSuffix" xml:space="preserve">
+    <value>Please reply</value>
+  </data>
 </root>
