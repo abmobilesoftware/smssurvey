@@ -54,7 +54,7 @@ var Timer = (function () {
 	innerClass.showSlider = function() {
 		$("#slider-modal").modal("show");
 		$("#slider-modal").css("visibility", "visible");
-		$('.carousel').carousel();
+		$('.carousel').carousel();	
 	};
 	innerClass.hideSlider = function() {
 		$("#slider-modal").modal("hide");
@@ -73,8 +73,10 @@ var Timer = (function () {
 		}
 		//alert("Valoarea de la timer 1 dupa stop " + timer1);
 		//DA make sure we only listen once to each event
-		document.removeEventListener("touchend", innerClass.trackMouseMovement);
-		document.addEventListener("touchend", innerClass.trackMouseMovement);
+		document.removeEventListener("touchstart", innerClass.trackMouseMovement);
+		document.addEventListener("touchstart", innerClass.trackMouseMovement);
+		document.removeEventListener("keydown", innerClass.trackMouseMovement);
+		document.addEventListener("keydown", innerClass.trackMouseMovement);
 		Backbone.off("touch", innerClass.trackMouseMovement);
 		Backbone.on("touch", innerClass.trackMouseMovement);
 		timer1 = setInterval(innerClass.checkIfUserIsActive, mouseDetectionInterval);	      
@@ -91,6 +93,7 @@ var Timer = (function () {
 		var isUserAwayFromPage = noOfMouseMoves == 0 ? true : false;
 	    if (isUserAwayFromPage) {
 	    	document.removeEventListener("touchstart", innerClass.trackMouseMovement);
+	    	document.removeEventListener("keydown", innerClass.trackMouseMovement);
 	    	innerClass.stopTimer();
 	    	innerClass.startSurvey();
 	    	innerClass.showSlider();
@@ -104,6 +107,6 @@ var Timer = (function () {
 	innerClass.startSurvey = function() {
 		$(innerClass).trigger(innerClass.events.RESTART_SURVEY);
 	}
-	$(document).on("click", innerClass.hideSlider);
+	$(document).on("touchstart", innerClass.hideSlider);
 	return innerClass;
 })();
