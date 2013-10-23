@@ -92,7 +92,13 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
             {
                success: function (model, response, options) {
                   if (response.Result == "error") {
-                     self.dom.$NOTIFICATION.text("Errors while saving.");
+                     if (response.SurveyTemplate) {
+                        self.dom.$NOTIFICATION.text(response.Details);
+                     }
+                     else {
+                        self.dom.$NOTIFICATION.text("Errors while saving.");
+                     }
+                     
                      self.dom.$ALERT_BOX.removeClass("alert-success");
                      self.dom.$ALERT_BOX.addClass("alert-error");
                   } else {

@@ -189,13 +189,13 @@ namespace smsSurvery.Surveryer.Controllers
       public JsonResult SaveSurvey(
          ClientSurveyTemplate clientSurveyTemplate)
       {
-         logger.Error("blabla");
-         return null;
          //DA TODO we should have some check that the new language is a valid language identifier ( global-LOCAL)
          try
          {
             UserProfile user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             SurveyTemplate surveyTemplate = null;
+            bool performedAllOpertions = true;
+            List<String> saveDetails = new List<string>();
             if (clientSurveyTemplate.Id >= 0)
             {
                surveyTemplate = db.SurveyTemplateSet.Find(clientSurveyTemplate.Id);
@@ -215,10 +215,26 @@ namespace smsSurvery.Surveryer.Controllers
                   for (var i = dbQuestions.Count - 1; i > -1; --i)
                   {
                      {
+                        //if an older question is no longer present in the question list, remove it
                         var clientQuestionResult = clientQuestions.Where(x => x.Id.Equals(dbQuestions.ElementAt(i).Id));
                         if (clientQuestionResult.Count() == 0)
                         {
-                           db.QuestionSet.Remove(dbQuestions.ElementAt(i));
+                           /* DA: possible threats
+                            * we might have a SR where CurrentQuestion is still the question we want to delete
+                            *    in this scenario we cannot delete the question - what we can do is perform all the other changes and the notify the user that this change was not performed
+                            */
+                           var q =dbQuestions.ElementAt(i);
+                           var srWithCurrentQuestionTheQuestionWeWantToDelete = db.SurveyResultSet.Where(sr=> sr.CurrentQuestion_Id == q.Id);
+                           if (srWithCurrentQuestionTheQuestionWeWantToDelete.Count() == 0)
+                           {
+                              db.QuestionSet.Remove(q);
+                           }
+                           else
+                           {
+                              performedAllOpertions = false;
+                              saveDetails.Add(String.Format("Could not delete question {0} as we still have surveys in progress", q.Order));
+                           }
+                           
                         }
                      }
                   }
@@ -378,8 +394,24 @@ namespace smsSurvery.Surveryer.Controllers
                   logger.Error(sb.ToString());
                   return Json(new smsSurvery.Surveryer.Models.RequestResult("error", "save", sb.ToString()), JsonRequestBehavior.AllowGet);
                }
+               catch (EntitySqlException ex)
+               {
+                  logger.Error(ex);
+               }
                var mobileWebsiteLocation = GetAnonymousMobileSurveyLocation(surveyTemplate, this.ControllerContext.RequestContext);
-               return Json(GetSurveyTemplateObject(clientSurveyTemplate.Id), JsonRequestBehavior.AllowGet);
+               if (!performedAllOpertions)
+               {
+                  //we could not save all the changes so we notify the user about this
+                  var details = String.Join("\n", saveDetails);
+                  var newSR = GetSurveyTemplateObject(surveyTemplate.Id);
+                  var result = new smsSurvery.Surveryer.Models.RequestResult("error", "save", details, "", newSR);
+                  return Json(result, JsonRequestBehavior.AllowGet);
+               }
+               else
+               {                  
+                  return Json(GetSurveyTemplateObject(clientSurveyTemplate.Id), JsonRequestBehavior.AllowGet);
+               }
+               
             }
             else
             {
@@ -467,7 +499,17 @@ namespace smsSurvery.Surveryer.Controllers
                   return Json(new smsSurvery.Surveryer.Models.RequestResult("error", "save", sb.ToString()), JsonRequestBehavior.AllowGet);
                }
                var mobileWebsiteLocation = GetAnonymousMobileSurveyLocation(surveyTemplate, this.ControllerContext.RequestContext);
-               return Json(GetSurveyTemplateObject(surveyTemplate.Id), JsonRequestBehavior.AllowGet);
+               if (!performedAllOpertions)
+               {
+                  //we could not save all the changes so we notify the user about this
+                  var details =String.Join("\n",saveDetails);
+                  var newSR = GetSurveyTemplateObject(surveyTemplate.Id);
+                  var result = new smsSurvery.Surveryer.Models.RequestResult("error", "save", details, "", newSR);
+                  return Json(result, JsonRequestBehavior.AllowGet);
+               }
+               else {
+                  return Json(GetSurveyTemplateObject(surveyTemplate.Id), JsonRequestBehavior.AllowGet);
+               }
             }
          }
          catch (Exception e)
