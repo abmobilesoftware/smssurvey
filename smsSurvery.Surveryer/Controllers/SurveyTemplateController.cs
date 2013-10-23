@@ -232,7 +232,7 @@ namespace smsSurvery.Surveryer.Controllers
                            else
                            {
                               performedAllOpertions = false;
-                              saveDetails.Add(String.Format("Could not delete question {0} as we still have surveys in progress", q.Order));
+                              saveDetails.Add(String.Format("Could not delete question {0} as we still have surveys in progress. Refresh (F5) to see what was saved", q.Order));
                            }
                            
                         }
