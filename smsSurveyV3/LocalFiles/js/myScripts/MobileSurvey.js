@@ -291,10 +291,11 @@ var isBlank = function (str) {
 
 MobileSurvey.ThankYouPageView = Backbone.View.extend({
 	initialize: function () {
-		_.bindAll(this, "setWidth", "show",
+		_.bindAll(this, "setWidth", 
 				"getHeight", "render", "sendPersonalInfo",
 				"setSurveyResultId", "clearErrorsFromFields",
-				"validationError", "retakeSurvey", "sendPersonalInfoResponse","close");
+				"validationError", "retakeSurvey", "sendPersonalInfoResponse",
+				"close", "reset");
 		this.template = _.template($("#thankyoupage-template").html());
 		this.pageEvents = {
 			RETAKE_SURVEY : "retakeSurveyEvent"	
@@ -313,16 +314,15 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 	getWidth: function() {
 		return this.$el.outerWidth();
 	},
-	show: function () {
-		this.$el.show();
-		$('#surveyUserInfo').show();
-		this.sendBtn.setTitle($("#sendPersonalDetails", this.$el).val());
-		this.sendBtn.enable();
-		
+	reset: function () {
+		this.clearErrorsFromFields();
 		$('#name').val("");
 		$("#surname").val("");
 		$('#email').val("");
-		$('#telephone').val("");
+		$('#telephone').val("");		
+		this.sendBtn.setTitle($("#sendPersonalDetails", this.$el).val());
+		this.sendBtn.enable();
+		$('#surveyUserInfo').show();
 	},
 	hide: function() {
 		this.dom.$ALERT_BOX.hide();      
@@ -363,13 +363,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 		this.clearErrorsFromFields();
 
 		if (!validData) {
-			self.validationError(errors);
-			//var errorsText = "<span><strong>Check the following errors:</strong><span><br/>";
-			//for (var i = 0; i<errors.length; ++i) {
-			//   errorsText += "<span>" + (i+1) + ". " + errors[i] + "</span><br/>";
-			//}
-			//this.dom.$VALIDATION_BOX.html(errorsText)
-			//this.dom.$ALERT_BOX.show();
+			self.validationError(errors);			
 		}
 		return validData;
 	},
@@ -486,33 +480,38 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 		this.$el.css("top", value);
 	},
 	render: function () {
-		this._rendered = false;
-		this.$el.html(this.template());
-		this.dom = {
-				$ALERT_BOX: $(".alert", this.$el),
-				$VALIDATION_BOX: $(".personal-info-validation", this.$el),
-				$THANK_YOU_MESSAGE: $("#thankYouMessageContent", this.$el),
-				$PAGE_TITLE: $("#pageTitle", this.$el)
+		if(!this._rendered) { 
+			this._rendered = false;
+			this.$el.html(this.template());
+			this.dom = {
+					$ALERT_BOX: $(".alert", this.$el),
+					$VALIDATION_BOX: $(".personal-info-validation", this.$el),
+					$THANK_YOU_MESSAGE: $("#thankYouMessageContent", this.$el),
+					$PAGE_TITLE: $("#pageTitle", this.$el)
+			}
+			this.sendBtn = new MobileSurvey.ButtonView({ el: $("#sendPersonalDetailsBtn", this.$el) });
+			this.dom.$THANK_YOU_MESSAGE.html(this.thankYouMessage);
+			this.dom.$PAGE_TITLE.html(this.surveyTitle);
+			this.sendBtn.enable();
+			this.retakeSurveyButton = new google.ui.FastButton($(".retakeBtn", this.$el)[0],
+					this.retakeSurvey);
+			this.sendPersonalnfoButton = new google.ui.FastButton($("#sendPersonalDetailsBtn", this.$el)[0],
+					this.sendPersonalInfo);
+			this._rendered = true;
 		}
-		this.sendBtn = new MobileSurvey.ButtonView({ el: $("#sendPersonalDetailsBtn", this.$el) });
-		this.dom.$THANK_YOU_MESSAGE.html(this.thankYouMessage);
-		this.dom.$PAGE_TITLE.html(this.surveyTitle);
-		this.sendBtn.enable();
-		this.retakeSurveyButton = new google.ui.FastButton($(".retakeBtn", this.$el)[0],
-				this.retakeSurvey);
-		this.sendPersonalnfoButton = new google.ui.FastButton($("#sendPersonalDetailsBtn", this.$el)[0],
-				this.sendPersonalInfo);
-		this._rendered = true;
+		else {
+			this.reset();
+		}
 		return this;
 	},
 	close: function() {
 		//DA could be that the view was never rendered (if reset is called on expired timer)
 		if(this._rendered) {		
-			this.sendBtn.close();
-			this.retakeSurveyButton.reset();
-			this.sendPersonalnfoButton.reset();
-		}
-		//this.remove();
+			//this.sendBtn.close();
+			//this.retakeSurveyButton.reset();
+			//this.sendPersonalnfoButton.reset();
+			//this.remove();
+		}		
 	}
 });
 

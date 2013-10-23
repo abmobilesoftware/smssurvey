@@ -2,9 +2,6 @@
 SurveyElements.Star = Backbone.Model.extend({});
 SurveyElements.StarView = Backbone.View.extend({
    className: "star",
-   /*events: {
-      "click .starImg": "click"
-   },*/
    initialize: function () {
       _.bindAll(this, "click", "render","activeStatusChanged", "close");
       this.template = _.template($("#star-template").html());
@@ -87,8 +84,10 @@ SurveyElements.StarBarView = Backbone.View.extend({
       }, this);
       //reason for the following line: http://stackoverflow.com/questions/9284117/inserting-arbitrary-html-into-a-documentfragment
       var separator = document.createElement('tmp');
+      document.body.appendChild(separator);
       separator.innerHTML = "<div class='clear'></div>";      
       starsContainer.appendChild(separator.firstChild); //no loop required as we only have 1 child
+      document.body.removeChild(separator);
       $(".starsArea",this.$el).append(starsContainer);      
       
       this.dom = {
