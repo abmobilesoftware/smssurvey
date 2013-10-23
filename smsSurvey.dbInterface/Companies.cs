@@ -36,5 +36,6 @@ namespace smsSurvey.dbInterface
         public virtual ICollection<Tags> Tags { get; set; }
         public virtual ICollection<UserProfile> UserProfiles { get; set; }
         public virtual ICollection<Device> Device { get; set; }
+        public virtual TabletSettings TabletSettings { get; set; }
     }
 }

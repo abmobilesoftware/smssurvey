@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, and Azure
 -- --------------------------------------------------
--- Date Created: 10/17/2013 09:42:41
+-- Date Created: 10/22/2013 15:59:20
 -- Generated from EDMX file: D:\Work\Txtfeedback\Repository Git\smsSurvey\smssurvey\smsSurvey.dbInterface\smsSurvey.edmx
 -- --------------------------------------------------
 
@@ -17,71 +17,23 @@ GO
 -- Dropping existing FOREIGN KEY constraints
 -- --------------------------------------------------
 
-IF OBJECT_ID(N'[dbo].[FK_CompaniesDevice]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[DeviceSet] DROP CONSTRAINT [FK_CompaniesDevice];
-GO
-IF OBJECT_ID(N'[dbo].[FK_CompanyTag]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Tags] DROP CONSTRAINT [FK_CompanyTag];
-GO
 IF OBJECT_ID(N'[dbo].[FK_CustomerSurveyResult]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[SurveyResultSet] DROP CONSTRAINT [FK_CustomerSurveyResult];
-GO
-IF OBJECT_ID(N'[dbo].[FK_QuestionAlertAlertNotification]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[AlertNotificationSet] DROP CONSTRAINT [FK_QuestionAlertAlertNotification];
-GO
-IF OBJECT_ID(N'[dbo].[FK_QuestionAlertSetTags]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[QuestionAlertSet] DROP CONSTRAINT [FK_QuestionAlertSetTags];
-GO
-IF OBJECT_ID(N'[dbo].[FK_QuestionQuestionAlert]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[QuestionAlertSet] DROP CONSTRAINT [FK_QuestionQuestionAlert];
-GO
-IF OBJECT_ID(N'[dbo].[FK_QuestionResult]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[ResultSet] DROP CONSTRAINT [FK_QuestionResult];
-GO
-IF OBJECT_ID(N'[dbo].[fk_RoleId]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[webpages_UsersInRoles] DROP CONSTRAINT [fk_RoleId];
-GO
-IF OBJECT_ID(N'[dbo].[FK_RunningSurvey]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[CustomerSet] DROP CONSTRAINT [FK_RunningSurvey];
-GO
-IF OBJECT_ID(N'[dbo].[FK_SurveyPlanQuestion]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[QuestionSet] DROP CONSTRAINT [FK_SurveyPlanQuestion];
 GO
 IF OBJECT_ID(N'[dbo].[FK_SurveyPlanSurveyResult]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[SurveyResultSet] DROP CONSTRAINT [FK_SurveyPlanSurveyResult];
 GO
-IF OBJECT_ID(N'[dbo].[FK_SurveyResultQuestion]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[SurveyResultSet] DROP CONSTRAINT [FK_SurveyResultQuestion];
+IF OBJECT_ID(N'[dbo].[FK_QuestionResult]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[ResultSet] DROP CONSTRAINT [FK_QuestionResult];
 GO
 IF OBJECT_ID(N'[dbo].[FK_SurveyResultResult]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[ResultSet] DROP CONSTRAINT [FK_SurveyResultResult];
 GO
-IF OBJECT_ID(N'[dbo].[FK_SurveyResultTags_SurveyResult]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[SurveyResultTags] DROP CONSTRAINT [FK_SurveyResultTags_SurveyResult];
+IF OBJECT_ID(N'[dbo].[FK_webpages_UsersInRoles_webpages_Roles]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[webpages_UsersInRoles] DROP CONSTRAINT [FK_webpages_UsersInRoles_webpages_Roles];
 GO
-IF OBJECT_ID(N'[dbo].[FK_SurveyResultTags_Tags]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[SurveyResultTags] DROP CONSTRAINT [FK_SurveyResultTags_Tags];
-GO
-IF OBJECT_ID(N'[dbo].[FK_SurveyTemplateTags]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[Tags] DROP CONSTRAINT [FK_SurveyTemplateTags];
-GO
-IF OBJECT_ID(N'[dbo].[FK_TagsTags_Tags]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[TagsTags] DROP CONSTRAINT [FK_TagsTags_Tags];
-GO
-IF OBJECT_ID(N'[dbo].[FK_TagsTags_Tags1]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[TagsTags] DROP CONSTRAINT [FK_TagsTags_Tags1];
-GO
-IF OBJECT_ID(N'[dbo].[FK_TagsTagTypes_Tags]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[TagsTagTypes] DROP CONSTRAINT [FK_TagsTagTypes_Tags];
-GO
-IF OBJECT_ID(N'[dbo].[FK_TagsTagTypes_TagTypes]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[TagsTagTypes] DROP CONSTRAINT [FK_TagsTagTypes_TagTypes];
-GO
-IF OBJECT_ID(N'[dbo].[fk_UserId]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[webpages_UsersInRoles] DROP CONSTRAINT [fk_UserId];
-GO
-IF OBJECT_ID(N'[dbo].[FK_UserProfileCompanies]', 'F') IS NOT NULL
-    ALTER TABLE [dbo].[UserProfile] DROP CONSTRAINT [FK_UserProfileCompanies];
+IF OBJECT_ID(N'[dbo].[FK_webpages_UsersInRoles_UserProfile]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[webpages_UsersInRoles] DROP CONSTRAINT [FK_webpages_UsersInRoles_UserProfile];
 GO
 IF OBJECT_ID(N'[dbo].[FK_UserProfileSurveyPlan_SurveyPlan]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[UserProfileSurveyPlan] DROP CONSTRAINT [FK_UserProfileSurveyPlan_SurveyPlan];
@@ -89,58 +41,76 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_UserProfileSurveyPlan_UserProfile]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[UserProfileSurveyPlan] DROP CONSTRAINT [FK_UserProfileSurveyPlan_UserProfile];
 GO
+IF OBJECT_ID(N'[dbo].[FK_SurveyPlanQuestion]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[QuestionSet] DROP CONSTRAINT [FK_SurveyPlanQuestion];
+GO
+IF OBJECT_ID(N'[dbo].[FK_RunningSurvey]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[CustomerSet] DROP CONSTRAINT [FK_RunningSurvey];
+GO
+IF OBJECT_ID(N'[dbo].[FK_SurveyResultQuestion]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[SurveyResultSet] DROP CONSTRAINT [FK_SurveyResultQuestion];
+GO
+IF OBJECT_ID(N'[dbo].[FK_CompanyTag]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Tags] DROP CONSTRAINT [FK_CompanyTag];
+GO
+IF OBJECT_ID(N'[dbo].[FK_UserProfileCompanies]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[UserProfile] DROP CONSTRAINT [FK_UserProfileCompanies];
+GO
+IF OBJECT_ID(N'[dbo].[FK_QuestionAlertAlertNotification]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[AlertNotificationSet] DROP CONSTRAINT [FK_QuestionAlertAlertNotification];
+GO
+IF OBJECT_ID(N'[dbo].[FK_QuestionQuestionAlert]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[QuestionAlertSet] DROP CONSTRAINT [FK_QuestionQuestionAlert];
+GO
+IF OBJECT_ID(N'[dbo].[FK_SurveyResultTags_SurveyResult]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[SurveyResultTags] DROP CONSTRAINT [FK_SurveyResultTags_SurveyResult];
+GO
+IF OBJECT_ID(N'[dbo].[FK_SurveyResultTags_Tags]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[SurveyResultTags] DROP CONSTRAINT [FK_SurveyResultTags_Tags];
+GO
+IF OBJECT_ID(N'[dbo].[FK_TagsTagTypes_Tags]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[TagsTagTypes] DROP CONSTRAINT [FK_TagsTagTypes_Tags];
+GO
+IF OBJECT_ID(N'[dbo].[FK_TagsTagTypes_TagTypes]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[TagsTagTypes] DROP CONSTRAINT [FK_TagsTagTypes_TagTypes];
+GO
+IF OBJECT_ID(N'[dbo].[FK_SurveyTemplateTags]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[Tags] DROP CONSTRAINT [FK_SurveyTemplateTags];
+GO
+IF OBJECT_ID(N'[dbo].[FK_QuestionAlertSetTags]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[QuestionAlertSet] DROP CONSTRAINT [FK_QuestionAlertSetTags];
+GO
+IF OBJECT_ID(N'[dbo].[FK_TagsTags_Tags]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[TagsTags] DROP CONSTRAINT [FK_TagsTags_Tags];
+GO
+IF OBJECT_ID(N'[dbo].[FK_TagsTags_Tags1]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[TagsTags] DROP CONSTRAINT [FK_TagsTags_Tags1];
+GO
+IF OBJECT_ID(N'[dbo].[FK_CompaniesDevice]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[DeviceSet] DROP CONSTRAINT [FK_CompaniesDevice];
+GO
 
 -- --------------------------------------------------
 -- Dropping existing tables
 -- --------------------------------------------------
 
-IF OBJECT_ID(N'[dbo].[AlertNotificationSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[AlertNotificationSet];
+IF OBJECT_ID(N'[dbo].[QuestionSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[QuestionSet];
 GO
-IF OBJECT_ID(N'[dbo].[Companies]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Companies];
+IF OBJECT_ID(N'[dbo].[SurveyTemplateSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[SurveyTemplateSet];
 GO
 IF OBJECT_ID(N'[dbo].[CustomerSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[CustomerSet];
 GO
-IF OBJECT_ID(N'[dbo].[DeviceSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[DeviceSet];
-GO
-IF OBJECT_ID(N'[dbo].[QuestionAlertSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[QuestionAlertSet];
-GO
-IF OBJECT_ID(N'[dbo].[QuestionSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[QuestionSet];
+IF OBJECT_ID(N'[dbo].[SurveyResultSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[SurveyResultSet];
 GO
 IF OBJECT_ID(N'[dbo].[ResultSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[ResultSet];
 GO
-IF OBJECT_ID(N'[dbo].[SurveyPlanSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[SurveyPlanSet];
-GO
-IF OBJECT_ID(N'[dbo].[SurveyResultSet]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[SurveyResultSet];
-GO
-IF OBJECT_ID(N'[dbo].[SurveyResultTags]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[SurveyResultTags];
-GO
-IF OBJECT_ID(N'[dbo].[Tags]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[Tags];
-GO
-IF OBJECT_ID(N'[dbo].[TagsTags]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[TagsTags];
-GO
-IF OBJECT_ID(N'[dbo].[TagsTagTypes]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[TagsTagTypes];
-GO
-IF OBJECT_ID(N'[dbo].[TagTypes]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[TagTypes];
-GO
 IF OBJECT_ID(N'[dbo].[UserProfile]', 'U') IS NOT NULL
     DROP TABLE [dbo].[UserProfile];
-GO
-IF OBJECT_ID(N'[dbo].[UserProfileSurveyPlan]', 'U') IS NOT NULL
-    DROP TABLE [dbo].[UserProfileSurveyPlan];
 GO
 IF OBJECT_ID(N'[dbo].[webpages_Membership]', 'U') IS NOT NULL
     DROP TABLE [dbo].[webpages_Membership];
@@ -151,8 +121,38 @@ GO
 IF OBJECT_ID(N'[dbo].[webpages_Roles]', 'U') IS NOT NULL
     DROP TABLE [dbo].[webpages_Roles];
 GO
+IF OBJECT_ID(N'[dbo].[Companies]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Companies];
+GO
+IF OBJECT_ID(N'[dbo].[Tags]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[Tags];
+GO
+IF OBJECT_ID(N'[dbo].[TagTypes]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[TagTypes];
+GO
+IF OBJECT_ID(N'[dbo].[AlertNotificationSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[AlertNotificationSet];
+GO
+IF OBJECT_ID(N'[dbo].[QuestionAlertSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[QuestionAlertSet];
+GO
+IF OBJECT_ID(N'[dbo].[DeviceSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[DeviceSet];
+GO
 IF OBJECT_ID(N'[dbo].[webpages_UsersInRoles]', 'U') IS NOT NULL
     DROP TABLE [dbo].[webpages_UsersInRoles];
+GO
+IF OBJECT_ID(N'[dbo].[UserProfileSurveyPlan]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[UserProfileSurveyPlan];
+GO
+IF OBJECT_ID(N'[dbo].[SurveyResultTags]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[SurveyResultTags];
+GO
+IF OBJECT_ID(N'[dbo].[TagsTagTypes]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[TagsTagTypes];
+GO
+IF OBJECT_ID(N'[dbo].[TagsTags]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[TagsTags];
 GO
 
 -- --------------------------------------------------
@@ -202,10 +202,10 @@ CREATE TABLE [dbo].[SurveyResultSet] (
     [DateRan] datetime  NOT NULL,
     [CustomerPhoneNumber] nvarchar(50)  NOT NULL,
     [SurveyPlanId] int  NOT NULL,
-    [Terminated] bit  NOT NULL,
     [CurrentQuestion_Id] int  NULL,
     [PercentageComplete] float  NOT NULL,
-    [LanguageChosenForSurvey] nvarchar(10)  NULL
+    [LanguageChosenForSurvey] nvarchar(10)  NULL,
+    [Terminated] bit  NOT NULL
 );
 GO
 
@@ -273,7 +273,8 @@ CREATE TABLE [dbo].[Companies] (
     [Notes] nvarchar(500)  NULL,
     [VATID] nvarchar(50)  NOT NULL,
     [Bank] nvarchar(50)  NULL,
-    [BankAccount] nvarchar(70)  NULL
+    [BankAccount] nvarchar(70)  NULL,
+    [MobileLogoUrl] nvarchar(500)  NULL
 );
 GO
 
@@ -319,7 +320,8 @@ CREATE TABLE [dbo].[DeviceSet] (
     [Id] int IDENTITY(1,1) NOT NULL,
     [DeviceId] nvarchar(max)  NOT NULL,
     [CompaniesName] nvarchar(50)  NOT NULL,
-    [SurveyLink] nvarchar(max)  NULL
+    [SurveyLink] nvarchar(max)  NULL,
+    [FriendlyName] nvarchar(50)  NULL
 );
 GO
 

@@ -41,6 +41,8 @@
         <AssociationConnector Association="smsSurveyModel.TagsTags" />
         <EntityTypeShape EntityType="smsSurveyModel.Device" Width="1.5" PointX="19.875" PointY="6.875" />
         <AssociationConnector Association="smsSurveyModel.CompaniesDevice" />
+        <EntityTypeShape EntityType="smsSurveyModel.TabletSettings" Width="1.5" PointX="10.5" PointY="0.875" />
+        <AssociationConnector Association="smsSurveyModel.TabletSettingsCompanies" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

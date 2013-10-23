@@ -16,6 +16,7 @@
           <EntitySet Name="SurveyPlanSet" EntityType="smsSurveyModel.Store.SurveyPlanSet" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="SurveyResultSet" EntityType="smsSurveyModel.Store.SurveyResultSet" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="SurveyResultTags" EntityType="smsSurveyModel.Store.SurveyResultTags" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="TabletSettingsSet" EntityType="smsSurveyModel.Store.TabletSettingsSet" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Tags" EntityType="smsSurveyModel.Store.Tags" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="TagsTags" EntityType="smsSurveyModel.Store.TagsTags" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="TagsTagTypes" EntityType="smsSurveyModel.Store.TagsTagTypes" store:Type="Tables" Schema="dbo" />
@@ -90,6 +91,10 @@
             <End Role="SurveyPlanSet" EntitySet="SurveyPlanSet" />
             <End Role="Tags" EntitySet="Tags" />
           </AssociationSet>
+          <AssociationSet Name="FK_TabletSettingsCompanies" Association="smsSurveyModel.Store.FK_TabletSettingsCompanies">
+            <End Role="TabletSettingsSet" EntitySet="TabletSettingsSet" />
+            <End Role="Companies" EntitySet="Companies" />
+          </AssociationSet>
           <AssociationSet Name="FK_TagsTags_Tags" Association="smsSurveyModel.Store.FK_TagsTags_Tags">
             <End Role="Tags" EntitySet="Tags" />
             <End Role="TagsTags" EntitySet="TagsTags" />
@@ -147,6 +152,7 @@
           <Property Name="Bank" Type="nvarchar" MaxLength="50" />
           <Property Name="BankAccount" Type="nvarchar" MaxLength="70" />
           <Property Name="MobileLogoUrl" Type="nvarchar" MaxLength="500" />
+          <Property Name="TabletSettings_Id" Type="int" />
         </EntityType>
         <EntityType Name="CustomerSet">
           <Key>
@@ -241,6 +247,15 @@
           <Property Name="SurveyResultSet_Id" Type="int" Nullable="false" />
           <Property Name="Tags_CompanyName" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="Tags_Id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="TabletSettingsSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="SliderImage1" Type="nvarchar(max)" />
+          <Property Name="SliderImage2" Type="nvarchar(max)" />
+          <Property Name="SliderImage3" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="Tags">
           <Key>
@@ -545,6 +560,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_TabletSettingsCompanies">
+          <End Role="TabletSettingsSet" Type="smsSurveyModel.Store.TabletSettingsSet" Multiplicity="0..1" />
+          <End Role="Companies" Type="smsSurveyModel.Store.Companies" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="TabletSettingsSet">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Companies">
+              <PropertyRef Name="TabletSettings_Id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_TagsTags_Tags">
           <End Role="Tags" Type="smsSurveyModel.Store.Tags" Multiplicity="1" />
           <End Role="TagsTags" Type="smsSurveyModel.Store.TagsTags" Multiplicity="*" />
@@ -742,6 +769,11 @@
           <AssociationSet Name="CompaniesDevice" Association="smsSurveyModel.CompaniesDevice">
             <End Role="Companies" EntitySet="Companies" />
             <End Role="Device" EntitySet="DeviceSet" />
+          </AssociationSet>
+          <EntitySet Name="TabletSettingsSet" EntityType="smsSurveyModel.TabletSettings" />
+          <AssociationSet Name="TabletSettingsCompanies" Association="smsSurveyModel.TabletSettingsCompanies">
+            <End Role="TabletSettings" EntitySet="TabletSettingsSet" />
+            <End Role="Companies" EntitySet="Companies" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="Question">
@@ -992,6 +1024,7 @@
           <NavigationProperty Name="UserProfiles" Relationship="smsSurveyModel.FK_UserProfileCompanies" FromRole="Companies" ToRole="UserProfile" />
           <NavigationProperty Name="Device" Relationship="smsSurveyModel.CompaniesDevice" FromRole="Companies" ToRole="Device" />
           <Property Type="String" Name="MobileLogoUrl" MaxLength="500" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="TabletSettings" Relationship="smsSurveyModel.TabletSettingsCompanies" FromRole="Companies" ToRole="TabletSettings" />
         </EntityType>
         <EntityType Name="Tags">
           <Key>
@@ -1158,6 +1191,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="TabletSettings">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="SliderImage1" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Type="String" Name="SliderImage2" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <Property Type="String" Name="SliderImage3" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
+          <NavigationProperty Name="Companies" Relationship="smsSurveyModel.TabletSettingsCompanies" FromRole="TabletSettings" ToRole="Companies" />
+        </EntityType>
+        <Association Name="TabletSettingsCompanies">
+          <End Type="smsSurveyModel.TabletSettings" Role="TabletSettings" Multiplicity="0..1" />
+          <End Type="smsSurveyModel.Companies" Role="Companies" Multiplicity="0..1" />
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1192,7 +1239,7 @@
     <EntitySetMapping Name="SurveyResultSet">
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.SurveyResult)">
         <MappingFragment StoreEntitySet="SurveyResultSet">
-          <ScalarProperty Name="Terminated" ColumnName="Complete" />
+                <ScalarProperty Name="Terminated" ColumnName="Complete" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="DateRan" ColumnName="DateRan" />
           <ScalarProperty Name="CustomerPhoneNumber" ColumnName="CustomerPhoneNumber" />
@@ -1264,8 +1311,7 @@
     <EntitySetMapping Name="Companies">
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.Companies)">
         <MappingFragment StoreEntitySet="Companies">
-          <ScalarProperty Name="MobileLogoUrl" ColumnName="MobileLogoUrl" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Description" ColumnName="Description" />
           <ScalarProperty Name="Address" ColumnName="Address" />
           <ScalarProperty Name="RegistrationNumber" ColumnName="RegistrationNumber" />
@@ -1275,6 +1321,7 @@
           <ScalarProperty Name="VATID" ColumnName="VATID" />
           <ScalarProperty Name="Bank" ColumnName="Bank" />
           <ScalarProperty Name="BankAccount" ColumnName="BankAccount" />
+          <ScalarProperty Name="MobileLogoUrl" ColumnName="MobileLogoUrl" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1330,6 +1377,16 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="TabletSettingsSet">
+      <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.TabletSettings)">
+        <MappingFragment StoreEntitySet="TabletSettingsSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="SliderImage1" ColumnName="SliderImage1" />
+          <ScalarProperty Name="SliderImage2" ColumnName="SliderImage2" />
+          <ScalarProperty Name="SliderImage3" ColumnName="SliderImage3" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <AssociationSetMapping Name="webpages_UsersInRoles" TypeName="smsSurveyModel.webpages_UsersInRoles" StoreEntitySet="webpages_UsersInRoles">
             <EndProperty Name="UserProfile">
               <ScalarProperty Name="UserId" ColumnName="UserId" />
@@ -1373,6 +1430,15 @@
         <ScalarProperty Name="CompanyName" ColumnName="Locations_CompanyName" />
         <ScalarProperty Name="Id" ColumnName="Locations_Id" />
       </EndProperty>
+    </AssociationSetMapping>
+    <AssociationSetMapping Name="TabletSettingsCompanies" TypeName="smsSurveyModel.TabletSettingsCompanies" StoreEntitySet="Companies">
+      <EndProperty Name="TabletSettings">
+        <ScalarProperty Name="Id" ColumnName="TabletSettings_Id" />
+      </EndProperty>
+      <EndProperty Name="Companies">
+        <ScalarProperty Name="Name" ColumnName="Name" />
+      </EndProperty>
+      <Condition ColumnName="TabletSettings_Id" IsNull="false" />
     </AssociationSetMapping>
           <EntitySetMapping Name="SurveyTemplateSet">
             <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.SurveyTemplate)">

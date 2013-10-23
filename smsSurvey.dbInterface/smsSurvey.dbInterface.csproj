@@ -96,6 +96,9 @@
     <Compile Include="SurveyTemplate.cs">
       <DependentUpon>smsSurvey.tt</DependentUpon>
     </Compile>
+    <Compile Include="TabletSettings.cs">
+      <DependentUpon>smsSurvey.tt</DependentUpon>
+    </Compile>
     <Compile Include="Tags.cs">
       <DependentUpon>smsSurvey.tt</DependentUpon>
     </Compile>
@@ -145,6 +148,7 @@
   <ItemGroup>
     <Content Include="smsSurvey.edmx.sql" />
     <Content Include="smsSurvey1.edmx.sql" />
+    <Content Include="smsSurvey2.edmx.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
