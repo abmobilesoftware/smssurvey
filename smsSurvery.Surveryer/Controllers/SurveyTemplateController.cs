@@ -119,7 +119,7 @@ namespace smsSurvery.Surveryer.Controllers
       {
          try
          {
-            SurveyTemplate surveyTemplate = db.SurveyTemplateSet.Find(id);
+            SurveyTemplate surveyTemplate = db.SurveyTemplateSet.Find(id);            
             if (surveyTemplate == null)
             {
                return null;
@@ -152,12 +152,15 @@ namespace smsSurvery.Surveryer.Controllers
                      questionAlertSet);
                questions.Add(q);
             }
+            TabletSettings dbTabletSettings = surveyTemplate.UserProfile.FirstOrDefault().Company.TabletSettings;
+            ClientTabletSettings cTabletSettings = new ClientTabletSettings(dbTabletSettings.Id,
+               dbTabletSettings.SliderImage1, dbTabletSettings.SliderImage2, dbTabletSettings.SliderImage3);
             ClientSurveyTemplate clientSurveyTemplate =
                 new ClientSurveyTemplate(
                    surveyTemplate.Id, surveyTemplate.Description, surveyTemplate.IntroMessage,
                    surveyTemplate.ThankYouMessage, surveyTemplate.DateStarted,
-                   surveyTemplate.DateEnded, surveyTemplate.IsRunning, questions, surveyTemplate.DefaultLanguage);
-
+                   surveyTemplate.DateEnded, surveyTemplate.IsRunning, questions, 
+                   surveyTemplate.DefaultLanguage, cTabletSettings);
             clientSurveyTemplate.MobileWebsiteLocation = GetAnonymousMobileSurveyLocation(surveyTemplate, this.ControllerContext.RequestContext);
             clientSurveyTemplate.LogoLink = surveyTemplate.UserProfile.FirstOrDefault().Company.MobileLogoUrl;
             return clientSurveyTemplate;

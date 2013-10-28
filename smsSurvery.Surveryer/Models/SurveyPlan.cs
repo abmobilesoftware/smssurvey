@@ -17,6 +17,7 @@ namespace smsSurvery.Surveryer.ClientModels
       public bool IsRunning { get; set; }
       public List<ClientQuestion> QuestionSet { get; set; }
       public string LogoLink { get; set; }
+      public ClientTabletSettings TabletSettings { get; set; }
 
       #region Calculated properties
       public string MobileWebsiteLocation { get; set; }      
@@ -33,7 +34,8 @@ namespace smsSurvery.Surveryer.ClientModels
          Nullable<DateTime> iDateEnded,
          bool iIsRunning,
          List<ClientQuestion> iQuestionSet,
-         String iDefaultLanguage)
+         String iDefaultLanguage,
+         ClientTabletSettings iTabletSettings)
       {
          Id = iId;
          Description = iDescription;
@@ -44,6 +46,7 @@ namespace smsSurvery.Surveryer.ClientModels
          IsRunning = iIsRunning;
          QuestionSet = iQuestionSet;
          DefaultLanguage = iDefaultLanguage;
+         TabletSettings = iTabletSettings;
       }     
    }
 }

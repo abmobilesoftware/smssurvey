@@ -48,7 +48,7 @@ namespace smsSurvery.Surveryer.Controllers
                ViewBag.IntroMessage = runningSurvey.SurveyTemplate.IntroMessage;
                ViewBag.ThankYouMessage = runningSurvey.SurveyTemplate.ThankYouMessage;
                ViewBag.Location = cNoLocation;
-               
+               ViewBag.TabletView = false;
                return View();
             }
             else
@@ -97,6 +97,7 @@ namespace smsSurvery.Surveryer.Controllers
             ViewBag.IsFeedback = 1;
             ViewBag.Location = location;
             ViewBag.LogoLocation = GetLogoUrl(survey);
+            ViewBag.TabletView = false;
             return View("Fill");
          }
          else
@@ -238,11 +239,15 @@ namespace smsSurvery.Surveryer.Controllers
                      questionAlertSet);
                questions.Add(q);
             }
+            TabletSettings dbTabletSettings = surveyTemplate.UserProfile.FirstOrDefault().Company.TabletSettings;
+            ClientTabletSettings cTabletSettings = new ClientTabletSettings(dbTabletSettings.Id,
+               dbTabletSettings.SliderImage1, dbTabletSettings.SliderImage2, dbTabletSettings.SliderImage3);
             ClientSurveyTemplate clientSurveyTemplate =
                 new ClientSurveyTemplate(
                    surveyTemplate.Id, surveyTemplate.Description, surveyTemplate.IntroMessage,
                    surveyTemplate.ThankYouMessage, surveyTemplate.DateStarted,
-                   surveyTemplate.DateEnded, surveyTemplate.IsRunning, questions, surveyTemplate.DefaultLanguage);
+                   surveyTemplate.DateEnded, surveyTemplate.IsRunning, questions, 
+                   surveyTemplate.DefaultLanguage, cTabletSettings);
 
             clientSurveyTemplate.MobileWebsiteLocation = GetAnonymousMobileSurveyLocation(surveyTemplate, this.ControllerContext.RequestContext);
             return clientSurveyTemplate;
