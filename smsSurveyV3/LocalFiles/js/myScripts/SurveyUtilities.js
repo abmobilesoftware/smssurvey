@@ -94,6 +94,9 @@ var Timer = (function () {
 	    if (isUserAwayFromPage) {
 	    	document.removeEventListener("touchstart", innerClass.trackMouseMovement);
 	    	document.removeEventListener("keydown", innerClass.trackMouseMovement);
+	    	$(".btn-primary").focus();
+	    	$(".comment").val("");
+	    	$(".comment").blur();
 	    	innerClass.stopTimer();
 	    	innerClass.startSurvey();
 	    	innerClass.showSlider();
@@ -110,3 +113,60 @@ var Timer = (function () {
 	$(document).on("touchstart", innerClass.hideSlider);
 	return innerClass;
 })();
+
+var Cache = (function () {
+    var innerClass = {};
+    var imageIndex;
+    var images;
+    var ns = "txtfeedbackImages";
+
+    innerClass.loadImages = function (domImages, cache) {
+       imageIndex = 0;
+       if (domImages != undefined && domImages != null) {
+          images = domImages;
+       } else {
+          images = $("[cache='true']"); // all
+       }
+       if (!cache) localStorage.setItem("images", "null");
+       var img = images[imageIndex];
+       innerClass.transform(img);
+    };
+    innerClass.transform = function (image) {
+    	if (image != null && image != undefined) {    
+    		var cachedImages = JSON.parse(localStorage.getItem("images"));
+    		if (cachedImages != null || cachedImages != "null" 
+    			|| cachedImages != undefined || cachedImages != "undefined") {
+    			cachedImages = {};
+    		}
+	        var imageName = innerClass.getImageName(image.src);
+			    if (cachedImages[imageName] != "undefined" && cachedImages[imageName] != undefined
+			    		&& cachedImages[imageName] != "null" && cachedImages[imageName] != null) {
+			            images[imageIndex].src = cachedImages[imageName];
+			    } else {
+			    	var imageUrl = image.src;
+			        $.ajax({
+			        	cache: false,
+			            url: imageUrl,
+			            dataType: "jsonp",
+			            jsonpCallback: ns + innerClass.getImageNameWithoutExtension(image.src),
+			            success: function (data, xhr, a) {
+			            	cachedImages[innerClass.getImageName(images[imageIndex].src)]= data;
+			            	localStorage.setItem("images", JSON.stringify(cachedImages));
+			                images[imageIndex].src = data;
+			                ++imageIndex;
+			                innerClass.transform(images[imageIndex]);
+			            }
+			         });
+			    }    	            
+    	} else {
+          // stop
+       }
+    }
+    innerClass.getImageName = function (imgSrc) {
+       return imgSrc.substring(imgSrc.lastIndexOf("/") + 1, imgSrc.length);
+    }
+    innerClass.getImageNameWithoutExtension = function (imgSrc) {
+       return imgSrc.substring(imgSrc.lastIndexOf("/") + 1, imgSrc.lastIndexOf("."));
+    }
+    return innerClass;
+ })();
