@@ -4,13 +4,13 @@
 }
 
 <!DOCTYPE html>
-
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>@Global.MobileSurveyPageTitle</title>   
     @Styles.Render("~/bundles/MobileSurveyCss")
     <link href='http://fonts.googleapis.com/css?family=Arvo:400,700' rel='stylesheet' type='text/css'>
+
 <script id="mobileSurveyTemplate" type="text/template">   
    <div class="questionsArea">
 
@@ -106,3 +106,150 @@
    </fieldset>
   <input type='hidden' class='answer' value='noValue' />
 </script>
+
+   <script type="text/template" id="thankyoupage-template">  
+         <header>
+                   <div class="headerContainer">
+                     <img id="pageIcon" class="logo" src="http://loyaltyinsightslogos.blob.core.windows.net/logos/logo_225.png" />
+                     <h3 id="pageTitle">@ViewBag.SurveyTitle</h3>
+                 
+                   </div>                       
+        </header>
+         <section id="thankYouMessage" class="surveyMessage">
+            <p>
+            @ViewBag.ThankYouMessage
+            </p>
+            <div style="display:none" class="alert fade in alert-error" id="noTags-error" >
+                  <div class="personal-info-validation">
+                  </div>   
+               </div>
+         </section>
+      @if ((int) @ViewBag.IsFeedback != 0)
+      {
+         <div id="userInfo">
+               <form id="personalInfo">
+                  <fieldset id="surveyUserInfo">
+                     <label class="followup">
+                        @* If you like to be informed about the steps taken by us to improve on your feedback please leave us some personal details *@
+                        @* If you would like to receive the results of this survey please provide us some personal details *@
+                       @Global.MobileSurveyLeavePersonalInfoLabel
+                     </label>
+                     <div>
+                        <label for="name">@Global.MobileSurveyPersonalInfoNameLabel</label>
+                        <input id="name" type="text" placeholder="e.g. John/Jane" /><br />
+                     </div>
+                     <div>
+                        <label for="surname">@Global.MobileSurveyPersonalInfoSurnameLabel</label>
+                        <input id="surname" type="text" placeholder="e.g. Smith" /><br />
+                     </div>
+                     <div>
+                        <label for="email">@Global.MobileSurveyPersonalInfoEmailLabel</label>
+                        <input id="email" type="email" placeholder="e.g. john@smith.com"/><br />
+                     </div>
+                     <div>
+                        <label for="telephone">@Global.MobileSurveyPersonalInfoPhoneLabel</label>
+                        <input id="telephone" type="tel" />
+                     </div>                    
+                  </fieldset>
+                  <button id="sendPersonalDetailsBtn" type="button" class="enabled">@Global.MobileSurveyPersonalInfoSubmitBtnLabel</button>                 
+                  <input id="personalInfoSubmitted" type='hidden' value='@Global.MobileSurveyPersonalInfoSubmittedLabel' />
+               </form>
+         </div>
+      }    
+</script>   
+</head>
+
+<body>
+      <div id="loading-modal" class="modal hide">
+            <div class="modal-body loading-modal-body">				
+				<div id="loaderImage"></div>				
+            </div>            
+     </div>
+     <input type="hidden" value="@ViewBag.Id" id="surveyTemplateId"/>
+     <input type="hidden" value="@ViewBag.IsFeedback" id="isFeedback"/>
+     <section id="survey">
+        <section id="questionsPage" class="page">
+            <header>
+                <div class="headerContainer">
+                  <img id="pageIcon" class="logo" src="http://loyaltyinsightslogos.blob.core.windows.net/logos/logo_225.png" />
+                  <h3 id="pageTitle">@ViewBag.SurveyTitle</h3>                 
+                </div>                       
+            </header>
+           <div class="clear" />
+           <section id="introMessage" class="surveyMessage">
+                <p>
+                      @ViewBag.IntroMessage
+                </p>
+           </section>
+            <section id="questions">
+            </section>
+            <div id="doneBtnWrapper">
+                <button id="doneBtn"></button>
+            </div>
+            <footer>
+                <span>@Global.MobileSurveyFooterCaption
+                  <a href="http://www.txtfeedback.net">TxtFeedback
+                  </a>
+                </span>
+            </footer>
+            <input type="hidden" value="@Global.MobileSurveySubmitButtonCaption" id="doneBtnTitle" />  
+            <input type="hidden" value="@ViewBag.Location" id="location" />       
+        </section>
+        <section id="thankYouPage" class="page" style="display:none">
+          
+        </section>
+        <div class="clear" />
+    </section>
+</body>
+    @Scripts.Render("~/bundles/jquery")
+   @Scripts.Render("~/bundles/mobilesurvey")  
+   <script type="text/javascript">
+         $(function () {
+         //initialize mobile survey given the id of the survey plan
+         var surveyId = $("#surveyTemplateId").val();
+         var survey = new SurveyBuilder.SurveyModel({
+            Id: surveyId,
+            Description: "",
+            ThankYouMessage: "",
+            StartDate: "15/6/2013",
+            EndDate: "17/7/2013",
+            IsRunning: false
+         });
+         var urlParts = document.URL.split("/");
+         var urlLastPart = urlParts[urlParts.length - 1];
+         loader = new SurveyElements.Loader();
+         var surveyResultID = parseInt($("#isFeedback").val()) === 1 ? -1 : urlLastPart;
+         survey.fetch({
+            data: {
+               Id: surveyId
+            },
+            success: function (model, response, options) {
+               var surveyModel = new Question.QuestionSetModel(
+                  {
+                     SurveyResultId: surveyResultID,
+                     SurveyTemplateId: surveyId
+                  });
+               surveyModel.updateQuestionSetCollection(model.get("QuestionSet"));
+               //DA sure they are ordered
+               var surveyView = new MobileSurvey.SurveyView({
+                  el: $("#survey"),
+                  model: surveyModel
+               });
+               surveyView.render();
+               //location code
+               //if (navigator.geolocation)
+               //{
+               //   navigator.geolocation.getCurrentPosition(function (position) {
+               //      alert("Latitude: " + position.coords.latitude + " Longitude: " + position.coords.longitude);
+               //   });
+               //}
+               //else
+               //{ alert("no location available") }
+            },
+            error: function (model, response, options) {
+               alert(response)
+            }
+         });
+      });
+   </script>
+</html>

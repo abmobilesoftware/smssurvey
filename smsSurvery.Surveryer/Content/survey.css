@@ -15,7 +15,6 @@
     #survey {
         font-size: 12pt;
     }
-}
 
 #survey {
     /*text-indent: 1em;*/
@@ -117,6 +116,7 @@ div.question div.answerArea {
     padding-left: 1em;
     padding-right: 1em;
     text-indent: 0;
+    text-align:center;
 }
 /* END QUESTION */
 

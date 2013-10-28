@@ -1,4 +1,4 @@
-﻿$(function () {
+﻿/*$(function () {
    //initialize mobile survey given the id of the survey plan
    var surveyId = $("#surveyTemplateId").val();
    var survey = new SurveyBuilder.SurveyModel({
@@ -43,4 +43,4 @@
          alert(response)
       }
    });
-});
+});*/

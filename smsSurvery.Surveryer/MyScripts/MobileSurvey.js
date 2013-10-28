@@ -175,19 +175,12 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
          this.questionsViews.push(questionPreviewView);
          areaToAddContentTo.append(questionPreviewView.render());
       }, this);
-      if (SurveyGlobals.tabletView) {
-         $('.numeric-radio').screwDefaultButtons({
-            image: 'url("/Content/images/screwDefaultButtons/radioSmall77.png")',
-            width: 78,
-            height: 77
-         });
-      } else {
-         $('.numeric-radio').screwDefaultButtons({
+      $('.numeric-radio').screwDefaultButtons({
             image: 'url("/Content/images/screwDefaultButtons/radioSmall.png")',
             width: 43,
             height: 43
-         });
-      }
+      });
+      
       return this.$el;
    },
    isSurveyComplete: function () {
@@ -350,7 +343,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
    sendPersonalInfo: function (event) {
       event.preventDefault();
       if (this.validateData()) {
-         loader.showLoader();
+         //loader.showLoader();
          $('#surveyUserInfo').slideToggle('slow');
          this.sendBtn.setTitle($("#personalInfoSubmitted", this.$el).val());
          this.sendBtn.disable();
@@ -361,7 +354,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
          personalInfo.Telephone = $('#telephone').val();
          var dataToSend = JSON.stringify({
             info: personalInfo,
-            surveyResultId: this.surveyResultId
+            surveyResultId: this.surveyResultId,
          });
          $.ajax({
             url: "/MobileSurvey/SaveRespondentInfo",
@@ -372,10 +365,10 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
             contentType: 'application/json',
             traditional: true,
             success: function () {
-              loader.hideLoader();
+              //loader.hideLoader();
             },
             error: function () {
-               loader.hideLoader();
+               //loader.hideLoader();
             }
          });
       }
@@ -431,10 +424,6 @@ MobileSurvey.SurveyView = Backbone.View.extend({
       this.dom = {
          $LOCATION_INPUT: $("#location", this.$el)
       }
-      // if is displayed on tablets 
-      if (SurveyGlobals.tabletView) {
-         Timer.startTimer();
-      }
    },
    goToThankYouPage: function (surveyResultId) {
       var self = this;
@@ -443,7 +432,7 @@ MobileSurvey.SurveyView = Backbone.View.extend({
       var normalWidthPercent = "100%";
       this.questionsPage.setWidth(pageWidthInPixels);
       this.setWidth(expandedWidthPercent);
-      this.thankYouPage.setSurveyResultId(surveyResultId);
+      this.thankYouPage.setSurveyResultId(surveyResultId.DbId);
       this.thankYouPage.show();
       this.thankYouPage.setWidth(pageWidthInPixels);
       /*
@@ -496,10 +485,10 @@ MobileSurvey.SurveyView = Backbone.View.extend({
          contentType: 'application/json',
          traditional: true,
          success: function (surveyResultId) {
-            self.thankYouPage.setSurveyResultId(surveyResultId);            
+            self.goToThankYouPage(surveyResultId);
          }
       });
-      self.goToThankYouPage(-1);
+      
       //this.model.save(this.model.toJSON(),
       //   {
       //      success: function (model, response, options) {
