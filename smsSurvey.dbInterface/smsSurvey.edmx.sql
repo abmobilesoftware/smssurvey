@@ -2,13 +2,13 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, and Azure
 -- --------------------------------------------------
--- Date Created: 09/17/2013 11:59:33
+-- Date Created: 10/22/2013 15:59:20
 -- Generated from EDMX file: D:\Work\Txtfeedback\Repository Git\smsSurvey\smssurvey\smsSurvey.dbInterface\smsSurvey.edmx
 -- --------------------------------------------------
 
 SET QUOTED_IDENTIFIER OFF;
 GO
-USE [smssurveydemo];
+USE [smsSurvey];
 GO
 IF SCHEMA_ID(N'dbo') IS NULL EXECUTE(N'CREATE SCHEMA [dbo]');
 GO
@@ -77,6 +77,18 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_SurveyTemplateTags]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[Tags] DROP CONSTRAINT [FK_SurveyTemplateTags];
 GO
+IF OBJECT_ID(N'[dbo].[FK_QuestionAlertSetTags]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[QuestionAlertSet] DROP CONSTRAINT [FK_QuestionAlertSetTags];
+GO
+IF OBJECT_ID(N'[dbo].[FK_TagsTags_Tags]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[TagsTags] DROP CONSTRAINT [FK_TagsTags_Tags];
+GO
+IF OBJECT_ID(N'[dbo].[FK_TagsTags_Tags1]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[TagsTags] DROP CONSTRAINT [FK_TagsTags_Tags1];
+GO
+IF OBJECT_ID(N'[dbo].[FK_CompaniesDevice]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[DeviceSet] DROP CONSTRAINT [FK_CompaniesDevice];
+GO
 
 -- --------------------------------------------------
 -- Dropping existing tables
@@ -124,6 +136,9 @@ GO
 IF OBJECT_ID(N'[dbo].[QuestionAlertSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[QuestionAlertSet];
 GO
+IF OBJECT_ID(N'[dbo].[DeviceSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[DeviceSet];
+GO
 IF OBJECT_ID(N'[dbo].[webpages_UsersInRoles]', 'U') IS NOT NULL
     DROP TABLE [dbo].[webpages_UsersInRoles];
 GO
@@ -135,6 +150,9 @@ IF OBJECT_ID(N'[dbo].[SurveyResultTags]', 'U') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[TagsTagTypes]', 'U') IS NOT NULL
     DROP TABLE [dbo].[TagsTagTypes];
+GO
+IF OBJECT_ID(N'[dbo].[TagsTags]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[TagsTags];
 GO
 
 -- --------------------------------------------------
@@ -184,10 +202,10 @@ CREATE TABLE [dbo].[SurveyResultSet] (
     [DateRan] datetime  NOT NULL,
     [CustomerPhoneNumber] nvarchar(50)  NOT NULL,
     [SurveyPlanId] int  NOT NULL,
-    [Terminated] bit  NOT NULL,
     [CurrentQuestion_Id] int  NULL,
     [PercentageComplete] float  NOT NULL,
-    [LanguageChosenForSurvey] nvarchar(10)  NULL
+    [LanguageChosenForSurvey] nvarchar(10)  NULL,
+    [Terminated] bit  NOT NULL
 );
 GO
 
@@ -255,7 +273,8 @@ CREATE TABLE [dbo].[Companies] (
     [Notes] nvarchar(500)  NULL,
     [VATID] nvarchar(50)  NOT NULL,
     [Bank] nvarchar(50)  NULL,
-    [BankAccount] nvarchar(70)  NULL
+    [BankAccount] nvarchar(70)  NULL,
+    [MobileLogoUrl] nvarchar(500)  NULL
 );
 GO
 
@@ -296,6 +315,16 @@ CREATE TABLE [dbo].[QuestionAlertSet] (
 );
 GO
 
+-- Creating table 'DeviceSet'
+CREATE TABLE [dbo].[DeviceSet] (
+    [Id] int IDENTITY(1,1) NOT NULL,
+    [DeviceId] nvarchar(max)  NOT NULL,
+    [CompaniesName] nvarchar(50)  NOT NULL,
+    [SurveyLink] nvarchar(max)  NULL,
+    [FriendlyName] nvarchar(50)  NULL
+);
+GO
+
 -- Creating table 'webpages_UsersInRoles'
 CREATE TABLE [dbo].[webpages_UsersInRoles] (
     [webpages_Roles_RoleId] int  NOT NULL,
@@ -323,6 +352,15 @@ CREATE TABLE [dbo].[TagsTagTypes] (
     [Tags_CompanyName] nvarchar(50)  NOT NULL,
     [Tags_Id] int  NOT NULL,
     [TagTypes_Type] nvarchar(50)  NOT NULL
+);
+GO
+
+-- Creating table 'TagsTags'
+CREATE TABLE [dbo].[TagsTags] (
+    [Regions_CompanyName] nvarchar(50)  NOT NULL,
+    [Regions_Id] int  NOT NULL,
+    [Locations_CompanyName] nvarchar(50)  NOT NULL,
+    [Locations_Id] int  NOT NULL
 );
 GO
 
@@ -414,6 +452,12 @@ ADD CONSTRAINT [PK_QuestionAlertSet]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 
+-- Creating primary key on [Id] in table 'DeviceSet'
+ALTER TABLE [dbo].[DeviceSet]
+ADD CONSTRAINT [PK_DeviceSet]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
 -- Creating primary key on [webpages_Roles_RoleId], [UserProfile_UserId] in table 'webpages_UsersInRoles'
 ALTER TABLE [dbo].[webpages_UsersInRoles]
 ADD CONSTRAINT [PK_webpages_UsersInRoles]
@@ -436,6 +480,12 @@ GO
 ALTER TABLE [dbo].[TagsTagTypes]
 ADD CONSTRAINT [PK_TagsTagTypes]
     PRIMARY KEY NONCLUSTERED ([Tags_CompanyName], [Tags_Id], [TagTypes_Type] ASC);
+GO
+
+-- Creating primary key on [Regions_CompanyName], [Regions_Id], [Locations_CompanyName], [Locations_Id] in table 'TagsTags'
+ALTER TABLE [dbo].[TagsTags]
+ADD CONSTRAINT [PK_TagsTags]
+    PRIMARY KEY NONCLUSTERED ([Regions_CompanyName], [Regions_Id], [Locations_CompanyName], [Locations_Id] ASC);
 GO
 
 -- --------------------------------------------------
@@ -709,6 +759,43 @@ ADD CONSTRAINT [FK_QuestionAlertSetTags]
 CREATE INDEX [IX_FK_QuestionAlertSetTags]
 ON [dbo].[QuestionAlertSet]
     ([Tags_CompanyName], [Tags_Id]);
+GO
+
+-- Creating foreign key on [Regions_CompanyName], [Regions_Id] in table 'TagsTags'
+ALTER TABLE [dbo].[TagsTags]
+ADD CONSTRAINT [FK_TagsTags_Tags]
+    FOREIGN KEY ([Regions_CompanyName], [Regions_Id])
+    REFERENCES [dbo].[Tags]
+        ([CompanyName], [Id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+GO
+
+-- Creating foreign key on [Locations_CompanyName], [Locations_Id] in table 'TagsTags'
+ALTER TABLE [dbo].[TagsTags]
+ADD CONSTRAINT [FK_TagsTags_Tags1]
+    FOREIGN KEY ([Locations_CompanyName], [Locations_Id])
+    REFERENCES [dbo].[Tags]
+        ([CompanyName], [Id])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_TagsTags_Tags1'
+CREATE INDEX [IX_FK_TagsTags_Tags1]
+ON [dbo].[TagsTags]
+    ([Locations_CompanyName], [Locations_Id]);
+GO
+
+-- Creating foreign key on [CompaniesName] in table 'DeviceSet'
+ALTER TABLE [dbo].[DeviceSet]
+ADD CONSTRAINT [FK_CompaniesDevice]
+    FOREIGN KEY ([CompaniesName])
+    REFERENCES [dbo].[Companies]
+        ([Name])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_CompaniesDevice'
+CREATE INDEX [IX_FK_CompaniesDevice]
+ON [dbo].[DeviceSet]
+    ([CompaniesName]);
 GO
 
 -- --------------------------------------------------

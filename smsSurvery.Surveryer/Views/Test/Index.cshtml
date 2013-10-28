@@ -1,0 +1,29 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+
+<html manifest="http://localhost:3288/Content/test.manifest">
+   <head>
+      <script type="text/javascript">
+            window.applicationCache.onchecking = function(event) {
+               alert("Checking cache");
+            };
+            window.applicationCache.ondownloading = function(event) {
+               alert("downloading cache");
+            };
+            window.applicationCache.onprogress = function(event) {
+               alert("progress cache");
+            };
+            window.applicationCache.oncached = function(event) {
+               alert("cached cache");
+            };
+            window.applicationCache.onerror = function(event) {
+               alert("error cache");
+            };         
+      </script>
+   </head>
+   <body>
+      <img src="http://www.dmwmedia.com/wp-content/uploads/2011/07/Google-logo-300x300.jpg" />
+   </body>
+</html>

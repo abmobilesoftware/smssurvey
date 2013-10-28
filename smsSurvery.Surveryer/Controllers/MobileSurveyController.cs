@@ -48,7 +48,7 @@ namespace smsSurvery.Surveryer.Controllers
                ViewBag.IntroMessage = runningSurvey.SurveyTemplate.IntroMessage;
                ViewBag.ThankYouMessage = runningSurvey.SurveyTemplate.ThankYouMessage;
                ViewBag.Location = cNoLocation;
-               
+               ViewBag.TabletView = false;
                return View();
             }
             else
@@ -97,6 +97,7 @@ namespace smsSurvery.Surveryer.Controllers
             ViewBag.IsFeedback = 1;
             ViewBag.Location = location;
             ViewBag.LogoLocation = GetLogoUrl(survey);
+            ViewBag.TabletView = false;
             return View("Fill");
          }
          else
@@ -109,7 +110,7 @@ namespace smsSurvery.Surveryer.Controllers
 
       [HttpGet]
       [AllowAnonymous]
-      public ActionResult ActiveSurvey(string location, string company)
+      public ActionResult ActiveSurvey(string location, string company, bool tabletSurvey=false)
       {
          ViewBag.LogoLocation = cDefaultLogoLocation;
          //DA run the Active Survey identified for this location, if any
@@ -122,13 +123,20 @@ namespace smsSurvery.Surveryer.Controllers
                var surveyLanguage = surveyToRun.DefaultLanguage;
                System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture(surveyLanguage);
                ViewBag.Id = surveyToRun.Id;
-               ViewBag.SurveyTitle = "Feedback";
                ViewBag.IntroMessage = surveyToRun.IntroMessage;
                ViewBag.ThankYouMessage = surveyToRun.ThankYouMessage;
                ViewBag.IsFeedback = 1;
                ViewBag.Location = location;
                ViewBag.LogoLocation = GetLogoUrl(surveyToRun);
-               return View("Fill");
+               if (tabletSurvey) {               
+                  ViewBag.TabletView = true;
+                  ViewBag.SurveyTitle = surveyToRun.Description;
+                  return View("FillTablet");
+               } else {
+                  ViewBag.SurveyTitle = "Feedback";
+                  ViewBag.TabletView = false;
+                  return View("Fill");
+               }
             }
             else
             {
@@ -143,6 +151,26 @@ namespace smsSurvery.Surveryer.Controllers
             ViewBag.Company = company;
             return View("InvalidLocation");
          }
+      }
+
+      [HttpGet]
+      [AllowAnonymous]
+      public ActionResult GetSurveyTemplate(int surveyId) 
+      {
+         var surveyToRun = db.SurveyTemplateSet.Where(x => x.Id.Equals(surveyId)).FirstOrDefault();
+         if (surveyToRun != null)
+         {
+            var surveyLanguage = surveyToRun.DefaultLanguage;
+            System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture(surveyLanguage);
+         }
+         ViewBag.Id = -1;
+         ViewBag.IntroMessage = "Welcome";
+         ViewBag.ThankYouMessage = "Thank you!";
+         ViewBag.IsFeedback = 1;
+         ViewBag.Location = "noLocation";
+         ViewBag.TabletView = true;
+         ViewBag.SurveyTitle = "Title";
+         return View("SurveyTemplate");
       }
 
       [HttpGet]
@@ -172,7 +200,7 @@ namespace smsSurvery.Surveryer.Controllers
 
       /* This method and the one below should be moved to other file, because are
        * duplicate methods of the methods in SurveyTemplate class
-       */
+       */ 
 
       public ClientSurveyTemplate GetSurveyTemplateObject(int id)
       {
@@ -211,11 +239,15 @@ namespace smsSurvery.Surveryer.Controllers
                      questionAlertSet);
                questions.Add(q);
             }
+            TabletSettings dbTabletSettings = surveyTemplate.UserProfile.FirstOrDefault().Company.TabletSettings;
+            ClientTabletSettings cTabletSettings = new ClientTabletSettings(dbTabletSettings.Id,
+               dbTabletSettings.SliderImage1, dbTabletSettings.SliderImage2, dbTabletSettings.SliderImage3);
             ClientSurveyTemplate clientSurveyTemplate =
                 new ClientSurveyTemplate(
                    surveyTemplate.Id, surveyTemplate.Description, surveyTemplate.IntroMessage,
                    surveyTemplate.ThankYouMessage, surveyTemplate.DateStarted,
-                   surveyTemplate.DateEnded, surveyTemplate.IsRunning, questions, surveyTemplate.DefaultLanguage);
+                   surveyTemplate.DateEnded, surveyTemplate.IsRunning, questions, 
+                   surveyTemplate.DefaultLanguage, cTabletSettings);
 
             clientSurveyTemplate.MobileWebsiteLocation = GetAnonymousMobileSurveyLocation(surveyTemplate, this.ControllerContext.RequestContext);
             return clientSurveyTemplate;
@@ -233,7 +265,6 @@ namespace smsSurvery.Surveryer.Controllers
          return mobileSurveyLocation;
       }
 
-
       public class QuestionResponse
       {
          public QuestionResponse()
@@ -248,7 +279,7 @@ namespace smsSurvery.Surveryer.Controllers
 
       [HttpPost]
       [AllowAnonymous]
-      public JsonResult SaveSurvey(List<QuestionResponse> questions, int surveyResultId, int surveyTemplateId, string location)
+      public JsonResult SaveSurvey(List<QuestionResponse> questions, int surveyResultId, int surveyTemplateId, string location, string Id)
       {
          //for mobile surveys the survey language is the default Survey definition language
          //we return the Id of the save surveyResult
@@ -339,7 +370,15 @@ namespace smsSurvery.Surveryer.Controllers
             surveyToAnalyze.Tags.Add(locationTag);
             db.SaveChanges();
          }
-         return Json(savedSurveyResult, JsonRequestBehavior.AllowGet);
+         var result = new SaveSurveyResult();
+         result.DbId = savedSurveyResult;
+         result.LocalId = Id;
+         return Json(result, JsonRequestBehavior.AllowGet);
+      }
+      public class SaveSurveyResult
+      {
+         public int DbId { get; set; }
+         public string LocalId { get; set; }
       }
 
       public class RespondentInfo
@@ -352,53 +391,62 @@ namespace smsSurvery.Surveryer.Controllers
 
       [HttpPost]
       [AllowAnonymous]
-      public JsonResult SaveRespondentInfo(RespondentInfo info, int surveyResultId)
+      public JsonResult SaveRespondentInfo(RespondentInfo info, int surveyResultId, string localId)
       {
-         //get the customer corresponding to the survey result and update its info
-         var survey = db.SurveyResultSet.Find(surveyResultId);
-         if (survey != null)
+         try
          {
-            if (!String.IsNullOrEmpty(info.Telephone))
+            //get the customer corresponding to the survey result and update its info
+            var survey = db.SurveyResultSet.Find(surveyResultId);
+            if (survey != null)
             {
-               //Since Telephone is the Primary Key
-               var existingCustomer = db.CustomerSet.Find(info.Telephone);
-               if (existingCustomer != null)
+               if (!String.IsNullOrEmpty(info.Telephone))
                {
+                  //Since Telephone is the Primary Key
+                  var existingCustomer = db.CustomerSet.Find(info.Telephone);
+                  if (existingCustomer != null)
+                  {
                   //Associate this survey result to this customer
                   existingCustomer.Name = info.Name;
                   existingCustomer.Surname = info.Surname;
                   existingCustomer.Email = info.Email;
                   survey.Customer = existingCustomer;              
                   db.SaveChanges();                  
+                  }
+                  else
+                  {
+                     //delete the bogus customer
+
+
+                     //and add a "realer" one
+                     var moreAccurateCustomer = new Customer()
+                     {
+                        PhoneNumber = info.Telephone,
+                        Name = info.Name,
+                        Surname = info.Surname,
+                        Email = info.Email
+                     };
+                     db.CustomerSet.Add(moreAccurateCustomer);
+                     var bogusCustomer = survey.Customer;
+                     survey.Customer = moreAccurateCustomer;
+                     db.CustomerSet.Remove(bogusCustomer);
+                     db.SaveChanges();
+                  }
                }
                else
                {
-                  //delete the bogus customer
-                  
-                  
-                  //and add a "realer" one
-                  var moreAccurateCustomer = new Customer()
-                  {
-                     PhoneNumber = info.Telephone,
-                     Name = info.Name,
-                     Surname = info.Surname,
-                     Email = info.Email
-                  };
-                  db.CustomerSet.Add(moreAccurateCustomer);
-                  var bogusCustomer = survey.Customer;
-                  survey.Customer = moreAccurateCustomer;
-                  db.CustomerSet.Remove(bogusCustomer);
+                  var customerToUpdate = survey.Customer;
+                  customerToUpdate.Name = info.Name;
+                  customerToUpdate.Surname = info.Surname;
+                  customerToUpdate.Email = info.Email;
                   db.SaveChanges();
                }
+               return Json(localId, JsonRequestBehavior.AllowGet);
             }
-            else
-            {
-               var customerToUpdate = survey.Customer;
-               customerToUpdate.Name = info.Name;
-               customerToUpdate.Surname = info.Surname;
-               customerToUpdate.Email = info.Email;
-               db.SaveChanges();
-            }
+            return Json(-1, JsonRequestBehavior.AllowGet);
+         }
+         catch (Exception e)
+         {
+            return Json(e.InnerException.Message, JsonRequestBehavior.AllowGet);
          }
          return Json("Success", JsonRequestBehavior.AllowGet);
       }

@@ -1,0 +1,20 @@
+.app-header, .app-footer {
+	background: #071D2D;	
+}
+
+#transition {
+	display:none;
+	background: #071D2D;
+	position:absolute;
+	z-index: 1000;
+	/*opacity: 0.5;*/
+}
+
+#loader {
+	position: relative;
+	margin:0 auto;
+	color: #fff;
+	font-size: 1.5em;
+	text-align:center;	
+}
+

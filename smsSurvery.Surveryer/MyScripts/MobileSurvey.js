@@ -176,10 +176,11 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
          areaToAddContentTo.append(questionPreviewView.render());
       }, this);
       $('.numeric-radio').screwDefaultButtons({
-         image: 'url("/Content/images/screwDefaultButtons/radioSmall.png")',
-         width: 43,
-         height: 43
+            image: 'url("/Content/images/screwDefaultButtons/radioSmall.png")',
+            width: 43,
+            height: 43
       });
+      
       return this.$el;
    },
    isSurveyComplete: function () {
@@ -234,9 +235,9 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
 });
 
 MobileSurvey.PersonalInformationErrors = {
-   INVALID_NAME: "The Name cannot be empty or whitespace only",
-   INVALID_SURNAME: "The Surname cannot be empty or whitespace only",
-   INVALID_EMAIL: "Invalid email"
+   INVALID_NAME: $("#mobileSurveyPersonalInfoNameError").val(),
+   INVALID_SURNAME: $("#mobileSurveyPersonalInfoSurnameError").val(),
+   INVALID_EMAIL: $("#mobileSurveyPersonalInfoEmailError").val()
 };
 
 var isBlank = function (str) {
@@ -342,7 +343,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
    sendPersonalInfo: function (event) {
       event.preventDefault();
       if (this.validateData()) {
-         loader.showLoader();
+         //loader.showLoader();
          $('#surveyUserInfo').slideToggle('slow');
          this.sendBtn.setTitle($("#personalInfoSubmitted", this.$el).val());
          this.sendBtn.disable();
@@ -353,7 +354,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
          personalInfo.Telephone = $('#telephone').val();
          var dataToSend = JSON.stringify({
             info: personalInfo,
-            surveyResultId: this.surveyResultId
+            surveyResultId: this.surveyResultId,
          });
          $.ajax({
             url: "/MobileSurvey/SaveRespondentInfo",
@@ -364,10 +365,10 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
             contentType: 'application/json',
             traditional: true,
             success: function () {
-              loader.hideLoader();
+              //loader.hideLoader();
             },
             error: function () {
-               loader.hideLoader();
+               //loader.hideLoader();
             }
          });
       }
@@ -431,7 +432,7 @@ MobileSurvey.SurveyView = Backbone.View.extend({
       var normalWidthPercent = "100%";
       this.questionsPage.setWidth(pageWidthInPixels);
       this.setWidth(expandedWidthPercent);
-      this.thankYouPage.setSurveyResultId(surveyResultId);
+      this.thankYouPage.setSurveyResultId(surveyResultId.DbId);
       this.thankYouPage.show();
       this.thankYouPage.setWidth(pageWidthInPixels);
       /*
@@ -484,10 +485,28 @@ MobileSurvey.SurveyView = Backbone.View.extend({
          contentType: 'application/json',
          traditional: true,
          success: function (surveyResultId) {
-            loader.hideLoader();
             self.goToThankYouPage(surveyResultId);
          }
       });
-      loader.showLoader();    
+      
+      //this.model.save(this.model.toJSON(),
+      //   {
+      //      success: function (model, response, options) {
+      //         if (response.Result == "success") {
+      //            self.dom.$NOTIFICATION_TEXT.text("Changes saved successfully.");
+      //            self.dom.$NOTIFICATION_TEXT.
+      //               removeClass("notification-success notification-error").addClass("notification-success");
+      //            if (response.Operation == "create") {
+      //               self.model.set("Id", response.Details);
+      //            }
+      //            self.model.set("DataChanged", false);
+      //         } else if (response.Result == "error") {
+      //            self.dom.$NOTIFICATION_TEXT.text("Errors while saving.");
+      //            self.dom.$NOTIFICATION_TEXT.
+      //               removeClass("notification-success notification-error").addClass("notification-error");
+      //         }
+      //         self.dom.$NOTIFICATION.show();
+      //      }
+      //   });
    }
 });

@@ -28,7 +28,8 @@ namespace smsSurvery.Surveryer
             "~/MyScripts/SurveyAnswersModal.js",
             "~/MyScripts/SurveyAlertsModal.js",
             "~/MyScripts/Question.js",
-            "~/MyScripts/SurveyBuilder.js"
+            "~/MyScripts/SurveyBuilder.js",
+            "~/MyScripts/MobileSurveyMain.js"
             ));
          bundles.Add(new ScriptBundle("~/bundles/myscripts").Include(
                       "~/Scripts/bootstrap-fileupload.js",
@@ -42,6 +43,10 @@ namespace smsSurvery.Surveryer
                      "~/MyScripts/SurveyRatingsModal.js",
                      "~/MyScripts/SurveyBuilder.js",
                      "~/MyScripts/SurveyMain.js"
+            ));
+
+         bundles.Add(new ScriptBundle("~/bundles/devices").Include(
+                  "~/MyScripts/ManageDevices.js"
             ));
          bundles.Add(new ScriptBundle("~/bundles/referencescripts").Include(
                      "~/Scripts/jquery.tagsinput.js"));                     
@@ -89,6 +94,10 @@ namespace smsSurvery.Surveryer
             "~/Content/bootstrap.css",
             "~/Content/survey.css"
             ));
+         bundles.Add(new StyleBundle("~/bundles/MobileSurveyCssTablet").Include(
+           "~/Content/tablet/bootstrap.css",
+           "~/Content/tablet/survey.css"
+           ));
 
          bundles.Add(new StyleBundle("~/Content/custom").Include(     
             "~/Content/jquery-ui-1.8.23.custom.css",

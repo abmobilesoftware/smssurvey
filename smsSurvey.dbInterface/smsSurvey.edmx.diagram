@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="e9a2859271bd473b9e049f0d6e9b4a34" Name="Diagram1" ZoomLevel="67">
+      <Diagram DiagramId="e9a2859271bd473b9e049f0d6e9b4a34" Name="Diagram1" ZoomLevel="61">
         <EntityTypeShape EntityType="smsSurveyModel.Question" Width="1.5" PointX="12.875" PointY="1.875" />
         <EntityTypeShape EntityType="smsSurveyModel.SurveyTemplate" Width="1.75" PointX="8" PointY="1.875" />
         <EntityTypeShape EntityType="smsSurveyModel.Customer" Width="1.5" PointX="5.5" PointY="6" />
@@ -14,7 +14,7 @@
         <EntityTypeShape EntityType="smsSurveyModel.Result" Width="1.5" PointX="15.25" PointY="7" />
         <AssociationConnector Association="smsSurveyModel.QuestionResult" />
         <AssociationConnector Association="smsSurveyModel.SurveyResultResult" />
-        <EntityTypeShape EntityType="smsSurveyModel.UserProfile" Width="1.5" PointX="1.125" PointY="2" IsExpanded="true" />
+        <EntityTypeShape EntityType="smsSurveyModel.UserProfile" Width="2.25" PointX="1.125" PointY="2" IsExpanded="true" />
         <EntityTypeShape EntityType="smsSurveyModel.webpages_Membership" Width="2" PointX="1" PointY="4.875" />
         <EntityTypeShape EntityType="smsSurveyModel.webpages_OAuthMembership" Width="2.25" PointX="3.75" PointY="3.75" />
         <EntityTypeShape EntityType="smsSurveyModel.webpages_Roles" Width="1.5" PointX="4.75" PointY="0.75" />
@@ -39,6 +39,10 @@
         <AssociationConnector Association="smsSurveyModel.FK_SurveyTemplateTags" />
         <AssociationConnector Association="smsSurveyModel.FK_QuestionAlertSetTags" />
         <AssociationConnector Association="smsSurveyModel.TagsTags" />
+        <EntityTypeShape EntityType="smsSurveyModel.Device" Width="1.5" PointX="19.875" PointY="6.875" />
+        <AssociationConnector Association="smsSurveyModel.CompaniesDevice" />
+        <EntityTypeShape EntityType="smsSurveyModel.TabletSettings" Width="1.5" PointX="10.5" PointY="0.875" />
+        <AssociationConnector Association="smsSurveyModel.TabletSettingsCompanies" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

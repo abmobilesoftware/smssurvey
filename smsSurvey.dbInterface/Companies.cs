@@ -18,6 +18,7 @@ namespace smsSurvey.dbInterface
         {
             this.Tags = new HashSet<Tags>();
             this.UserProfiles = new HashSet<UserProfile>();
+            this.Device = new HashSet<Device>();
         }
     
         public string Name { get; set; }
@@ -34,5 +35,7 @@ namespace smsSurvey.dbInterface
     
         public virtual ICollection<Tags> Tags { get; set; }
         public virtual ICollection<UserProfile> UserProfiles { get; set; }
+        public virtual ICollection<Device> Device { get; set; }
+        public virtual TabletSettings TabletSettings { get; set; }
     }
 }

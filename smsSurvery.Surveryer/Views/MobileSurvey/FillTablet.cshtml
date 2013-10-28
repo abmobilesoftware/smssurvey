@@ -1,0 +1,24 @@
+﻿@using smsSurvery.Surveryer.GlobalResources
+@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+   <meta name="viewport" content="width=device-width" />
+   <title>@Global.MobileSurveyPageTitle</title>
+   <link href='http://fonts.googleapis.com/css?family=Open+Sans&subset=latin,cyrillic,latin-ext' rel='stylesheet' type='text/css'>
+   <link href='http://fonts.googleapis.com/css?family=Domine&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+   <script type="text/javascript">
+      var SurveyGlobals = SurveyGlobals || {};
+      SurveyGlobals.tabletView = true;
+   </script>
+</head>
+
+@{Html.RenderPartial("MobileSurvey");}
+
+@Styles.Render("~/bundles/MobileSurveyCssTablet")
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/mobilesurvey")

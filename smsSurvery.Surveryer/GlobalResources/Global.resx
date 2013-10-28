@@ -181,7 +181,7 @@
     <value>Surname</value>
   </data>
   <data name="MobileSurveyRatingAddionalInfoLabel" xml:space="preserve">
-    <value>Please qualify your answer:</value>
+    <value>Qualify your answer and help us improve</value>
   </data>
   <data name="MobileSurveySelectOneFromManyLabel" xml:space="preserve">
     <value>Select an answer</value>
@@ -229,11 +229,26 @@
   </data>
   <data name="SmsQuestionNumericSuffixJoinTemplate" xml:space="preserve">
     <value>{0} for {1}</value>
+    </data>
+  <data name="MobileSurveyPersonalInfoEmailError" xml:space="preserve">
+    <value>Invalid email</value>
   </data>
   <data name="SmsQuestionNumericSuffixTemplate" xml:space="preserve">
     <value>Reply with:</value>
+    </data>
+  <data name="MobileSurveyPersonalInfoNameError" xml:space="preserve">
+    <value>The Name cannot be empty or whitespace only</value>
   </data>
   <data name="SmsQuestionFreeTextSuffix" xml:space="preserve">
     <value>Please reply</value>
+    </data>
+  <data name="MobileSurveyPersonalInfoSurnameError" xml:space="preserve">
+    <value>The Surname cannot be empty or whitespace only</value>
+  </data>
+  <data name="MobileSurveySurveySent" xml:space="preserve">
+    <value>Survey sent</value>
+  </data>
+  <data name="MobileSurveyPersonalInfoRetakeSurvey" xml:space="preserve">
+    <value>Retake survey</value>
   </data>
 </root>

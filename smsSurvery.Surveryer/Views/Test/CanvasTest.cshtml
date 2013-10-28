@@ -1,0 +1,58 @@
+﻿@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+   <meta name="viewport" content="width=device-width" />
+   <title>Canvas test</title>
+   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+   <script type="text/javascript">
+      function transform() {
+         var localStorage = window.localStorage;
+         //localStorage.clear();
+         if (localStorage.getItem("savedImageData") != "null" &&
+            localStorage.getItem("savedImageData") != "undefined" && 
+            localStorage.getItem("savedImageData") != null && 
+            localStorage.getItem("savedImageData") != undefined) {
+            document.getElementById("cached_logo").src = localStorage.getItem("savedImageData");
+         } else {
+            var img = new Image,
+            canvas = document.createElement("canvas"),
+            ctx = canvas.getContext("2d"),
+            src = "http://tablet.txtfeedback.net/Content/images/logo.png";
+
+            img.crossOrigin = "Anonymous";
+
+            img.onload = function () {
+               canvas.width = img.width;
+               canvas.height = img.height;
+               ctx.drawImage(img, 0, 0);
+               var encodedString = canvas.toDataURL("image/png");
+               localStorage.setItem("savedImageData", encodedString);
+               document.getElementById("cached_logo").src = localStorage.getItem("savedImageData");
+            }
+            img.src = src;
+            // make sure the load event fires for cached images too
+            if (img.complete || img.complete === undefined) {
+               img.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+               img.src = src;
+            }
+         }
+
+         //var abc = getBase64Image(document.getElementById("logo"));
+         //alert(abc);
+      }
+   </script>
+</head>
+<body onload="transform()">
+   <div>
+      Loaded from server  <br />
+      <img src="http://tablet.txtfeedback.net/Content/images/logo.png" id="logo" /><br />
+      Loaded from cache <br />
+      <img src="" id="cached_logo" />
+   </div>
+</body>
+</html>

@@ -29,5 +29,8 @@
       <frameworkAssembly assemblyName="System.IdentityModel" targetFramework=".NETFramework4.5" />
       <frameworkAssembly assemblyName="System.IdentityModel.Services" targetFramework=".NETFramework4.5" />
     </frameworkAssemblies>
+    <references>
+      <reference file="Thinktecture.IdentityModel.dll" />
+    </references>
   </metadata>
 </package>

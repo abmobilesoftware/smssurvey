@@ -196,11 +196,29 @@ namespace smsSurvery.Surveryer.GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Invalid email.
+        /// </summary>
+        public static string MobileSurveyPersonalInfoEmailError {
+            get {
+                return ResourceManager.GetString("MobileSurveyPersonalInfoEmailError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Email.
         /// </summary>
         public static string MobileSurveyPersonalInfoEmailLabel {
             get {
                 return ResourceManager.GetString("MobileSurveyPersonalInfoEmailLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The Name cannot be empty or whitespace only.
+        /// </summary>
+        public static string MobileSurveyPersonalInfoNameError {
+            get {
+                return ResourceManager.GetString("MobileSurveyPersonalInfoNameError", resourceCulture);
             }
         }
         
@@ -223,6 +241,15 @@ namespace smsSurvery.Surveryer.GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Retake survey.
+        /// </summary>
+        public static string MobileSurveyPersonalInfoRetakeSurvey {
+            get {
+                return ResourceManager.GetString("MobileSurveyPersonalInfoRetakeSurvey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Submit personal info.
         /// </summary>
         public static string MobileSurveyPersonalInfoSubmitBtnLabel {
@@ -241,6 +268,15 @@ namespace smsSurvery.Surveryer.GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Surname cannot be empty or whitespace only.
+        /// </summary>
+        public static string MobileSurveyPersonalInfoSurnameError {
+            get {
+                return ResourceManager.GetString("MobileSurveyPersonalInfoSurnameError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Surname.
         /// </summary>
         public static string MobileSurveyPersonalInfoSurnameLabel {
@@ -250,7 +286,7 @@ namespace smsSurvery.Surveryer.GlobalResources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Please qualify your answer:.
+        ///   Looks up a localized string similar to Qualify your answer and help us improve.
         /// </summary>
         public static string MobileSurveyRatingAddionalInfoLabel {
             get {
@@ -300,6 +336,15 @@ namespace smsSurvery.Surveryer.GlobalResources {
         public static string MobileSurveySubmittedTitle {
             get {
                 return ResourceManager.GetString("MobileSurveySubmittedTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Survey sent.
+        /// </summary>
+        public static string MobileSurveySurveySent {
+            get {
+                return ResourceManager.GetString("MobileSurveySurveySent", resourceCulture);
             }
         }
         

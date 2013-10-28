@@ -55,6 +55,9 @@
     <Compile Include="Customer.cs">
       <DependentUpon>smsSurvey.tt</DependentUpon>
     </Compile>
+    <Compile Include="Device.cs">
+      <DependentUpon>smsSurvey.tt</DependentUpon>
+    </Compile>
     <Compile Include="Extensions\AlertNotificationSet.cs" />
     <Compile Include="Extensions\Question.cs" />
     <Compile Include="Extensions\QuestionAlertSet.cs" />
@@ -93,6 +96,9 @@
     <Compile Include="SurveyTemplate.cs">
       <DependentUpon>smsSurvey.tt</DependentUpon>
     </Compile>
+    <Compile Include="TabletSettings.cs">
+      <DependentUpon>smsSurvey.tt</DependentUpon>
+    </Compile>
     <Compile Include="Tags.cs">
       <DependentUpon>smsSurvey.tt</DependentUpon>
     </Compile>
@@ -114,7 +120,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.Config" />
+    <None Include="App.Config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="packages.config" />
     <EntityDeploy Include="smsSurvey.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
@@ -140,6 +148,7 @@
   <ItemGroup>
     <Content Include="smsSurvey.edmx.sql" />
     <Content Include="smsSurvey1.edmx.sql" />
+    <Content Include="smsSurvey2.edmx.sql" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

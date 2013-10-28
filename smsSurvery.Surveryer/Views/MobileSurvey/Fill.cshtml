@@ -4,13 +4,13 @@
 }
 
 <!DOCTYPE html>
-
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>@Global.MobileSurveyPageTitle</title>   
     @Styles.Render("~/bundles/MobileSurveyCss")
     <link href='http://fonts.googleapis.com/css?family=Arvo:400,700' rel='stylesheet' type='text/css'>
+
 <script id="mobileSurveyTemplate" type="text/template">   
    <div class="questionsArea">
 
@@ -107,10 +107,10 @@
   <input type='hidden' class='answer' value='noValue' />
 </script>
 
-<script type="text/template" id="thankyoupage-template">  
+   <script type="text/template" id="thankyoupage-template">  
          <header>
                    <div class="headerContainer">
-                     <img id="pageIcon" class="logo" src="@ViewBag.LogoLocation" />
+                     <img id="pageIcon" class="logo" src="http://loyaltyinsightslogos.blob.core.windows.net/logos/logo_225.png" />
                      <h3 id="pageTitle">@ViewBag.SurveyTitle</h3>
                  
                    </div>                       
@@ -171,7 +171,7 @@
         <section id="questionsPage" class="page">
             <header>
                 <div class="headerContainer">
-                  <img id="pageIcon" class="logo" src="@ViewBag.LogoLocation" />
+                  <img id="pageIcon" class="logo" src="http://loyaltyinsightslogos.blob.core.windows.net/logos/logo_225.png" />
                   <h3 id="pageTitle">@ViewBag.SurveyTitle</h3>                 
                 </div>                       
             </header>
@@ -204,7 +204,7 @@
     @Scripts.Render("~/bundles/jquery")
    @Scripts.Render("~/bundles/mobilesurvey")  
    <script type="text/javascript">
-      $(function () {
+         $(function () {
          //initialize mobile survey given the id of the survey plan
          var surveyId = $("#surveyTemplateId").val();
          var survey = new SurveyBuilder.SurveyModel({
