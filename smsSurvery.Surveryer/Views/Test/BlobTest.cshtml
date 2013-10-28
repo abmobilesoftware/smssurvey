@@ -1,0 +1,77 @@
+﻿@{
+   Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+   <meta name="viewport" content="width=device-width" />
+   <title>Blob test</title>
+   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+   <script type="text/javascript">
+      var Cache = (function () {
+         var innerClass = {};
+         var imageIndex;
+         var images;
+         var ns = "txtfeedbackImages";
+
+         innerClass.loadImages = function (domImages, cache) {
+            imageIndex = 0;
+            if (domImages != undefined && domImages != null) {
+               images = domImages;
+            } else {
+               images = $("img"); // all
+            }
+            if (!cache) localStorage.clear();
+            var img = images[imageIndex];
+            innerClass.transform(img);
+         };
+         innerClass.transform = function (image) {
+            if (image != null && image != undefined) {
+               var imageName = innerClass.getImageName(image.src);
+               if (localStorage.getItem(imageName) != "undefined" && localStorage.getItem(imageName) != undefined
+                  && localStorage.getItem(imageName) != "null" && localStorage.getItem(imageName) != null) {
+                  images[imageIndex].src = localStorage.getItem(imageName);
+               } else {
+                  var imageUrl = image.src;
+                  $.ajax({
+                     cache: false,
+                     url: imageUrl,
+                     dataType: "jsonp",
+                     jsonpCallback: ns + innerClass.getImageNameWithoutExtension(image.src),
+                     success: function (data, xhr, a) {
+                        localStorage.setItem(innerClass.getImageName(images[imageIndex].src), data);
+                        images[imageIndex].src = data;
+                     }
+                  });
+               }
+               ++imageIndex;
+               transform(images[imageIndex]);
+            } else {
+               // stop
+            }
+         }
+         innerClass.getImageName = function (imgSrc) {
+            return imgSrc.substring(imgSrc.lastIndexOf("/") + 1, imgSrc.length);
+         }
+         innerClass.getImageNameWithoutExtension = function (imgSrc) {
+            return imgSrc.substring(imgSrc.lastIndexOf("/") + 1, imgSrc.lastIndexOf("."));
+         }
+         return innerClass;
+      })();
+      
+      
+      
+   </script>
+</head>
+<body onload="loadImages(true)">
+   <div>
+      Loaded from server  <br />
+      <img src="http://loyaltyinsightslogos.blob.core.windows.net/logos/logo.64img" id="logo" cache="true"/><br />
+      Loaded from cache <br />
+      <img src="http://loyaltyinsightslogos.blob.core.windows.net/logos/logo.64img" id="cached_logo" cache="true" />
+      <img src="http://3.bp.blogspot.com/-ZdDkIPPu4Nw/UiYPJw08U_I/AAAAAAAACIA/6xbDd2uVk18/s1600/logo+google+astro.gif" />
+   </div>
+</body>
+</html>
