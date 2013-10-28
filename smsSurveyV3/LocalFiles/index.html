@@ -9,7 +9,6 @@
 <head>
 <meta name="viewport" content="width=320, user-scalable=no">
 <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-<meta http-equiv="cache-control" content="private">
 <title>Wormhole Template App</title>
 <link rel="stylesheet" href="style.css" type="text/css" media="screen"
 	title="no title" charset="utf-8">
@@ -213,7 +212,7 @@
 									self.storage.getItem("surveyData") != "null" &&
 									self.storage.getItem("template") != "undefined" && 
 									self.storage.getItem("template") != "null") {
-									self.startSurvey();
+									self.logOnSuccessfully();
 								} else {
 									var warning = "<div class='warning'>There is no survey saved on device. "+
 									"Connect to internet, login in in your "+
@@ -458,8 +457,7 @@
 			ignoreContentEnabled : true
 		});
 	}
-	$(document).on("mobileinit", configureJQMobile);
-	
+	$(document).on("mobileinit", configureJQMobile);	
 </script>
 <script type="text/javascript" charset="UTF-8"
 	src="js/scripts/jquery.mobile-1.3.1.js"></script>
@@ -502,7 +500,7 @@
 				<img src="images/logo_300x75.png"
 					data-android-medium="images/logo_300x75.png"
 					data-android-large="images/logo_300x75.png"
-					data-android-hdpi="images/logo_300x75.png"
+					data-android-hdpi="images/logo_300x75.png"					
 					alt="Welcome to Txtfeedback!" />
 			</div>
 			<!-- 
