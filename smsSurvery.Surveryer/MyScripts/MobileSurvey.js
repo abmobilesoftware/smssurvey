@@ -125,9 +125,9 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
    },
    numericScaleSelected: function (event) {
       if ($(event.currentTarget).children("input").val() < 3) {
-         $(".additionalInfo", this.$el).show();
+         $(".comment", this.$el).show();
       } else {
-         $(".additionalInfo", this.$el).hide();
+         $(".comment", this.$el).hide();
       }
    },
    keyPressListener: function (event) {
@@ -176,11 +176,10 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
          areaToAddContentTo.append(questionPreviewView.render());
       }, this);
       $('.numeric-radio').screwDefaultButtons({
-            image: 'url("/Content/images/screwDefaultButtons/radioSmall.png")',
-            width: 43,
-            height: 43
+         image: 'url("/Content/images/screwDefaultButtons/radioSmall.png")',
+         width: 43,
+         height: 43
       });
-      
       return this.$el;
    },
    isSurveyComplete: function () {
@@ -235,9 +234,9 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
 });
 
 MobileSurvey.PersonalInformationErrors = {
-   INVALID_NAME: $("#mobileSurveyPersonalInfoNameError").val(),
-   INVALID_SURNAME: $("#mobileSurveyPersonalInfoSurnameError").val(),
-   INVALID_EMAIL: $("#mobileSurveyPersonalInfoEmailError").val()
+   INVALID_NAME: "The Name cannot be empty or whitespace only",
+   INVALID_SURNAME: "The Surname cannot be empty or whitespace only",
+   INVALID_EMAIL: "Invalid email"
 };
 
 var isBlank = function (str) {
@@ -278,7 +277,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
       var errors = [];
       var name = $('#name').val();
       var surname = $('#surname').val();
-      var email = $('#email').val();      
+      var email = $('#email').val();
 
       var validData = true;
       if (isBlank(name)) {
@@ -291,7 +290,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
       }
 
       var filter = /^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-      if (!filter.test(email)) {         
+      if (!filter.test(email)) {
          errors.push(MobileSurvey.PersonalInformationErrors.INVALID_EMAIL);
          validData = false;
       }
@@ -335,15 +334,15 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
          }
       }
       var errorMessage = errorsArray.join("\r\n");
-      this.dom.$VALIDATION_BOX.html(errorMessage)           
+      this.dom.$VALIDATION_BOX.html(errorMessage)
       this.dom.$ALERT_BOX.removeClass("alert-success");
       this.dom.$ALERT_BOX.addClass("alert-error");
-      this.dom.$ALERT_BOX.show();      
+      this.dom.$ALERT_BOX.show();
    },
    sendPersonalInfo: function (event) {
       event.preventDefault();
       if (this.validateData()) {
-         //loader.showLoader();
+         loader.showLoader();
          $('#surveyUserInfo').slideToggle('slow');
          this.sendBtn.setTitle($("#personalInfoSubmitted", this.$el).val());
          this.sendBtn.disable();
@@ -354,7 +353,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
          personalInfo.Telephone = $('#telephone').val();
          var dataToSend = JSON.stringify({
             info: personalInfo,
-            surveyResultId: this.surveyResultId,
+            surveyResultId: this.surveyResultId
          });
          $.ajax({
             url: "/MobileSurvey/SaveRespondentInfo",
@@ -365,10 +364,10 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
             contentType: 'application/json',
             traditional: true,
             success: function () {
-              //loader.hideLoader();
+               loader.hideLoader();
             },
             error: function () {
-               //loader.hideLoader();
+               loader.hideLoader();
             }
          });
       }
@@ -400,7 +399,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 
       return this.$el;
    },
-   sendPersonalInfoOnEnter: function (event) {      
+   sendPersonalInfoOnEnter: function (event) {
       if (event.keyCode == 13) {
          this.sendPersonalInfo(event)
          return false;
@@ -432,7 +431,7 @@ MobileSurvey.SurveyView = Backbone.View.extend({
       var normalWidthPercent = "100%";
       this.questionsPage.setWidth(pageWidthInPixels);
       this.setWidth(expandedWidthPercent);
-      this.thankYouPage.setSurveyResultId(surveyResultId.DbId);
+      this.thankYouPage.setSurveyResultId(surveyResultId);
       this.thankYouPage.show();
       this.thankYouPage.setWidth(pageWidthInPixels);
       /*
@@ -485,28 +484,10 @@ MobileSurvey.SurveyView = Backbone.View.extend({
          contentType: 'application/json',
          traditional: true,
          success: function (surveyResultId) {
+            loader.hideLoader();
             self.goToThankYouPage(surveyResultId);
          }
       });
-      
-      //this.model.save(this.model.toJSON(),
-      //   {
-      //      success: function (model, response, options) {
-      //         if (response.Result == "success") {
-      //            self.dom.$NOTIFICATION_TEXT.text("Changes saved successfully.");
-      //            self.dom.$NOTIFICATION_TEXT.
-      //               removeClass("notification-success notification-error").addClass("notification-success");
-      //            if (response.Operation == "create") {
-      //               self.model.set("Id", response.Details);
-      //            }
-      //            self.model.set("DataChanged", false);
-      //         } else if (response.Result == "error") {
-      //            self.dom.$NOTIFICATION_TEXT.text("Errors while saving.");
-      //            self.dom.$NOTIFICATION_TEXT.
-      //               removeClass("notification-success notification-error").addClass("notification-error");
-      //         }
-      //         self.dom.$NOTIFICATION.show();
-      //      }
-      //   });
+      loader.showLoader();
    }
 });

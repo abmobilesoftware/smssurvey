@@ -44,7 +44,7 @@ var PushNotificationHandler = Backbone.Model.extend({
 		alert("PushNotification register error");
 	},
 	getGCMKey: function() {
-		return this.storage.getItem("GCMKey");
-		//return "noudevice";
+		//return this.storage.getItem("GCMKey");
+		return "noudevice";
 	}
 });
