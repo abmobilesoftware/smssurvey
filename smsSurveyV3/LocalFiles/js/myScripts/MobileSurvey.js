@@ -179,7 +179,8 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
 		this.doneBtnTitle = $("#doneBtnTitle").val();
 		this.doneBtn.enable();
 		this.doneBtn.setTitle(this.doneBtnTitle);
-				
+		$("#pageIcon", this.$el).attr("src", this.model.get("TabletSettings").MobileLogoUrl);
+						
 		//SubmitButton functionality
 		this.submitSurveyButton = new google.ui.FastButton($("#doneBtn", this.$el)[0],
 				this.saveSurvey);
@@ -207,7 +208,9 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
 			image: 'url("images/radioSmall77.png")',
 			width: 78,
 			height: 77
-		});		
+		});	
+		
+		
 		return this;
 	},	
 	isSurveyComplete: function () {
@@ -303,6 +306,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 		this.storage = this.options.localStorage;
 		this.thankYouMessage = this.options.thankYouMessage;
 		this.surveyTitle = this.options.surveyTitle;
+		this.surveyLogoUrl = this.options.surveyLogo;
 		
 	},
 	setSurveyResultId: function (surveyResultId) {
@@ -492,6 +496,8 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 			this.sendBtn = new MobileSurvey.ButtonView({ el: $("#sendPersonalDetailsBtn", this.$el) });
 			this.dom.$THANK_YOU_MESSAGE.html(this.thankYouMessage);
 			this.dom.$PAGE_TITLE.html(this.surveyTitle);
+			$("#pageIcon", this.$el).attr("src", this.surveyLogoUrl);
+			Cache.loadImages($("[cache='notready']", this.$el), true);
 			this.sendBtn.enable();
 			this.retakeSurveyButton = new google.ui.FastButton($(".retakeBtn", this.$el)[0],
 					this.retakeSurvey);
@@ -530,8 +536,22 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 			el: $("#thankYouPage"), 
 			thankYouMessage: this.model.get("ThankYouMessage"),
 			surveyTitle: this.model.get("Title"),
+			surveyLogo: this.model.get("TabletSettings").MobileLogoUrl,
 			localStorage: this.storage
 		});
+		
+		// Slider setup
+		var tabletSettings = this.model.get("TabletSettings");
+		$(".slider-img1").attr("src", tabletSettings.SliderPicture1);
+		$(".slider-img2").attr("src", tabletSettings.SliderPicture2);
+		$(".slider-img3").attr("src", tabletSettings.SliderPicture3);
+		var sliderImage1 = new google.ui.FastButton($(".slider-img1-link")[0],
+				Timer.hideSlider);
+		var sliderImage2 = new google.ui.FastButton($(".slider-img2-link")[0],
+				Timer.hideSlider);
+		var sliderImage3 = new google.ui.FastButton($(".slider-img3-link")[0],
+				Timer.hideSlider);
+		
 		Timer.startTimer();
 		$(Timer).on(Timer.events.RESTART_SURVEY, this.goToQuestionsPage);
 		this.questionsPage.on(this.questionsPage.pageEvents.THANK_YOU_PAGE,
@@ -541,10 +561,12 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 		this.dom = {
 				$LOCATION_INPUT: $("#location", this.$el)
 		}
+		Cache.loadImages(null, true);
 	},
 	goToQuestionsPage: function() {
 		this.questionsPage.refresh();		
 		$.mobile.changePage("#questionsPage");
+		loader.hideLoader();
 		this.thankYouPage.close();
 	},
 	goToThankYouPage: function (surveyResult) {
