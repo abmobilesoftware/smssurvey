@@ -153,6 +153,7 @@
           <Property Name="BankAccount" Type="nvarchar" MaxLength="70" />
           <Property Name="MobileLogoUrl" Type="nvarchar" MaxLength="500" />
           <Property Name="TabletSettings_Id" Type="int" />
+          <Property Name="Mobile64LogoUrl" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="CustomerSet">
           <Key>
@@ -1025,6 +1026,7 @@
           <NavigationProperty Name="Device" Relationship="smsSurveyModel.CompaniesDevice" FromRole="Companies" ToRole="Device" />
           <Property Type="String" Name="MobileLogoUrl" MaxLength="500" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="TabletSettings" Relationship="smsSurveyModel.TabletSettingsCompanies" FromRole="Companies" ToRole="TabletSettings" />
+          <Property Type="String" Name="Mobile64LogoUrl" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
         </EntityType>
         <EntityType Name="Tags">
           <Key>
@@ -1322,6 +1324,7 @@
           <ScalarProperty Name="Bank" ColumnName="Bank" />
           <ScalarProperty Name="BankAccount" ColumnName="BankAccount" />
           <ScalarProperty Name="MobileLogoUrl" ColumnName="MobileLogoUrl" />
+          <ScalarProperty Name="Mobile64LogoUrl" ColumnName="Mobile64LogoUrl" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
