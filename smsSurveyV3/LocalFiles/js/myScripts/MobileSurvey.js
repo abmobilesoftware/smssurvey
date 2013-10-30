@@ -191,7 +191,7 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
 		
 		var areaToAddContentTo = $(".questionsArea", this.$el);
 		//http://ozkatz.github.io/avoiding-common-backbonejs-pitfalls.html?tagref=js
-	    var questionsContainer = document.createDocumentFragment();
+	    var questionsContainer = document.createDocumentFragment();	    
 		_.each(this.model.getQuestionSetCollection(), function (question, index) {
 			//DA now that the collection is sorted (due to the comparator on the collection) we can correctly set the QuestionNumber
 			question.set("QuestionNumber", index + 1);
@@ -216,7 +216,7 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
 	isSurveyComplete: function () {
 		var answeredQuestions = 0;
 		_.each(this.model.getQuestionSetCollection(), function (value, key, list) {
-			if (value.get("ValidAnswer"))++answeredQuestions;
+			if (value.get("ValidAnswer") == true)++answeredQuestions;
 		}, this);
 		return {
 			isDone:
@@ -274,6 +274,7 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
 		this.questionsViews.length = 0;
 		
 		//and then move on with redrawing
+		this.model.resetAnswerForQuestions();
 		this.render();
 		this.doneBtn.setTitle(this.doneBtnTitle);
 	},
@@ -567,7 +568,7 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 		this.questionsPage.refresh();		
 		$.mobile.changePage("#questionsPage");
 		loader.hideLoader();
-		this.thankYouPage.close();
+		this.thankYouPage.close();		
 	},
 	goToThankYouPage: function (surveyResult) {
 		//alert("success");

@@ -368,6 +368,13 @@ Question.QuestionSetCollection = Backbone.Collection.extend({
    },
    comparator: function (question) {
       return question.get("Order");
+   },
+   resetAnswerForQuestions: function() {
+	   _.each(this.models, function(question) {
+		  question.set("PickedAnswer", Question.noValueAnswer);
+		  question.set("AdditionalInfo", "");	
+		  question.set("ValidAnswer", "invalidAnswer");	  		  
+	   });
    }
 });
 
@@ -448,7 +455,7 @@ Question.QuestionSetModel = Backbone.Model.extend({
       UPDATE_VIEW: "updateView"
    },
    initialize: function () {
-      _.bindAll(this, "getQuestionSetCollection");
+      _.bindAll(this, "getQuestionSetCollection", "resetAnswerForQuestions");
       this.questionSetCollection =
          new Question.QuestionSetCollection();
       this.questionSetCollection.on("remove add reset",
@@ -459,8 +466,11 @@ Question.QuestionSetModel = Backbone.Model.extend({
          }, this);
       this.questionTemporaryId = -10000;
    },
-   getQuestionSetCollection: function () {
+   getQuestionSetCollection: function () {	  
       return this.questionSetCollection.models;
+   },
+   resetAnswerForQuestions: function() {
+	   this.questionSetCollection.resetAnswerForQuestions();  
    },
    getQuestionSet: function () {
       return this.questionSetCollection;
