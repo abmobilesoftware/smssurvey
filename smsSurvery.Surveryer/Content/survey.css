@@ -71,29 +71,36 @@ button {
         float: right;
     }
 
-    button.enabled {
+    button.surveybtn  {
      background: #eb7a2c; /* Old browsers */
-/* IE9 SVG, needs conditional override of 'filter' to 'none' */
-background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ViN2EyYyIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZTY3MDMiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
-background: -moz-linear-gradient(top,  #eb7a2c 0%, #fe6703 100%); /* FF3.6+ */
-background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eb7a2c), color-stop(100%,#fe6703)); /* Chrome,Safari4+ */
-background: -webkit-linear-gradient(top,  #eb7a2c 0%,#fe6703 100%); /* Chrome10+,Safari5.1+ */
-background: -o-linear-gradient(top,  #eb7a2c 0%,#fe6703 100%); /* Opera 11.10+ */
-background: -ms-linear-gradient(top,  #eb7a2c 0%,#fe6703 100%); /* IE10+ */
-background: linear-gradient(to bottom,  #eb7a2c 0%,#fe6703 100%); /* W3C */
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eb7a2c', endColorstr='#fe6703',GradientType=0 ); /* IE6-8 */
-        border: 0.1em solid #E18543;
-        color: #ffffff;
-        /*font-size: 26px;*/
-        font-size: 22px;
-        font-family:'Domine', serif;
-        border-radius: 7px;
-        padding: 21px;
+      /* IE9 SVG, needs conditional override of 'filter' to 'none' */
+      background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ViN2EyYyIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNmZTY3MDMiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+      background: -moz-linear-gradient(top,  #eb7a2c 0%, #fe6703 100%); /* FF3.6+ */
+      background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eb7a2c), color-stop(100%,#fe6703)); /* Chrome,Safari4+ */
+      background: -webkit-linear-gradient(top,  #eb7a2c 0%,#fe6703 100%); /* Chrome10+,Safari5.1+ */
+      background: -o-linear-gradient(top,  #eb7a2c 0%,#fe6703 100%); /* Opera 11.10+ */
+      background: -ms-linear-gradient(top,  #eb7a2c 0%,#fe6703 100%); /* IE10+ */
+      background: linear-gradient(to bottom,  #eb7a2c 0%,#fe6703 100%); /* W3C */
+      filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eb7a2c', endColorstr='#fe6703',GradientType=0 ); /* IE6-8 */
+      border: 0.1em solid #E18543;
+      color: #ffffff;      
+      font-size: 22px;
+      font-family:'Domine', serif;
+      border-radius: 7px;
+      padding: 19px;
+    }
+    button.surveybtn:hover  {    
+     background-position: 0 0;
+      -webkit-transition: none;
+      -moz-transition: none;
+      -o-transition: none;
+      transition: none;
     }
 
     button.disabled {
         background: #bbb;
         color: #ffffff;
+        border: 0;
     }
 
     button.small {
@@ -229,23 +236,20 @@ footer {
 /* END QUESTIONS PAGE */
 
 
-
-
-
-
 .surveyMessage p.intro{
-   background: #0C2639;
+   
    line-height: 35px;
    color: #FFF;   
-   padding: 5px;
+   padding: 0;
    text-align:center;
    font-family:'Domine', serif;
-   /*font-size: 22px;*/
-   font-size: 20px;
+   font-size: 19px;
+   margin: 0;   
 }
 
 .surveyMessage {
-   /*text-align: center;*/
+   padding: 0 2px 0 2px;
+   background: #0C2639;
 }
 
 input[type=checkbox].css-checkbox { position: absolute;  overflow: hidden;  clip: rect(0 0 0 0);  height:1px;  width:1px;  margin:-1px;  padding:0; border:0; }  
@@ -295,11 +299,10 @@ input[type=radio] {
 input[type=radio] + label {
     width: 75px;
     display:inline-block;
-    margin:-2px;
-    padding: 4px 12px;
-    margin-bottom: 0;
+    margin: 5px 10px 5px -2px;
+    padding: 4px 12px;    
     font-size: 14px;
-    line-height: 20px;
+    line-height: 34px;
     color: #333;
     text-align: center;
     text-shadow: 0 1px 1px rgba(255,255,255,0.75);
@@ -480,4 +483,10 @@ p#thankYouMessageContent {
 border-radius: 4px;
 margin-bottom:4px;
 
+}
+
+#loaderImage {
+   text-align: center;
+   margin: 0 auto;
+   width: 150px;
 }
