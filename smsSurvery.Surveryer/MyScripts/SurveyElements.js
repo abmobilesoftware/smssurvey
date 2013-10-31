@@ -101,7 +101,7 @@ SurveyElements.StarBarView = Backbone.View.extend({
 });
 
 //#region Loader
-var cSpeed = 8;
+var cSpeed = 9;
 var cWidth = 150;
 var cHeight = 75;
 var cTotalFrames = 7;
@@ -109,22 +109,47 @@ var cFrameWidth = 150;
 var cImageSrc = '/Images/sprites.gif';
 
 var cImageTimeout = false;
+var cIndex = 0;
+var cXpos = 0;
+var cPreloaderTimeout = false;
+var SECONDS_BETWEEN_FRAMES = 0;
 
 function startAnimation() {
 
-   document.getElementById('loaderImage').innerHTML = '<canvas id="canvas" width="' + cWidth + '" height="' + cHeight + '"><p>Your browser does not support the canvas element.</p></canvas>';
+   document.getElementById('loaderImage').style.backgroundImage = 'url(' + cImageSrc + ')';
+   document.getElementById('loaderImage').style.width = cWidth + 'px';
+   document.getElementById('loaderImage').style.height = cHeight + 'px';
 
    //FPS = Math.round(100/(maxSpeed+2-speed));
    FPS = Math.round(100 / cSpeed);
    SECONDS_BETWEEN_FRAMES = 1 / FPS;
-   g_GameObjectManager = null;
-   g_run = genImage;
 
-   g_run.width = cTotalFrames * cFrameWidth;
-   genImage.onload = function () { cImageTimeout = setTimeout(fun, 0) };
-   initCanvas();
+   cPreloaderTimeout = setTimeout('continueAnimation()', SECONDS_BETWEEN_FRAMES / 1000);
+
 }
 
+function continueAnimation() {
+
+   cXpos += cFrameWidth;
+   //increase the index so we know which frame of our animation we are currently on
+   cIndex += 1;
+
+   //if our cIndex is higher than our total number of frames, we're at the end and should restart
+   if (cIndex >= cTotalFrames) {
+      cXpos = 0;
+      cIndex = 0;
+   }
+
+   if (document.getElementById('loaderImage'))
+      document.getElementById('loaderImage').style.backgroundPosition = (-cXpos) + 'px 0';
+
+   cPreloaderTimeout = setTimeout('continueAnimation()', SECONDS_BETWEEN_FRAMES * 1000);
+}
+
+function stopAnimation() {//stops animation
+   clearTimeout(cPreloaderTimeout);
+   cPreloaderTimeout = false;
+}
 
 function imageLoader(s, fun)//Pre-loads the sprites image
 {
@@ -135,7 +160,6 @@ function imageLoader(s, fun)//Pre-loads the sprites image
    genImage.onerror = new Function('alert(\'Could not load the image\')');
    genImage.src = s;
 }
-var loader;
 //#endregion
 
 SurveyElements.Loader = Backbone.View.extend({
