@@ -153,6 +153,7 @@
           <Property Name="BankAccount" Type="nvarchar" MaxLength="70" />
           <Property Name="MobileLogoUrl" Type="nvarchar" MaxLength="500" />
           <Property Name="TabletSettings_Id" Type="int" />
+          <Property Name="Mobile64LogoUrl" Type="nvarchar(max)" />
         </EntityType>
         <EntityType Name="CustomerSet">
           <Key>
@@ -224,6 +225,7 @@
           <Property Name="Provider" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="IntroMessage" Type="nvarchar" Nullable="false" MaxLength="160" />
           <Property Name="DefaultLanguage" Type="nvarchar" Nullable="false" MaxLength="10" />
+          <Property Name="Title" Type="nvarchar" Nullable="false" MaxLength="100" />
         </EntityType>
         <EntityType Name="SurveyResultSet">
           <Key>
@@ -814,6 +816,7 @@
           <Property Type="String" Name="IntroMessage" Nullable="false" MaxLength="160" FixedLength="false" Unicode="true" />
           <Property Type="String" Name="DefaultLanguage" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" DefaultValue="en-US" />
           <NavigationProperty Name="LocationsWhereActive" Relationship="smsSurveyModel.FK_SurveyTemplateTags" FromRole="SurveyTemplate" ToRole="Tags" />
+          <Property Type="String" Name="Title" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           </EntityType>
         <EntityType Name="Customer">
           <Key>
@@ -1025,6 +1028,7 @@
           <NavigationProperty Name="Device" Relationship="smsSurveyModel.CompaniesDevice" FromRole="Companies" ToRole="Device" />
           <Property Type="String" Name="MobileLogoUrl" MaxLength="500" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="TabletSettings" Relationship="smsSurveyModel.TabletSettingsCompanies" FromRole="Companies" ToRole="TabletSettings" />
+          <Property Type="String" Name="Mobile64LogoUrl" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Tags">
           <Key>
@@ -1311,7 +1315,8 @@
     <EntitySetMapping Name="Companies">
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.Companies)">
         <MappingFragment StoreEntitySet="Companies">
-          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Mobile64LogoUrl" ColumnName="Mobile64LogoUrl" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Description" ColumnName="Description" />
           <ScalarProperty Name="Address" ColumnName="Address" />
           <ScalarProperty Name="RegistrationNumber" ColumnName="RegistrationNumber" />
@@ -1443,6 +1448,7 @@
           <EntitySetMapping Name="SurveyTemplateSet">
             <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.SurveyTemplate)">
               <MappingFragment StoreEntitySet="SurveyPlanSet">
+                <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="DefaultLanguage" ColumnName="DefaultLanguage" />
                 <ScalarProperty Name="IntroMessage" ColumnName="IntroMessage" />
                 <ScalarProperty Name="Provider" ColumnName="Provider" />

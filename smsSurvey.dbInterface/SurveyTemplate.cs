@@ -33,6 +33,7 @@ namespace smsSurvey.dbInterface
         public string Provider { get; set; }
         public string IntroMessage { get; set; }
         public string DefaultLanguage { get; set; }
+        public string Title { get; set; }
     
         public virtual ICollection<SurveyResult> SurveyResult { get; set; }
         public virtual ICollection<UserProfile> UserProfile { get; set; }
