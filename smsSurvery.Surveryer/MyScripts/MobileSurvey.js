@@ -353,7 +353,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
          personalInfo.Telephone = $('#telephone').val();
          var dataToSend = JSON.stringify({
             info: personalInfo,
-            surveyResultId: this.surveyResultId
+            surveyResultId: this.surveyResultId.DbId
          });
          $.ajax({
             url: "/MobileSurvey/SaveRespondentInfo",
