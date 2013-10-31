@@ -121,34 +121,34 @@
     <value>Cuvintele cheie, '{0}', au fost detectate</value>
   </data>
   <data name="LocationLabel" xml:space="preserve">
-    <value>Locatie</value>
+    <value>Locaţie</value>
   </data>
   <data name="alertCauseAnyKeywordDetectedMessage" xml:space="preserve">
-    <value>Cuvantul cheie, '{0}', a fost detectat</value>
+    <value>Cuvântul cheie, '{0}', a fost detectat</value>
   </data>
   <data name="alertCauseContainsMessage" xml:space="preserve">
-    <value>Cuvantul cheie, '{0}', a fost detectat</value>
+    <value>Cuvântul cheie, '{0}', a fost detectat</value>
   </data>
   <data name="alertCauseEqualMessage" xml:space="preserve">
-    <value>Raspunsul cautat, '{0}', a fost primit</value>
+    <value>Răspunsul căutat, '{0}', a fost primit</value>
   </data>
   <data name="alertCauseGreaterMessage" xml:space="preserve">
-    <value>Raspunsul primit '{0}' ({1}) mai mare decat raspunsul limita '{2}' ({3})</value>
+    <value>Răspunsul primit '{0}' ({1}) mai mare decât răspunsul limită '{2}' ({3})</value>
   </data>
   <data name="alertCauseGreaterOrEqualMessage" xml:space="preserve">
-    <value>Raspunsul primit '{0}' ({1}) mai mare sau egal cu raspunsul limita '{2}' ({3})</value>
+    <value>Răspunsul primit '{0}' ({1}) mai mare sau egal cu răspunsul limită '{2}' ({3})</value>
   </data>
   <data name="alertCauseLessMessage" xml:space="preserve">
-    <value>Raspunsul primit  '{0}' ({1}) mai mic decat raspunsul limita '{2}' ({3})</value>
+    <value>Răspunsul primit  '{0}' ({1}) mai mic decat răspunsul limită '{2}' ({3})</value>
   </data>
   <data name="alertCauseLessOrEqualMessage" xml:space="preserve">
-    <value>Raspunsul primit '{0}' ({1}) mai mic sau egal cu raspunsul limita '{2}' ({3})</value>
+    <value>Răspunsul primit '{0}' ({1}) mai mic sau egal cu răspunsul limită '{2}' ({3})</value>
   </data>
   <data name="alertCauseNotEqualMessage" xml:space="preserve">
-    <value>A fost primit un raspuns diferit de raspunsul asteptat '{0}'</value>
+    <value>A fost primit un răspuns diferit de răspunsul aşteptat '{0}'</value>
   </data>
   <data name="alertEmailSubject" xml:space="preserve">
-    <value>Alerta '{0}' a fost declansata pentru intrebarea '{1}'</value>
+    <value>Alerta '{0}' a fost declansată pentru întrebarea '{1}'</value>
   </data>
   <data name="MobileSurveyFooterCaption" xml:space="preserve">
     <value>Dezvoltat de</value>
@@ -169,7 +169,7 @@
     <value>Nume</value>
   </data>
   <data name="MobileSurveyPersonalInfoPhoneLabel" xml:space="preserve">
-    <value>Numar de telefon</value>
+    <value>Număr de telefon</value>
   </data>
   <data name="MobileSurveyPersonalInfoSubmitBtnLabel" xml:space="preserve">
     <value>Trimiteți informațiile personale</value>
@@ -181,16 +181,16 @@
     <value>Prenume</value>
   </data>
   <data name="MobileSurveyRatingAddionalInfoLabel" xml:space="preserve">
-    <value>Vă rugăm să vă argumentați alegerea pentru a deveni mai buni</value>
+    <value>Vă rugăm să vă argumentați alegerea</value>
   </data>
   <data name="MobileSurveySelectOneFromManyLabel" xml:space="preserve">
-    <value>Selectati un raspuns</value>
+    <value>Selectaţi un răspuns</value>
   </data>
   <data name="MobileSurveySubmitButtonCaption" xml:space="preserve">
     <value>Trimite</value>
   </data>
   <data name="MobileSurveySubmittedMessage" xml:space="preserve">
-    <value>Acest chestionar a fost deja completat. Va multumim pentru participare!</value>
+    <value>Acest chestionar a fost deja completat. Vă mulţumim pentru participare!</value>
   </data>
   <data name="MobileSurveySubmittedPageTitle" xml:space="preserve">
     <value>Chestionar deja completat</value>
@@ -205,43 +205,43 @@
     <value>Regiune</value>
   </data>
   <data name="SmsMobileSurveyTemplate" xml:space="preserve">
-    <value>Va rugam sa completati chestionarul de la {0}</value>
+    <value>Vă rugăm să completaţi chestionarul de la {0}</value>
   </data>
   <data name="SmsQuestionIndexTemplate" xml:space="preserve">
-    <value>Intrebarea {0}/{1}: </value>
+    <value>Întrebarea {0}/{1}: </value>
   </data>
   <data name="SmsQuestionRatingSuffixJoinTemplate" xml:space="preserve">
     <value>{0} pentru {1} din {2} stele</value>
   </data>
   <data name="SmsQuestionRatingSuffixTemplate" xml:space="preserve">
-    <value>Raspundeti cu:</value>
+    <value>Răspundeţi cu:</value>
   </data>
   <data name="SmsQuestionSelectOneFromManyMemberSuffixTemplate" xml:space="preserve">
     <value>{0} pentru {1}</value>
   </data>
   <data name="SmsQuestionSelectOneFromManySuffixTemplate" xml:space="preserve">
-    <value> Raspundeti cu:</value>
+    <value> Răspundeţi cu:</value>
   </data>
   <data name="SmsQuestionYesNoSuffixTemplate" xml:space="preserve">
-    <value>Raspundeti cu:
+    <value>Răspundeţi cu:
 1 pentru Da
 2 pentru Nu</value>
   </data>
   <data name="SmsQuestionNumericSuffixJoinTemplate" xml:space="preserve">
     <value>{0} pentru {1}</value>
-    </data>
+  </data>
   <data name="MobileSurveyPersonalInfoEmailError" xml:space="preserve">
     <value>Adresa de email este invalidă</value>
   </data>
   <data name="SmsQuestionNumericSuffixTemplate" xml:space="preserve">
-    <value>Raspundeti cu:</value>
-    </data>
+    <value>Răspundeţi cu:</value>
+  </data>
   <data name="MobileSurveyPersonalInfoNameError" xml:space="preserve">
     <value>Câmpul 'Nume' nu poate fi gol</value>
   </data>
   <data name="SmsQuestionFreeTextSuffix" xml:space="preserve">
-    <value>Va rugam sa raspundeti</value>
-    </data>
+    <value>Vă rugăm să răspundeţi</value>
+  </data>
   <data name="MobileSurveyPersonalInfoRetakeSurvey" xml:space="preserve">
     <value>Recompletează sondajul</value>
   </data>
@@ -249,6 +249,6 @@
     <value>Câmpul 'Prenume' nu poate fi gol</value>
   </data>
   <data name="MobileSurveySurveySent" xml:space="preserve">
-    <value>Sondajul a fost trimis</value>
+    <value>Chestionarul a fost trimis</value>
   </data>
 </root>
