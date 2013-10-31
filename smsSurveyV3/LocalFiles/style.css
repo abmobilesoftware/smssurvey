@@ -1,3 +1,14 @@
+@font-face {
+    font-family: 'Open Sans';
+ 	font-style: normal;
+  	font-weight: 400;
+    src: url('fonts/open_sans-webfont.eot');
+    src: url('fonts/open_sans-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/open_sans-webfont.woff') format('woff'),
+         url('fonts/open_sans-webfont.ttf') format('truetype'),
+         url('fonts/open_sans-webfont.svg#open_sansregular') format('svg');
+}
+
 html, body {
 	margin: 0;
 	padding: 0;

@@ -1028,7 +1028,7 @@
           <NavigationProperty Name="Device" Relationship="smsSurveyModel.CompaniesDevice" FromRole="Companies" ToRole="Device" />
           <Property Type="String" Name="MobileLogoUrl" MaxLength="500" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="TabletSettings" Relationship="smsSurveyModel.TabletSettingsCompanies" FromRole="Companies" ToRole="TabletSettings" />
-          <Property Type="String" Name="Mobile64LogoUrl" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Mobile64LogoUrl" Nullable="true" MaxLength="Max" Unicode="true" FixedLength="false" />
         </EntityType>
         <EntityType Name="Tags">
           <Key>
@@ -1316,7 +1316,7 @@
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.Companies)">
         <MappingFragment StoreEntitySet="Companies">
           <ScalarProperty Name="Mobile64LogoUrl" ColumnName="Mobile64LogoUrl" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
+           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Description" ColumnName="Description" />
           <ScalarProperty Name="Address" ColumnName="Address" />
           <ScalarProperty Name="RegistrationNumber" ColumnName="RegistrationNumber" />

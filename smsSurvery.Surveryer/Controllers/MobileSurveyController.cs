@@ -240,8 +240,10 @@ namespace smsSurvery.Surveryer.Controllers
                questions.Add(q);
             }
             TabletSettings dbTabletSettings = surveyTemplate.UserProfile.FirstOrDefault().Company.TabletSettings;
+            Companies dbCompany = surveyTemplate.UserProfile.FirstOrDefault().Company;
             ClientTabletSettings cTabletSettings = new ClientTabletSettings(dbTabletSettings.Id,
-               dbTabletSettings.SliderImage1, dbTabletSettings.SliderImage2, dbTabletSettings.SliderImage3);
+               dbTabletSettings.SliderImage1, dbTabletSettings.SliderImage2, dbTabletSettings.SliderImage3, 
+               dbCompany.Mobile64LogoUrl);
             ClientSurveyTemplate clientSurveyTemplate =
                 new ClientSurveyTemplate(
                    surveyTemplate.Id, surveyTemplate.Description, surveyTemplate.Title,

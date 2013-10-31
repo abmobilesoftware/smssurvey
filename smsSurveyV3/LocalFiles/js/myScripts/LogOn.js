@@ -19,8 +19,7 @@ var LogOnPage = Backbone.View.extend({
 				this.clearFields);	
 		// Check if the user is logged on
 		this.model.isLoggedOn(this.loggedOnStatus)
-		this.logOnButton = new google.ui.FastButton($("#logOnBtn", this.$el)[0], this.logOn);
-		Cache.loadImages($("img", this.$el), true);
+		this.logOnButton = new google.ui.FastButton($("#logOnBtn", this.$el)[0], this.logOn);		
 	},
 	logOn: function(event) {
 		event.preventDefault();

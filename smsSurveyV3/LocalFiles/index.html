@@ -20,16 +20,8 @@
 <link rel="stylesheet" href="css/logon.css" type="text/css"
 	media="screen" title="no title" charset="utf-8">
 <link rel="stylesheet" href="css/app.css" />
-<link
-	href='http://fonts.googleapis.com/css?family=Open+Sans&subset=latin,cyrillic,latin-ext'
-	rel='stylesheet' type='text/css'>
-<link
-	href='http://fonts.googleapis.com/css?family=Domine&subset=latin,latin-ext'
-	rel='stylesheet' type='text/css'>
 <script type="text/javascript" charset="utf-8"
 	src="js/scripts/jquery-1.10.1.js"></script>
-<script type="text/javascript" charset="utf-8"
-	src="js/scripts/canvas.js"></script>
 <script type="text/javascript" charset="utf-8"
 	src="js/scripts/jquery-ui-1.10.3.js"></script>
 <script type="text/javascript" charset="utf-8"
@@ -293,6 +285,7 @@
 			});			
 		},
 		refreshSurvey: function() {
+			Cache.clear();
 			surveyData = this.loadSurveyData();
 			this.storage.setItem("surveyData", JSON.stringify(surveyData));	
 			template = this.loadTemplateFromServer(surveyData.get("Id"));
@@ -305,6 +298,7 @@
 			this.refreshSurvey();
 		},
 		releaseDevice: function() {
+			Cache.clear();
 			this.storage.setItem("surveyData", null);
 			this.storage.setItem("template", null);		
 			this.storage.setItem("surveyResults", null);
@@ -345,7 +339,8 @@
 				SurveyTemplateId : surveyDataWrapper.get("Id"),
 				Title : surveyDataWrapper.get("Description"),
 				IntroMessage : surveyDataWrapper.get("IntroMessage"),
-				ThankYouMessage : surveyDataWrapper.get("ThankYouMessage")
+				ThankYouMessage : surveyDataWrapper.get("ThankYouMessage"),
+				TabletSettings: surveyDataWrapper.get("TabletSettings")
 			});
 			surveyModel.updateQuestionSetCollection(surveyDataWrapper.get("QuestionSet"));
 			this.surveyView = new MobileSurvey.SurveyView({
@@ -472,7 +467,7 @@
 	<!-- /.modal -->
 	<!-- slider -->
 	<div id="slider-modal" class="modal hide">
-		<div id="myCarousel" class="carousel slide">
+		<div id="myCarousel" class="carousel slide" data-pause="false">
 		    <ol class="carousel-indicators">
 			    <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
 			    <li data-target="#myCarousel" data-slide-to="1"></li>
@@ -480,9 +475,9 @@
 		    </ol>
 		    <!-- Carousel items -->
 		    <div class="carousel-inner">
-		    <div class="active item"><img class="slider-img" src="images/Picture1.png" /></div>
-		    <div class="item"><img class="slider-img" src="images/Picture2.png" /></div>
-		    <div class="item"><img class="slider-img" src="images/Picture3.png" /></div>
+		    <div class="active item"><a class="slider-img1-link"><img class="slider-img slider-img1" src="" cache="notready"/></a></div>
+		    <div class="item"><a class="slider-img2-link"><img class="slider-img slider-img2" src="" cache="notready"/></a></div>
+		    <div class="item"><a class="slider-img3-link"><img class="slider-img slider-img3" src="" cache="notready"/></a></div>
 	    </div>
 	</div>
 	<!-- end slider -->		
