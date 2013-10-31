@@ -189,8 +189,8 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
       this.questionSetModel = new Question.QuestionSetModel();
    },
    urlByMethod: {
-      "read": "http://dev.txtfeedback.net/MobileSurvey/ActiveSurveyAsJson?company=TestAbMobile&location=TestTableta",
-      "update": "http://dev.txtfeedback.net/SurveyTemplate/SaveSurvey"
+      "read": "http://demoloyaltyinsights.cloudapp.net/MobileSurvey/ActiveSurveyAsJson?company=TestAbMobile&location=TestTableta",
+      "update": "http://demoloyaltyinsights.cloudapp.net/SurveyTemplate/SaveSurvey"
    },
    idAttribute: "Id",
    updateThankYouMessage: function (thankYouMessage) {

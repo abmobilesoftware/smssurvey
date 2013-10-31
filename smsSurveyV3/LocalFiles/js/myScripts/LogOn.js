@@ -73,7 +73,7 @@ var LogOnModel = Backbone.Model.extend({
 				LOGOFF_SUCCESS : "logoff_success_event"
 		};
 		//var domain = "http://localhost:3288";
-		var domain = "http://dev.txtfeedback.net";
+		var domain = "http://demoloyaltyinsights.cloudapp.net";
 		//this.xmppHandler = options.xmppHandler;
 		this.pushNotificationHandler = options.pushNotificationHandler;
 		this.url = {
