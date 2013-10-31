@@ -432,7 +432,7 @@ MobileSurvey.SurveyView = Backbone.View.extend({
       this.questionsPage.setWidth(pageWidthInPixels);
       this.setWidth(expandedWidthPercent);
       this.thankYouPage.setSurveyResultId(surveyResultId);
-      this.thankYouPage.show();
+      //this.thankYouPage.show();
       this.thankYouPage.setWidth(pageWidthInPixels);
       /*
           thankYouPage.setTop - make thank you page visible during the transition.
@@ -446,6 +446,7 @@ MobileSurvey.SurveyView = Backbone.View.extend({
       }, {
          duration: 600,
          complete: function () {
+            self.thankYouPage.show();
             self.questionsPage.hide();
             self.thankYouPage.setTop(0);
             self.$el.css("right", "0px");
