@@ -1080,3 +1080,7 @@ input.invalidField, select.invalidField, a.invalidField, div.invalidField {
    max-height:45px;
     vertical-align: middle;
 }
+
+.survey-info-data input {
+   width: 600px;
+}
