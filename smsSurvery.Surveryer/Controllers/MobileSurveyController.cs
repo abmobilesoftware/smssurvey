@@ -43,7 +43,7 @@ namespace smsSurvery.Surveryer.Controllers
             if (runningSurvey.Terminated != true)
             {
                ViewBag.Id = idToUse;
-               ViewBag.SurveyTitle = "Mobile survey";
+               ViewBag.SurveyTitle = runningSurvey.SurveyTemplate.Title;
                ViewBag.IsFeedback = 0;
                ViewBag.IntroMessage = runningSurvey.SurveyTemplate.IntroMessage;
                ViewBag.ThankYouMessage = runningSurvey.SurveyTemplate.ThankYouMessage;
@@ -91,7 +91,7 @@ namespace smsSurvery.Surveryer.Controllers
             System.Threading.Thread.CurrentThread.CurrentUICulture = System.Globalization.CultureInfo.CreateSpecificCulture(surveyLanguage);
             //the id is a the SurveyTemplateId
             ViewBag.Id = id;
-            ViewBag.SurveyTitle = "Feedback";
+            ViewBag.SurveyTitle = survey.Title;
             ViewBag.IntroMessage = survey.IntroMessage;
             ViewBag.ThankYouMessage = survey.ThankYouMessage;
             ViewBag.IsFeedback = 1;
@@ -244,7 +244,8 @@ namespace smsSurvery.Surveryer.Controllers
                dbTabletSettings.SliderImage1, dbTabletSettings.SliderImage2, dbTabletSettings.SliderImage3);
             ClientSurveyTemplate clientSurveyTemplate =
                 new ClientSurveyTemplate(
-                   surveyTemplate.Id, surveyTemplate.Description, surveyTemplate.IntroMessage,
+                   surveyTemplate.Id, surveyTemplate.Description, surveyTemplate.Title,
+                   surveyTemplate.IntroMessage,
                    surveyTemplate.ThankYouMessage, surveyTemplate.DateStarted,
                    surveyTemplate.DateEnded, surveyTemplate.IsRunning, questions, 
                    surveyTemplate.DefaultLanguage, cTabletSettings);

@@ -157,7 +157,7 @@ namespace smsSurvery.Surveryer.Controllers
                dbTabletSettings.SliderImage1, dbTabletSettings.SliderImage2, dbTabletSettings.SliderImage3);
             ClientSurveyTemplate clientSurveyTemplate =
                 new ClientSurveyTemplate(
-                   surveyTemplate.Id, surveyTemplate.Description, surveyTemplate.IntroMessage,
+                   surveyTemplate.Id, surveyTemplate.Description, surveyTemplate.Title, surveyTemplate.IntroMessage,
                    surveyTemplate.ThankYouMessage, surveyTemplate.DateStarted,
                    surveyTemplate.DateEnded, surveyTemplate.IsRunning, questions, 
                    surveyTemplate.DefaultLanguage, cTabletSettings);
@@ -208,6 +208,7 @@ namespace smsSurvery.Surveryer.Controllers
                }
                surveyTemplate.ThankYouMessage = clientSurveyTemplate.ThankYouMessage;
                surveyTemplate.Description = clientSurveyTemplate.Description;
+               surveyTemplate.Title = clientSurveyTemplate.Title;
                surveyTemplate.IntroMessage = clientSurveyTemplate.IntroMessage;
                surveyTemplate.DefaultLanguage = clientSurveyTemplate.DefaultLanguage;
                var dbQuestions = surveyTemplate.QuestionSet;

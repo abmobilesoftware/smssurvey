@@ -9,6 +9,7 @@ namespace smsSurvery.Surveryer.ClientModels
    {
       public int Id { get; set; }
       public string Description { get; set; }
+      public string Title { get; set; }
       public string ThankYouMessage { get; set; }
       public string IntroMessage { get; set; }
       public string DefaultLanguage { get; set; }
@@ -28,6 +29,7 @@ namespace smsSurvery.Surveryer.ClientModels
       public ClientSurveyTemplate(
          int iId,
          string iDescription,
+         string iTitle,
          string iIntroMessage,
          string iThankYouMessage,         
          Nullable<DateTime> iDateStarted,
@@ -39,6 +41,7 @@ namespace smsSurvery.Surveryer.ClientModels
       {
          Id = iId;
          Description = iDescription;
+         Title = iTitle;
          IntroMessage = iIntroMessage;
          ThankYouMessage = iThankYouMessage;
          DateStarted = iDateStarted;
