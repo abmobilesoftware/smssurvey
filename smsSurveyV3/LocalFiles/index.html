@@ -360,7 +360,8 @@
 				return surveyLink;
 			} else {
 				$.ajax({
-					url: "http://demoloyaltyinsights.cloudapp.net/Devices/GetSurveyLink",
+					//url: "http://demoloyaltyinsights.cloudapp.net/Devices/GetSurveyLink",
+					url: "http://tablet.txtfeedback.net/Devices/GetSurveyLink",
 					data: {
 						deviceId: this.pushNotificationHandler.getGCMKey()
 					},
@@ -381,7 +382,7 @@
 		loadTemplateFromServer: function(surveyId) {
 			var template;
 			$.ajax({
-				url : "http://dev.txtfeedback.net/MobileSurvey/GetSurveyTemplate",
+				url : "http://tablet.txtfeedback.net/MobileSurvey/GetSurveyTemplate",
 				type : "GET",
 				data: {
 					surveyId: surveyId
