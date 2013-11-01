@@ -151,6 +151,15 @@ namespace smsSurvery.Surveryer.GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to e.g. john@smith.com.
+        /// </summary>
+        public static string EmailPlaceholder {
+            get {
+                return ResourceManager.GetString("EmailPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Location.
         /// </summary>
         public static string LocationLabel {
@@ -358,6 +367,15 @@ namespace smsSurvery.Surveryer.GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to e.g. John/Jane.
+        /// </summary>
+        public static string NamePlaceholder {
+            get {
+                return ResourceManager.GetString("NamePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Region.
         /// </summary>
         public static string RegionLabel {
@@ -455,6 +473,15 @@ namespace smsSurvery.Surveryer.GlobalResources {
         public static string SmsQuestionYesNoSuffixTemplate {
             get {
                 return ResourceManager.GetString("SmsQuestionYesNoSuffixTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to e.g. Smith.
+        /// </summary>
+        public static string SurnamePlaceholder {
+            get {
+                return ResourceManager.GetString("SurnamePlaceholder", resourceCulture);
             }
         }
     }

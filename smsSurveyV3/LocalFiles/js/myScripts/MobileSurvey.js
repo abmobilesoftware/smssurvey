@@ -54,7 +54,7 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
 	},
 	initialize: function () {
 		_.bindAll(this, "render", "toggleDisplay", "updateQuestionDisplay", "updateAnswer",
-		"numericScaleSelected", "close");
+		"numericScaleSelected", "close", "hideKeyboard");
 		this.questionMobileTemplate = _.template($("#question-mobile-template").html());
 		this.questionConstants = SurveyUtilities.Utilities.CONSTANTS_QUESTION;			
 		this.listenTo(this.model, "change:ValidAnswer", this.updateQuestionDisplay);
@@ -141,7 +141,21 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
 		 if (event.keyCode == this.keys.ENTER) {
 			 event.preventDefault();
 			 $(".comment", this.$el).blur();
+			 //Mouse.simulate($("#doneBtn")[0], "click");
+			 this.hideKeyboard();
 		 }
+	},
+	hideKeyboard: function() {
+		var field = document.createElement('input');
+		field.setAttribute('type', 'text');
+		document.body.appendChild(field);
+
+		setTimeout(function() {
+		    field.focus();
+		    setTimeout(function() {
+		        field.setAttribute('style', 'display:none;');
+		    }, 50);
+		}, 50);
 	},
 	close: function() {		
 		_.each(this.childViews, function(childView) {
@@ -416,6 +430,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 		this.sendBtn.setTitle($("#personalInfoSubmitted", this.$el).val());
 		this.sendBtn.disable();
 		loader.hideLoader();
+		Timer.startTimer();
 	},
 	sendPersonalInfo: function (event) {
 		var self = this;
@@ -465,7 +480,8 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 	makeSendPersonalInfoRequest: function(dataToSendObject, successCallback, errorCallback) {
 		var dataToSend = JSON.stringify(dataToSendObject);
 		$.ajax({
-			url: "http://dev.txtfeedback.net/MobileSurvey/SaveRespondentInfo",
+			//url: "http://demoloyaltyinsights.cloudapp.net/MobileSurvey/SaveRespondentInfo",
+			url: "http://tablet.txtfeedback.net/MobileSurvey/SaveRespondentInfo",
 			data: dataToSend,
 			type: 'post',
 			cache: false,
@@ -693,7 +709,8 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 	makeSaveRequest: function(sendDataObject, successCallback, errorCallback) {
 		var sendData = JSON.stringify(sendDataObject);
 		$.ajax({
-			url: "http://dev.txtfeedback.net/MobileSurvey/SaveSurvey",
+			//url: "http://demoloyaltyinsights.cloudapp.net/MobileSurvey/SaveSurvey",
+			url: "http://tablet.txtfeedback.net/MobileSurvey/SaveSurvey",
 			data: sendData,
 			crossDomain: true,
 			type: 'post',
