@@ -146,7 +146,7 @@ div.question div.answerArea {
 }*/
 /* END QUESTION */
 
-textarea.comment {
+input.comment {
     color: #000;
     font-family: 'Open Sans', serif;
     font-size: 18px;
@@ -154,8 +154,7 @@ textarea.comment {
     margin-top:11px;
     display:inline-block;
     width:800px;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 10px;    
 }
 
 .additionalInfo {
@@ -175,12 +174,19 @@ textarea.comment {
 
 select.list {
     width: 820px;
-    font-size: 18px; 
-  	text-indent: 10px;
-    font-family:'Open Sans';
+    font-size: 18px !important;
+    line-height: 50px !important; 
+  	text-indent: 10px !important;
+    font-family:'Open Sans' !important;
     height:50px !important;
     display:block;
     margin:0 auto;
+}
+
+select.list option {
+line-height: 50px !important;
+height: 50px !important;
+ font-size: 18px !important;
 }
 
 #doneBtnWrapper {

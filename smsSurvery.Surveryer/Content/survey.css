@@ -178,11 +178,28 @@
       .additionalInfo textarea {
          margin-top: 0.3em;
       }
+ 
 
-   select.list {
+   .styled-select select {
+      background: transparent;
       width: 100%;
-      /*font-size: 1em;*/
       padding: 5px;
+      border: 0;
+      border-radius: 0;
+      font-size: 18px;
+      line-height: 1;
+      height: 34px;
+      -webkit-appearance: none;
+   }
+
+
+   .styled-select {
+      width:100%;
+      height: 34px;
+      overflow: hidden;
+      background: url("/images/down_arrow_select.jpg") no-repeat right #DDD;
+      background-color: white;
+      border: 1px solid #CCC;
    }
 
    #doneBtnWrapper {
