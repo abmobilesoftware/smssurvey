@@ -35,12 +35,14 @@
          <% });
          } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY) {
          %>     
+         <div class="styled-select"> 
             <select class="answer list" name="answer">
                <option value="noValue">@Global.MobileSurveySelectOneFromManyLabel</option>
                <% _.each(Answers, function(value, key, list) { %>
                   <option value="<%= value.AnswerIdentifier %>"><%= value.AnswerLabel %></option>
                <% }); %> 
             </select>
+          </div>
          <%
          } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_NUMERIC) {
             var numericValues = ValidAnswers.split(";");

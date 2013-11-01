@@ -133,7 +133,7 @@ namespace smsSurvery.Surveryer.Controllers
                   ViewBag.SurveyTitle = surveyToRun.Description;
                   return View("FillTablet");
                } else {
-                  ViewBag.SurveyTitle = "Feedback";
+                  ViewBag.SurveyTitle = surveyToRun.Title;
                   ViewBag.TabletView = false;
                   return View("Fill");
                }
