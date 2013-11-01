@@ -260,4 +260,10 @@
   <data name="SurnamePlaceholder" xml:space="preserve">
     <value>e.g. Smith</value>
   </data>
+  <data name="PhonePlaceholder" xml:space="preserve">
+    <value>e.g. 01332 050999</value>
+  </data>
+  <data name="TextareaPlaceholder" xml:space="preserve">
+    <value>Your answer is...</value>
+  </data>
 </root>
