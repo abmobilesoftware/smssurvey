@@ -146,16 +146,15 @@ div.question div.answerArea {
 }*/
 /* END QUESTION */
 
-textarea.comment {
+input.comment {
     color: #000;
     font-family: 'Open Sans', serif;
     font-size: 18px;
     line-height: 30px;
-    margin-top:11px;
-    display:inline-block;
+    /*margin-top:11px;*/
+    /*display:inline-block;*/
     width:800px;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding:10px;
 }
 
 .additionalInfo {
