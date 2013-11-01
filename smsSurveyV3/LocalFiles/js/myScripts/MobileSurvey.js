@@ -54,7 +54,7 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
 	},
 	initialize: function () {
 		_.bindAll(this, "render", "toggleDisplay", "updateQuestionDisplay", "updateAnswer",
-		"numericScaleSelected", "close", "hideKeyboard");
+		"numericScaleSelected", "close", "hideKeyboard", "pressChar");
 		this.questionMobileTemplate = _.template($("#question-mobile-template").html());
 		this.questionConstants = SurveyUtilities.Utilities.CONSTANTS_QUESTION;			
 		this.listenTo(this.model, "change:ValidAnswer", this.updateQuestionDisplay);
@@ -142,7 +142,7 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
 			 event.preventDefault();
 			 $(".comment", this.$el).blur();
 			 //Mouse.simulate($("#doneBtn")[0], "click");
-			 this.hideKeyboard();
+			 //this.hideKeyboard();
 		 }
 	},
 	hideKeyboard: function() {
@@ -152,11 +152,37 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
 
 		setTimeout(function() {
 		    field.focus();
+		    field.addEventListener("keydown", function(event) {
+		    	alert("Apasat " + event.keyCode);
+		    });
+		   
 		    setTimeout(function() {
-		        field.setAttribute('style', 'display:none;');
-		    }, 50);
+		        alert("Simulez apasarea unei taste");
+		        this.pressChar(13, field);
+		        field.blur()
+		        $("#eatFocus").focus();
+		    	field.setAttribute('style', 'display:none;');	        
+		    }, 2000);
 		}, 50);
 	},
+	pressChar: function(char, inputElement)
+    {
+      try
+      {
+        // Create the key press event.
+        var pressEvent = document.createEvent('KeyboardEvent');
+        pressEvent.initKeyEvent("keypress", true, true, window, 
+                                  false, false, false, false, 
+                                  0, char);
+
+        var input = inputElement;
+
+        input.dispatchEvent(pressEvent); // Press the key.
+      }
+      catch (e) {
+          alert ("Your browser does not support this example!");
+      }
+    },
 	close: function() {		
 		_.each(this.childViews, function(childView) {
 			childView.close();
