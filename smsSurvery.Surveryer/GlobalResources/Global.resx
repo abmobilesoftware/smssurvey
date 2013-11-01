@@ -229,19 +229,19 @@
   </data>
   <data name="SmsQuestionNumericSuffixJoinTemplate" xml:space="preserve">
     <value>{0} for {1}</value>
-    </data>
+  </data>
   <data name="MobileSurveyPersonalInfoEmailError" xml:space="preserve">
     <value>Invalid email</value>
   </data>
   <data name="SmsQuestionNumericSuffixTemplate" xml:space="preserve">
     <value>Reply with:</value>
-    </data>
+  </data>
   <data name="MobileSurveyPersonalInfoNameError" xml:space="preserve">
     <value>The Name cannot be empty or whitespace only</value>
   </data>
   <data name="SmsQuestionFreeTextSuffix" xml:space="preserve">
     <value>Please reply</value>
-    </data>
+  </data>
   <data name="MobileSurveyPersonalInfoSurnameError" xml:space="preserve">
     <value>The Surname cannot be empty or whitespace only</value>
   </data>
@@ -250,5 +250,14 @@
   </data>
   <data name="MobileSurveyPersonalInfoRetakeSurvey" xml:space="preserve">
     <value>Retake survey</value>
+  </data>
+  <data name="EmailPlaceholder" xml:space="preserve">
+    <value>e.g. john@smith.com</value>
+  </data>
+  <data name="NamePlaceholder" xml:space="preserve">
+    <value>e.g. John/Jane</value>
+  </data>
+  <data name="SurnamePlaceholder" xml:space="preserve">
+    <value>e.g. Smith</value>
   </data>
 </root>

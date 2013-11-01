@@ -251,4 +251,13 @@
   <data name="MobileSurveySurveySent" xml:space="preserve">
     <value>Chestionarul a fost trimis</value>
   </data>
+  <data name="EmailPlaceholder" xml:space="preserve">
+    <value>Ex: ion@popescu.ro</value>
+  </data>
+  <data name="NamePlaceholder" xml:space="preserve">
+    <value>Ex: Ion/Ioana</value>
+  </data>
+  <data name="SurnamePlaceholder" xml:space="preserve">
+    <value>Ex: Popescu</value>
+  </data>
 </root>
