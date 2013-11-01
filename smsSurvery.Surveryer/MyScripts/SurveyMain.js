@@ -12,6 +12,7 @@
    var surveyModel = new SurveyBuilder.SurveyModel({
       Id: surveyId,
       Description: "",
+      Title: "",
       IntroMessage: "",
       ThankYouMessage: "",
       StartDate: "15/6/2013",

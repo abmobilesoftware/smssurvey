@@ -423,6 +423,7 @@ namespace smsSurvery.Surveryer.Controllers
             {
                surveyTemplate = new SurveyTemplate();
                surveyTemplate.Provider = user.DefaultProvider;
+               surveyTemplate.Title = clientSurveyTemplate.Title;
                surveyTemplate.Description = clientSurveyTemplate.Description;
                surveyTemplate.IntroMessage = clientSurveyTemplate.IntroMessage;
                surveyTemplate.ThankYouMessage = clientSurveyTemplate.ThankYouMessage;
