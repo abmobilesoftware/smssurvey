@@ -169,9 +169,9 @@ namespace smsSurvery.Surveryer.Controllers
          int validResponses = 0;
          tags = tags ?? new string[0];
          IEnumerable<Result> resultsToAnalyze = q.Result.Where(r =>
-                     tags.Length == 0 ? true : tags.Intersect(r.SurveyResult.Tags.Select(tag => tag.Name)).Any() &&
-                     intervalStart <= r.SurveyResult.DateRan &&
-                     r.SurveyResult.DateRan <= intervalEnd);
+                     (tags.Length == 0 ? true : tags.Intersect(r.SurveyResult.Tags.Select(tag => tag.Name)).Any()) &&
+                     intervalEnd >= r.DateSubmitted &&
+                     intervalStart <= r.DateSubmitted);
          foreach (var result in resultsToAnalyze)
          {
             if (validPossibleAnswers.Contains(result.Answer))
@@ -198,8 +198,9 @@ namespace smsSurvery.Surveryer.Controllers
          using (smsSurveyEntities  db = new smsSurveyEntities())
          {
             List<string> stuff = new List<string>();
-            var results = q.Result.Where(r => tags.Length == 0 ? true : tags.Intersect(r.SurveyResult.Tags.Select(tag => tag.Name)).Any() &&
-               intervalStart <= r.SurveyResult.DateRan && r.SurveyResult.DateRan <= intervalEnd);
+            var results = q.Result.Where(r =>
+               intervalStart <= r.DateSubmitted &&
+               r.DateSubmitted <= intervalEnd);
             foreach (var item in results)
             {
                if (checkAdditionalInfo)
@@ -464,7 +465,7 @@ namespace smsSurvery.Surveryer.Controllers
             processedTags = processedTags.Union(processTag(tags[i])).ToList();
          }
          tags = processedTags.Select(x => x.Name).ToArray();
-         var surveyResults = (from s in survey.SurveyResult where (tags.Length == 0 ? true : tags.Intersect(s.Tags.Select(tag => tag.Name)).Any() && intervalStart <= s.DateRan && s.DateRan <= intervalEnd)
+         var surveyResults = (from s in survey.SurveyResult where ((tags.Length == 0 ? true : tags.Intersect(s.Tags.Select(tag => tag.Name)).Any()) && intervalStart <= s.DateRan && s.DateRan <= intervalEnd)
                   group s by s.PercentageComplete into g 
                   select new { PercentageComplete = g.Key, Count = g.Count() }).OrderBy(i => i.PercentageComplete);         
          int totalNumberOfSentSurveys = 0;
