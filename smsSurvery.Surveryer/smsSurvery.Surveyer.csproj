@@ -340,6 +340,7 @@
     <Content Include="Content\tablet\bootstrap.css" />
     <Content Include="Content\tablet\survey.css" />
     <Content Include="Content\WordCloud.css" />
+    <Content Include="Images\down_arrow_select.jpg" />
     <Content Include="Images\sprites.gif" />
     <Content Include="MyScripts\DateHelper.js" />
     <Content Include="MyScripts\ManageDevices.js" />
@@ -447,9 +448,11 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <None Include="Properties\PublishProfiles\dev.txtfeedback.pubxml" />
+    <None Include="Properties\PublishProfiles\devxmpp.pubxml" />
     <None Include="Properties\PublishProfiles\loyaltydemo.pubxml" />
     <None Include="Properties\PublishProfiles\smssurvey.pubxml" />
     <None Include="Properties\PublishProfiles\smssurveytest.pubxml" />
+    <None Include="Properties\PublishProfiles\surveytest.pubxml" />
     <None Include="Properties\PublishProfiles\tablet.pubxml" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />

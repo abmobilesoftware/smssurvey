@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <PublishProfile Include="Profiles\demoloyaltyinsightsProduction.azurePubxml" />
+    <PublishProfile Include="Profiles\DevSurvey.azurePubxml" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\smsSurvery.Surveryer\smsSurvery.Surveyer.csproj">
