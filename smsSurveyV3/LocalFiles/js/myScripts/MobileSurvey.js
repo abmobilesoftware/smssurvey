@@ -506,8 +506,8 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 	makeSendPersonalInfoRequest: function(dataToSendObject, successCallback, errorCallback) {
 		var dataToSend = JSON.stringify(dataToSendObject);
 		$.ajax({
-			//url: "http://demoloyaltyinsights.cloudapp.net/MobileSurvey/SaveRespondentInfo",
-			url: "http://tablet.txtfeedback.net/MobileSurvey/SaveRespondentInfo",
+			url: "http://demoloyaltyinsights.cloudapp.net/MobileSurvey/SaveRespondentInfo",
+			//url: "http://tablet.txtfeedback.net/MobileSurvey/SaveRespondentInfo",
 			data: dataToSend,
 			type: 'post',
 			cache: false,
@@ -735,8 +735,8 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 	makeSaveRequest: function(sendDataObject, successCallback, errorCallback) {
 		var sendData = JSON.stringify(sendDataObject);
 		$.ajax({
-			//url: "http://demoloyaltyinsights.cloudapp.net/MobileSurvey/SaveSurvey",
-			url: "http://tablet.txtfeedback.net/MobileSurvey/SaveSurvey",
+			url: "http://demoloyaltyinsights.cloudapp.net/MobileSurvey/SaveSurvey",
+			//url: "http://tablet.txtfeedback.net/MobileSurvey/SaveSurvey",
 			data: sendData,
 			crossDomain: true,
 			type: 'post',
