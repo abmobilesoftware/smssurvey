@@ -620,5 +620,16 @@ namespace smsSurvery.Surveryer.Controllers
       {
          return Json("success", JsonRequestBehavior.AllowGet);
       }
+
+      [HttpGet]
+      public ActionResult PerLocationReport(int id)
+      {
+         var st = db.SurveyTemplateSet.Find(id);
+         if (st != null)
+         {
+            return View(st);
+         }
+         else return null;
+      }
    }
 }

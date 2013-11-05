@@ -1,13 +1,16 @@
 ﻿window.app = window.app || {};
 window.filterArea = window.filterArea || {};
 
-window.filterArea.initialize = function () {
+window.filterArea.initialize = function (hideTagFilterArea) {
    $('.alert .close').on("click", function (e) {
       $(this).parent().hide();
    });
-
-
-   window.filterArea.initializeLocationFilter();
+   if (hideTagFilterArea) {
+      $("#filterTag").hide();
+   }
+   else {
+      window.filterArea.initializeLocationFilter();
+   }
    window.filterArea.initializeDateFilter();
 }
 window.app.dateFormatForDatePicker = 'dd/mm/yy';

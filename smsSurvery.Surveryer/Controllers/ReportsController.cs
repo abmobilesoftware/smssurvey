@@ -169,9 +169,9 @@ namespace smsSurvery.Surveryer.Controllers
          int validResponses = 0;
          tags = tags ?? new string[0];
          IEnumerable<Result> resultsToAnalyze = q.Result.Where(r =>
-                     tags.Length == 0 ? true : tags.Intersect(r.SurveyResult.Tags.Select(tag => tag.Name)).Any() &&
-                     intervalStart <= r.SurveyResult.DateRan &&
-                     r.SurveyResult.DateRan <= intervalEnd);
+                     (tags.Length == 0 ? true : tags.Intersect(r.SurveyResult.Tags.Select(tag => tag.Name)).Any()) &&
+                     intervalEnd >= r.DateSubmitted &&
+                     intervalStart <= r.DateSubmitted);
          foreach (var result in resultsToAnalyze)
          {
             if (validPossibleAnswers.Contains(result.Answer))
@@ -198,8 +198,9 @@ namespace smsSurvery.Surveryer.Controllers
          using (smsSurveyEntities  db = new smsSurveyEntities())
          {
             List<string> stuff = new List<string>();
-            var results = q.Result.Where(r => tags.Length == 0 ? true : tags.Intersect(r.SurveyResult.Tags.Select(tag => tag.Name)).Any() &&
-               intervalStart <= r.SurveyResult.DateRan && r.SurveyResult.DateRan <= intervalEnd);
+            var results = q.Result.Where(r =>
+               intervalStart <= r.DateSubmitted &&
+               r.DateSubmitted <= intervalEnd);
             foreach (var item in results)
             {
                if (checkAdditionalInfo)
@@ -464,7 +465,7 @@ namespace smsSurvery.Surveryer.Controllers
             processedTags = processedTags.Union(processTag(tags[i])).ToList();
          }
          tags = processedTags.Select(x => x.Name).ToArray();
-         var surveyResults = (from s in survey.SurveyResult where (tags.Length == 0 ? true : tags.Intersect(s.Tags.Select(tag => tag.Name)).Any() && intervalStart <= s.DateRan && s.DateRan <= intervalEnd)
+         var surveyResults = (from s in survey.SurveyResult where ((tags.Length == 0 ? true : tags.Intersect(s.Tags.Select(tag => tag.Name)).Any()) && intervalStart <= s.DateRan && s.DateRan <= intervalEnd)
                   group s by s.PercentageComplete into g 
                   select new { PercentageComplete = g.Key, Count = g.Count() }).OrderBy(i => i.PercentageComplete);         
          int totalNumberOfSentSurveys = 0;
@@ -499,6 +500,73 @@ namespace smsSurvery.Surveryer.Controllers
                tableData);
          var dataToSendBack = new { pie = pieChartSource, table = tableChartSource };
          return Json(dataToSendBack, JsonRequestBehavior.AllowGet);         
+      }
+
+      [HttpGet]
+      public JsonResult GetSourceOverview(int surveyTemplateId, String iIntervalStart, String iIntervalEnd)
+      {
+         //DA check if the user has access to the given surveyTemplate
+         DateTime intervalStart = DateTime.ParseExact(iIntervalStart, cDateFormat, CultureInfo.InvariantCulture);
+         DateTime intervalEnd = DateTime.ParseExact(iIntervalEnd, cDateFormat, CultureInfo.InvariantCulture);
+         SurveyTemplate survey = db.SurveyTemplateSet.Find(surveyTemplateId);
+
+         /* we have the following possible scenarios         * 
+          * surveys coming via direct access (no location tags attached)
+          * surveys coming via a location (indicated by the attached location tag)
+          */
+         var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();            
+         Dictionary<Tags, int> results = new Dictionary<Tags, int>();
+               
+        var locationTags = (from tag in user.Company.Tags
+                                 select
+                                    (from ct in tag.TagTypes where (ct.Type == "Location") select tag)).SelectMany(x=>x);
+        var receivedViaLocation = 0;
+         foreach (var tag in locationTags)
+         {
+            var res = tag.SurveyResultSet.Where(s => s.SurveyPlanId == surveyTemplateId &&
+               intervalStart <= s.DateRan && s.DateRan <= intervalEnd).Count();
+            receivedViaLocation += res;
+            results.Add(tag, res);
+
+         }
+         var surveyResults = (from s in survey.SurveyResult
+                              where intervalStart <= s.DateRan && s.DateRan <= intervalEnd
+                              select s
+                             );
+         var totalNrOfSurveys = surveyResults.Count();
+         var noLocationTag = new Tags() { Name = "Not location specific", Id = -1 };
+         results.Add(noLocationTag, totalNrOfSurveys - receivedViaLocation);              
+
+         List<RepDataRow> tableData = new List<RepDataRow>();
+         List<RepDataRow> pieChartContent = new List<RepDataRow>();
+
+         var rowTotal = new RepDataRow(new RepDataRowCell[] {
+                  new RepDataRowCell("All results", "All results"),
+                  new RepDataRowCell(totalNrOfSurveys, totalNrOfSurveys.ToString()) });
+         tableData.Add(rowTotal);
+         foreach (var partialResult in results)
+         {
+            var trow = new RepDataRow(new RepDataRowCell[] {
+                  new RepDataRowCell(partialResult.Key.Name, partialResult.Key.Name),
+                  new RepDataRowCell(partialResult.Value, partialResult.Value.ToString()) });
+            tableData.Add(trow);
+
+            pieChartContent.Add(trow);
+		      
+         }         
+           RepChartData tableChartSource = new RepChartData(
+               new RepDataColumn[] {
+                new RepDataColumn("17", STRING_COLUMN_TYPE, "Location"),
+                new RepDataColumn("18", STRING_COLUMN_TYPE, "Number of surveys") },
+                  tableData);
+           RepChartData pieChartSource = new RepChartData(
+                     new RepDataColumn[] {
+                new RepDataColumn("17", STRING_COLUMN_TYPE, "Type"),
+                new RepDataColumn("18", NUMBER_COLUMN_TYPE, "Value") },
+                        pieChartContent);    
+
+           var dataToSendBack = new { pie = pieChartSource, table = tableChartSource };
+           return Json(dataToSendBack, JsonRequestBehavior.AllowGet);
       }
 
       protected override void Dispose(bool disposing)

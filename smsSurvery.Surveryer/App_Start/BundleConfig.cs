@@ -55,6 +55,12 @@ namespace smsSurvery.Surveryer
                      "~/MyScripts/ReportsFilterArea.js",
                      "~/MyScripts/SurveyUtilities.js",
                      "~/MyScripts/reports.js"));
+
+         bundles.Add(new ScriptBundle("~/bundles/perLocationReports").Include(
+                    "~/MyScripts/DateHelper.js",
+                    "~/MyScripts/ReportsFilterArea.js",
+                    "~/MyScripts/SurveyUtilities.js",
+                    "~/MyScripts/PerLocationReports.js"));
          
          bundles.Add(new ScriptBundle("~/bundles/comparisonReports").Include(
                      "~/MyScripts/DateHelper.js",
