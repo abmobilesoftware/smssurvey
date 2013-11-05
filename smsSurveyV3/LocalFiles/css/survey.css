@@ -188,7 +188,7 @@ input.comment {
       width:100%;
       height: 34px;
       overflow: hidden;
-      background: url("/images/down_arrow_select.jpg") no-repeat right #DDD;
+      background: url("../images/down_arrow_select.jpg") no-repeat right #DDD;
       background-color: white;
       border: 1px solid #CCC;
    }
