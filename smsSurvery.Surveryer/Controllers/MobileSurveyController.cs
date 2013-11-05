@@ -250,7 +250,8 @@ namespace smsSurvery.Surveryer.Controllers
                    surveyTemplate.IntroMessage,
                    surveyTemplate.ThankYouMessage, surveyTemplate.DateStarted,
                    surveyTemplate.DateEnded, surveyTemplate.IsRunning, questions, 
-                   surveyTemplate.DefaultLanguage, cTabletSettings);
+                   surveyTemplate.DefaultLanguage, cTabletSettings, surveyTemplate.ShowCheckbox,
+                   surveyTemplate.CheckboxText);
 
             clientSurveyTemplate.MobileWebsiteLocation = GetAnonymousMobileSurveyLocation(surveyTemplate, this.ControllerContext.RequestContext);
             return clientSurveyTemplate;
@@ -390,6 +391,7 @@ namespace smsSurvery.Surveryer.Controllers
          public string Surname { get; set; }
          public string Email { get; set; }
          public string Telephone { get; set; }
+         public bool IAccept { get; set; }
       }
 
       [HttpPost]
@@ -412,6 +414,7 @@ namespace smsSurvery.Surveryer.Controllers
                   existingCustomer.Name = info.Name;
                   existingCustomer.Surname = info.Surname;
                   existingCustomer.Email = info.Email;
+                  existingCustomer.IAccept = info.IAccept;
                   survey.Customer = existingCustomer;              
                   db.SaveChanges();                  
                   }
@@ -426,7 +429,8 @@ namespace smsSurvery.Surveryer.Controllers
                         PhoneNumber = info.Telephone,
                         Name = info.Name,
                         Surname = info.Surname,
-                        Email = info.Email
+                        Email = info.Email,
+                        IAccept = info.IAccept
                      };
                      db.CustomerSet.Add(moreAccurateCustomer);
                      var bogusCustomer = survey.Customer;
@@ -441,6 +445,7 @@ namespace smsSurvery.Surveryer.Controllers
                   customerToUpdate.Name = info.Name;
                   customerToUpdate.Surname = info.Surname;
                   customerToUpdate.Email = info.Email;
+                  customerToUpdate.IAccept = info.IAccept;
                   db.SaveChanges();
                }
                return Json(localId, JsonRequestBehavior.AllowGet);

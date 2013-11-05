@@ -351,6 +351,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
          personalInfo.Surname = $('#surname').val();
          personalInfo.Email = $('#email').val();
          personalInfo.Telephone = $('#telephone').val();
+         personalInfo.IAccept = ($("#personal-information-checkbox")[0] != undefined) ? $("#personal-information-checkbox")[0].checked : false;
          var dataToSend = JSON.stringify({
             info: personalInfo,
             surveyResultId: this.surveyResultId.DbId
@@ -379,7 +380,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
       this.$el.css("top", value);
    },
    render: function () {
-      this.$el.append(this.template());
+      this.$el.append(this.template(this.model.toJSON()));
       this.dom = {
          $ALERT_BOX: $(".alert", this.$el),
          $VALIDATION_BOX: $(".personal-info-validation", this.$el)
@@ -417,7 +418,7 @@ MobileSurvey.SurveyView = Backbone.View.extend({
    initialize: function () {
       _.bindAll(this, "goToThankYouPage", "saveSurvey", "updateQuestionSet", "render");
       this.questionsPage = new MobileSurvey.SurveyMobileView({ el: $("#questionsPage"), model: this.model });
-      this.thankYouPage = new MobileSurvey.ThankYouPageView({ el: $("#thankYouPage") });
+      this.thankYouPage = new MobileSurvey.ThankYouPageView({ el: $("#thankYouPage"), model: this.model });
       this.questionsPage.on(this.questionsPage.pageEvents.THANK_YOU_PAGE,
          this.saveSurvey);
       this.dom = {
