@@ -343,6 +343,7 @@
     <Content Include="Images\sprites.gif" />
     <Content Include="MyScripts\DateHelper.js" />
     <Content Include="MyScripts\ManageDevices.js" />
+    <Content Include="MyScripts\PerLocationReports.js" />
     <Content Include="Scripts\GoogleFastButtons.js" />
     <Content Include="MyScripts\Locations.js" />
     <Content Include="MyScripts\MobileSurvey.js" />
@@ -565,6 +566,7 @@
     <Content Include="Content\test.manifest" />
     <Content Include="Views\Test\CanvasTest.cshtml" />
     <Content Include="Views\Test\BlobTest.cshtml" />
+    <Content Include="Views\SurveyTemplate\PerLocationReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

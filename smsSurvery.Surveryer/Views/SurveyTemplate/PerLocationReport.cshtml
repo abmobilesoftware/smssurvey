@@ -1,0 +1,36 @@
+﻿@model smsSurvey.dbInterface.SurveyTemplate
+
+@{
+    ViewBag.Title = "PerLocationReport";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript" src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
+
+@{Html.RenderPartial("ReportFilterArea");}
+
+<div class="clear:both"></div>
+<fieldset>
+    <legend> Per location report: @Model.Description </legend>
+
+   <div class="graphsContainer" id="@String.Format("graphsOverviewContainer{0}", Model.Id)">
+      <div id="@String.Format("tableOverviewChart_div{0}", Model.Id)"></div>      
+
+      <div id="@String.Format("loadingOverviewIndicator{0}", Model.Id)" style="display:none" class="loadingIndicatorArea">
+         <div class="loadingIndicatorContainer">
+            <img src="~/Content/images/ajax-loader_vs1.gif" class="loadingIndicatorIcon" />
+         </div>
+         <div class="overlay"></div>
+      </div>
+   </div>
+    <div style="display: none" id="surveyId">@Model.Id</div>
+</fieldset>
+
+@section css{
+   @Styles.Render("~/Content/custom")
+}
+
+@section Scripts {
+@Scripts.Render("~/bundles/referencescripts")
+@Scripts.Render("~/bundles/perLocationReports")
+}
