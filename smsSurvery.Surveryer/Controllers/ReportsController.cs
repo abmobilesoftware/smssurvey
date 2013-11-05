@@ -505,20 +505,18 @@ namespace smsSurvery.Surveryer.Controllers
       [HttpGet]
       public JsonResult GetSourceOverview(int surveyTemplateId, String iIntervalStart, String iIntervalEnd)
       {
+         //DA check if the user has access to the given surveyTemplate
          DateTime intervalStart = DateTime.ParseExact(iIntervalStart, cDateFormat, CultureInfo.InvariantCulture);
          DateTime intervalEnd = DateTime.ParseExact(iIntervalEnd, cDateFormat, CultureInfo.InvariantCulture);
          SurveyTemplate survey = db.SurveyTemplateSet.Find(surveyTemplateId);
 
-         /* we have the following possible scenarios
-          * surveys coming from SMS
+         /* we have the following possible scenarios         * 
           * surveys coming via direct access (no location tags attached)
           * surveys coming via a location (indicated by the attached location tag)
           */
          var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();            
          Dictionary<Tags, int> results = new Dictionary<Tags, int>();
-         var noLocationTag = new Tags() { Name="Not location specific", Id= -1};
-      
-        //results.Add(new KeyValuePair<Tags, int>(new Tags() { Name = "Direct link", Id = 0 }, 0));
+               
         var locationTags = (from tag in user.Company.Tags
                                  select
                                     (from ct in tag.TagTypes where (ct.Type == "Location") select tag)).SelectMany(x=>x);
@@ -536,36 +534,24 @@ namespace smsSurvery.Surveryer.Controllers
                               select s
                              );
          var totalNrOfSurveys = surveyResults.Count();
-         results.Add(noLocationTag, totalNrOfSurveys - receivedViaLocation);
-         
-       //  locationTags.First().SurveyResultSet
-         //var surveyResults = (from s in survey.SurveyResult
-         //                     where intervalStart <= s.DateRan && s.DateRan <= intervalEnd
-         //                     select (from t in s.Tags 
-         //                             group t by t into g 
-         //                             select new { Key = g.Key, Count = g.Count() })).SelectMany(x=>x);
-         //var tmp = surveyResults;
-         
-                              ;
-         //foreach( var sr in tmp) {
-         //   //we look at what location tags they have and assign them to the correct category
-         //   //var lTAgs = (from tag in sr.Tags select (from ct in tag.TagTypes where (ct.Type == "Location") select tag)).SelectMany(x=>x);
-         //   //DA theoretically we should have just 1 location tag
-         //   results[sr.Key] = sr.Count;
-            
-         //}
+         var noLocationTag = new Tags() { Name = "Not location specific", Id = -1 };
+         results.Add(noLocationTag, totalNrOfSurveys - receivedViaLocation);              
 
          List<RepDataRow> tableData = new List<RepDataRow>();
+         List<RepDataRow> pieChartContent = new List<RepDataRow>();
+
          var rowTotal = new RepDataRow(new RepDataRowCell[] {
                   new RepDataRowCell("All results", "All results"),
                   new RepDataRowCell(totalNrOfSurveys, totalNrOfSurveys.ToString()) });
          tableData.Add(rowTotal);
          foreach (var partialResult in results)
          {
-            var row = new RepDataRow(new RepDataRowCell[] {
+            var trow = new RepDataRow(new RepDataRowCell[] {
                   new RepDataRowCell(partialResult.Key.Name, partialResult.Key.Name),
                   new RepDataRowCell(partialResult.Value, partialResult.Value.ToString()) });
-            tableData.Add(row);
+            tableData.Add(trow);
+
+            pieChartContent.Add(trow);
 		      
          }         
            RepChartData tableChartSource = new RepChartData(
@@ -573,7 +559,14 @@ namespace smsSurvery.Surveryer.Controllers
                 new RepDataColumn("17", STRING_COLUMN_TYPE, "Location"),
                 new RepDataColumn("18", STRING_COLUMN_TYPE, "Number of surveys") },
                   tableData);
-         return Json(tableChartSource, JsonRequestBehavior.AllowGet);
+           RepChartData pieChartSource = new RepChartData(
+                     new RepDataColumn[] {
+                new RepDataColumn("17", STRING_COLUMN_TYPE, "Type"),
+                new RepDataColumn("18", NUMBER_COLUMN_TYPE, "Value") },
+                        pieChartContent);    
+
+           var dataToSendBack = new { pie = pieChartSource, table = tableChartSource };
+           return Json(dataToSendBack, JsonRequestBehavior.AllowGet);
       }
 
       protected override void Dispose(bool disposing)

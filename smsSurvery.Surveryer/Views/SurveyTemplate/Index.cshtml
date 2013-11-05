@@ -47,6 +47,7 @@
                                  
             @Html.ActionLink("Reports", "Report","SurveyTemplate", new { id=item.Id }, null) |
             @Html.ActionLink("Comparison reports", "GetTagComparisonReport","Reports", new { surveyId=item.Id }, null) |
+           @Html.ActionLink("Per location reports", "PerLocationReport","SurveyTemplate", new { id=item.Id }, null) |
             @Html.ActionLink("Responses", "Responses","SurveyTemplate", new { id=item.Id }, null)
         </td>
     </tr>
