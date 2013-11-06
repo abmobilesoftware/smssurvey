@@ -165,7 +165,6 @@
           <Property Name="SurveyInProgress" Type="bit" Nullable="false" />
           <Property Name="SurveyPlan_Id" Type="int" />
           <Property Name="Email" Type="nvarchar" MaxLength="100" />
-          <Property Name="IAccept" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="DeviceSet">
           <Key>
@@ -242,6 +241,7 @@
           <Property Name="PercentageComplete" Type="float" Nullable="false" />
           <Property Name="CurrentQuestion_Id" Type="int" />
           <Property Name="LanguageChosenForSurvey" Type="nvarchar" MaxLength="10" />
+          <Property Name="IAccept" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="SurveyResultTags">
           <Key>
@@ -835,7 +835,6 @@
           <Property Type="Int32" Name="SurveyPlan_Id" />
           <NavigationProperty Name="RunningSurvey" Relationship="smsSurveyModel.FK_RunningSurvey" FromRole="Customer" ToRole="SurveyPlan" />
           <Property Type="String" Name="Email" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Type="Boolean" Name="IAccept" Nullable="false" />
         </EntityType>
         <EntityType Name="SurveyResult">
           <Key>
@@ -854,6 +853,7 @@
           <Property Type="String" Name="LanguageChosenForSurvey" MaxLength="10" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Tags" Relationship="smsSurveyModel.SurveyResultTags" FromRole="SurveyResult" ToRole="Tags" />
           <Property Type="Boolean" Name="Terminated" Nullable="false" />
+          <Property Type="Boolean" Name="IAccept" Nullable="false" />
         </EntityType>
         <Association Name="CustomerSurveyResult">
           <End Type="smsSurveyModel.Customer" Role="Customer" Multiplicity="1" />
@@ -1237,7 +1237,6 @@
     <EntitySetMapping Name="CustomerSet">
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.Customer)">
         <MappingFragment StoreEntitySet="CustomerSet">
-                <ScalarProperty Name="IAccept" ColumnName="IAccept" />
                 <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Surname" ColumnName="Surname" />
@@ -1250,6 +1249,7 @@
     <EntitySetMapping Name="SurveyResultSet">
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.SurveyResult)">
         <MappingFragment StoreEntitySet="SurveyResultSet">
+                <ScalarProperty Name="IAccept" ColumnName="IAccept" />
                 <ScalarProperty Name="Terminated" ColumnName="Complete" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="DateRan" ColumnName="DateRan" />

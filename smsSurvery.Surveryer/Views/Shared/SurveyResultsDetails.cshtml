@@ -16,6 +16,9 @@
        <th>
           @Html.DisplayNameFor(model => model.Terminated)
        </th>
+       <th>
+          I agree
+       </th>
         <th>
           @Html.DisplayNameFor(model => model.PercentageComplete)
        </th>
@@ -35,6 +38,9 @@
         </td>
        <td>
           @Html.DisplayFor(modelItem => item.Terminated)
+       </td>
+       <td>
+          @Html.DisplayFor(modelItem => item.IAccept)
        </td>
        
        <td @( item.PercentageComplete == 1 ? "class=centopercent" : "")>       
