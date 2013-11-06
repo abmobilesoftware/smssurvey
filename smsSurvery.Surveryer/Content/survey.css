@@ -278,10 +278,11 @@
       border: 0;
    }
 
-      input[type=checkbox].css-checkbox + label.css-label {
+      input[type=checkbox].css-checkbox + label.css-label-checkbox {
          padding-left: 29px;
          padding-top:3px;
          height: 21px;
+         /*width: 21px;*/
          display: inline-block;
          line-height: 17px;
          background-repeat: no-repeat;
@@ -291,13 +292,24 @@
          cursor: pointer;
       }
 
-      input[type=checkbox].css-checkbox:checked + label.css-label {
+      input[type=checkbox].css-checkbox:checked + label.css-label-checkbox {
          background-position: 0 -24px;
       }
       /*http://csscheckbox.com/checkboxes/elegant.png */
    
-   .css-label {
+   .css-label-checkbox {
       background-image: url(images/checkbox.png);
+   }
+
+   #real-checkbox-text {
+      display:inline;
+      padding-right:22px;
+   }
+
+   #checkbox-text {
+      margin-left: 10px;
+      position: relative;
+      top:12px;
    }
 
    /* THANK YOU PAGE */
@@ -534,9 +546,9 @@
    #checkbox-wrapper {
       text-align: center;
       padding-bottom: 5px;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       margin-top:15px;
-      display:block;
+      display:inline-block;
       clear:both;
    }
 
@@ -554,3 +566,6 @@
       background: url(images/checkbox.png) no-repeat;
    }
 */
+  input#personal-information-checkbox {
+     display:none;
+  }
