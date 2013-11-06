@@ -58,6 +58,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       this.dom.$SURVEY_THANK_YOU_MESSAGE_INPUT = $("#survey-thank-you-message", this.$el);
       this.dom.$SURVEY_INTRO_MESSAGE_INPUT = $("#survey-intro", this.$el);
       this.dom.$SAVE_SURVEY_BTN = $(".save-btn", this.$el);
+      this.dom.$CHECKBOX_TEXT_INPUT = $("#checkbox-text-input", this.$el);
       this.updateSaveButton(this.model.getNoOfAttributesChanged());
       this.dom.$SURVEY_LOADER.hide();
       this.dom.$SURVEY_CONTENT.fadeIn();
@@ -141,6 +142,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       this.dom.$SURVEY_TITLE_INPUT.removeClass(invalidFieldClass);
       this.dom.$SURVEY_THANK_YOU_MESSAGE_INPUT.removeClass(invalidFieldClass);
       this.dom.$SURVEY_INTRO_MESSAGE_INPUT.removeClass(invalidFieldClass);
+      this.dom.$CHECKBOX_TEXT_INPUT.removeClass(invalidFieldClass);
 
       var surveyHasError = false;
       for (var i = 0; i < result.length; ++i) {
@@ -158,6 +160,8 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
          } else if (result[i] == this.model.errors.INVALID_TITLE) {
             this.dom.$SURVEY_TITLE_INPUT.addClass(invalidFieldClass);
             surveyHasError = true;
+         } else if (result[i] == this.model.errors.INVALID_CHECKBOX_TEXT) {
+            this.dom.$CHECKBOX_TEXT_INPUT.addClass(invalidFieldClass);
          }
       }
       if (surveyHasError) {
