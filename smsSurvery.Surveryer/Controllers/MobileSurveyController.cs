@@ -301,7 +301,11 @@ namespace smsSurvery.Surveryer.Controllers
             var surveyTemplateToUse = db.SurveyTemplateSet.Find(surveyTemplateId);
             companyName = surveyTemplateToUse.UserProfile.FirstOrDefault().Company_Name;
             var customer = new Customer() { PhoneNumber = uniqueCustomerID, Name = uniqueCustomerID, Surname = uniqueCustomerID };
-            SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, SurveyTemplate = surveyTemplateToUse, Terminated = true, PercentageComplete = 1, LanguageChosenForSurvey = surveyTemplateToUse.DefaultLanguage };
+            SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, 
+               SurveyTemplate = surveyTemplateToUse, Terminated = true, 
+               PercentageComplete = 1, LanguageChosenForSurvey = surveyTemplateToUse.DefaultLanguage,
+               IAccept = false
+            };
             db.SurveyResultSet.Add(newSurvey);
             DateTime resultSubmitted = DateTime.UtcNow;
             foreach (var q in questions)
