@@ -19,6 +19,8 @@ namespace smsSurvery.Surveryer.ClientModels
       public List<ClientQuestion> QuestionSet { get; set; }
       public string LogoLink { get; set; }
       public ClientTabletSettings TabletSettings { get; set; }
+      public bool ShowCheckbox { get; set; }
+      public string CheckboxText { get; set; }
 
       #region Calculated properties
       public string MobileWebsiteLocation { get; set; }      
@@ -37,7 +39,9 @@ namespace smsSurvery.Surveryer.ClientModels
          bool iIsRunning,
          List<ClientQuestion> iQuestionSet,
          String iDefaultLanguage,
-         ClientTabletSettings iTabletSettings)
+         ClientTabletSettings iTabletSettings,
+         bool iShowCheckbox,
+         String iCheckboxText)
       {
          Id = iId;
          Description = iDescription;
@@ -50,6 +54,8 @@ namespace smsSurvery.Surveryer.ClientModels
          QuestionSet = iQuestionSet;
          DefaultLanguage = iDefaultLanguage;
          TabletSettings = iTabletSettings;
+         ShowCheckbox = iShowCheckbox;
+         CheckboxText = iCheckboxText;
       }     
    }
 }

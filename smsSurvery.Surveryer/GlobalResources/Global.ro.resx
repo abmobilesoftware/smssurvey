@@ -260,4 +260,10 @@
   <data name="SurnamePlaceholder" xml:space="preserve">
     <value>Ex: Popescu</value>
   </data>
+  <data name="PhonePlaceholder" xml:space="preserve">
+    <value>Ex: 0780369123</value>
+  </data>
+  <data name="TextareaPlaceholder" xml:space="preserve">
+    <value>Răspunsul dumneavoastră este...</value>
+  </data>
 </root>

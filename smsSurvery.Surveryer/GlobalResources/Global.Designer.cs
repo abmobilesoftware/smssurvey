@@ -376,6 +376,15 @@ namespace smsSurvery.Surveryer.GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to e.g. 01332 050999.
+        /// </summary>
+        public static string PhonePlaceholder {
+            get {
+                return ResourceManager.GetString("PhonePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Region.
         /// </summary>
         public static string RegionLabel {
@@ -482,6 +491,15 @@ namespace smsSurvery.Surveryer.GlobalResources {
         public static string SurnamePlaceholder {
             get {
                 return ResourceManager.GetString("SurnamePlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Your answer is....
+        /// </summary>
+        public static string TextareaPlaceholder {
+            get {
+                return ResourceManager.GetString("TextareaPlaceholder", resourceCulture);
             }
         }
     }

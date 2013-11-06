@@ -94,9 +94,7 @@ var Timer = (function () {
 		if (isUserAwayFromPage) {
 			document.removeEventListener("touchstart", innerClass.trackMouseMovement);
 			document.removeEventListener("keydown", innerClass.trackMouseMovement);
-			$(".btn-primary").focus();
-			$(".comment").val("");
-			$(".comment").blur();
+			$(document.activeElement).blur();
 			innerClass.stopTimer();
 			innerClass.startSurvey();
 			innerClass.showSlider();

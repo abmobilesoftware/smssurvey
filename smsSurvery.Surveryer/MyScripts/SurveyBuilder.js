@@ -7,16 +7,20 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       "keyup #survey-title": "updateTitle",
       "keyup #survey-intro": "updateIntroMessage",
       "keyup #survey-thank-you-message": "updateThankYouMessage",
+      "keyup #checkbox-text-input": "updateCheckboxText",
       "click .save-btn": "saveSurvey",
       "click .languageSelect": "updateSurveyLanguage",
-      "click .close-survey-notifications": "closeSurveyNotifications"
+      "click .close-survey-notifications": "closeSurveyNotifications",
+      "change #personal-info-checkbox": "updateShowCheckbox"
+
    },
    initialize: function () {
       var self = this;
       _.bindAll(this, "editSurveyInfo", "render", "updateDescription",
          "updateThankYouMessage", "saveSurvey", "confirmPageLeaving",
          "validationResult", "updateSaveButton", "updateIntroMessage",
-         "updateSurveyLanguage", "closeSurveyNotifications", "updateTitle");
+         "updateSurveyLanguage", "closeSurveyNotifications", "updateTitle",
+         "updateShowCheckbox", "updateCheckboxText");
       this.template = _.template($("#survey-info-template").html());
       this.dom = {
          $SURVEY_INFO: $("#survey-info", this.$el),
@@ -27,7 +31,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
          $SURVEY_CONTENT: $("#survey-content")
       };
       this.model.on("change:DisplayInfoTable", this.render);
-      this.model.on("change:Id change:MobileWebsiteLocation", this.render);
+      this.model.on("change:Id change:MobileWebsiteLocation change:ShowCheckbox", this.render);
 
       window.onbeforeunload = this.confirmPageLeaving;
       this.model.on(this.model.events.VALIDATE, this.validationResult);
@@ -69,6 +73,13 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
    },
    updateIntroMessage: function (event) {
       this.model.updateIntroMessage(event.currentTarget.value);
+   },
+   updateShowCheckbox: function(event) {
+      this.model.updateShowCheckbox(event.currentTarget.checked);
+      this.model.attributeChanged();
+   },
+   updateCheckboxText: function (event) {
+      this.model.updateCheckboxText(event.currentTarget.value);
    },
    updateDescription: function (event) {
       this.model.updateDescription(event.currentTarget.value);
@@ -182,7 +193,8 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
       INVALID_TITLE: "invalid title",
       INVALID_THANK_YOU_MESSAGE: "invalid thank you message",
       INVALID_INTRO_MESSAGE: "invalid intro message",
-      ERROR_IN_QUESTION_SET: "errorInQuestionSet"
+      ERROR_IN_QUESTION_SET: "errorInQuestionSet",
+      INVALID_CHECKBOX_TEXT: "invalid checkbox text"
    },
    defaults: {
       Id: 7,
@@ -194,12 +206,15 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
       HasChanged: false,
       MobileWebsiteLocation: "",
       DefaultLanguage: "",
-      LogoLink: ""
+      LogoLink: "",
+      ShowCheckbox: false,
+      CheckboxText: ""
    },
    initialize: function () {
       _.bindAll(this, "attributeChanged", "modelSynced", "updateSurveyLanguage");
       var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
-      this.on("change:Description change:Title change:ThankYouMessage change:IntroMessage change:DefaultLanguage", this.attributeChanged);
+      this.on("change:Description change:Title change:ThankYouMessage change:IntroMessage change:DefaultLanguage " + 
+         "change: ShowCheckbox change:CheckboxText", this.attributeChanged);
 
       this.on("sync", this.modelSynced);
       Backbone.on(attributeChangedEvent, this.attributeChanged);
@@ -213,6 +228,12 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
    idAttribute: "Id",
    updateThankYouMessage: function (thankYouMessage) {
       this.set("ThankYouMessage", thankYouMessage);
+   },
+   updateShowCheckbox: function(showCheckbox) {
+      this.set("ShowCheckbox", showCheckbox);
+   },
+   updateCheckboxText: function (checkboxText) {
+      this.set("CheckboxText", checkboxText);
    },
    updateIntroMessage: function (introMessage) {
       this.set("IntroMessage", introMessage);
@@ -248,6 +269,7 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
       var titleValidity = true;
       var thankYouMessageValidity = true;
       var introMessageValidity = true;
+      var checkboxValidity = true;
 
       var questionSetModelValidity = this.questionSetModel.validateQuestionSetModel();
       if (!questionSetModelValidity) {
@@ -269,12 +291,22 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
          this.result.push(this.errors.INVALID_THANK_YOU_MESSAGE);
          thankYouMessageValidity = false;
       }
-      if (!descriptionValidity || !introMessageValidity || !thankYouMessageValidity || !questionSetModelValidity || !titleValidity) {
+      if (this.get("ShowCheckbox")) {
+         if (this.get("CheckboxText") == null || this.get("CheckboxText").length == 0 || this.get("CheckboxText").length > 160) {
+            this.result.push(this.errors.INVALID_CHECKBOX_TEXT);
+            checkboxValidity = false;
+         }
+      }
+      if (!descriptionValidity || !introMessageValidity ||
+         !thankYouMessageValidity || !questionSetModelValidity ||
+         !titleValidity || !checkboxValidity) {
          this.trigger(this.events.VALIDATE, this.result);
       } else {
          this.trigger(this.events.VALIDATE, [])
       }
-      return questionSetModelValidity && descriptionValidity && introMessageValidity && thankYouMessageValidity && titleValidity;
+      return questionSetModelValidity && descriptionValidity &&
+         introMessageValidity && thankYouMessageValidity &&
+         titleValidity && checkboxValidity;
    },
    loadSurvey: function () {
       self = this;

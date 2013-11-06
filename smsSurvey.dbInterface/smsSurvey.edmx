@@ -165,6 +165,7 @@
           <Property Name="SurveyInProgress" Type="bit" Nullable="false" />
           <Property Name="SurveyPlan_Id" Type="int" />
           <Property Name="Email" Type="nvarchar" MaxLength="100" />
+          <Property Name="IAccept" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="DeviceSet">
           <Key>
@@ -226,6 +227,8 @@
           <Property Name="IntroMessage" Type="nvarchar" Nullable="false" MaxLength="160" />
           <Property Name="DefaultLanguage" Type="nvarchar" Nullable="false" MaxLength="10" />
           <Property Name="Title" Type="nvarchar" Nullable="false" MaxLength="100" />
+          <Property Name="ShowCheckbox" Type="bit" Nullable="false" />
+          <Property Name="CheckboxText" Type="nvarchar" MaxLength="300" />
         </EntityType>
         <EntityType Name="SurveyResultSet">
           <Key>
@@ -817,6 +820,8 @@
           <Property Type="String" Name="DefaultLanguage" Nullable="false" MaxLength="10" FixedLength="false" Unicode="true" DefaultValue="en-US" />
           <NavigationProperty Name="LocationsWhereActive" Relationship="smsSurveyModel.FK_SurveyTemplateTags" FromRole="SurveyTemplate" ToRole="Tags" />
           <Property Type="String" Name="Title" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="Boolean" Name="ShowCheckbox" Nullable="false" />
+          <Property Type="String" Name="CheckboxText" Nullable="true" MaxLength="300" Unicode="true" FixedLength="false" />
           </EntityType>
         <EntityType Name="Customer">
           <Key>
@@ -830,6 +835,7 @@
           <Property Type="Int32" Name="SurveyPlan_Id" />
           <NavigationProperty Name="RunningSurvey" Relationship="smsSurveyModel.FK_RunningSurvey" FromRole="Customer" ToRole="SurveyPlan" />
           <Property Type="String" Name="Email" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Type="Boolean" Name="IAccept" Nullable="false" />
         </EntityType>
         <EntityType Name="SurveyResult">
           <Key>
@@ -1231,7 +1237,8 @@
     <EntitySetMapping Name="CustomerSet">
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.Customer)">
         <MappingFragment StoreEntitySet="CustomerSet">
-          <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+                <ScalarProperty Name="IAccept" ColumnName="IAccept" />
+                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Surname" ColumnName="Surname" />
           <ScalarProperty Name="SurveyInProgress" ColumnName="SurveyInProgress" />
@@ -1315,8 +1322,7 @@
     <EntitySetMapping Name="Companies">
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.Companies)">
         <MappingFragment StoreEntitySet="Companies">
-          <ScalarProperty Name="Mobile64LogoUrl" ColumnName="Mobile64LogoUrl" />
-           <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Description" ColumnName="Description" />
           <ScalarProperty Name="Address" ColumnName="Address" />
           <ScalarProperty Name="RegistrationNumber" ColumnName="RegistrationNumber" />
@@ -1327,6 +1333,7 @@
           <ScalarProperty Name="Bank" ColumnName="Bank" />
           <ScalarProperty Name="BankAccount" ColumnName="BankAccount" />
           <ScalarProperty Name="MobileLogoUrl" ColumnName="MobileLogoUrl" />
+          <ScalarProperty Name="Mobile64LogoUrl" ColumnName="Mobile64LogoUrl" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1448,6 +1455,8 @@
           <EntitySetMapping Name="SurveyTemplateSet">
             <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.SurveyTemplate)">
               <MappingFragment StoreEntitySet="SurveyPlanSet">
+                <ScalarProperty Name="CheckboxText" ColumnName="CheckboxText" />
+                <ScalarProperty Name="ShowCheckbox" ColumnName="ShowCheckbox" />
                 <ScalarProperty Name="Title" ColumnName="Title" />
                 <ScalarProperty Name="DefaultLanguage" ColumnName="DefaultLanguage" />
                 <ScalarProperty Name="IntroMessage" ColumnName="IntroMessage" />

@@ -411,6 +411,22 @@
          <td>Mobile website location</td>
          <td><a target="_blank" href="<%= MobileWebsiteLocation %>"><%= MobileWebsiteLocation %></a></td>
       </tr>
+      <tr>
+         <td>
+            Show future notifications checkbox             
+         </td>
+         <td>
+            <input type="checkbox" id="personal-info-checkbox" <% if (ShowCheckbox) { %>  checked <% } %> />
+         </td>
+      </tr>
+      <tr class="checkbox-text-row <% if (!ShowCheckbox) { %> hide <% } %>" >
+         <td>
+            Checkbox text
+         </td>
+         <td>
+            <input type="text" value="<%= CheckboxText %>" id="checkbox-text-input"/>
+         </td>
+      </tr>
       </table>
    <% } %>
 </script>

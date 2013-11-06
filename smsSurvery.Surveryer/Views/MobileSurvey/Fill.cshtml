@@ -1,59 +1,58 @@
 ﻿@using smsSurvery.Surveryer.GlobalResources
 @{
-    Layout = null;
+   Layout = null;
 }
 
 <!DOCTYPE html>
 
 <html>
 <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>@Global.MobileSurveyPageTitle</title>   
-    @Styles.Render("~/bundles/MobileSurveyCss")
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans&subset=latin,cyrillic,latin-ext'	rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Domine&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
+   <meta name="viewport" content="width=device-width, initial-scale=1" />
+   <title>@Global.MobileSurveyPageTitle</title>
+   @Styles.Render("~/bundles/MobileSurveyCss")
+   <link href='http://fonts.googleapis.com/css?family=Open+Sans&subset=latin,cyrillic,latin-ext' rel='stylesheet' type='text/css'>
+   <link href='http://fonts.googleapis.com/css?family=Domine&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
 
-<script id="mobileSurveyTemplate" type="text/template">   
-   <div class="questionsArea">
+   <script id="mobileSurveyTemplate" type="text/template">
+      <div class="questionsArea">
+      </div>
+   </script>
 
-   </div>
-</script>
-
-<script id="question-mobile-template" type="text/template">
-        <div class="question">
-            <h4 class="questionTitle"> <%= QuestionNumber %>. <%= Text %> </h4>            
-            <div class="answerArea">
-               <%
+   <script id="question-mobile-template" type="text/template">
+      <div class="question">
+         <h4 class="questionTitle"><%= QuestionNumber %>. <%= Text %> </h4>
+         <div class="answerArea">
+            <%
                if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_YES_NO) { %>
                    <input type="radio" id="y-<%= QuestionNumber %>" name="yes-no-answer<%= Id %>" value="1">
-                   <label for="y-<%= QuestionNumber %>">@Global.MobileSurveyYesLabel</label>
-                   <input type="radio" id="n-<%= QuestionNumber %>" name="yes-no-answer<%= Id %>" value="2">
-                   <label for="n-<%= QuestionNumber %>">@Global.MobileSurveyNoLabel</label>
-               <% 
+            <label for="y-<%= QuestionNumber %>">@Global.MobileSurveyYesLabel</label>
+            <input type="radio" id="n-<%= QuestionNumber %>" name="yes-no-answer<%= Id %>" value="2">
+            <label for="n-<%= QuestionNumber %>">@Global.MobileSurveyNoLabel</label>
+            <% 
                } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_FREE_TEXT) {
                %>
                    <textarea class="answer comment"></textarea>
-               <%
+            <%
                } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_RATING) {
                %>
                 
                <%
                } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_MANY_FROM_MANY) { 
                   _.each(Answers, function(answer, index) {  %>                     
-                     <input type="checkbox" id="m-a-<%= answer.AnswerIdentifier %>" class="css-checkbox"  value="<%= answer.AnswerIdentifier %>" />
-                     <label for="m-a-<%= answer.AnswerIdentifier %>" name="multiple-answers-label"  class="css-label"><%=answer.AnswerLabel %></label>  
-               <% });
+                     <input type="checkbox" id="m-a-<%= answer.AnswerIdentifier %>" class="css-checkbox" value="<%= answer.AnswerIdentifier %>" />
+            <label for="m-a-<%= answer.AnswerIdentifier %>" name="multiple-answers-label" class="css-label"><%=answer.AnswerLabel %></label>
+            <% });
                } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY) {
                %>     
-                  <div class="styled-select"> 
+                  <div class="styled-select">
                      <select class="answer list" name="answer">
                         <option value="noValue">@Global.MobileSurveySelectOneFromManyLabel</option>
-                    <% _.each(Answers, function(value, key, list) { %>
+                        <% _.each(Answers, function(value, key, list) { %>
                         <option value="<%= value.AnswerIdentifier %>"><%= value.AnswerLabel %></option>
-                    <% }); %> 
+                        <% }); %> 
                      </select>
                   </div>
-               <%
+            <%
                 } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_NUMERIC) {
                         var numericValues = ValidAnswers.split(";");
                         var numericLabels = ValidAnswersDetails.split(";");
@@ -66,184 +65,192 @@
                            <div class="clear"></div>
                         </div>
                      </div>
-                        <div class="scale-wrapper">
-                        <%
+            <div class="scale-wrapper">
+               <%
                            for (var i=0; i < numericValues.length; ++i) {
                         %>                        
-                           <div class="numeric-entry">                           
+                           <div class="numeric-entry">
                               <label for="radio<%= numericValues[i] %><%= Id %>" class="numeric-value-label">
                                  <span class="numeric-value"><%= numericValues[i] %></span>
                               </label>
-                              <input class="numeric-radio" id="radio<%= numericValues[i] %><%= Id %>" type="radio" value="<%= numericValues[i] %>" name="numeric-scale-answer<%= Id %>" />                                                
+                              <input class="numeric-radio" id="radio<%= numericValues[i] %><%= Id %>" type="radio" value="<%= numericValues[i] %>" name="numeric-scale-answer<%= Id %>" />
                            </div>
-                       <%
+               <%
                            } 
                        }%>
-                           <div class="clear"></div>                           
-                        </div>
-                       <textarea class='comment invisibleByDefault' placeholder="@Global.MobileSurveyRatingAddionalInfoLabel"></textarea>
-               <%   
+                           <div class="clear"></div>
+            </div>
+            <textarea class='comment invisibleByDefault' placeholder="@Global.MobileSurveyRatingAddionalInfoLabel"></textarea>
+            <%   
                   } 
                %>      
 
-            </div>
-        </div>
-</script>
+         </div>
+      </div>
+   </script>
 
-<script type="text/template" id="star-template">
-        <% if (Active) { %>
+   <script type="text/template" id="star-template">
+      <% if (Active) { %>
             <a href="#" class="starImg starActive" src="/Content/images/stars.png" />
 
-            <% } else { %>
-            <a href="#"  class="starImg" src="/Content/images/stars.png" />
-            <% } %>
-</script>
+      <% } else { %>
+            <a href="#" class="starImg" src="/Content/images/stars.png" />
+      <% } %>
+   </script>
 
-<script type="text/template" id="star-bar-template">
-   <div class="starsArea">
+   <script type="text/template" id="star-bar-template">
+      <div class="starsArea">
+      </div>
+      <textarea class='comment invisibleByDefault' placeholder="@Global.MobileSurveyRatingAddionalInfoLabel"></textarea>
+      <input type='hidden' class='answer' value='noValue' />
+   </script>
 
-   </div>
-   <textarea class='comment invisibleByDefault' placeholder="@Global.MobileSurveyRatingAddionalInfoLabel"></textarea>
-  <input type='hidden' class='answer' value='noValue' />
-</script>
+   <script type="text/template" id="thankyoupage-template">
+      <header>
+         <div class="headerContainer">
+            <div class="header-img-wrapper">
+               <img id="pageIcon" class="logo" src="@ViewBag.LogoLocation" /></div>
+            <h3 id="pageTitle">@ViewBag.SurveyTitle</h3>
 
-<script type="text/template" id="thankyoupage-template">  
-         <header>
-                   <div class="headerContainer">
-                     <div class="header-img-wrapper"><img id="pageIcon" class="logo" src="@ViewBag.LogoLocation" /></div>
-                     <h3 id="pageTitle">@ViewBag.SurveyTitle</h3>
-                 
-                   </div>                       
-        </header>
-         <section id="thankYouMessage" class="surveyMessage">
-             <p id="surveySubmitted" >@Global.MobileSurveySurveySent</p>
-            <p id="thankYouMessageContent" class="intro">@ViewBag.ThankYouMessage</p>
-            <div style="display:none" class="alert fade in alert-error" id="noTags-error" >
-                  <div class="personal-info-validation">
-                  </div>   
-               </div>
-         </section>
-      @if ((int) @ViewBag.IsFeedback != 0)
+         </div>
+      </header>
+      <section id="thankYouMessage" class="surveyMessage">
+         <p id="surveySubmitted">@Global.MobileSurveySurveySent</p>
+         <p id="thankYouMessageContent" class="intro">@ViewBag.ThankYouMessage</p>
+         <div style="display: none" class="alert fade in alert-error" id="noTags-error">
+            <div class="personal-info-validation">
+            </div>
+         </div>
+      </section>
+      @if ((int)@ViewBag.IsFeedback != 0)
       {
          <div id="userInfo">
-               <form id="personalInfo">
-                  <fieldset id="surveyUserInfo">                     
-                     <div>
-                        <label for="name">@Global.MobileSurveyPersonalInfoNameLabel</label>
-                        <input id="name" type="text" placeholder="e.g. John/Jane" /><br />
-                     </div>
-                     <div>
-                        <label for="surname">@Global.MobileSurveyPersonalInfoSurnameLabel</label>
-                        <input id="surname" type="text" placeholder="e.g. Smith" /><br />
-                     </div>
-                     <div>
-                        <label for="email">@Global.MobileSurveyPersonalInfoEmailLabel</label>
-                        <input id="email" type="email" placeholder="e.g. john@smith.com"/><br />
-                     </div>
-                     <div>
-                        <label for="telephone">@Global.MobileSurveyPersonalInfoPhoneLabel</label>
-                        <input id="telephone" type="tel" />
-                     </div>                    
-                  </fieldset>
-                  <button id="sendPersonalDetailsBtn" type="button" class="surveybtn enabled">@Global.MobileSurveyPersonalInfoSubmitBtnLabel</button>                 
-                  <input id="personalInfoSubmitted" type='hidden' value='@Global.MobileSurveyPersonalInfoSubmittedLabel' />
-               </form>
+            <form id="personalInfo">
+               <fieldset id="surveyUserInfo">
+                  <div>
+                     <label for="name">@Global.MobileSurveyPersonalInfoNameLabel</label>
+                     <input id="name" type="text" placeholder="e.g. John/Jane" /><br />
+                  </div>
+                  <div>
+                     <label for="surname">@Global.MobileSurveyPersonalInfoSurnameLabel</label>
+                     <input id="surname" type="text" placeholder="e.g. Smith" /><br />
+                  </div>
+                  <div>
+                     <label for="email">@Global.MobileSurveyPersonalInfoEmailLabel</label>
+                     <input id="email" type="email" placeholder="e.g. john@smith.com" /><br />
+                  </div>
+                  <div>
+                     <label for="telephone">@Global.MobileSurveyPersonalInfoPhoneLabel</label>
+                     <input id="telephone" type="tel" />
+                  </div>
+                  <div id="checkbox-wrapper">
+                  <% if (ShowCheckbox) { %>
+                        <input type="checkbox" id="personal-information-checkbox" checked />
+                        <span id="checkbox-text"><%= CheckboxText %> </span>
+                  <% } %>
+                  </div>
+               </fieldset>
+               <button id="sendPersonalDetailsBtn" type="button" class="surveybtn enabled">@Global.MobileSurveyPersonalInfoSubmitBtnLabel</button>
+               <input id="personalInfoSubmitted" type='hidden' value='@Global.MobileSurveyPersonalInfoSubmittedLabel' />
+            </form>
          </div>
-      }    
-</script>   
+      }
+   </script>
 </head>
 
 <body>
-      <div id="loading-modal" class="modal hide">
-            <div class="modal-body loading-modal-body">				
-				<div id="loaderImage"></div>				
-            </div>            
-     </div>      
-     <input type="hidden" value="@ViewBag.Id" id="surveyTemplateId"/>
-     <input type="hidden" value="@ViewBag.IsFeedback" id="isFeedback"/>
-     <section id="survey" class="content-wrapper">
-        <section id="questionsPage" class="page">
-            <header>
-                <div class="headerContainer">
-                  <div class="header-img-wrapper"><img id="pageIcon" class="logo" src="@ViewBag.LogoLocation" /></div>
-                  <h3 id="pageTitle">@ViewBag.SurveyTitle</h3>                 
-                </div>                       
-            </header>
-           <div class="clear" />
-           <section id="introMessage" class="surveyMessage">
-                <p class="intro">
-                      @ViewBag.IntroMessage
-                </p>
-           </section>
-            <section id="questions">
-            </section>
-            <div id="doneBtnWrapper">
-                <button id="doneBtn" class="surveybtn "></button>
+   <div id="loading-modal" class="modal hide">
+      <div class="modal-body loading-modal-body">
+         <div id="loaderImage"></div>
+      </div>
+   </div>
+   <input type="hidden" value="@ViewBag.Id" id="surveyTemplateId"/>
+   <input type="hidden" value="@ViewBag.IsFeedback" id="isFeedback"/>
+   <section id="survey" class="content-wrapper">
+      <section id="questionsPage" class="page">
+         <header>
+            <div class="headerContainer">
+               <div class="header-img-wrapper">
+                  <img id="pageIcon" class="logo" src="@ViewBag.LogoLocation" /></div>
+               <h3 id="pageTitle">@ViewBag.SurveyTitle</h3>
             </div>
-            <footer>
-                <span>@Global.MobileSurveyFooterCaption
-                  <a href="http://www.txtfeedback.net">TxtFeedback
-                  </a>
-                </span>
-            </footer>
-            <input class="btn btn-primary" type="hidden" value="@Global.MobileSurveySubmitButtonCaption" id="doneBtnTitle" />  
-            <input type="hidden" value="@ViewBag.Location" id="location" />       
-        </section>
-        <section id="thankYouPage" class="page" style="display:none">
-          
-        </section>
-        <div class="clear" />
-    </section>
+         </header>
+         <div class="clear" />
+         <section id="introMessage" class="surveyMessage">
+            <p class="intro">
+               @ViewBag.IntroMessage
+            </p>
+         </section>
+         <section id="questions">
+         </section>
+         <div id="doneBtnWrapper">
+            <button id="doneBtn" class="surveybtn "></button>
+         </div>
+         <footer>
+            <span>@Global.MobileSurveyFooterCaption
+               <a href="http://www.txtfeedback.net">TxtFeedback
+               </a>
+            </span>
+         </footer>
+         <input class="btn btn-primary" type="hidden" value="@Global.MobileSurveySubmitButtonCaption" id="doneBtnTitle" />
+         <input type="hidden" value="@ViewBag.Location" id="location" />
+      </section>
+      <section id="thankYouPage" class="page" style="display: none">
+      </section>
+      <div class="clear" />
+   </section>
 </body>
-    @Scripts.Render("~/bundles/jquery")
-   @Scripts.Render("~/bundles/mobilesurvey")  
-   <script type="text/javascript">
-      $(function () {
-         //initialize mobile survey given the id of the survey plan
-         var surveyId = $("#surveyTemplateId").val();
-         var survey = new SurveyBuilder.SurveyModel({
-            Id: surveyId,
-            Description: "",
-            ThankYouMessage: "",
-            StartDate: "15/6/2013",
-            EndDate: "17/7/2013",
-            IsRunning: false
-         });
-         var urlParts = document.URL.split("/");
-         var urlLastPart = urlParts[urlParts.length - 1];
-         loader = new SurveyElements.Loader();
-         var surveyResultID = parseInt($("#isFeedback").val()) === 1 ? -1 : urlLastPart;
-         survey.fetch({
-            data: {
-               Id: surveyId
-            },
-            success: function (model, response, options) {
-               var surveyModel = new Question.QuestionSetModel(
-                  {
-                     SurveyResultId: surveyResultID,
-                     SurveyTemplateId: surveyId
-                  });
-               surveyModel.updateQuestionSetCollection(model.get("QuestionSet"));
-               //DA sure they are ordered
-               var surveyView = new MobileSurvey.SurveyView({
-                  el: $("#survey"),
-                  model: surveyModel
-               });
-               surveyView.render();
-               //location code
-               //if (navigator.geolocation)
-               //{
-               //   navigator.geolocation.getCurrentPosition(function (position) {
-               //      alert("Latitude: " + position.coords.latitude + " Longitude: " + position.coords.longitude);
-               //   });
-               //}
-               //else
-               //{ alert("no location available") }
-            },
-            error: function (model, response, options) {
-               alert(response)
-            }
-         });
+@Scripts.Render("~/bundles/jquery")
+@Scripts.Render("~/bundles/mobilesurvey")
+<script type="text/javascript">
+   $(function () {
+      //initialize mobile survey given the id of the survey plan
+      var surveyId = $("#surveyTemplateId").val();
+      var survey = new SurveyBuilder.SurveyModel({
+         Id: surveyId,
+         Description: "",
+         ThankYouMessage: "",
+         StartDate: "15/6/2013",
+         EndDate: "17/7/2013",
+         IsRunning: false
       });
-   </script>
+      var urlParts = document.URL.split("/");
+      var urlLastPart = urlParts[urlParts.length - 1];
+      loader = new SurveyElements.Loader();
+      var surveyResultID = parseInt($("#isFeedback").val()) === 1 ? -1 : urlLastPart;
+      survey.fetch({
+         data: {
+            Id: surveyId
+         },
+         success: function (model, response, options) {
+            var surveyModel = new Question.QuestionSetModel(
+               {
+                  SurveyResultId: surveyResultID,
+                  SurveyTemplateId: surveyId,
+                  ShowCheckbox: model.get("ShowCheckbox"),
+                  CheckboxText: model.get("CheckboxText")
+               });
+      surveyModel.updateQuestionSetCollection(model.get("QuestionSet"));
+      //DA sure they are ordered
+      var surveyView = new MobileSurvey.SurveyView({
+         el: $("#survey"),
+         model: surveyModel
+      });
+      surveyView.render();
+      //location code
+      //if (navigator.geolocation)
+      //{
+      //   navigator.geolocation.getCurrentPosition(function (position) {
+      //      alert("Latitude: " + position.coords.latitude + " Longitude: " + position.coords.longitude);
+      //   });
+      //}
+      //else
+      //{ alert("no location available") }
+   },
+      error: function (model, response, options) {
+         alert(response)
+      }
+   });
+   });
+</script>
 </html>

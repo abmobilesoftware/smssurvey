@@ -162,7 +162,8 @@ namespace smsSurvery.Surveryer.Controllers
                    surveyTemplate.Id, surveyTemplate.Description, surveyTemplate.Title, surveyTemplate.IntroMessage,
                    surveyTemplate.ThankYouMessage, surveyTemplate.DateStarted,
                    surveyTemplate.DateEnded, surveyTemplate.IsRunning, questions, 
-                   surveyTemplate.DefaultLanguage, cTabletSettings);
+                   surveyTemplate.DefaultLanguage, cTabletSettings, surveyTemplate.ShowCheckbox, 
+                   surveyTemplate.CheckboxText);
             clientSurveyTemplate.MobileWebsiteLocation = GetAnonymousMobileSurveyLocation(surveyTemplate, this.ControllerContext.RequestContext);
             clientSurveyTemplate.LogoLink = surveyTemplate.UserProfile.FirstOrDefault().Company.MobileLogoUrl;
             return clientSurveyTemplate;
@@ -213,6 +214,8 @@ namespace smsSurvery.Surveryer.Controllers
                surveyTemplate.Title = clientSurveyTemplate.Title;
                surveyTemplate.IntroMessage = clientSurveyTemplate.IntroMessage;
                surveyTemplate.DefaultLanguage = clientSurveyTemplate.DefaultLanguage;
+               surveyTemplate.ShowCheckbox = clientSurveyTemplate.ShowCheckbox;
+               surveyTemplate.CheckboxText = clientSurveyTemplate.CheckboxText;
                var dbQuestions = surveyTemplate.QuestionSet;
                var clientQuestions = clientSurveyTemplate.QuestionSet;
 

@@ -34,6 +34,8 @@ namespace smsSurvey.dbInterface
         public string IntroMessage { get; set; }
         public string DefaultLanguage { get; set; }
         public string Title { get; set; }
+        public bool ShowCheckbox { get; set; }
+        public string CheckboxText { get; set; }
     
         public virtual ICollection<SurveyResult> SurveyResult { get; set; }
         public virtual ICollection<UserProfile> UserProfile { get; set; }

@@ -529,4 +529,13 @@
       width: 150px;
    }
 
+   #checkbox-wrapper {
+      text-align: center;
+      padding-bottom: 5px;
+      margin-bottom: 10px;
+   }
+
+   input#personal-information-checkbox {
+      width: 23px;
+   }
 
