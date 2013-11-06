@@ -996,7 +996,7 @@ input[type=checkbox].css-checkbox:checked + label.css-label { background-positio
    width:100%;
    height:auto;
    position:relative;
-   /*display:inline;*/
+   
 }
 
 .chart {
@@ -1083,4 +1083,12 @@ input.invalidField, select.invalidField, a.invalidField, div.invalidField {
 
 .survey-info-data input {
    width: 600px;
+}
+.overviewtable {
+   display: inline-block;
+   width:100%;
+}
+
+.graphsContainer {
+   display:inline-block;
 }
