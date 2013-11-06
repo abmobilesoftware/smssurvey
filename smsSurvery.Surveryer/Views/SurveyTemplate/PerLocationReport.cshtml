@@ -14,8 +14,8 @@
     <legend> Per location report: @Model.Description </legend>
 
    <div class="graphsContainer" id="@String.Format("graphsOverviewContainer{0}", Model.Id)">
-      <div id="@String.Format("tableOverviewChart_div{0}", Model.Id)"></div>      
-       <div id="@String.Format("pieOverviewChart_div{0}", Model.Id)"></div>
+      <div id="@String.Format("tableOverviewChart_div{0}", Model.Id)" class="overviewtable"></div>      
+       <div id="@String.Format("pieOverviewChart_div{0}", Model.Id)" class="overviewtable"></div>
       <div id="@String.Format("loadingOverviewIndicator{0}", Model.Id)" style="display:none" class="loadingIndicatorArea">
          <div class="loadingIndicatorContainer">
             <img src="~/Content/images/ajax-loader_vs1.gif" class="loadingIndicatorIcon" />

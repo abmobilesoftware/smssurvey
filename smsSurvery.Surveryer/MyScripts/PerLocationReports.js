@@ -4,6 +4,15 @@ window.report = window.report || {};
 window.report.repOverviewPiecharts = {};
 window.app.piedata = {};
 
+window.app.recalculateHeight = function (surveyTemplateId) {
+   var graphsContainer = $("#graphsOverviewContainer" + surveyTemplateId);
+   var graphContainerHeight = graphsContainer.outerHeight();
+   //if less than 650, use 650
+   var candidateHeight = graphContainerHeight != 0 ? (graphContainerHeight < 650 ? 650 : graphContainerHeight + "px") : 0;
+   candidateHeight = candidateHeight != 0 ? candidateHeight + "px" : "650";
+   return candidateHeight;
+}
+
 window.app.displayReportOverview = function (surveyTemplateId) {
    //DA we should avoid recreating the chart as this is a costly operation   
    var chartId = '#tableOverviewChart_div' + surveyTemplateId;
@@ -16,16 +25,11 @@ window.app.displayReportOverview = function (surveyTemplateId) {
       pieChart = new google.visualization.PieChart(pieChartElem[0]);
    }
 
+   var candidateHeight = window.app.recalculateHeight(surveyTemplateId);
    var loadingIndicatorId = "#loadingOverviewIndicator" + surveyTemplateId;
    var loadingIndicator = $(loadingIndicatorId);
-   
-   var graphsContainer = $("#graphsOverviewContainer" + surveyTemplateId);
-   var candidateHeight = graphsContainer.outerHeight();
-   candidateHeight = candidateHeight != 0 ? candidateHeight + "px" : "650";
    loadingIndicator.height(candidateHeight);
-
-  
-
+   var graphsContainer = $("#graphsOverviewContainer" + surveyTemplateId);
    graphsContainer.height(candidateHeight);
    loadingIndicator.width(chartElem.outerWidth());
    loadingIndicator.css("line-height", candidateHeight);
@@ -63,6 +67,15 @@ window.app.displayReportOverview = function (surveyTemplateId) {
             cssClassNames: { tableCell: "tCell" }
          };
          tablechart.draw(tabledata, tableOptions);
+
+         //recalculate the height       
+         var newHeight = window.app.recalculateHeight(surveyTemplateId)
+         loadingIndicator.height(newHeight);
+         var graphsContainer = $("#graphsOverviewContainer" + surveyTemplateId);
+         graphsContainer.height(newHeight);
+         loadingIndicator.width(chartElem.outerWidth());
+         loadingIndicator.css("line-height", newHeight);
+         
       }
    });
 };
