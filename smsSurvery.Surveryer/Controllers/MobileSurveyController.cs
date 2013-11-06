@@ -414,7 +414,7 @@ namespace smsSurvery.Surveryer.Controllers
                   existingCustomer.Name = info.Name;
                   existingCustomer.Surname = info.Surname;
                   existingCustomer.Email = info.Email;
-                  existingCustomer.IAccept = info.IAccept;
+                  survey.IAccept= info.IAccept;
                   survey.Customer = existingCustomer;              
                   db.SaveChanges();                  
                   }
@@ -429,12 +429,12 @@ namespace smsSurvery.Surveryer.Controllers
                         PhoneNumber = info.Telephone,
                         Name = info.Name,
                         Surname = info.Surname,
-                        Email = info.Email,
-                        IAccept = info.IAccept
+                        Email = info.Email                        
                      };
                      db.CustomerSet.Add(moreAccurateCustomer);
                      var bogusCustomer = survey.Customer;
                      survey.Customer = moreAccurateCustomer;
+                     survey.IAccept = info.IAccept;
                      db.CustomerSet.Remove(bogusCustomer);
                      db.SaveChanges();
                   }
@@ -445,7 +445,7 @@ namespace smsSurvery.Surveryer.Controllers
                   customerToUpdate.Name = info.Name;
                   customerToUpdate.Surname = info.Surname;
                   customerToUpdate.Email = info.Email;
-                  customerToUpdate.IAccept = info.IAccept;
+                  survey.IAccept = info.IAccept;
                   db.SaveChanges();
                }
                return Json(localId, JsonRequestBehavior.AllowGet);
