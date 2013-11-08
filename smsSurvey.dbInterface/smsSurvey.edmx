@@ -199,6 +199,7 @@
           <Property Name="ValidAnswers" Type="nvarchar" MaxLength="1000" />
           <Property Name="ValidAnswersDetails" Type="nvarchar" MaxLength="1000" />
           <Property Name="SurveyPlan_Id" Type="int" Nullable="false" />
+          <Property Name="Required" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="ResultSet">
           <Key>
@@ -800,6 +801,7 @@
           <NavigationProperty Name="SurveyTemplateSet" Relationship="smsSurveyModel.FK_SurveyPlanQuestion" FromRole="Question" ToRole="SurveyPlan" />
           <NavigationProperty Name="SurveyResultSet" Relationship="smsSurveyModel.FK_SurveyResultQuestion" FromRole="Question" ToRole="SurveyResult" />
           <NavigationProperty Name="QuestionAlertSet" Relationship="smsSurveyModel.FK_QuestionQuestionAlert" FromRole="Question" ToRole="QuestionAlertSet" />
+          <Property Type="Boolean" Name="Required" Nullable="false" />
         </EntityType>
         <EntityType Name="SurveyTemplate">
           <Key>
@@ -1224,7 +1226,8 @@
     <EntitySetMapping Name="QuestionSet">
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.Question)">
         <MappingFragment StoreEntitySet="QuestionSet">
-          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Required" ColumnName="Required" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Text" ColumnName="Text" />
           <ScalarProperty Name="Order" ColumnName="Order" />
           <ScalarProperty Name="Type" ColumnName="Type" />

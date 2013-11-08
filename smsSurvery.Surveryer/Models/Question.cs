@@ -15,6 +15,7 @@ namespace smsSurvery.Surveryer.ClientModels
       public string ValidAnswers { get; set; }
       public string ValidAnswersDetails { get; set; }
       public List<ClientQuestionAlert> QuestionAlertSet { get; set; }
+      public bool Required { get; set; }
       public ClientQuestion() { }
 
       public ClientQuestion(int iId,
@@ -23,7 +24,8 @@ namespace smsSurvery.Surveryer.ClientModels
          string iType,
          string iValidAnswers,
          string iValidAnswersDetails,
-         List<ClientQuestionAlert> iQuestionAlertSet)
+         List<ClientQuestionAlert> iQuestionAlertSet,
+         bool iRequred)
       {
          Id = iId;
          Text = iText;
@@ -32,6 +34,7 @@ namespace smsSurvery.Surveryer.ClientModels
          ValidAnswers = iValidAnswers;
          ValidAnswersDetails = iValidAnswersDetails;
          QuestionAlertSet = iQuestionAlertSet;
+         Required = iRequred;
       }     
    }
 }

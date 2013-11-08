@@ -28,6 +28,7 @@ namespace smsSurvey.dbInterface
         public string ValidAnswers { get; set; }
         public string ValidAnswersDetails { get; set; }
         public int SurveyPlan_Id { get; set; }
+        public bool Required { get; set; }
     
         public virtual ICollection<Result> Result { get; set; }
         public virtual SurveyTemplate SurveyTemplateSet { get; set; }

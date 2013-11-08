@@ -16,6 +16,7 @@ namespace smsSurvery.Surveryer.Controllers
    {
 
       public const string cNoLocation = "noLocation";
+      public const string cNoValue = "noValue";
       private const string cDefaultLogoLocation = @"https://loyaltyinsightslogos.blob.core.windows.net/logos/logo_txtfeedback_small.png";
       public MobileSurveyController()
       {
@@ -236,7 +237,7 @@ namespace smsSurvery.Surveryer.Controllers
                   new ClientQuestion(question.Id,
                      question.Text, question.Order, question.Type,
                      question.ValidAnswers, question.ValidAnswersDetails,
-                     questionAlertSet);
+                     questionAlertSet, question.Required);
                questions.Add(q);
             }
             TabletSettings dbTabletSettings = surveyTemplate.UserProfile.FirstOrDefault().Company.TabletSettings;
@@ -303,17 +304,24 @@ namespace smsSurvery.Surveryer.Controllers
             var customer = new Customer() { PhoneNumber = uniqueCustomerID, Name = uniqueCustomerID, Surname = uniqueCustomerID };
             SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, 
                SurveyTemplate = surveyTemplateToUse, Terminated = true, 
-               PercentageComplete = 1, LanguageChosenForSurvey = surveyTemplateToUse.DefaultLanguage,
+               LanguageChosenForSurvey = surveyTemplateToUse.DefaultLanguage,
                IAccept = false
             };
             db.SurveyResultSet.Add(newSurvey);
             DateTime resultSubmitted = DateTime.UtcNow;
+            int answeredQuestions = 0;
             foreach (var q in questions)
             {
-               var currentQuestion = db.QuestionSet.Find(q.Id);
-               var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion, AdditionalInfo = q.AdditionalInfo, DateSubmitted = resultSubmitted, SubmittedViaSMS= false };
-               newSurvey.Result.Add(res);
+               if (q.PickedAnswer != cNoValue && q.PickedAnswer != null)
+               {
+                  var currentQuestion = db.QuestionSet.Find(q.Id);
+                  var res = new Result() { Answer = q.PickedAnswer, Question = currentQuestion, AdditionalInfo = q.AdditionalInfo, DateSubmitted = resultSubmitted, SubmittedViaSMS = false };
+                  newSurvey.Result.Add(res);
+                  ++answeredQuestions;
+               }
             }
+            double percentageOfCompletion = (answeredQuestions * 1) / (double)questions.Count;
+            newSurvey.PercentageComplete = percentageOfCompletion;
             db.SaveChanges();
             db.Entry(newSurvey).Reload();
             surveyToAnalyze = newSurvey;

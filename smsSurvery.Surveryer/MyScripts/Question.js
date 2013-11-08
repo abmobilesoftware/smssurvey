@@ -67,6 +67,11 @@ Question.QuestionModel = Backbone.Model.extend({
       var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
       Backbone.trigger(attributeChangedEvent);
    },
+   updateMandatoryField: function(newMandatoryValue) {
+      this.set("Required", newMandatoryValue);
+      var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
+      Backbone.trigger(attributeChangedEvent);
+   },
    updateQuestionType: function (newType) {
       this.set("ValidAnswers", "");
       this.set("ValidAnswersDetails", "");
@@ -172,8 +177,12 @@ Question.QuestionModel = Backbone.Model.extend({
    },
    // Used for validation when taking the survey
    validate: function (attributes, options) {
-      if (attributes.PickedAnswer === Question.noValueAnswer || attributes.PickedAnswer === "") {
-         this.set({ "ValidAnswer": false }, { silent: false });
+      if (this.get("Required")) {
+         if (attributes.PickedAnswer === Question.noValueAnswer || attributes.PickedAnswer === "") {
+            this.set({ "ValidAnswer": false }, { silent: false });
+         } else {
+            this.set({ "ValidAnswer": true }, { silent: false });
+         }
       } else {
          this.set({ "ValidAnswer": true }, { silent: false });
       }
@@ -190,12 +199,13 @@ Question.QuestionView = Backbone.View.extend({
       "click .edit-answers-btn": "openAnswersModal",
       "click .edit-alerts-btn": "openAlertsModal",
       "click .edit-ratings-btn": "openRatingsModal",
-      "click .edit-numeric-btn": "openNumericModal"
+      "click .edit-numeric-btn": "openNumericModal",
+      "change .mandatory-checkbox": "updateMandatoryField"
    },
    initialize: function () {
       _.bindAll(this, "selectQuestionType", "deleteQuestion", "updateQuestion",
          "render", "initializeModals", "validationResult", "openAnswersModal",
-         "openAlertsModal", "openRatingsModal", "openNumericModal");
+         "openAlertsModal", "openRatingsModal", "openNumericModal", "updateMandatoryField");
       this.questionTemplate = _.template($("#question-template").html());
       this.model.on(this.model.events.ANSWERS_CHANGED, this.render);
       this.model.on(this.model.events.ALERTS_CHANGED, this.render);
@@ -217,7 +227,8 @@ Question.QuestionView = Backbone.View.extend({
          $NUMERIC_MODAL: $("#numeric-modal" + this.model.get("Id"), this.$el),
          $EDIT_ANSWERS_BTN: $(".edit-answers-btn", this.$el),
          $EDIT_RATINGS_BTN: $(".edit-ratings-btn", this.$el),
-         $EDIT_NUMERIC_BTN: $(".edit-numeric-btn", this.$el)
+         $EDIT_NUMERIC_BTN: $(".edit-numeric-btn", this.$el),
+         $MANDATORY_BTN: $(".mandatory-checkbox-wrapper", this.$el)
       };
       if (this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY
          || this.model.get("Type") == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_MANY_FROM_MANY) {
@@ -308,6 +319,15 @@ Question.QuestionView = Backbone.View.extend({
    },
    updateQuestion: function (event) {
       this.model.updateQuestionText(event.currentTarget.value)
+   },
+   updateMandatoryField: function (event) {
+      var isChecked = event.currentTarget.checked;
+      this.model.updateMandatoryField(event.currentTarget.checked);
+      if (isChecked) {
+         this.dom.$MANDATORY_BTN.addClass("checkbox-active");
+      } else {
+         this.dom.$MANDATORY_BTN.removeClass("checkbox-active");
+      }
    },
    validationResult: function (result) {
       var invalidFieldClass = SurveyUtilities.Utilities.CONSTANTS_CLASS.INVALID_FIELD;

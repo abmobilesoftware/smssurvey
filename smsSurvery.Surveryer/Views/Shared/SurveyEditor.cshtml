@@ -117,6 +117,9 @@
             <button type="button" class="btn btn-danger close-alerts-modal-btn" aria-hidden="true">Cancel</button>
          </div>
       </div>
+      <label for="mandatory-checkbox<%= Id %>" class="mandatory-checkbox-wrapper <% if (Required) { %> checkbox-active <% } %>">
+         <input id="mandatory-checkbox<%= Id %>" class="mandatory-checkbox" type="checkbox" <% if (Required) { %> checked <% } %> /><label class="mandatory-label">Is mandatory</label>
+      </label>
    </div>
    <div class="clear"></div>
 </script>
@@ -242,7 +245,7 @@
                } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_MANY_FROM_MANY) { 
                   _.each(Answers, function(answer, index) {  %>                     
                    <input type="checkbox" name="multiple-answers" class="css-checkbox"  value="<%= answer.AnswerLabel %>" />
-                   <label for="multiple-answers" nname="multiple-answers-label"  class="css-label"><%=answer.AnswerLabel %></label>     
+                   <label for="multiple-answers" name="multiple-answers-label"  class="css-label"><%=answer.AnswerLabel %></label>     
                <% });
                } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY) { %>
                      <select>    

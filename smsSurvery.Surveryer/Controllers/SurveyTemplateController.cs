@@ -149,7 +149,7 @@ namespace smsSurvery.Surveryer.Controllers
                   new ClientQuestion(question.Id,
                      question.Text, question.Order, question.Type,
                      question.ValidAnswers, question.ValidAnswersDetails,
-                     questionAlertSet);
+                     questionAlertSet, question.Required);
                questions.Add(q);
             }
             TabletSettings dbTabletSettings = surveyTemplate.UserProfile.FirstOrDefault().Company.TabletSettings;
@@ -343,6 +343,7 @@ namespace smsSurvery.Surveryer.Controllers
                         dbQuestion.Type = clientQuestion.Type;
                         dbQuestion.ValidAnswers = clientQuestion.ValidAnswers;
                         dbQuestion.ValidAnswersDetails = clientQuestion.ValidAnswersDetails;
+                        dbQuestion.Required = clientQuestion.Required;
                      }
                      else
                      {
@@ -353,6 +354,7 @@ namespace smsSurvery.Surveryer.Controllers
                         dbQuestion.Type = clientQuestion.Type;
                         dbQuestion.ValidAnswers = clientQuestion.ValidAnswers;
                         dbQuestion.ValidAnswersDetails = clientQuestion.ValidAnswersDetails;
+                        dbQuestion.Required = clientQuestion.Required;
                         var clientQuestionAlerts = clientQuestion.QuestionAlertSet;
                         ICollection<QuestionAlertSet> dbQuestionAlerts = new List<QuestionAlertSet>();
                         if (clientQuestionAlerts != null)
@@ -477,6 +479,7 @@ namespace smsSurvery.Surveryer.Controllers
                      dbQuestion.Type = clientQuestion.Type;
                      dbQuestion.ValidAnswers = clientQuestion.ValidAnswers;
                      dbQuestion.ValidAnswersDetails = clientQuestion.ValidAnswersDetails;
+                     dbQuestion.Required = clientQuestion.Required;
                      dbQuestion.QuestionAlertSet = dbQuestionAlertSet;
                      db.QuestionSet.Add(dbQuestion);
                      dbQuestions.Add(dbQuestion);
