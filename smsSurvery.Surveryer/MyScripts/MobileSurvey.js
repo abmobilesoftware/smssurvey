@@ -184,13 +184,17 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
    },
    isSurveyComplete: function () {
       var answeredQuestions = 0;
+      var mandatoryQuestions = 0;
       _.each(this.model.getQuestionSetCollection(), function (value, key, list) {
-         if (value.get("ValidAnswer"))++answeredQuestions;
+         if (value.get("Required")) {
+            if (value.get("ValidAnswer"))++answeredQuestions;
+            ++mandatoryQuestions;
+         }
       }, this);
       return {
          isDone:
-             answeredQuestions == this.model.getQuestionSet().length ? true : false,
-         status: answeredQuestions + "/" + this.model.getQuestionSet().length
+             answeredQuestions == mandatoryQuestions ? true : false,
+         status: answeredQuestions + "/" + mandatoryQuestions
       };
    },
    saveSurvey: function () {
@@ -202,16 +206,17 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
       if (surveyStatus.isDone) {
          this.doneBtn.setTitle(
              this.doneBtnTitle + " (" +
-                 surveyStatus.status +
-             ")"
+                 surveyStatus.status + " " + 
+             Dictionary.MANDATORY + ")"
              );
          this.trigger(this.pageEvents.THANK_YOU_PAGE);
          //DA and now we should save in the database
 
       } else {
          this.doneBtn.setTitle(
-             this.doneBtnTitle + " (" +
-                 surveyStatus.status +
+             this.doneBtnTitle + " (" + 
+                 surveyStatus.status + " " 
+                 + Dictionary.MANDATORY  + 
              ")"
              );
       }
@@ -236,8 +241,12 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
 MobileSurvey.PersonalInformationErrors = {
    INVALID_NAME: "The Name cannot be empty or whitespace only",
    INVALID_SURNAME: "The Surname cannot be empty or whitespace only",
-   INVALID_EMAIL: "Invalid email"
+   INVALID_EMAIL: "Invalid email"   
 };
+
+Dictionary = {
+   MANDATORY: $("#mandatory-question-dictionary").val()
+}
 
 var isBlank = function (str) {
    return (!str || /^\s*$/.test(str));
