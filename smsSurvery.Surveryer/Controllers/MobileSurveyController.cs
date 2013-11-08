@@ -24,7 +24,7 @@ namespace smsSurvery.Surveryer.Controllers
       private smsSurveyEntities db = new smsSurveyEntities();
       private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
 
-      [HttpGet]
+      [AcceptVerbs(new[] { "GET", "HEAD" })]
       [AllowAnonymous]
       public ActionResult Fill(int id)
       {
@@ -79,7 +79,7 @@ namespace smsSurvery.Surveryer.Controllers
          }
       }
 
-      [HttpGet]
+      [AcceptVerbs(new[] { "GET", "HEAD" })]
       [AllowAnonymous]
       public ActionResult Feedback(int id, string location = cNoLocation)
       {
@@ -108,7 +108,7 @@ namespace smsSurvery.Surveryer.Controllers
          }
       }
 
-      [HttpGet]
+      [AcceptVerbs(new[] { "GET", "HEAD" })]
       [AllowAnonymous]
       public ActionResult ActiveSurvey(string location, string company, bool tabletSurvey=false)
       {
@@ -173,7 +173,7 @@ namespace smsSurvery.Surveryer.Controllers
          return View("SurveyTemplate");
       }
 
-      [HttpGet]
+      [AcceptVerbs(new[] { "GET", "HEAD" })]
       [AllowAnonymous]
       public JsonResult ActiveSurveyAsJson(string location, string company)
       {
