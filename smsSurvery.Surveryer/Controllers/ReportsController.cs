@@ -591,8 +591,9 @@ namespace smsSurvery.Surveryer.Controllers
                                       CustomerSurname = sr.Customer.Surname,
                                       CustomerEmail = sr.Customer.Email,
                                       CustomerTelephone = sr.Customer.PhoneNumber,
+                                      DateRan = sr.DateRan,
                                       CanUsePersonalInfo = sr.IAccept,
-                                      Questions = from r in sr.Result select new { Question = r.Question, Answer = r.Answer, AdditionalInfo = r.AdditionalInfo },
+                                      Questions = from r in sr.Result select new { QuestionID = r.QuestionId, Answer = r.Answer, AdditionalInfo = r.AdditionalInfo },
                                    });
 
             ExcelPackage pck = new ExcelPackage();
@@ -603,6 +604,7 @@ namespace smsSurvery.Surveryer.Controllers
               "Surname",
               "Email",
               "Telephone",
+              "Date",
               "May use personal info"          
            };
             
@@ -613,8 +615,9 @@ namespace smsSurvery.Surveryer.Controllers
             }
 
             var qEnum = surveyTemplate.QuestionSet.AsEnumerable().GetEnumerator();
-          
-            var counter = 6;
+
+            const int cQuestionStartColumn = 7;
+            var counter = cQuestionStartColumn;
             while (qEnum.MoveNext())
             {
                ws.Cells[1, counter].Value = qEnum.Current.Text;
@@ -624,7 +627,7 @@ namespace smsSurvery.Surveryer.Controllers
             }
             var rowQuestions = 2;
             var nrOfQuestions = surveyTemplate.QuestionSet.Count();
-            counter = 6;
+            counter = cQuestionStartColumn;
             for (int i = 0; i < nrOfQuestions; i++)
             {             
                ws.Cells[rowQuestions, counter].Value = "Answer";
@@ -634,7 +637,12 @@ namespace smsSurvery.Surveryer.Controllers
                ws.Cells[rowQuestions, counter].Value = "Additional info";
                counter += 1;
             }           
-           
+            //DA the questions are 
+            var questionIDs = new Dictionary<int, Question>();
+            foreach (var q in surveyTemplate.QuestionSet)
+            {
+               questionIDs.Add(q.Id, q);
+            }
             var row = 3;
             foreach (var dataRow in allResponses)
             {
@@ -642,27 +650,21 @@ namespace smsSurvery.Surveryer.Controllers
                ws.Cells[row, 2].Value = dataRow.CustomerSurname;
                ws.Cells[row, 3].Value = dataRow.CustomerEmail;
                ws.Cells[row, 4].Value = dataRow.CustomerTelephone;
-               ws.Cells[row, 5].Value = dataRow.CanUsePersonalInfo;      
+               ws.Cells[row, 5].Value = dataRow.DateRan.ToString();
+               ws.Cells[row, 6].Value = dataRow.CanUsePersonalInfo;      
                var responseEnum = dataRow.Questions.GetEnumerator();              
               
-               counter = 6;
+               counter = cQuestionStartColumn;
                while (responseEnum.MoveNext())
                {
                   ws.Cells[row, counter].Value = responseEnum.Current.Answer;
                   counter += 1;
-                  ws.Cells[row, counter].Value = AlertsController.GetUserFriendlyAnswerVersion(responseEnum.Current.Question, responseEnum.Current.Answer, logger); ;
+                  ws.Cells[row, counter].Value = AlertsController.GetUserFriendlyAnswerVersion(questionIDs[responseEnum.Current.QuestionID], responseEnum.Current.Answer, logger); ;
                   counter += 1;
                   ws.Cells[row, counter].Value = responseEnum.Current.AdditionalInfo;
                   counter += 1;
 
-               }
-               //foreach (var e in dataRow.Questions)
-               //{
-               //   ws.Cells[row, l].Value = e.Answer;
-               //   ws.Cells[row, l + 1].Value = e.Answer;
-               //   ws.Cells[row, l + 2].Value = e.AdditionalInfo;
-               //   l += 3;
-               //}
+               }             
                row++;
             }
            

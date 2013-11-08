@@ -456,6 +456,7 @@
     <None Include="Properties\PublishProfiles\dev.txtfeedback.pubxml" />
     <None Include="Properties\PublishProfiles\devxmpp.pubxml" />
     <None Include="Properties\PublishProfiles\loyaltydemo.pubxml" />
+    <None Include="Properties\PublishProfiles\m.txtfeedback.pubxml" />
     <None Include="Properties\PublishProfiles\smssurvey.pubxml" />
     <None Include="Properties\PublishProfiles\smssurveytest.pubxml" />
     <None Include="Properties\PublishProfiles\surveytest.pubxml" />
