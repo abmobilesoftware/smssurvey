@@ -266,4 +266,7 @@
   <data name="TextareaPlaceholder" xml:space="preserve">
     <value>Răspunsul dumneavoastră este...</value>
   </data>
+  <data name="MandatoryQuestion" xml:space="preserve">
+    <value>obligatorii</value>
+  </data>
 </root>

@@ -169,6 +169,15 @@ namespace smsSurvery.Surveryer.GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to mandatory.
+        /// </summary>
+        public static string MandatoryQuestion {
+            get {
+                return ResourceManager.GetString("MandatoryQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Powered by.
         /// </summary>
         public static string MobileSurveyFooterCaption {

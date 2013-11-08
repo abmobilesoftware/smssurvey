@@ -266,4 +266,7 @@
   <data name="TextareaPlaceholder" xml:space="preserve">
     <value>Your answer is...</value>
   </data>
+  <data name="MandatoryQuestion" xml:space="preserve">
+    <value>mandatory</value>
+  </data>
 </root>
