@@ -1092,3 +1092,13 @@ input.invalidField, select.invalidField, a.invalidField, div.invalidField {
 .graphsContainer {
    display:inline-block;
 }
+
+.overviewFieldSet {
+   position: relative;
+}
+.exportData {
+   position: absolute;
+   top:0;
+   right: 0;
+   cursor: pointer;
+}

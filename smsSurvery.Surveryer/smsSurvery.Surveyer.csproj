@@ -45,6 +45,9 @@
     <Reference Include="Elmah">
       <HintPath>..\packages\elmah.corelibrary.1.2.2\lib\Elmah.dll</HintPath>
     </Reference>
+    <Reference Include="EPPlus">
+      <HintPath>ExternalReferences\EPPlus.dll</HintPath>
+    </Reference>
     <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\log4net.2.0.0\lib\net40-full\log4net.dll</HintPath>
@@ -303,6 +306,7 @@
     <Content Include="Content\images\edit_25.png" />
     <Content Include="Content\images\edit_30.png" />
     <Content Include="Content\images\error2_24.png" />
+    <Content Include="Content\images\Excel-25_chenar.png" />
     <Content Include="Content\images\glyphicons-halflings-white.png" />
     <Content Include="Content\images\glyphicons-halflings.png" />
     <Content Include="Content\images\iphone_frame.png" />

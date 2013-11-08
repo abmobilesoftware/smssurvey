@@ -3,9 +3,9 @@
 @{Html.RenderPartial("ReportFilterArea");}
 
 <div class="clear:both"></div>
-<fieldset>
+<fieldset class="overviewFieldSet">
     <legend> Overview: @Model.Description </legend>
-
+   <img id="exportToExcel" title="Export raw data to Excel" class="exportData" src="/Content/images/Excel-25_chenar.png" width="25" height="25"/>
    <div class="graphsContainer" id="@String.Format("graphsOverviewContainer{0}", Model.Id)">
       <div id="@String.Format("tableOverviewChart_div{0}", Model.Id)"></div>
       <div id="@String.Format("pieOverviewChart_div{0}", Model.Id)"></div>

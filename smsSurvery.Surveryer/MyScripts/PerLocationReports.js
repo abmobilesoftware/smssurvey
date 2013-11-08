@@ -93,3 +93,9 @@ $(document).ready(function () {
 
    window.app.runrunrun();
 });
+
+$(document).ready(function () {
+   //window.filterArea.initialize(true);
+   //var surveyTemplateId = $("#surveyId").text();
+    
+});
