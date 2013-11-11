@@ -133,6 +133,13 @@
                      <label for="telephone">@Global.MobileSurveyPersonalInfoPhoneLabel</label>
                      <input id="telephone" type="text" placeholder="@Global.PhonePlaceholder" />
                   </div>
+                  <div id="checkbox-wrapper">
+                  <% if (ShowCheckbox) { %>
+                        <input type="checkbox" class="css-checkbox" id="personal-information-checkbox" checked />
+                        <label for="personal-information-checkbox" class="css-label-checkbox" id="checkbox-text"></label>
+                        <label for="personal-information-checkbox" class="" id="real-checkbox-text"><%= CheckboxText %> </label>
+                  <% } %>
+                  </div>
                </div>
             </form>
          </div>
@@ -181,4 +188,5 @@
 <input type="hidden" value="@Global.MobileSurveyPersonalInfoNameError" id="mobileSurveyPersonalInfoNameError" />
 <input type="hidden" value="@Global.MobileSurveyPersonalInfoSurnameError" id="mobileSurveyPersonalInfoSurnameError" />
 <input type="hidden" value="@Global.MobileSurveyPersonalInfoEmailError" id="mobileSurveyPersonalInfoEmailError" />
+<input type="hidden" value="@Global.MandatoryQuestion" id="mandatory-question-dictionary" />
 

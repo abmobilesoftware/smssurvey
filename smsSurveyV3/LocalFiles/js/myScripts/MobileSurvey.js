@@ -255,13 +255,17 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
 	},	
 	isSurveyComplete: function () {
 		var answeredQuestions = 0;
+		var mandatoryQuestions = 0;
 		_.each(this.model.getQuestionSetCollection(), function (value, key, list) {
-			if (value.get("ValidAnswer") == true)++answeredQuestions;
+			if (value.get("Required")) {
+				if (value.get("ValidAnswer") == true)++answeredQuestions;
+				++mandatoryQuestions;
+			}
 		}, this);
 		return {
 			isDone:
-				answeredQuestions == this.model.getQuestionSet().length ? true : false,
-						status: answeredQuestions + "/" + this.model.getQuestionSet().length
+				answeredQuestions == mandatoryQuestions ? true : false,
+						status: answeredQuestions + "/" + mandatoryQuestions
 		};
 	},
 	saveSurvey: function () {
@@ -273,8 +277,8 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
 		if (surveyStatus.isDone) {
 			this.doneBtn.setTitle(
 					this.doneBtnTitle + " (" +
-							surveyStatus.status +
-							")"
+							surveyStatus.status + " " + 
+							$("#mandatory-question-dictionary").val() + ")"
 			);
 			this.trigger(this.pageEvents.THANK_YOU_PAGE);
 			//DA and now we should save in the database
@@ -282,8 +286,8 @@ MobileSurvey.SurveyMobileView = Backbone.View.extend({
 		} else {
 			this.doneBtn.setTitle(
 					this.doneBtnTitle + " (" +
-					surveyStatus.status +
-					")"
+					surveyStatus.status + " " + 
+					$("#mandatory-question-dictionary").val() + ")"
 			);
 		}
 	},
@@ -467,6 +471,8 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 			personalInfo.Surname = $('#surname').val();
 			personalInfo.Email = $('#email').val();
 			personalInfo.Telephone = $('#telephone').val();
+			personalInfo.IAccept = ($("#personal-information-checkbox")[0] != undefined) ? 
+					$("#personal-information-checkbox")[0].checked : false;
 			var dataToSendObject = {
 				info: personalInfo,
 				surveyResultId: this.surveyResultId,
@@ -506,8 +512,9 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 	makeSendPersonalInfoRequest: function(dataToSendObject, successCallback, errorCallback) {
 		var dataToSend = JSON.stringify(dataToSendObject);
 		$.ajax({
-			url: "http://demoloyaltyinsights.cloudapp.net/MobileSurvey/SaveRespondentInfo",
+			//url: "http://demoloyaltyinsights.cloudapp.net/MobileSurvey/SaveRespondentInfo",
 			//url: "http://tablet.txtfeedback.net/MobileSurvey/SaveRespondentInfo",
+			url: "http://surveytest.txtfeedback.net/MobileSurvey/SaveRespondentInfo",
 			data: dataToSend,
 			type: 'post',
 			cache: false,
@@ -529,7 +536,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 	render: function () {
 		if(!this._rendered) { 
 			this._rendered = false;
-			this.$el.html(this.template());
+			this.$el.html(this.template(this.model.toJSON()));
 			this.dom = {
 					$ALERT_BOX: $(".alert", this.$el),
 					$VALIDATION_BOX: $(".personal-info-validation", this.$el),
@@ -580,7 +587,8 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 			thankYouMessage: this.model.get("ThankYouMessage"),
 			surveyTitle: this.model.get("Title"),
 			surveyLogo: this.model.get("TabletSettings").MobileLogoUrl,
-			localStorage: this.storage
+			localStorage: this.storage,
+			model: this.model
 		});
 		
 		// Slider setup
@@ -735,7 +743,7 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 	makeSaveRequest: function(sendDataObject, successCallback, errorCallback) {
 		var sendData = JSON.stringify(sendDataObject);
 		$.ajax({
-			url: "http://demoloyaltyinsights.cloudapp.net/MobileSurvey/SaveSurvey",
+			url: "http://surveytest.txtfeedback.net/MobileSurvey/SaveSurvey",
 			//url: "http://tablet.txtfeedback.net/MobileSurvey/SaveSurvey",
 			data: sendData,
 			crossDomain: true,

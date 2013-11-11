@@ -637,3 +637,62 @@ div.invalidAnswer div.answerArea {
 #surveyUserInfo {
 	margin-top:16px;
 }
+
+/* CHECKBOX STYLE */
+   #checkbox-wrapper {
+      text-align: center;
+      padding-bottom: 5px;
+      margin-bottom: 10px;
+      margin-top:15px;
+      display:inline-block;
+      clear:both;
+   }
+
+  input#personal-information-checkbox {
+     display:none;
+  }
+  
+   input[type=checkbox].css-checkbox {
+      position: absolute;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+      height: 1px;
+      width: 1px;
+      margin: -1px;
+      padding: 0;
+      border: 0;
+   }
+
+      input[type=checkbox].css-checkbox + label.css-label-checkbox {
+         padding-left: 29px;
+         padding-top:3px;
+         height: 21px;
+         /*width: 21px;*/
+         display: inline-block;
+         line-height: 17px;
+         background-repeat: no-repeat;
+         background-position: 0 0;
+         font-size: 15px;
+         /*vertical-align: middle;*/
+         cursor: pointer;
+      }
+
+      input[type=checkbox].css-checkbox:checked + label.css-label-checkbox {
+         background-position: 0 -24px;
+      }
+      /*http://csscheckbox.com/checkboxes/elegant.png */
+   
+   .css-label-checkbox {
+      background-image: url(../images/checkbox.png);
+   }
+
+   #real-checkbox-text {
+      display:inline;
+      padding-right:22px;
+   }
+
+   #checkbox-text {
+      margin-left: 10px;
+      position: relative;
+      top:12px;
+   }

@@ -552,20 +552,6 @@
       clear:both;
    }
 
-  /* input#personal-information-checkbox {
-      width: 32px;
-      min-width:32px;
-      min-height:32px;
-      transform: scale(1.2,1.2);
-      -webkit-transform: scale(1.2,1.2);
-      -moz-transform: scale(1.2,1.2);
-      -o-transform: scale(1.2,1.2);
-      -webkit-appearance: none; 
-      -moz-appearance: none; 
-      -o-appearance: none;      
-      background: url(images/checkbox.png) no-repeat;
-   }
-*/
   input#personal-information-checkbox {
      display:none;
   }
