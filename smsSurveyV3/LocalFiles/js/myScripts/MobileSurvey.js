@@ -73,6 +73,7 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
 			var starBarView = new SurveyElements.StarBarView({ el: $(".answerArea", this.$el), noOfElements: noOfRatings });
 			this.childViews.push(starBarView);
 		}		
+		this.listenForAnswer();
 		return this;
 	},
 	updateQuestionDisplay: function () {
@@ -127,6 +128,88 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
 					{
 						validate: true
 					});
+		}
+	},
+	listenForAnswer: function() {
+		var self = this;
+		var questionType = this.model.get("Type");
+		if (questionType == this.questionConstants.TYPE_SELECT_ONE_FROM_MANY) {
+			$("select[name='answer']", this.$el).off("change");
+			$("select[name='answer']", this.$el).change(function() {
+				var selectedOption = $(this).find(":selected").val();
+				self.model.set({ "PickedAnswer": selectedOption }, { validate: true });
+				Backbone.trigger(Timer.events.NEW_CONTENT);
+			});
+		} else if (questionType == this.questionConstants.TYPE_YES_NO) {
+			$('input[name=yes-no-answer' + this.model.get("Id") + ']', this.$el).off("change");
+			$('input[name=yes-no-answer' + this.model.get("Id") + ']', this.$el).change(function() {
+				var yesNoAnswer = $(this).val();
+				yesNoAnswer = yesNoAnswer != undefined ? yesNoAnswer : Question.noValueAnswer;
+				self.model.set({ "PickedAnswer": yesNoAnswer }, { validate: true });
+				Backbone.trigger(Timer.events.NEW_CONTENT);
+			});			
+		} else if (questionType == this.questionConstants.TYPE_SELECT_MANY_FROM_MANY) {
+			$('input[type=checkbox]', this.$el).off("change");
+			$('input[type=checkbox]', this.$el).change(function() {
+				var selectedValuesArr = $.map($('input[type=checkbox]:checked', self.$el), function (elem) {
+					return $(elem).val();
+				});
+				var selectValues = selectedValuesArr.join(';');
+				self.model.set({ "PickedAnswer": selectValues }, { validate: true });
+				Backbone.trigger(Timer.events.NEW_CONTENT);
+			});			
+		} else if (questionType == this.questionConstants.TYPE_NUMERIC) {
+			$('input[name=numeric-scale-answer' + this.model.get("Id") + ']', this.$el).off("change");
+			$('input[name=numeric-scale-answer' + this.model.get("Id") + ']', this.$el).change(function() {
+				var numericScaleAnswer = $(this).val();
+				numericScaleAnswer = numericScaleAnswer != undefined ? numericScaleAnswer : Question.noValueAnswer;
+				self.model.set({
+					"PickedAnswer": numericScaleAnswer,
+					"AdditionalInfo": $(".comment", self.$el) != undefined ? $(".comment", self.$el).val() : ""
+				},
+				{
+					validate: true
+				});
+				Backbone.trigger(Timer.events.NEW_CONTENT);
+			});			
+		}
+		else if (questionType == this.questionConstants.TYPE_FREE_TEXT){
+			$(".answer", this.$el).off("keyup");
+			$(".answer", this.$el).on("keyup", function() {
+				self.model.set(
+						{
+							"PickedAnswer": $(this).val(),
+							"AdditionalInfo": $(this) != undefined ? $(this).val() : ""
+						},
+						{
+							validate: true
+						});
+				Backbone.trigger(Timer.events.NEW_CONTENT);
+			});
+			
+		} else if (questionType == this.questionConstants.TYPE_RATING) {
+			$(".answer", this.$el).off("change");
+			$(".answer", this.$el).change(function() {
+				self.model.set(
+						{
+							"PickedAnswer": $(this).val()							
+						},
+						{
+							validate: true
+						});
+				Backbone.trigger(Timer.events.NEW_CONTENT);
+			});
+			$(".comment", this.$el).off("change");
+			$(".comment", this.$el).change(function() {
+				self.model.set(
+						{
+							"AdditionalInfo": $(this) != undefined ? $(this).val() : ""
+						},
+						{
+							validate: true
+						});
+				Backbone.trigger(Timer.events.NEW_CONTENT);
+			});
 		}
 	},
 	numericScaleSelected: function (event) {
@@ -343,7 +426,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 				"getHeight", "render", "sendPersonalInfo",
 				"setSurveyResultId", "clearErrorsFromFields",
 				"validationError", "retakeSurvey", "sendPersonalInfoResponse",
-				"close", "reset");
+				"close", "reset", "startBlinking", "blinkBlink", "stopBlinking");
 		this.template = _.template($("#thankyoupage-template").html());
 		this.pageEvents = {
 			RETAKE_SURVEY : "retakeSurveyEvent"	
@@ -352,7 +435,8 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 		this.thankYouMessage = this.options.thankYouMessage;
 		this.surveyTitle = this.options.surveyTitle;
 		this.surveyLogoUrl = this.options.surveyLogo;
-		
+		this.$el.on("pageshow", this.startBlinking);
+		this.$el.on("pagehide", this.stopBlinking);
 	},
 	setSurveyResultId: function (surveyResultId) {
 		this.surveyResultId = surveyResultId;
@@ -376,6 +460,25 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 	hide: function() {
 		this.dom.$ALERT_BOX.hide();      
 		this.$el.hide();		
+	},
+	startBlinking: function() {
+		this.noOfBlinks = 5;
+		this.blinkingTimer = setInterval(this.blinkBlink, 500);
+	},
+	blinkBlink: function() {
+		if (this.noOfBlinks > 0) {
+			if ($("#surveySubmitted").hasClass("blinkGreen")) {
+				$("#surveySubmitted").removeClass("blinkGreen");
+				this.noOfBlinks = this.noOfBlinks - 1;
+			} else {
+				$("#surveySubmitted").addClass("blinkGreen");
+			}
+		} else {
+			this.stopBlinking();
+		}
+	},
+	stopBlinking: function() {
+		clearInterval(this.blinkingTimer);
 	},
 	enableSendBtn: function (event) {
 		if (event.target.checked) {
@@ -450,6 +553,8 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 	},
 	retakeSurvey: function(event) {
 		event.preventDefault();
+		Timer.stopTimer();
+		Timer.startTimer();
 		this.trigger(this.pageEvents.RETAKE_SURVEY);
 	},
 	sendPersonalInfoResponse: function() {
@@ -558,8 +663,13 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 		else {
 			this.reset();
 		}
+		this.listenToFields();
 		return this;
 	},
+	listenToFields: function() {
+		$("input", this.$el).off("change");
+		$("input", this.$el).change(Timer.newContent);
+	},	
 	close: function() {
 		//DA could be that the view was never rendered (if reset is called on expired timer)
 		if(this._rendered) {		
@@ -602,11 +712,17 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 				Timer.hideSlider);
 		var sliderImage3 = new google.ui.FastButton($(".slider-img3-link")[0],
 				Timer.hideSlider);
-		
+		$(".slider-img1").on("swipe", Timer.hideSlider);
+		$(".slider-img2").on("swipe", Timer.hideSlider);
+		$(".slider-img3").on("swipe", Timer.hideSlider);
+		$(".slider-img1").on("swipeupdown", Timer.hideSlider);
+		$(".slider-img2").on("swipeupdown", Timer.hideSlider);
+		$(".slider-img3").on("swipeupdown", Timer.hideSlider);
 		Timer.startTimer();
 		$(Timer).on(Timer.events.RESTART_SURVEY, this.goToQuestionsPage);
 		this.questionsPage.on(this.questionsPage.pageEvents.THANK_YOU_PAGE,
 				this.saveSurvey);
+		$(document).on(TimerModal.events.SAVE_PARTIAL_RESULTS, this.saveSurvey);
 		this.thankYouPage.on(this.thankYouPage.pageEvents.RETAKE_SURVEY,
 				this.goToQuestionsPage);
 		this.dom = {
@@ -621,7 +737,6 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 		this.thankYouPage.close();		
 	},
 	goToThankYouPage: function (surveyResult) {
-		//alert("success");
 		if (surveyResult != undefined) {
 			this.thankYouPage.setSurveyResultId(surveyResult.DbId);
 		}
@@ -629,6 +744,8 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 		/*$("#loading-modal").modal("hide");*/
 		loader.hideLoader();
 		$.mobile.changePage("#thankYouPage");
+		Timer.stopTimer();
+		Timer.startTimer();
 	},
 	setWidth: function (value) {
 		this.$el.css("width", value);
@@ -639,9 +756,10 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 	updateQuestionSet: function () {
 		this.model.set("QuestionSet", this.model.getQuestionSetCollectionAsJson(false));
 	},
-	saveSurvey: function (event) {
+	saveSurvey: function (event, partialResults) {
 		/*$("#loading-modal").modal("show");
 		$("#loading-modal").css("visibility", "visible");*/
+		partialResults = (partialResults == null || partialResults == undefined) ? false : partialResults;
 		loader.showLoader();
 		var self = this;
 		this.updateQuestionSet();
@@ -652,9 +770,11 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 				questions: infoToUpload,
 				surveyResultId: this.model.get("SurveyResultId"),
 				surveyTemplateId: this.model.get("SurveyTemplateId"),
-				location: location
+				location: location,
+				partialResults: partialResults
 			};	
-		this.makeSaveRequest(sendDataObject, this.goToThankYouPage,
+		var goToPage = (!partialResults) ? this.goToThankYouPage : this.goToQuestionsPage;
+		this.makeSaveRequest(sendDataObject, goToPage,
 		function() {	
 			//alert("error");
 			var surveyResults = JSON.parse(self.storage.getItem("surveyResults"));

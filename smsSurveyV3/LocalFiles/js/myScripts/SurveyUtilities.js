@@ -50,7 +50,26 @@ var Timer = (function () {
 	var mouseDetectionInterval = 20000; // ms
 	var restartInterval = 3000;
 	var timer1 = null;
-
+	var contentOnPage = false;
+		
+	innerClass.newContent = function() {
+		contentOnPage = true;
+	};
+	innerClass.partialResults = function() {
+		document.removeEventListener("touchstart", innerClass.trackMouseMovement);
+		document.removeEventListener("keydown", innerClass.trackMouseMovement);
+		$(document.activeElement).blur();
+		innerClass.stopTimer();				
+		innerClass.showSlider();
+	};
+	innerClass.noActivity = function() {
+		document.removeEventListener("touchstart", innerClass.trackMouseMovement);
+		document.removeEventListener("keydown", innerClass.trackMouseMovement);
+		$(document.activeElement).blur();
+		innerClass.stopTimer();				
+		innerClass.startSurvey();
+		innerClass.showSlider();
+	};
 	innerClass.showSlider = function() {
 		$("#slider-modal").modal("show");
 		$("#slider-modal").css("visibility", "visible");
@@ -61,7 +80,8 @@ var Timer = (function () {
 		innerClass.startTimer();
 	};
 	innerClass.events = {
-			RESTART_SURVEY : "restartSurveyEvent"	
+			RESTART_SURVEY : "restartSurveyEvent",
+			NEW_CONTENT: "newContentEvent"
 	};
 	innerClass.startTimer = function () {
 		noOfMouseMoves = 0;
@@ -79,7 +99,8 @@ var Timer = (function () {
 		document.addEventListener("keydown", innerClass.trackMouseMovement);
 		Backbone.off("touch", innerClass.trackMouseMovement);
 		Backbone.on("touch", innerClass.trackMouseMovement);
-		timer1 = setInterval(innerClass.checkIfUserIsActive, mouseDetectionInterval);	      
+		timer1 = setInterval(innerClass.checkIfUserIsActive, mouseDetectionInterval);	
+		contentOnPage = false;
 	};
 	innerClass.stopTimer = function() {
 		clearInterval(timer1);
@@ -91,23 +112,24 @@ var Timer = (function () {
 	innerClass.checkIfUserIsActive = function () {
 		//alert("No of touches " + noOfMouseMoves);
 		var isUserAwayFromPage = noOfMouseMoves == 0 ? true : false;
-		if (isUserAwayFromPage) {
-			document.removeEventListener("touchstart", innerClass.trackMouseMovement);
-			document.removeEventListener("keydown", innerClass.trackMouseMovement);
-			$(document.activeElement).blur();
-			innerClass.stopTimer();
-			innerClass.startSurvey();
-			innerClass.showSlider();
+		if (isUserAwayFromPage) {			
+			if (contentOnPage) {
+				TimerModal.showModal();				
+			}else {
+				innerClass.noActivity();
+			}			
 		} else {
 			noOfMouseMoves = 0;
 		}
 	};	 
 	innerClass.restartSurvey = function() {
+		innerClass.stopTimer();	
 		setTimeout(innerClass.startSurvey, restartInterval);
 	};
 	innerClass.startSurvey = function() {
 		$(innerClass).trigger(innerClass.events.RESTART_SURVEY);
 	}	
+	Backbone.on(innerClass.events.NEW_CONTENT, innerClass.newContent);
 	return innerClass;
 })();
 

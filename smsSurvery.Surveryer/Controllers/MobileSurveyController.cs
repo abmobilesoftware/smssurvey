@@ -284,8 +284,9 @@ namespace smsSurvery.Surveryer.Controllers
 
       [HttpPost]
       [AllowAnonymous]
-      public JsonResult SaveSurvey(List<QuestionResponse> questions, int surveyResultId, int surveyTemplateId, string location, string Id)
+      public JsonResult SaveSurvey(List<QuestionResponse> questions, int surveyResultId, int surveyTemplateId, string location, string Id, bool partialResults=false)
       {
+         partialResults = partialResults == null ? false : partialResults;
          //for mobile surveys the survey language is the default Survey definition language
          //we return the Id of the save surveyResult
          int savedSurveyResult = surveyResultId;
@@ -305,7 +306,7 @@ namespace smsSurvery.Surveryer.Controllers
             SurveyResult newSurvey = new SurveyResult() { Customer = customer, DateRan = DateTime.UtcNow, 
                SurveyTemplate = surveyTemplateToUse, Terminated = true, 
                LanguageChosenForSurvey = surveyTemplateToUse.DefaultLanguage,
-               IAccept = false
+               IAccept = false, PartialResults = partialResults
             };
             db.SurveyResultSet.Add(newSurvey);
             DateTime resultSubmitted = DateTime.UtcNow;

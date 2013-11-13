@@ -243,6 +243,7 @@
           <Property Name="CurrentQuestion_Id" Type="int" />
           <Property Name="LanguageChosenForSurvey" Type="nvarchar" MaxLength="10" />
           <Property Name="IAccept" Type="bit" Nullable="false" />
+          <Property Name="PartialResults" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="SurveyResultTags">
           <Key>
@@ -856,6 +857,7 @@
           <NavigationProperty Name="Tags" Relationship="smsSurveyModel.SurveyResultTags" FromRole="SurveyResult" ToRole="Tags" />
           <Property Type="Boolean" Name="Terminated" Nullable="false" />
           <Property Type="Boolean" Name="IAccept" Nullable="false" />
+          <Property Type="Boolean" Name="PartialResults" Nullable="false" />
         </EntityType>
         <Association Name="CustomerSurveyResult">
           <End Type="smsSurveyModel.Customer" Role="Customer" Multiplicity="1" />
@@ -1252,6 +1254,7 @@
     <EntitySetMapping Name="SurveyResultSet">
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.SurveyResult)">
         <MappingFragment StoreEntitySet="SurveyResultSet">
+                <ScalarProperty Name="PartialResults" ColumnName="PartialResults" />
                 <ScalarProperty Name="IAccept" ColumnName="IAccept" />
                 <ScalarProperty Name="Terminated" ColumnName="Complete" />
                 <ScalarProperty Name="Id" ColumnName="Id" />

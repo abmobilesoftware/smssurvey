@@ -116,7 +116,7 @@ SurveyElements.StarBarView = Backbone.View.extend({
    },
    saveResult: function (pValue, pAdditionalInfo) {
       /* save the result in .answer input field value attribute */      
-      this.dom.$ANSWER.val(pValue);      
+      this.dom.$ANSWER.val(pValue).trigger("change");      
       this.dom.$ADDITIONAL_INFO.val(pAdditionalInfo);
    },
    close: function() {
