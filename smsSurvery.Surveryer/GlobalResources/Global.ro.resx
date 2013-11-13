@@ -269,4 +269,10 @@
   <data name="MandatoryQuestion" xml:space="preserve">
     <value>obligatorii</value>
   </data>
+  <data name="NoActivityDetected" xml:space="preserve">
+    <value>Nu mai detectăm activitate pe tabletă, sunteți încă aici?</value>
+  </data>
+  <data name="YesIAmHere" xml:space="preserve">
+    <value>Da, încă sunt aici!</value>
+  </data>
 </root>

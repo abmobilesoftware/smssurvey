@@ -385,6 +385,15 @@ namespace smsSurvery.Surveryer.GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No activity detected, are you still there?.
+        /// </summary>
+        public static string NoActivityDetected {
+            get {
+                return ResourceManager.GetString("NoActivityDetected", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to e.g. 01332 050999.
         /// </summary>
         public static string PhonePlaceholder {
@@ -509,6 +518,15 @@ namespace smsSurvery.Surveryer.GlobalResources {
         public static string TextareaPlaceholder {
             get {
                 return ResourceManager.GetString("TextareaPlaceholder", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Yes, I am here!.
+        /// </summary>
+        public static string YesIAmHere {
+            get {
+                return ResourceManager.GetString("YesIAmHere", resourceCulture);
             }
         }
     }

@@ -269,4 +269,10 @@
   <data name="MandatoryQuestion" xml:space="preserve">
     <value>mandatory</value>
   </data>
+  <data name="NoActivityDetected" xml:space="preserve">
+    <value>No activity detected, are you still there?</value>
+  </data>
+  <data name="YesIAmHere" xml:space="preserve">
+    <value>Yes, I am here!</value>
+  </data>
 </root>
