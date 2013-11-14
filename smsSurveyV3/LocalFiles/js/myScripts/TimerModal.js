@@ -4,8 +4,20 @@ var TimerModal = (function () {
 	var timerBtn;
 	var restartInterval = 9;
 	innerClass.events = {
-		SAVE_PARTIAL_RESULTS: "savePartialResultsEvent"	
+		SAVE_SURVEY_PARTIAL_RESULTS: "savePartialResultsEvent",
+		SAVE_PERSONAL_INFO_PARTIAL_RESULTS: "savePersonalInfoPartialResultsEvent"
 	};
+	
+	innerClass.pagesName = {
+			QUESTION_PAGE: "questionPage",
+			THANK_YOU_PAGE: "thankYouPage"
+		};
+	var currentPage = innerClass.pagesName.QUESTION_PAGE;
+	
+	innerClass.setPage = function(newPage) {
+		currentPage = newPage;
+	}
+	
 	innerClass.showModal = function() {
 		$('#timer-modal').modal({
 			  backdrop: 'static',
@@ -32,7 +44,10 @@ var TimerModal = (function () {
 	innerClass.countdown = function() {
 		restartInterval = restartInterval - 1;
 		if (restartInterval <= 0) {
-			$(document).trigger(innerClass.events.SAVE_PARTIAL_RESULTS, true);
+			var event = (currentPage == innerClass.pagesName.QUESTION_PAGE) ? 
+					innerClass.events.SAVE_SURVEY_PARTIAL_RESULTS : 
+						innerClass.events.SAVE_PERSONAL_INFO_PARTIAL_RESULTS;
+			$(document).trigger(event, true);
 			innerClass.hideModal();
 			Timer.partialResults();
 		} else {

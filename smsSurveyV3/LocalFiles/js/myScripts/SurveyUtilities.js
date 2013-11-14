@@ -54,7 +54,8 @@ var Timer = (function () {
 		
 	innerClass.newContent = function() {
 		contentOnPage = true;
-	};
+	};	
+
 	innerClass.partialResults = function() {
 		document.removeEventListener("touchstart", innerClass.trackMouseMovement);
 		document.removeEventListener("keydown", innerClass.trackMouseMovement);

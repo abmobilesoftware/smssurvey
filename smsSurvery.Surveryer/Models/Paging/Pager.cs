@@ -150,7 +150,13 @@ namespace MvcPaging
 
 		private string GeneratePageLink(string linkText, int pageNumber)
 		{
-			var pageLinkValueDictionary = new RouteValueDictionary(linkWithoutPageValuesDictionary) { { "page", pageNumber } };
+			var pageLinkValueDictionary = new RouteValueDictionary() { { "page", pageNumber } };
+         var dictionaryIterator = linkWithoutPageValuesDictionary.GetEnumerator();
+         while (dictionaryIterator.MoveNext())
+         {
+            pageLinkValueDictionary.Add(dictionaryIterator.Current.Key,
+               dictionaryIterator.Current.Value);
+         }
 
 			// To be sure we get the right route, ensure the controller and action are specified.
 			var routeDataValues = viewContext.RequestContext.RouteData.Values;
