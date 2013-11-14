@@ -173,7 +173,8 @@ Question.QuestionModel = Backbone.Model.extend({
    // Used for validation when taking the survey
    validate: function (attributes, options) {
 	   if (this.get("Required")) {
-	         if (attributes.PickedAnswer === Question.noValueAnswer || attributes.PickedAnswer === "") {
+		     var pickedAnswer = SurveyUtilities.Utilities.trim(attributes.PickedAnswer);
+	         if (pickedAnswer === Question.noValueAnswer || pickedAnswer === "") {
 	            this.set({ "ValidAnswer": false }, { silent: false });
 	         } else {
 	            this.set({ "ValidAnswer": true }, { silent: false });
