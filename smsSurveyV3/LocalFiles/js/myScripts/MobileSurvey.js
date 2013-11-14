@@ -437,6 +437,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 		this.surveyLogoUrl = this.options.surveyLogo;
 		this.$el.on("pageshow", this.startBlinking);
 		this.$el.on("pagehide", this.stopBlinking);
+		$(document).on(TimerModal.events.SAVE_PERSONAL_INFO_PARTIAL_RESULTS, this.sendPersonalInfo);
 	},
 	setSurveyResultId: function (surveyResultId) {
 		this.surveyResultId = surveyResultId;
@@ -567,9 +568,12 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 		loader.hideLoader();
 		Timer.startTimer();
 	},
-	sendPersonalInfo: function (event) {
+	sendPersonalInfo: function (event, partialResults) {
 		var self = this;
-		if (this.validateData()) {
+		var dataValidity = this.validateData();
+		partialResults = (partialResults == null || partialResults == undefined) ? false : partialResults;
+		var sendDataFlag = partialResults ? true : dataValidity;
+		if (sendDataFlag) {
 			loader.showLoader();
 			var personalInfo = {};
 			personalInfo.Name = $('#name').val();
@@ -581,7 +585,8 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 			var dataToSendObject = {
 				info: personalInfo,
 				surveyResultId: this.surveyResultId,
-				LocalId: "noLocalId"
+				LocalId: "noLocalId",
+				partialResults: partialResults
 			};
 			this.makeSendPersonalInfoRequest(dataToSendObject, this.sendPersonalInfoResponse, function() {
 				var surveyResults = JSON.parse(self.storage.getItem("surveyResults"));
@@ -722,7 +727,7 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 		$(Timer).on(Timer.events.RESTART_SURVEY, this.goToQuestionsPage);
 		this.questionsPage.on(this.questionsPage.pageEvents.THANK_YOU_PAGE,
 				this.saveSurvey);
-		$(document).on(TimerModal.events.SAVE_PARTIAL_RESULTS, this.saveSurvey);
+		$(document).on(TimerModal.events.SAVE_SURVEY_PARTIAL_RESULTS, this.saveSurvey);
 		this.thankYouPage.on(this.thankYouPage.pageEvents.RETAKE_SURVEY,
 				this.goToQuestionsPage);
 		this.dom = {
@@ -735,6 +740,7 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 		$.mobile.changePage("#questionsPage");
 		loader.hideLoader();
 		this.thankYouPage.close();		
+		TimerModal.setPage(TimerModal.pagesName.QUESTION_PAGE);
 	},
 	goToThankYouPage: function (surveyResult) {
 		if (surveyResult != undefined) {
@@ -746,6 +752,7 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 		$.mobile.changePage("#thankYouPage");
 		Timer.stopTimer();
 		Timer.startTimer();
+		TimerModal.setPage(TimerModal.pagesName.THANK_YOU_PAGE);
 	},
 	setWidth: function (value) {
 		this.$el.css("width", value);
