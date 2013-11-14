@@ -1,5 +1,19 @@
 ﻿@model IEnumerable<smsSurvery.Surveryer.Models.FreeTextAnswer>
 
+@using MvcPaging;
+@using smsSurvery.Surveryer.Models
+
+@{
+   IPagedList<FreeTextAnswer> pagingDetails = ViewBag.pagingDetails;
+   RouteValueDictionary r = new RouteValueDictionary();
+   r.Add("questionId", Request["questionId"]);
+   r.Add("stem", Request["stem"]);
+   r.Add("checkAdditionalInfo", Request["checkAdditionalInfo"]);
+
+}
+
+@Html.Pager(pagingDetails.PageSize, pagingDetails.PageNumber, pagingDetails.TotalItemCount, r)
+
 @{
    ViewBag.Title = "Messages with keyword";
 }

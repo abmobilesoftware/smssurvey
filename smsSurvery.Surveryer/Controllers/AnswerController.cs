@@ -11,6 +11,7 @@ using smsSurvery.Surveryer.Models.SmsInterface;
 using smsSurvery.Surveryer.Mailers;
 using smsSurvery.Surveryer.Utilities;
 using WebMatrix.WebData;
+using MvcPaging;
 
 namespace smsSurvery.Surveryer.Controllers
 {   
@@ -23,8 +24,11 @@ namespace smsSurvery.Surveryer.Controllers
 
         [HttpGet]
         [Authorize]
-        public ActionResult GetMessagesWithOnePredefinedAnswer(int questionId, int answer)
+        public ActionResult GetMessagesWithOnePredefinedAnswer(int questionId, int answer, int page=1)
         {
+           int currentPageIndex = page - 1;
+           int NUMBER_OF_RESULTS_PER_PAGE = 10;
+                   
            //for the given survey (if allowed access) show messages with given stem
            Question question = db.QuestionSet.Find(questionId);
            if (question != null &&  (question.Type == ReportsController.cRatingsTypeQuestion ||
@@ -41,12 +45,16 @@ namespace smsSurvery.Surveryer.Controllers
                     messages.Add(new FreeTextAnswer() { Text = result.Answer, SurveyResult = result.SurveyResult, Customer = result.SurveyResult.Customer });
                  }
               }
+              var pageRes = messages.Skip((page - 1) * NUMBER_OF_RESULTS_PER_PAGE).Take(NUMBER_OF_RESULTS_PER_PAGE);
+              IPagedList<FreeTextAnswer> pagingDetails = new PagedList<FreeTextAnswer>(messages,
+                  currentPageIndex, NUMBER_OF_RESULTS_PER_PAGE, messages.Count());
               //DA get the human friendly version (from answer details)
               string[] humanFriendlyAnswers = question.ValidAnswersDetails.Split(';');
               var index = answer -1;            
               @ViewBag.Answer = humanFriendlyAnswers[index];
               @ViewBag.QuestionText = question.Text;
-              return View(messages);
+              ViewBag.pagingDetails = pagingDetails;
+              return View(pageRes.ToList());
            }
            return View();
         }
@@ -70,8 +78,11 @@ namespace smsSurvery.Surveryer.Controllers
 
         [HttpGet]
         [Authorize]
-        public ActionResult GetMessagesWithStem(int questionId, string stem, bool checkAdditionalInfo)
+        public ActionResult GetMessagesWithStem(int questionId, string stem, bool checkAdditionalInfo, int page=1)
         {
+           int currentPageIndex = page - 1;
+           int NUMBER_OF_RESULTS_PER_PAGE = 10;
+
            //for the given survey (if allowed access) show messages with given stem
            Question question = db.QuestionSet.Find(questionId);
            if (question != null && (question.Type == ReportsController.cFreeTextTypeQuestion || 
@@ -86,11 +97,15 @@ namespace smsSurvery.Surveryer.Controllers
                         messages.Add(new FreeTextAnswer() { Text = result.Answer, SurveyResult = result.SurveyResult, Customer = result.SurveyResult.Customer, AdditionalInfo = result.AdditionalInfo });
                      }                     
 	               }
+              var pageRes = messages.Skip((page - 1) * NUMBER_OF_RESULTS_PER_PAGE).Take(NUMBER_OF_RESULTS_PER_PAGE);
+              IPagedList<FreeTextAnswer> pagingDetails = new PagedList<FreeTextAnswer>(messages,
+                  currentPageIndex, NUMBER_OF_RESULTS_PER_PAGE, messages.Count());
+              ViewBag.pagingDetails = pagingDetails;
               ViewBag.Stem = stem;
               ViewBag.BasedOnAdditionalInfo = checkAdditionalInfo;
 
               ViewBag.Headline = checkAdditionalInfo ? String.Format("Answers with qualifier containing \"{0}\"", stem) : String.Format("Answers containing \"{0}\"", stem);
-              return View(messages);
+              return View(pageRes.ToList());
            }  
            return View();
         }
