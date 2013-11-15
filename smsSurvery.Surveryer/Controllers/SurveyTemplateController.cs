@@ -611,11 +611,16 @@ namespace smsSurvery.Surveryer.Controllers
       }
 
       [HttpGet]
-      public ActionResult Responses(int id)
+      public ActionResult Responses(int id, int page = 1)
       {
-         SurveyTemplate surveyTemplate = db.SurveyTemplateSet.Find(id);
-         var res = surveyTemplate.SurveyResult.OrderByDescending(s => s.DateRan);
-         return View(res);
+         int currentPageIndex = page - 1;
+         int NUMBER_OF_RESULTS_PER_PAGE = 10;
+         var res = db.SurveyResultSet.Where(x=>x.SurveyTemplate.Id==id).OrderByDescending(s => s.DateRan);
+         var pageRes = res.Skip((page - 1) * NUMBER_OF_RESULTS_PER_PAGE).Take(NUMBER_OF_RESULTS_PER_PAGE);
+         IPagedList<SurveyResult> pagingDetails = new PagedList<SurveyResult>(res, currentPageIndex, 
+            NUMBER_OF_RESULTS_PER_PAGE, res.Count());
+         ViewBag.pagingDetails = pagingDetails;
+         return View(pageRes.ToList());
       }
 
       [Authorize]

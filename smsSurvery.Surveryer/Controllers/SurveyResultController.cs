@@ -25,7 +25,7 @@ namespace smsSurvery.Surveryer.Controllers
            int currentPageIndex = page - 1;
            int NUMBER_OF_RESULTS_PER_PAGE = 10;
            var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-           var res = (from s in user.SurveyTemplateSet select s.SurveyResult).SelectMany(x => x).OrderByDescending(r => r.DateRan);
+           var res = db.SurveyResultSet.Where(x => x.SurveyTemplate.UserProfile.FirstOrDefault().UserName == User.Identity.Name).OrderByDescending(x => x.DateRan);
            var pageRes = res.Skip((page - 1) * NUMBER_OF_RESULTS_PER_PAGE).Take(NUMBER_OF_RESULTS_PER_PAGE);
            IPagedList<SurveyResult> pagingDetails = new PagedList<SurveyResult>(res, currentPageIndex, NUMBER_OF_RESULTS_PER_PAGE, res.Count());
            ViewBag.pagingDetails = pagingDetails;

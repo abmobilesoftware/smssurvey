@@ -4,6 +4,19 @@
     ViewBag.Title = "Survey responses";
 }
 
+@using MvcPaging;
+@using smsSurvey.dbInterface;
+
+@{
+   IPagedList<SurveyResult> pagingDetails = ViewBag.pagingDetails;
+   RouteValueDictionary r = new RouteValueDictionary();  
+}
+
+@Html.Pager(pagingDetails.PageSize, pagingDetails.PageNumber, pagingDetails.TotalItemCount, r)
+@{
+   ViewBag.Title = "Messages with certain response";
+}
+
 <text>
    @{Html.RenderPartial("SurveyResultsDetails", (IEnumerable<smsSurvey.dbInterface.SurveyResult>) Model);}
 </text>
