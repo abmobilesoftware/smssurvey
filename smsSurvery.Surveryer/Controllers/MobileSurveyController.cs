@@ -447,6 +447,7 @@ namespace smsSurvery.Surveryer.Controllers
                      //delete the bogus customer
                      if (partialResults)
                      {
+                        var bogusCustomer = survey.Customer;
                         var moreAccurateCustomer = new Customer()
                         {
                            PhoneNumber = info.Telephone
@@ -455,16 +456,27 @@ namespace smsSurvery.Surveryer.Controllers
                         {
                            moreAccurateCustomer.Name = info.Name;
                         }
+                        else
+                        {
+                           moreAccurateCustomer.Name = bogusCustomer.Name;
+                        }
                         if (!String.IsNullOrEmpty(info.Surname))
                         {
                            moreAccurateCustomer.Surname = info.Surname;
+                        }
+                        else
+                        {
+                           moreAccurateCustomer.Surname = bogusCustomer.Surname;
                         }
                         if (!String.IsNullOrEmpty(info.Email))
                         {
                            moreAccurateCustomer.Email = info.Email;
                         }
+                        else
+                        {
+                           moreAccurateCustomer.Email = bogusCustomer.Email;
+                        }
                         db.CustomerSet.Add(moreAccurateCustomer);
-                        var bogusCustomer = survey.Customer;
                         survey.Customer = moreAccurateCustomer;
                         survey.IAccept = info.IAccept;
                         db.CustomerSet.Remove(bogusCustomer);
