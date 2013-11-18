@@ -168,12 +168,29 @@ namespace smsSurvery.Surveryer.Controllers
          }
 
          int validResponses = 0;
+         var questionId = q.Id;
          tags = tags ?? new string[0];
-         IEnumerable<Result> resultsToAnalyze = q.Result.Where(r =>
-                     intervalEnd >= r.DateSubmitted &&
-                     intervalStart <= r.DateSubmitted &&
-                     (tags.Length == 0 ? true : tags.Intersect(r.SurveyResult.Tags.Select(tag => tag.Name)).Any())
-                    );
+         IEnumerable<Result> resultsToAnalyze = null;
+
+         //DA - lazy DA inserted the check for length due to "The LINQ expression node type 'ArrayLength' is not supported in LINQ to Entities." instead of figuring out what the problem is
+         if (tags.Length == 0)
+         {
+            resultsToAnalyze = from r in db.ResultSet
+                               where r.QuestionId == questionId &&
+                intervalEnd >= r.DateSubmitted &&
+                intervalStart <= r.DateSubmitted
+                               select r;
+         }
+         else
+         {
+            resultsToAnalyze = from r in db.ResultSet
+                               where r.QuestionId == questionId &&
+                               intervalEnd >= r.DateSubmitted &&
+                               intervalStart <= r.DateSubmitted &&
+                               tags.Intersect(r.SurveyResult.Tags.Select(tag => tag.Name)).Any()
+                               select r;
+         }
+
          foreach (var result in resultsToAnalyze)
          {
             if (validPossibleAnswers.Contains(result.Answer))
