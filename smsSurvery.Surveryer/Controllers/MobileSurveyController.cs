@@ -377,7 +377,7 @@ namespace smsSurvery.Surveryer.Controllers
          foreach (var q in questions)
          {
             var currentQuestion = db.QuestionSet.Find(q.Id);
-            AlertsController.HandleAlertsForQuestion(currentQuestion, q.PickedAnswer, surveyToAnalyze.Id, locationTags, this, logger);
+            AlertsController.HandleAlertsForQuestion(currentQuestion, q.PickedAnswer == null ? cNoValue : q.PickedAnswer, surveyToAnalyze.Id, locationTags, this, logger);
          }
 
          Tags locationTag = null;
@@ -417,10 +417,11 @@ namespace smsSurvery.Surveryer.Controllers
 
       [HttpPost]
       [AllowAnonymous]
-      public JsonResult SaveRespondentInfo(RespondentInfo info, int surveyResultId, string localId, bool partialResults)
+      public JsonResult SaveRespondentInfo(RespondentInfo info, int surveyResultId, string localId, bool partialResults = false)
       {
          try
          {
+            partialResults = partialResults == null ? false : partialResults;
             //get the customer corresponding to the survey result and update its info
             var survey = db.SurveyResultSet.Find(surveyResultId);
             if (survey != null)
