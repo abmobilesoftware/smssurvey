@@ -205,9 +205,9 @@ $(document).ready(function () {
    $("#refreshReport").click(function () {
       window.app.runrunrun();
    });
-   $("#exportToExcel").click(function () {
-      window.app.exportRawDataToExcel($("#surveyId").text());
-   });
+   //$("#exportToExcel").click(function () {
+   //   window.app.exportRawDataToExcel($("#surveyId").text());
+   //});
  
    window.app.runrunrun();
 });
