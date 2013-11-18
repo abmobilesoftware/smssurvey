@@ -260,9 +260,33 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
       _.bindAll(this, "setWidth", "show",
           "getHeight", "render", "sendPersonalInfo",
           "setSurveyResultId", "clearErrorsFromFields",
-          "validationError", "dontSubmitOnEnter", "sendPersonalInfoOnEnter");
+          "validationError", "dontSubmitOnEnter", "sendPersonalInfoOnEnter", 
+          "startBlinking", "blinkBlink", "stopBlinking");
+      this.customEvents = {
+         SHOW_PAGE: "showPageEvent"
+      };
+      Backbone.on(this.customEvents.SHOW_PAGE, this.startBlinking);      
       this.template = _.template($("#thankyoupage-template").html());
       this.render();
+   },
+   startBlinking: function () {
+      this.noOfBlinks = 5;
+      this.blinkingTimer = setInterval(this.blinkBlink, 500);
+   },
+   blinkBlink: function () {
+      if (this.noOfBlinks > 0) {
+         if ($("#surveySubmitted").hasClass("blinkGreen")) {
+            $("#surveySubmitted").removeClass("blinkGreen");
+            this.noOfBlinks = this.noOfBlinks - 1;
+         } else {
+            $("#surveySubmitted").addClass("blinkGreen");
+         }
+      } else {
+         this.stopBlinking();
+      }
+   },
+   stopBlinking: function () {
+      clearInterval(this.blinkingTimer);
    },
    setSurveyResultId: function (surveyResultId) {
       this.surveyResultId = surveyResultId;
@@ -387,6 +411,8 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
    },
    setTop: function (value) {
       this.$el.css("top", value);
+      this.$el.scrollTop(value);
+      $(document).scrollTop(value);
    },
    render: function () {
       this.$el.append(this.template(this.model.toJSON()));
@@ -435,6 +461,7 @@ MobileSurvey.SurveyView = Backbone.View.extend({
       }
    },
    goToThankYouPage: function (surveyResultId) {
+      Backbone.trigger(this.thankYouPage.customEvents.SHOW_PAGE);
       var self = this;
       var pageWidthInPixels = this.questionsPage.getWidth() + "px";
       var expandedWidthPercent = "200%"; // width of two pages side by side
