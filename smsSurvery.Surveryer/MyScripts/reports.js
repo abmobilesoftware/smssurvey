@@ -117,6 +117,12 @@ window.app.displayReportsForFreeTextQ = function (questionId) {
    });
 };
 
+window.app.exportRawDataToExcel = function (surveyTemplateId) {
+   var intervalStart = window.app.dateHelper.transformStartDate(window.app.startDate);
+   var iIntervalEnd = window.app.dateHelper.transformEndDate(window.app.endDate);
+   window.location = encodeURI("/Reports/GetActivityReport?surveyTemplateId=" + surveyTemplateId + "&iIntervalStart=" + intervalStart + "&iIntervalEnd=" + iIntervalEnd);
+}
+
 window.app.displayReportOverview = function (surveyTemplateId) {
    //DA we should avoid recreating the chart as this is a costly operation
    var chartId = "#pieOverviewChart_div" + surveyTemplateId;
@@ -199,6 +205,9 @@ $(document).ready(function () {
    $("#refreshReport").click(function () {
       window.app.runrunrun();
    });
+   //$("#exportToExcel").click(function () {
+   //   window.app.exportRawDataToExcel($("#surveyId").text());
+   //});
  
    window.app.runrunrun();
 });

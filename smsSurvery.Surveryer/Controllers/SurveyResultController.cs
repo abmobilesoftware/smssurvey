@@ -7,6 +7,8 @@ using System.Web;
 using System.Web.Mvc;
 using smsSurvey.dbInterface;
 using MvcPaging;
+using System.Data.Entity.Validation;
+using System.Text;
 
 namespace smsSurvery.Surveryer.Controllers
 {
@@ -131,15 +133,43 @@ namespace smsSurvery.Surveryer.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult DeleteConfirmed(int id)
         {
-            SurveyResult surveyresult = db.SurveyResultSet.Find(id);
-            var individualResults = surveyresult.Result.ToList();
-            foreach (var item in individualResults)
-            {
-               db.ResultSet.Remove(item);
-            }
-            db.SurveyResultSet.Remove(surveyresult);
-            db.SaveChanges();
-            return RedirectToAction("Index");
+           try
+           {
+              SurveyResult surveyresult = db.SurveyResultSet.Find(id);
+              var individualResults = surveyresult.Result.ToList();
+              foreach (var item in individualResults)
+              {
+
+                 db.ResultSet.Remove(item);
+              }
+              //remove the associated tags                          
+              var tags = surveyresult.Tags.ToList();
+              foreach (var tag in tags)
+              {
+                 surveyresult.Tags.Remove(tag);
+              }
+              db.SurveyResultSet.Remove(surveyresult);
+
+              db.SaveChanges();
+              return RedirectToAction("Index");
+           }
+
+           catch (DbEntityValidationException ex)
+           {
+              StringBuilder sb = new StringBuilder();
+              foreach (var failure in ex.EntityValidationErrors)
+              {
+                 sb.AppendFormat("{0} failed validation\n", failure.Entry.Entity.GetType());
+                 foreach (var error in failure.ValidationErrors)
+                 {
+                    sb.AppendFormat("- {0} : {1}", error.PropertyName, error.ErrorMessage);
+                    sb.AppendLine();
+                 }
+              }
+              logger.Error(sb.ToString());
+              //TODO DA - return error to user
+              return RedirectToAction("Index");
+           }
         }
 
         protected override void Dispose(bool disposing)

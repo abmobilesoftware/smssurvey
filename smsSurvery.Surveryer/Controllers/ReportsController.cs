@@ -9,6 +9,7 @@ using smsSurvery.Surveryer.WordCloud;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Globalization;
+using OfficeOpenXml;
 
 namespace smsSurvery.Surveryer.Controllers
 {
@@ -167,11 +168,29 @@ namespace smsSurvery.Surveryer.Controllers
          }
 
          int validResponses = 0;
+         var questionId = q.Id;
          tags = tags ?? new string[0];
-         IEnumerable<Result> resultsToAnalyze = q.Result.Where(r =>
-                     (tags.Length == 0 ? true : tags.Intersect(r.SurveyResult.Tags.Select(tag => tag.Name)).Any()) &&
-                     intervalEnd >= r.DateSubmitted &&
-                     intervalStart <= r.DateSubmitted);
+         IEnumerable<Result> resultsToAnalyze = null;
+
+         //DA - lazy DA inserted the check for length due to "The LINQ expression node type 'ArrayLength' is not supported in LINQ to Entities." instead of figuring out what the problem is
+         if (tags.Length == 0)
+         {
+            resultsToAnalyze = from r in db.ResultSet
+                               where r.QuestionId == questionId &&
+                intervalEnd >= r.DateSubmitted &&
+                intervalStart <= r.DateSubmitted
+                               select r;
+         }
+         else
+         {
+            resultsToAnalyze = from r in db.ResultSet
+                               where r.QuestionId == questionId &&
+                               intervalEnd >= r.DateSubmitted &&
+                               intervalStart <= r.DateSubmitted &&
+                               tags.Intersect(r.SurveyResult.Tags.Select(tag => tag.Name)).Any()
+                               select r;
+         }
+
          foreach (var result in resultsToAnalyze)
          {
             if (validPossibleAnswers.Contains(result.Answer))
@@ -568,6 +587,110 @@ namespace smsSurvery.Surveryer.Controllers
            var dataToSendBack = new { pie = pieChartSource, table = tableChartSource };
            return Json(dataToSendBack, JsonRequestBehavior.AllowGet);
       }
+
+      [HttpGet]
+      public void GetActivityReport(int surveyTemplateId, String iIntervalStart, String iIntervalEnd, String[] tags = null)
+      {       
+         var surveyTemplate = db.SurveyTemplateSet.Find(surveyTemplateId);
+         if (surveyTemplate != null)
+         {
+            DateTime intervalStart = DateTime.ParseExact(iIntervalStart, cDateFormat, CultureInfo.InvariantCulture);
+            DateTime intervalEnd = DateTime.ParseExact(iIntervalEnd, cDateFormat, CultureInfo.InvariantCulture);
+
+            var connectedUser = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+            
+            var allResponses = (from sr in surveyTemplate.SurveyResult
+                                where sr.DateRan >= intervalStart && sr.DateRan <= intervalEnd
+                                select
+                                   new
+                                   {
+                                      CustomerName = sr.Customer.Name,
+                                      CustomerSurname = sr.Customer.Surname,
+                                      CustomerEmail = sr.Customer.Email,
+                                      CustomerTelephone = sr.Customer.PhoneNumber,
+                                      DateRan = sr.DateRan,
+                                      CanUsePersonalInfo = sr.IAccept,
+                                      Questions = from r in sr.Result select new { QuestionID = r.QuestionId, Answer = r.Answer, AdditionalInfo = r.AdditionalInfo },
+                                   });
+
+            ExcelPackage pck = new ExcelPackage();
+            var ws = pck.Workbook.Worksheets.Add("ActivityReport");
+
+            var header = new List<string> { 
+              "Name",
+              "Surname",
+              "Email",
+              "Telephone",
+              "Date",
+              "May use personal info"          
+           };
+            
+            for (int i = 0; i < header.Count(); i++)
+            {
+
+               ws.Cells[1, i + 1].Value = header[i];
+            }
+
+            var qEnum = surveyTemplate.QuestionSet.AsEnumerable().GetEnumerator();
+
+            const int cQuestionStartColumn = 7;
+            var counter = cQuestionStartColumn;
+            while (qEnum.MoveNext())
+            {
+               ws.Cells[1, counter].Value = qEnum.Current.Text;
+               ws.Cells[1,counter,1,counter+2].Merge = true;
+               counter += 3;
+               
+            }
+            var rowQuestions = 2;
+            var nrOfQuestions = surveyTemplate.QuestionSet.Count();
+            counter = cQuestionStartColumn;
+            for (int i = 0; i < nrOfQuestions; i++)
+            {             
+               ws.Cells[rowQuestions, counter].Value = "Answer";
+               counter += 1;
+               ws.Cells[rowQuestions, counter].Value = "Human friendly answer";
+               counter += 1;
+               ws.Cells[rowQuestions, counter].Value = "Additional info";
+               counter += 1;
+            }           
+            //DA the questions are 
+            var questionIDs = new Dictionary<int, Question>();
+            foreach (var q in surveyTemplate.QuestionSet)
+            {
+               questionIDs.Add(q.Id, q);
+            }
+            var row = 3;
+            foreach (var dataRow in allResponses)
+            {
+               ws.Cells[row, 1].Value = dataRow.CustomerName;
+               ws.Cells[row, 2].Value = dataRow.CustomerSurname;
+               ws.Cells[row, 3].Value = dataRow.CustomerEmail;
+               ws.Cells[row, 4].Value = dataRow.CustomerTelephone;
+               ws.Cells[row, 5].Value = dataRow.DateRan.ToString();
+               ws.Cells[row, 6].Value = dataRow.CanUsePersonalInfo;      
+               var responseEnum = dataRow.Questions.GetEnumerator();              
+              
+               counter = cQuestionStartColumn;
+               while (responseEnum.MoveNext())
+               {
+                  ws.Cells[row, counter].Value = responseEnum.Current.Answer;
+                  counter += 1;
+                  ws.Cells[row, counter].Value = AlertsController.GetUserFriendlyAnswerVersion(questionIDs[responseEnum.Current.QuestionID], responseEnum.Current.Answer, logger); ;
+                  counter += 1;
+                  ws.Cells[row, counter].Value = responseEnum.Current.AdditionalInfo;
+                  counter += 1;
+
+               }             
+               row++;
+            }
+           
+            pck.SaveAs(Response.OutputStream);
+            Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            Response.AddHeader("content-disposition", String.Format("attachment;  filename=raw_export_responses_survey_{0}.xlsx", surveyTemplateId));
+         }
+      }
+       
 
       protected override void Dispose(bool disposing)
       {

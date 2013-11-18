@@ -11,7 +11,9 @@ using smsSurvery.Surveryer.Models.SmsInterface;
 using smsSurvery.Surveryer.Mailers;
 using smsSurvery.Surveryer.Utilities;
 using WebMatrix.WebData;
+using smsSurvery.Surveryer.WordCloud;
 using MvcPaging;
+using System.Text.RegularExpressions;
 
 namespace smsSurvery.Surveryer.Controllers
 {
@@ -31,7 +33,7 @@ namespace smsSurvery.Surveryer.Controllers
          string answerAsString = answer.ToString();
          //for the given survey (if allowed access) show messages with given stem           
          List<FreeTextAnswer> messages = new List<FreeTextAnswer>();
-         var allResults = db.ResultSet.Where(x => x.Question.Id == questionId && (
+              var results = db.ResultSet.Where(r=>r.QuestionId == questionId).OrderByDescending(x => x.SurveyResult.DateRan);
              x.Question.Type == ReportsController.cRatingsTypeQuestion || x.Question.Type == ReportsController.cYesNoTypeQuestion
              || x.Question.Type == ReportsController.cSelectOneFromManyTypeQuestion || x.Question.Type == ReportsController.cNumericTypeQuestion)
              && x.Answer == answerAsString).
@@ -81,7 +83,29 @@ namespace smsSurvery.Surveryer.Controllers
 
          //for the given survey (if allowed access) show messages with given stem
          var stemToLowerInvariant = stem.ToLowerInvariant();
+           if (question != null && (question.Type == ReportsController.cFreeTextTypeQuestion ||
          List<FreeTextAnswer> messages = new List<FreeTextAnswer>();
+              var intermediateResults = db.ResultSet.Where(r => r.QuestionId == questionId);
+              //DA get the stemmer
+              Language lg = Language.AnyTxt;
+              string surveyLanguage = question.SurveyTemplateSet.DefaultLanguage;
+              switch (surveyLanguage)
+              {
+                 case "en-US":
+                    lg = Language.EnglishTxt;
+                    break;
+                 case "ro-RO":
+                    lg = Language.RomanianTxt;
+                    break;
+                 default:
+                    lg = Language.EnglishTxt;
+                    break;
+              }
+              IWordStemmer stemmer = ByLanguageFactory.GetStemmer(lg);
+              //DA the stem we receive is not the real root (stem) - so make sure we get the real stem
+              var realStem = stemmer.GetStem(stem);
+              foreach (var result in intermediateResults)
+              {
 
          // Logic of AnswerContainsStemOfWord is embedded in the query
          var allResults = db.ResultSet.Where(x => x.Question.Id == questionId && (
@@ -92,10 +116,10 @@ namespace smsSurvery.Surveryer.Controllers
                 OrderByDescending(x => x.DateSubmitted);
          var results = allResults.Skip((page - 1) * NUMBER_OF_RESULTS_PER_PAGE).Take(NUMBER_OF_RESULTS_PER_PAGE);
          foreach (var result in results)
-         {
-            messages.Add(new FreeTextAnswer() { Text = result.Answer, SurveyResult = result.SurveyResult, Customer = result.SurveyResult.Customer, AdditionalInfo = result.AdditionalInfo });
-         }
-         IPagedList<FreeTextAnswer> pagingDetails = new PagedList<FreeTextAnswer>(messages,
+                 {
+                    messages.Add(new FreeTextAnswer() { Text = result.Answer, SurveyResult = result.SurveyResult, Customer = result.SurveyResult.Customer, AdditionalInfo = result.AdditionalInfo });
+                 }
+              }
              currentPageIndex, NUMBER_OF_RESULTS_PER_PAGE, allResults.Count());
          ViewBag.pagingDetails = pagingDetails;
          ViewBag.Stem = stem;
@@ -103,14 +127,13 @@ namespace smsSurvery.Surveryer.Controllers
 
          ViewBag.Headline = checkAdditionalInfo ? String.Format("Answers with qualifier containing \"{0}\"", stem) : String.Format("Answers containing \"{0}\"", stem);
          return View(messages.ToList());         
-      }
+           }
 
-      private bool AnswerContainsStemOfWord(string p, string stem)
+        private bool AnswerContainsStemOfWord(string stringToParse, string stem, IWordStemmer stemmer)
       {
-         if (p == null) return false;
-         //TODO depending on the language
-         return p.ToLowerInvariant().Contains(stem.ToLowerInvariant());
-         //return true;
+           if (stringToParse == null) return false;           
+           var wordList = Regex.Split(stringToParse, "\\W+");                      
+           return wordList.Where(w => stemmer.GetStem(w).Equals(stem)).Any();           
       }
 
       [HttpPost]
