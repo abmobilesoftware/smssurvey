@@ -525,11 +525,11 @@
       margin-bottom: 10px;
       line-height: 35px;
       color: #FFF;
-      padding: 5px;
+      padding: 10px 10px 8px 10px;
       text-align: center;
       font-family: 'Domine', serif;
       /*font-size: 22px;*/
-      font-size: 20px;
+      font-size: 26px;
    }
 
    p#thankYouMessageContent {
@@ -555,3 +555,7 @@
   input#personal-information-checkbox {
      display:none;
   }
+
+  section#thankYouMessage p.blinkGreen {
+   		background: rgb(13, 158, 13);
+   }
