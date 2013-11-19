@@ -298,7 +298,7 @@
       /*http://csscheckbox.com/checkboxes/elegant.png */
    
    .css-label-checkbox {
-      background-image: url(images/checkbox.png);
+      background-image: url(/Content/images/checkbox.png);
    }
 
    #real-checkbox-text {
