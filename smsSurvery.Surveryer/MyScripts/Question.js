@@ -30,7 +30,8 @@ Question.QuestionModel = Backbone.Model.extend({
       AdditionalInfo: "",
       ValidAnswer: true,
       ValidAnswers: "",
-      ValidAnswersDetails: ""
+      ValidAnswersDetails: "",
+      Required: false
    },
    initialize: function () {
       this.parseAttributes();      
