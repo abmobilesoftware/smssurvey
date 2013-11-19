@@ -60,7 +60,7 @@ header {
 }
 #pageIcon {
     display:inline;
-    width:150px;
+    max-width:150px;
     height:45px;
     vertical-align: middle;
 }
