@@ -33,7 +33,7 @@ namespace smsSurvery.Surveryer.Controllers
          string answerAsString = answer.ToString();
          //for the given survey (if allowed access) show messages with given stem           
          List<FreeTextAnswer> messages = new List<FreeTextAnswer>();
-              var results = db.ResultSet.Where(r=>r.QuestionId == questionId).OrderByDescending(x => x.SurveyResult.DateRan);
+         var allResults = db.ResultSet.Where(x => x.Question.Id == questionId && (
              x.Question.Type == ReportsController.cRatingsTypeQuestion || x.Question.Type == ReportsController.cYesNoTypeQuestion
              || x.Question.Type == ReportsController.cSelectOneFromManyTypeQuestion || x.Question.Type == ReportsController.cNumericTypeQuestion)
              && x.Answer == answerAsString).
@@ -52,9 +52,7 @@ namespace smsSurvery.Surveryer.Controllers
          @ViewBag.Answer = humanFriendlyAnswers[index];
          @ViewBag.QuestionText = question.Text;
          ViewBag.pagingDetails = pagingDetails;
-         return View(messages.ToList());
-
-         return View();
+         return View(messages.ToList());         
       }
 
       [HttpGet]
@@ -80,60 +78,57 @@ namespace smsSurvery.Surveryer.Controllers
       {
          int currentPageIndex = page - 1;
          int NUMBER_OF_RESULTS_PER_PAGE = 10;
-
          //for the given survey (if allowed access) show messages with given stem
-         var stemToLowerInvariant = stem.ToLowerInvariant();
-           if (question != null && (question.Type == ReportsController.cFreeTextTypeQuestion ||
-         List<FreeTextAnswer> messages = new List<FreeTextAnswer>();
-              var intermediateResults = db.ResultSet.Where(r => r.QuestionId == questionId);
-              //DA get the stemmer
-              Language lg = Language.AnyTxt;
-              string surveyLanguage = question.SurveyTemplateSet.DefaultLanguage;
-              switch (surveyLanguage)
-              {
-                 case "en-US":
-                    lg = Language.EnglishTxt;
-                    break;
-                 case "ro-RO":
-                    lg = Language.RomanianTxt;
-                    break;
-                 default:
-                    lg = Language.EnglishTxt;
-                    break;
-              }
-              IWordStemmer stemmer = ByLanguageFactory.GetStemmer(lg);
-              //DA the stem we receive is not the real root (stem) - so make sure we get the real stem
-              var realStem = stemmer.GetStem(stem);
-              foreach (var result in intermediateResults)
-              {
+         Question question = db.QuestionSet.Find(questionId);
+         if (question != null && (question.Type == ReportsController.cFreeTextTypeQuestion ||
+            question.Type == ReportsController.cRatingsTypeQuestion || question.Type == ReportsController.cNumericTypeQuestion))
+         {
+            List<FreeTextAnswer> messages = new List<FreeTextAnswer>();
+            var allResults = db.ResultSet.Where(r => r.QuestionId == questionId).OrderByDescending(x=>x.DateSubmitted);
+            //DA get the stemmer
+            Language lg = Language.AnyTxt;
+            string surveyLanguage = question.SurveyTemplateSet.DefaultLanguage;
+            switch (surveyLanguage)
+            {
+               case "en-US":
+                  lg = Language.EnglishTxt;
+                  break;
+               case "ro-RO":
+                  lg = Language.RomanianTxt;
+                  break;
+               default:
+                  lg = Language.EnglishTxt;
+                  break;
+            }
+            IWordStemmer stemmer = ByLanguageFactory.GetStemmer(lg);
+            //DA the stem we receive is not the real root (stem) - so make sure we get the real stem
+            var realStem = stemmer.GetStem(stem);
 
-         // Logic of AnswerContainsStemOfWord is embedded in the query
-         var allResults = db.ResultSet.Where(x => x.Question.Id == questionId && (
-             x.Question.Type == ReportsController.cRatingsTypeQuestion || x.Question.Type == ReportsController.cFreeTextTypeQuestion
-             || x.Question.Type == ReportsController.cNumericTypeQuestion)
-             && checkAdditionalInfo ? x.AdditionalInfo == null ? false : x.AdditionalInfo.Contains(stemToLowerInvariant)
-             : x.Answer == null ? false : x.Answer.Contains(stemToLowerInvariant)).
-                OrderByDescending(x => x.DateSubmitted);
-         var results = allResults.Skip((page - 1) * NUMBER_OF_RESULTS_PER_PAGE).Take(NUMBER_OF_RESULTS_PER_PAGE);
-         foreach (var result in results)
-                 {
-                    messages.Add(new FreeTextAnswer() { Text = result.Answer, SurveyResult = result.SurveyResult, Customer = result.SurveyResult.Customer, AdditionalInfo = result.AdditionalInfo });
-                 }
-              }
-             currentPageIndex, NUMBER_OF_RESULTS_PER_PAGE, allResults.Count());
-         ViewBag.pagingDetails = pagingDetails;
-         ViewBag.Stem = stem;
-         ViewBag.BasedOnAdditionalInfo = checkAdditionalInfo;
+            foreach (var result in allResults)
+            {
 
-         ViewBag.Headline = checkAdditionalInfo ? String.Format("Answers with qualifier containing \"{0}\"", stem) : String.Format("Answers containing \"{0}\"", stem);
-         return View(messages.ToList());         
-           }
+               if (AnswerContainsStemOfWord(checkAdditionalInfo ? result.AdditionalInfo : result.Answer, realStem, stemmer))
+               {
+                  messages.Add(new FreeTextAnswer() { Text = result.Answer, SurveyResult = result.SurveyResult, Customer = result.SurveyResult.Customer, AdditionalInfo = result.AdditionalInfo });
+               }
+            }
+            var pageRes = messages.Skip((page - 1) * NUMBER_OF_RESULTS_PER_PAGE).Take(NUMBER_OF_RESULTS_PER_PAGE);
+            IPagedList<FreeTextAnswer> pagingDetails = new PagedList<FreeTextAnswer>(messages, currentPageIndex, NUMBER_OF_RESULTS_PER_PAGE, messages.Count());
+            ViewBag.pagingDetails = pagingDetails;
+            ViewBag.Stem = stem;
+            ViewBag.BasedOnAdditionalInfo = checkAdditionalInfo;
 
-        private bool AnswerContainsStemOfWord(string stringToParse, string stem, IWordStemmer stemmer)
+            ViewBag.Headline = checkAdditionalInfo ? String.Format("Answers with qualifier containing \"{0}\"", stem) : String.Format("Answers containing \"{0}\"", stem);
+            return View(pageRes.ToList());
+         }
+         return View();
+      }
+
+      private bool AnswerContainsStemOfWord(string stringToParse, string stem, IWordStemmer stemmer)
       {
-           if (stringToParse == null) return false;           
-           var wordList = Regex.Split(stringToParse, "\\W+");                      
-           return wordList.Where(w => stemmer.GetStem(w).Equals(stem)).Any();           
+         if (stringToParse == null) return false;
+         var wordList = Regex.Split(stringToParse, "\\W+");
+         return wordList.Where(w => stemmer.GetStem(w).Equals(stem)).Any();
       }
 
       [HttpPost]
@@ -543,7 +538,7 @@ namespace smsSurvery.Surveryer.Controllers
 
       private MessageStatus SendMobileSurveyToCustomer(Customer c, string numberToSendFrom, SurveyResult surveyResult)
       {
-         var prefix = surveyResult.SurveyTemplate.IntroMessage + System.Environment.NewLine;
+         var prefix = surveyResult.SurveyTemplate.IntroMessage + System.Environment.NewLine + System.Environment.NewLine;
          var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyTemplate(surveyResult.SurveyTemplate);
          string mobileSurveyLocation = GetTargetedMobileSurveyLocation(surveyResult, this.ControllerContext.RequestContext);
 
