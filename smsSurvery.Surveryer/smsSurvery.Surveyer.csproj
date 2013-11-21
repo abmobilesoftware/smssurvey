@@ -301,6 +301,7 @@
     <Content Include="Content\images\bell-20.png" />
     <Content Include="Content\images\Bullet-Blue-32.png" />
     <Content Include="Content\images\checkbox.png" />
+    <Content Include="Content\images\checkbox5.png" />
     <Content Include="Content\images\close_20.png" />
     <Content Include="Content\images\edit_20.png" />
     <Content Include="Content\images\edit_25.png" />

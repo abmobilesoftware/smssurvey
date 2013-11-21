@@ -333,6 +333,30 @@ namespace smsSurvery.Surveryer.Controllers
             case ReportsController.cFreeTextTypeQuestion:
                break;
             case ReportsController.cSelectManyFromManyTypeQuestion:
+               if (!String.IsNullOrEmpty(receivedAnswer))
+               {
+                  var humanFriendlyAnswerValue = "";
+                  var humanFriendlyAnswers = q.ValidAnswersDetails.Split(';');
+                  var realAnswers = receivedAnswer.Split(';');
+                  int receivedAnswerAsInt = 0;
+                  foreach (var answer in realAnswers)
+                  {
+                     if (Int32.TryParse(answer, out receivedAnswerAsInt))
+                     {
+                        //we received an it, now we should check to see if is a valid value                       
+                        try
+                        {
+                           humanFriendlyAnswerValue = humanFriendlyAnswerValue + humanFriendlyAnswers[receivedAnswerAsInt - 1] + ";";                           
+                        }
+                        catch (IndexOutOfRangeException ex)
+                        {
+                           logger.Error("The int value we received cannot be converted to an expected detailed answer", ex);
+                           return null;
+                        }
+                     }
+                  }
+                  return humanFriendlyAnswerValue;
+               }
                break;
             default:
                break;

@@ -453,7 +453,8 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 		$('#name').val("");
 		$("#surname").val("");
 		$('#email').val("");
-		$('#telephone').val("");		
+		$('#telephone').val("");	
+		$("#personal-information-checkbox")[0].checked = true;
 		this.sendBtn.setTitle($("#sendPersonalDetails", this.$el).val());
 		this.sendBtn.enable();
 		$('#surveyUserInfo').show();
