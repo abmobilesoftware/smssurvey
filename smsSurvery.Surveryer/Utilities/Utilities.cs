@@ -13,11 +13,13 @@ namespace smsSurvery.Surveryer.Utilities
    {
       public static string CleanUpPhoneNumber(string number)
       {
+         //get rid of whitespaces
+         var noWhiteSpaceNumber = number.Replace(" ", "");
          string[] prefixes = { "00", "\\+", "@" };
          string pattern = "^(" + String.Join("|", prefixes) + ")";
 
          Regex rgx = new Regex(pattern);
-         return rgx.Replace(number, "");
+         return rgx.Replace(noWhiteSpaceNumber, "");
       }
 
       public static string SendDataToGoogleDevice(string deviceId, string userData)
