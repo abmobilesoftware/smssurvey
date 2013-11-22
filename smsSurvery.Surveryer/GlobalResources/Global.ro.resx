@@ -205,25 +205,25 @@
     <value>Regiune</value>
   </data>
   <data name="SmsMobileSurveyTemplate" xml:space="preserve">
-    <value>Vă rugăm să completaţi chestionarul de la {0}</value>
+    <value>Va rugam sa completati chestionarul de la {0}</value>
   </data>
   <data name="SmsQuestionIndexTemplate" xml:space="preserve">
-    <value>Întrebarea {0}/{1}: </value>
+    <value>Intrebarea {0}/{1}: </value>
   </data>
   <data name="SmsQuestionRatingSuffixJoinTemplate" xml:space="preserve">
     <value>{0} pentru {1} din {2} stele</value>
   </data>
   <data name="SmsQuestionRatingSuffixTemplate" xml:space="preserve">
-    <value>Răspundeţi cu:</value>
+    <value>Raspundeti cu:</value>
   </data>
   <data name="SmsQuestionSelectOneFromManyMemberSuffixTemplate" xml:space="preserve">
     <value>{0} pentru {1}</value>
   </data>
   <data name="SmsQuestionSelectOneFromManySuffixTemplate" xml:space="preserve">
-    <value> Răspundeţi cu:</value>
+    <value> Raspundeti cu:</value>
   </data>
   <data name="SmsQuestionYesNoSuffixTemplate" xml:space="preserve">
-    <value>Răspundeţi cu:
+    <value>Raspundeti cu:
 1 pentru Da
 2 pentru Nu</value>
   </data>
@@ -234,13 +234,13 @@
     <value>Adresa de email este invalidă</value>
   </data>
   <data name="SmsQuestionNumericSuffixTemplate" xml:space="preserve">
-    <value>Răspundeţi cu:</value>
+    <value>Raspundeti cu:</value>
   </data>
   <data name="MobileSurveyPersonalInfoNameError" xml:space="preserve">
     <value>Câmpul 'Nume' nu poate fi gol</value>
   </data>
   <data name="SmsQuestionFreeTextSuffix" xml:space="preserve">
-    <value>Vă rugăm să răspundeţi</value>
+    <value>Va rugam sa raspundeti</value>
   </data>
   <data name="MobileSurveyPersonalInfoRetakeSurvey" xml:space="preserve">
     <value>Recompletează sondajul</value>
