@@ -115,7 +115,7 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
       } else if (type == questionConstants.TYPE_YES_NO) {
          return new Array("==", "!=");
       } else if (type == questionConstants.TYPE_SELECT_MANY_FROM_MANY) {
-         return new Array("any", "all");
+         return new Array("selected", "not selected");
       }
    },
    getAlertOperatorsLabels: function (type) {
@@ -130,7 +130,7 @@ SurveyModals.AlertsModalModel = Backbone.Model.extend({
       } else if (type == questionConstants.TYPE_YES_NO) {
          return new Array("equal", "not equal");
       } else if (type == questionConstants.TYPE_SELECT_MANY_FROM_MANY) {
-         return new Array("any", "all");
+         return new Array("equal", "not equal");
       } 
    },
    getTriggerAnswerValues: function (questionType) {

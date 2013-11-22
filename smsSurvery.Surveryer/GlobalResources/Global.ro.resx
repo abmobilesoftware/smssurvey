@@ -275,4 +275,10 @@
   <data name="YesIAmHere" xml:space="preserve">
     <value>Da, încă sunt aici!</value>
   </data>
+  <data name="alertCauseNotSelectedOption" xml:space="preserve">
+    <value>Opțiunea {0} nu a fost detectată</value>
+  </data>
+  <data name="alertCauseSelectedOption" xml:space="preserve">
+    <value>Opțiunea {0} detectată</value>
+  </data>
 </root>

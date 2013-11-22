@@ -142,6 +142,24 @@ namespace smsSurvery.Surveryer.GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Option &apos;{0}&apos; not detected.
+        /// </summary>
+        public static string alertCauseNotSelectedOption {
+            get {
+                return ResourceManager.GetString("alertCauseNotSelectedOption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Option &apos;{0}&apos; detected.
+        /// </summary>
+        public static string alertCauseSelectedOption {
+            get {
+                return ResourceManager.GetString("alertCauseSelectedOption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Alert &apos;{0}&apos; triggered for question &apos;{1}&apos;.
         /// </summary>
         public static string alertEmailSubject {

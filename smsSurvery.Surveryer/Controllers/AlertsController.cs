@@ -288,6 +288,24 @@ namespace smsSurvery.Surveryer.Controllers
                         alertCause = String.Format(GlobalResources.Global.alertCauseContainsMessage, alert.TriggerAnswer);
                      }
                      break;
+                  case "selected":
+                     var answers = answerText.Split(';');
+                     var isSelected = answers.Contains(alert.TriggerAnswer);
+                     if (isSelected)
+                     {
+                        notificationRequired = true;
+                        alertCause = String.Format(GlobalResources.Global.alertCauseSelectedOption, alert.TriggerAnswer);
+                     }
+                     break;
+                  case "not selected":
+                     var answersList = answerText.Split(';');
+                     var isNotSelected = !answersList.Contains(alert.TriggerAnswer);
+                     if (isNotSelected)
+                     {
+                        notificationRequired = true;
+                        alertCause = String.Format(GlobalResources.Global.alertCauseNotSelectedOption, alert.TriggerAnswer);
+                     }
+                     break;
                   default:
                      logger.ErrorFormat("Invalid operator detected {0} for alert {1}", alert.Operator, alert.Id);
                      break;
