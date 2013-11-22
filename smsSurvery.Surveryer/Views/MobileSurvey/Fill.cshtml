@@ -42,9 +42,9 @@
                <%
                   _.each(Answers, function(answer, index) {  %> 
                     <div class="checkbox-item">
-                       <input type="checkbox" class="css-checkbox" value="<%= answer.AnswerIdentifier %>" id="m-a-<%= answer.AnswerIdentifier %>" />
-                       <label for="m-a-<%= answer.AnswerIdentifier %>" class="css-label-checkbox checkbox-text"></label>
-                       <label for="m-a-<%= answer.AnswerIdentifier %>" class="question-checkbox-text"><%=answer.AnswerLabel %> </label>
+                       <input type="checkbox" class="css-checkbox" value="<%= answer.AnswerIdentifier %>" id="m-a-<%= answer.AnswerIdentifier %>-<%= Id %>" />
+                       <label for="m-a-<%= answer.AnswerIdentifier %>-<%= Id %>" class="css-label-checkbox checkbox-text"></label>
+                       <label for="m-a-<%= answer.AnswerIdentifier %>-<%= Id %>" class="question-checkbox-text"><%=answer.AnswerLabel %> </label>
                     </div>                    
             <% }); %>
                   </div>
