@@ -431,6 +431,7 @@
 			return surveyData;
 		}, 
 		saveSurveysInDb: function() {
+			//alert("SAVE IN DB");
 			var self = this;
 			if (this.surveyView != null && this.surveyView != undefined) {
 				var surveyResults = JSON.parse(self.storage.getItem("surveyResults"));
@@ -438,6 +439,7 @@
 						surveyResults != "null" && surveyResults != "undefined") {
 					if (surveyResults.length > 0) {
 						this.checkForInternetConnection(function() {
+							//alert("Sunt de salvat " + surveyResults.length);
 							self.surveyView.saveAListOfSurveys(surveyResults);
 						},
 						function() {});		

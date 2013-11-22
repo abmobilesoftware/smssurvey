@@ -19,8 +19,7 @@
    </script>
 
    <script id="question-mobile-template" type="text/template">
-      <div class="question">
-         <h4 class="questionTitle"><%= QuestionNumber %>. <%= Text %> </h4>
+      <h4 class="questionTitle"><%= QuestionNumber %>. <%= Text %> </h4>
          <div class="answerArea">
             <%
                if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_YES_NO) { %>
@@ -38,10 +37,18 @@
                 
                <%
                } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_MANY_FROM_MANY) { 
-                  _.each(Answers, function(answer, index) {  %>                     
-                     <input type="checkbox" id="m-a-<%= answer.AnswerIdentifier %>" class="css-checkbox" value="<%= answer.AnswerIdentifier %>" />
-            <label for="m-a-<%= answer.AnswerIdentifier %>" name="multiple-answers-label" class="css-label"><%=answer.AnswerLabel %></label>
-            <% });
+               %>
+                  <div class="checkbox-area">
+               <%
+                  _.each(Answers, function(answer, index) {  %> 
+                    <div class="checkbox-item">
+                       <input type="checkbox" class="css-checkbox" value="<%= answer.AnswerIdentifier %>" id="m-a-<%= answer.AnswerIdentifier %>" />
+                       <label for="m-a-<%= answer.AnswerIdentifier %>" class="css-label-checkbox checkbox-text"></label>
+                       <label for="m-a-<%= answer.AnswerIdentifier %>" class="question-checkbox-text"><%=answer.AnswerLabel %> </label>
+                    </div>                    
+            <% }); %>
+                  </div>
+               <%
                } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY) {
                %>     
                   <div class="styled-select">
@@ -85,8 +92,7 @@
                   } 
                %>      
 
-         </div>
-      </div>
+         </div>     
    </script>
 
    <script type="text/template" id="star-template">
@@ -146,8 +152,8 @@
                   <div id="checkbox-wrapper">
                   <% if (ShowCheckbox) { %>
                         <input type="checkbox" class="css-checkbox" id="personal-information-checkbox" checked />
-                        <label for="personal-information-checkbox" class="css-label-checkbox" id="checkbox-text"></label>
-                        <label for="personal-information-checkbox" class="" id="real-checkbox-text"><%= CheckboxText %> </label>
+                        <label for="personal-information-checkbox" class="css-label-checkbox checkbox-text"></label>
+                        <label for="personal-information-checkbox" class="real-checkbox-text"><%= CheckboxText %> </label>
                   <% } %>
                   </div>
                </fieldset>

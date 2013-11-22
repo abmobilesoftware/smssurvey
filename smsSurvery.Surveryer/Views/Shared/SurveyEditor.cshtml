@@ -33,7 +33,8 @@
                   <li><a href="#" value="YesNo" class="question-type">Yes/No</a></li>
                   <li><a href="#" value="FreeText" class="question-type">Free text</a></li>
                   <li><a href="#" value="Rating" class="question-type">Rating</a></li>
-                  <li><a href="#" value="SelectOneFromMany" class="question-type">Select one from many</a></li>                 
+                  <li><a href="#" value="SelectOneFromMany" class="question-type">Select one from many</a></li>       
+                  <li><a href="#" value="SelectManyFromMany" class="question-type">Select many from many</a></li>                 
                   <li><a href="#" value="Numeric" class="question-type">Numeric scale</a></li>               
                </ul>
             </div>
@@ -171,7 +172,8 @@
       <% 
          var questionConstants = SurveyUtilities.Utilities.CONSTANTS_QUESTION;
          if (QuestionType == questionConstants.TYPE_RATING || QuestionType == questionConstants.TYPE_SELECT_ONE_FROM_MANY 
-            || QuestionType == questionConstants.TYPE_YES_NO || QuestionType == questionConstants.TYPE_NUMERIC) {
+            || QuestionType == questionConstants.TYPE_YES_NO || QuestionType == questionConstants.TYPE_NUMERIC
+            || QuestionType == questionConstants.TYPE_SELECT_MANY_FROM_MANY ) {
             if (TriggerAnswerValues.length > 0) {         
        %>
          <select data-placeholder="Choose a trigger answer" class="chosen-select alert-trigger-answer-select">

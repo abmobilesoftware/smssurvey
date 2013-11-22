@@ -45,6 +45,8 @@ MobileSurvey.QuestionMobileView = Backbone.View.extend({
    keys: {
       ENTER: 13
    },
+   tagName: "div",
+   className: "question",   
    events: {
       "click .numeric-radio": "numericScaleSelected",
       "keydown .comment": "keyPressListener"
