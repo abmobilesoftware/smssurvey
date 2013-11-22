@@ -252,6 +252,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Global.ro.resx</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\TinyUrl.cs" />
     <Compile Include="Mailers\AlertMailer.cs" />
     <Compile Include="Mailers\IAlertMailer.cs" />
     <Compile Include="Models\AlertNotification.cs" />

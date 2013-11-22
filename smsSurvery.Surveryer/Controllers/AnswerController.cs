@@ -14,6 +14,7 @@ using WebMatrix.WebData;
 using smsSurvery.Surveryer.WordCloud;
 using MvcPaging;
 using System.Text.RegularExpressions;
+using smsSurvery.Surveryer.Helpers;
 
 namespace smsSurvery.Surveryer.Controllers
 {
@@ -585,7 +586,7 @@ namespace smsSurvery.Surveryer.Controllers
       {
          UrlHelper u = new UrlHelper(rc);
          string mobileSurveyLocation = HttpContext.Request.Url.Scheme + "://" + HttpContext.Request.Url.Authority + u.Action("Fill", "MobileSurvey", new { id = surveyResult.Id });
-         return mobileSurveyLocation;
+         return TinyUrl.GetTinyUrl(mobileSurveyLocation);
       }
 
       private MessageStatus SendThankYouToCustomer(Customer c, string numberToSendFrom, SurveyTemplate survey)
