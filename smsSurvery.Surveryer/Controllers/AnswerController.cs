@@ -57,6 +57,41 @@ namespace smsSurvery.Surveryer.Controllers
 
       [HttpGet]
       [Authorize]
+      public ActionResult GetManyFromManyResultsWithOnePredefinedAnswer(int questionId, int answer, int page = 1)
+      {
+         int currentPageIndex = page - 1;
+         int NUMBER_OF_RESULTS_PER_PAGE = 10;
+         string answerAsString = answer.ToString();
+         //for the given survey (if allowed access) show messages with given stem           
+         List<FreeTextAnswer> messages = new List<FreeTextAnswer>();
+         var allResults = db.ResultSet.Where(x => x.Question.Id == questionId && 
+              x.Question.Type == ReportsController.cSelectManyFromManyTypeQuestion).
+                OrderByDescending(x => x.DateSubmitted);
+        
+         foreach (var result in allResults)
+         {
+            var answers = result.Answer.Split(';');
+            var isContained = answers.Contains(answer.ToString());
+            if (isContained)
+            {
+               messages.Add(new FreeTextAnswer() { Text = result.Answer, SurveyResult = result.SurveyResult, Customer = result.SurveyResult.Customer });
+            }
+         }
+         var results = messages.Skip((page - 1) * NUMBER_OF_RESULTS_PER_PAGE).Take(NUMBER_OF_RESULTS_PER_PAGE);
+         var question = allResults.First().Question;
+         IPagedList<FreeTextAnswer> pagingDetails = new PagedList<FreeTextAnswer>(messages,
+             currentPageIndex, NUMBER_OF_RESULTS_PER_PAGE, messages.Count());
+         //DA get the human friendly version (from answer details)
+         string[] humanFriendlyAnswers = question.ValidAnswersDetails.Split(';');
+         var index = answer - 1;
+         @ViewBag.Answer = humanFriendlyAnswers[index];
+         @ViewBag.QuestionText = question.Text;
+         ViewBag.pagingDetails = pagingDetails;
+         return View("GetMessagesWithOnePredefinedAnswer", messages.ToList());
+      }
+
+      [HttpGet]
+      [Authorize]
       public ActionResult GetCustomerWhichAnsweredXQuestions(int surveyId, double nrOfAnsweredQuestions)
       {
          SurveyTemplate sp = db.SurveyTemplateSet.Find(surveyId);
@@ -516,10 +551,8 @@ namespace smsSurvery.Surveryer.Controllers
                 * 2 for No
                 */
                return prefix + q.Text + System.Environment.NewLine + GlobalResources.Global.SmsQuestionYesNoSuffixTemplate;
-            case ReportsController.cSelectManyFromManyTypeQuestion:
-               //DA TODO
-               return "";
             case ReportsController.cSelectOneFromManyTypeQuestion:
+            case ReportsController.cSelectManyFromManyTypeQuestion:
                {
                   var validAnswer = q.ValidAnswers.Split(';');
                   var validAnswerDetails = q.ValidAnswersDetails.Split(';');

@@ -18,7 +18,7 @@
    <div id="@String.Format("tableChart_div{0}", Model.Id)"></div>
    <div id="@String.Format("pieChart_div{0}", Model.Id)"></div>
    <div id="@String.Format("textCloudSection{0}", Model.Id)"></div>
-
+   <div id="@String.Format("barChart_div{0}", Model.Id)" qid="@Model.Id" qtype="@Model.Type" class="chart"></div>         
    <div id="@String.Format("loadingIndicator{0}", Model.Id)" style="display:none" class="loadingIndicatorArea">
       <div class="loadingIndicatorContainer">
          <img src="~/Content/images/ajax-loader_vs1.gif" class="loadingIndicatorIcon" />

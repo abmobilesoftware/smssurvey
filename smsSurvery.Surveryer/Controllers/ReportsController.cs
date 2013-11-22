@@ -29,11 +29,11 @@ namespace smsSurvery.Surveryer.Controllers
       public const string STRING_COLUMN_TYPE = "string";
       public const string NUMBER_COLUMN_TYPE = "number";
       private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
-      
+
       [HttpGet]
       public JsonResult GetSurveyResults(int surveyId)
       {
-         string[] optionDef = new string[] {"Easy as pie", "Easy enough", "Average", "Rather hard", "Hard to use" };
+         string[] optionDef = new string[] { "Easy as pie", "Easy enough", "Average", "Rather hard", "Hard to use" };
          //for each question in the survey, aggregate the results
          SurveyTemplate survey = db.SurveyTemplateSet.Find(surveyId);
          //tags = tags ?? new string[0];
@@ -60,11 +60,11 @@ namespace smsSurvery.Surveryer.Controllers
             }
          }
          if (res != null)
-         {            
+         {
             List<RepDataRow> pieChartContent = new List<RepDataRow>();
             foreach (var rowData in res.AnswersPerValidOption)
             {
-               var row = new RepDataRow(new RepDataRowCell[] { new RepDataRowCell(rowData.Key, optionDef[Int32.Parse(rowData.Key)-1]), new RepDataRowCell(rowData.Value, rowData.Value.ToString()+ " answer(s)") });
+               var row = new RepDataRow(new RepDataRowCell[] { new RepDataRowCell(rowData.Key, optionDef[Int32.Parse(rowData.Key) - 1]), new RepDataRowCell(rowData.Value, rowData.Value.ToString() + " answer(s)") });
                pieChartContent.Add(row);
             }
 
@@ -83,9 +83,9 @@ namespace smsSurvery.Surveryer.Controllers
                 new RepDataColumn("17", STRING_COLUMN_TYPE, "Total Answers"),
                 new RepDataColumn("18", STRING_COLUMN_TYPE, "Valid Answers") },
                   tableData);
-            var dataToSendBack = new {pie= pieChartSource, table = tableChartSource};
+            var dataToSendBack = new { pie = pieChartSource, table = tableChartSource };
             return Json(dataToSendBack, JsonRequestBehavior.AllowGet);
-            
+
          }
          return null;
       }
@@ -96,7 +96,7 @@ namespace smsSurvery.Surveryer.Controllers
          DateTime intervalStart = DateTime.ParseExact(iIntervalStart, cDateFormat, CultureInfo.InvariantCulture);
          DateTime intervalEnd = DateTime.ParseExact(iIntervalEnd, cDateFormat, CultureInfo.InvariantCulture);
          //for each question in the survey, aggregate the results
-         Question question = db.QuestionSet.Find(questionId);                
+         Question question = db.QuestionSet.Find(questionId);
          QuestionSurveyResults res = null;
          //Return different data for various question types
          tags = tags ?? new string[0];
@@ -113,14 +113,14 @@ namespace smsSurvery.Surveryer.Controllers
             case cYesNoTypeQuestion:
             case cSelectOneFromManyTypeQuestion:
                {
-                  string[] optionDef = question.ValidAnswersDetails.Split(';');                
+                  string[] optionDef = question.ValidAnswersDetails.Split(';');
                   res = GenerateResultForFiniteAnswersQuestion(question, intervalStart, intervalEnd, tags);
                   List<RepDataRow> pieChartContent = new List<RepDataRow>();
                   foreach (var rowData in res.AnswersPerValidOption)
                   {
                      //DA when dealing with Rating we expect that the valid answers array will be 1;2;3 - so to get the UserFriendlyName we -1
                      //for YesNo we have 0;1 - so we no longer need to subtract
-                     var index  =Int32.Parse(rowData.Key) -1;                   
+                     var index = Int32.Parse(rowData.Key) - 1;
                      var row = new RepDataRow(new RepDataRowCell[] { new RepDataRowCell(rowData.Key, optionDef[index]), new RepDataRowCell(rowData.Value, rowData.Value.ToString() + " answer(s)") });
                      pieChartContent.Add(row);
                   }
@@ -129,7 +129,7 @@ namespace smsSurvery.Surveryer.Controllers
                      new RepDataColumn[] {
                 new RepDataColumn("17", STRING_COLUMN_TYPE, "Type"),
                 new RepDataColumn("18", NUMBER_COLUMN_TYPE, "Value") },
-                        pieChartContent);                  
+                        pieChartContent);
                   List<RepDataRow> tableData = new List<RepDataRow>()
                         {
                            new RepDataRow(new RepDataRowCell[] { new RepDataRowCell(res.TotalNumberOfAnswers, res.TotalNumberOfAnswers.ToString()), new RepDataRowCell(res.TotalNumberOfValidAnswers, res.TotalNumberOfValidAnswers.ToString()) })
@@ -141,13 +141,13 @@ namespace smsSurvery.Surveryer.Controllers
                         tableData);
                   var dataToSendBack = new { pie = pieChartSource, table = tableChartSource };
                   return Json(dataToSendBack, JsonRequestBehavior.AllowGet);
-               }             
+               }
             case cFreeTextTypeQuestion:
 
                break;
             default:
                break;
-         }                           
+         }
          return null;
       }
 
@@ -193,10 +193,25 @@ namespace smsSurvery.Surveryer.Controllers
 
          foreach (var result in resultsToAnalyze)
          {
-            if (validPossibleAnswers.Contains(result.Answer))
+            if (q.Type.Equals(cSelectManyFromManyTypeQuestion))
             {
-               resultsPerAnswer[result.Answer] = resultsPerAnswer[result.Answer] + 1;
-               validResponses++;
+               var answers = result.Answer.Split(';');
+               foreach (var answer in answers) {
+                  var isContained = validPossibleAnswers.Contains(answer);
+                  if (isContained)
+                  {
+                     resultsPerAnswer[answer] = resultsPerAnswer[answer] + 1;
+                     validResponses++;
+                  }
+               }              
+            }
+            else
+            {
+               if (validPossibleAnswers.Contains(result.Answer))
+               {
+                  resultsPerAnswer[result.Answer] = resultsPerAnswer[result.Answer] + 1;
+                  validResponses++;
+               }
             }
          }
          //now in resultsPerAnswer we should have, per possible answer value the number of responses and in validResponses the total number of valid/acceptable responses
@@ -206,7 +221,7 @@ namespace smsSurvery.Surveryer.Controllers
          outcome.ValidOptions = validPossibleAnswers;
          outcome.AnswersPerValidOption = resultsPerAnswer;
          return outcome;
-      }     
+      }
 
       public static TagCloud GetTagCloudData(Question q,
          DateTime intervalStart,
@@ -214,7 +229,7 @@ namespace smsSurvery.Surveryer.Controllers
          bool checkAdditionalInfo,
          string[] tags)
       {
-         using (smsSurveyEntities  db = new smsSurveyEntities())
+         using (smsSurveyEntities db = new smsSurveyEntities())
          {
             List<string> stuff = new List<string>();
             var results = q.Result.Where(r =>
@@ -226,8 +241,9 @@ namespace smsSurvery.Surveryer.Controllers
                {
                   if (item.AdditionalInfo != null)
                   {
-                     if(!String.IsNullOrEmpty(item.AdditionalInfo)) {
-                     stuff.AddRange(Regex.Split(item.AdditionalInfo, "\\W+"));
+                     if (!String.IsNullOrEmpty(item.AdditionalInfo))
+                     {
+                        stuff.AddRange(Regex.Split(item.AdditionalInfo, "\\W+"));
                      }
                   }
                }
@@ -246,35 +262,35 @@ namespace smsSurvery.Surveryer.Controllers
             //TODO adapt algorithm for non English language
             Language lg = Language.AnyTxt;
             switch (q.SurveyTemplateSet.DefaultLanguage)
-	         {
+            {
                case "en-US":
                   lg = Language.EnglishTxt;
                   break;
                case "ro-RO":
-                  lg  = Language.RomanianTxt;
+                  lg = Language.RomanianTxt;
                   break;
-		         default:
+               default:
                   lg = Language.EnglishTxt;
-                    break;
-	         }                       
+                  break;
+            }
             IBlacklist blacklist = ByLanguageFactory.GetBlacklist(lg);
             IWordStemmer stemmer = ByLanguageFactory.GetStemmer(lg);
             //DA make sure that we don't take words of less than 3 characters
-            var x = stuff.Where(w=> w.Length >=3).Filter(blacklist).CountOccurences().GroupByStem(stemmer).SortByOccurences().Take(100).AsEnumerable().Cast<IWord>().ToList();
+            var x = stuff.Where(w => w.Length >= 3).Filter(blacklist).CountOccurences().GroupByStem(stemmer).SortByOccurences().Take(100).AsEnumerable().Cast<IWord>().ToList();
             //remember the max - we'll need it later to better 'seed' the eventsCount
             TagCloud tg = new TagCloud();
             if (x.Count > 0)
             {
                var maxOccurences = x.First().Occurrences;
-               x.Sort(Word.CompareByText);               
+               x.Sort(Word.CompareByText);
                //we tweak the eventsCount so that the highest occurring word in category 8 and all other fall beneath
-               tg.EventsCount = 2 * maxOccurences - 1;              
+               tg.EventsCount = 2 * maxOccurences - 1;
             }
             tg.MenuTags = x;
             tg.QuestionId = q.Id;
             return tg;
          }
-        
+
       }
 
       [HttpGet]
@@ -288,11 +304,12 @@ namespace smsSurvery.Surveryer.Controllers
       {
          try
          {
-            var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();            
+            var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             var candidateTags = (from tag in user.Company.Tags
                                  select
-                                    (from ct in tag.TagTypes where (ct.Type == "Location" || ct.Type == "Region") && tag.Name.IndexOf(term, StringComparison.InvariantCultureIgnoreCase) != -1 
-                                     select ct.Type.Equals("Region") ? GlobalResources.Global.RegionLabel + ": " + tag.Name : ct.Type.Equals("Location") ? GlobalResources.Global.LocationLabel + ": "+ tag.Name : tag.Name )).SelectMany(x => x);
+                                    (from ct in tag.TagTypes
+                                     where (ct.Type == "Location" || ct.Type == "Region") && tag.Name.IndexOf(term, StringComparison.InvariantCultureIgnoreCase) != -1
+                                     select ct.Type.Equals("Region") ? GlobalResources.Global.RegionLabel + ": " + tag.Name : ct.Type.Equals("Location") ? GlobalResources.Global.LocationLabel + ": " + tag.Name : tag.Name)).SelectMany(x => x);
             return Json(candidateTags, JsonRequestBehavior.AllowGet);
          }
          catch (Exception ex)
@@ -336,19 +353,21 @@ namespace smsSurvery.Surveryer.Controllers
          //questionID = 1;
          //get the question
          var question = db.QuestionSet.Find(questionID);
-         if(question!=null &&
+         if (question != null &&
             (question.Type == ReportsController.cRatingsTypeQuestion ||
             question.Type == ReportsController.cNumericTypeQuestion ||
             question.Type == ReportsController.cYesNoTypeQuestion ||
-            question.Type == ReportsController.cSelectOneFromManyTypeQuestion)) {
+            question.Type == ReportsController.cSelectOneFromManyTypeQuestion ||
+            question.Type == ReportsController.cSelectManyFromManyTypeQuestion))
+         {
             //create the data structure required by combo chart
             //Documentation can be found at https://developers.google.com/chart/interactive/docs/gallery/combochart
             //create the header
             headerContent.Add(new RepDataColumn("0", STRING_COLUMN_TYPE, "Options")); //first column will represent the groups
-            for(int i=0; i< tags.Count(); i++)
+            for (int i = 0; i < tags.Count(); i++)
             { //the next columns will represent the locations (in this case the tags)
-               headerContent.Add(new RepDataColumn((i+1).ToString(),NUMBER_COLUMN_TYPE,tags[i]));
-            } 
+               headerContent.Add(new RepDataColumn((i + 1).ToString(), NUMBER_COLUMN_TYPE, tags[i]));
+            }
             //one row per optionDef
             string[] optionDef = question.ValidAnswersDetails.Split(';');
             string[] valuesDef = question.ValidAnswers.Split(';');
@@ -356,14 +375,14 @@ namespace smsSurvery.Surveryer.Controllers
             for (int i = 0; i < tags.Count(); i++)
             {
                var locationTags = processTag(tags[i]).Select(x => x.Name).ToArray();
-               QuestionSurveyResults qRes = GenerateResultForFiniteAnswersQuestion(question, 
-                  intervalStart,intervalEnd, locationTags);
+               QuestionSurveyResults qRes = GenerateResultForFiniteAnswersQuestion(question,
+                  intervalStart, intervalEnd, locationTags);
                results[i] = qRes;
             }
             List<RepDataRow> rows = new List<RepDataRow>();
             for (int i = 0; i < optionDef.Count(); i++)
             {
-               
+
                var rowContent = new List<RepDataRowCell>();
                rowContent.Add(new RepDataRowCell(valuesDef[i], optionDef[i])); //on the first column we add the group description (in this case "Very hard", "Very easy", etc.)
                //on the next rows, for each tag get the percentage value
@@ -374,7 +393,7 @@ namespace smsSurvery.Surveryer.Controllers
                   double percentage = 0.0;
                   if (nrOfTotalValidAnswers != 0)
                   {
-                     percentage = Math.Round(((double)nrOfAnswerPerOption) * 100 / nrOfTotalValidAnswers, 2);   
+                     percentage = Math.Round(((double)nrOfAnswerPerOption) * 100 / nrOfTotalValidAnswers, 2);
                   }
                   //rowContent.Add(new RepDataRowCell( 22.22, (22 + j).ToString() + "%"));
                   rowContent.Add(new RepDataRowCell(percentage, percentage.ToString()));
@@ -390,12 +409,58 @@ namespace smsSurvery.Surveryer.Controllers
          return null;
       }
 
+      [HttpGet]
+      public JsonResult GetReportForManyFromManyQuestion(int questionID, String iIntervalStart, String iIntervalEnd)
+      {
+         //TODO check if tags are location tags
+         DateTime intervalStart = DateTime.ParseExact(iIntervalStart, cDateFormat, CultureInfo.InvariantCulture);
+         DateTime intervalEnd = DateTime.ParseExact(iIntervalEnd, cDateFormat, CultureInfo.InvariantCulture);
+
+         var headerContent = new List<RepDataColumn>();
+
+         var question = db.QuestionSet.Find(questionID);
+         if (question != null &&
+            (question.Type == ReportsController.cSelectManyFromManyTypeQuestion))
+         {
+            //create the data structure required by combo chart
+            //Documentation can be found at https://developers.google.com/chart/interactive/docs/gallery/combochart
+            //create the header
+            string[] optionDef = question.ValidAnswersDetails.Split(';');
+            string[] valuesDef = question.ValidAnswers.Split(';');
+            headerContent.Add(new RepDataColumn("0", STRING_COLUMN_TYPE, "Options")); //first column will represent the groups
+            for (int i = 0; i < optionDef.Count(); i++)
+            {
+               headerContent.Add(new RepDataColumn(valuesDef[i], NUMBER_COLUMN_TYPE, optionDef[i]));
+            }           
+            QuestionSurveyResults qRes = GenerateResultForFiniteAnswersQuestion(question,
+                  intervalStart, intervalEnd, null);
+            List<RepDataRow> rows = new List<RepDataRow>();            
+            var nrOfTotalValidAnswers = qRes.TotalNumberOfValidAnswers;
+            var rowContent = new List<RepDataRowCell>();
+            rowContent.Add(new RepDataRowCell(1, "Overall"));            
+            for (int j = 0; j < optionDef.Count(); j++)
+            {              
+               var nrOfAnswerPerOption = qRes.AnswersPerValidOption[valuesDef[j]];
+               double percentage = 0.0;
+               if (nrOfTotalValidAnswers != 0)
+               {
+                  percentage = Math.Round(((double)nrOfAnswerPerOption) * 100 / nrOfTotalValidAnswers, 2);
+               }
+               rowContent.Add(new RepDataRowCell(percentage, percentage.ToString() + "%"));               
+            }
+            rows.Add(new RepDataRow(rowContent));            
+            RepChartData chartSource = new RepChartData(headerContent, rows.ToArray());
+            return Json(chartSource, JsonRequestBehavior.AllowGet);
+         }
+         return null;
+      }
+
       public List<Tags> processTag(string tagName)
       {
          if (tagName.StartsWith(GlobalResources.Global.LocationLabel))
          {
             // +2 because we want to remove also ":_", ex: Location: Cluj => Cluj
-            tagName = tagName.Remove(0, GlobalResources.Global.LocationLabel.Length + 2);        
+            tagName = tagName.Remove(0, GlobalResources.Global.LocationLabel.Length + 2);
          }
          else if (tagName.StartsWith(GlobalResources.Global.RegionLabel))
          {
@@ -436,7 +501,7 @@ namespace smsSurvery.Surveryer.Controllers
                }
             }
             List<Tags> result = locations.Union(getLocationsInARegion(regions)).ToList();
-            return result;           
+            return result;
          }
       }
 
@@ -445,7 +510,7 @@ namespace smsSurvery.Surveryer.Controllers
          int questionId,
          String iIntervalStart, String iIntervalEnd, bool checkAdditionalInfo,
           string[] tags
-         ) 
+         )
       {
          //assuming that the question and valid
          DateTime intervalStart = DateTime.ParseExact(iIntervalStart, cDateFormat, CultureInfo.InvariantCulture);
@@ -462,8 +527,8 @@ namespace smsSurvery.Surveryer.Controllers
             || question.Type == ReportsController.cNumericTypeQuestion))
          {
             ViewBag.CheckAdditionalInfo = checkAdditionalInfo;
-            return PartialView(GetTagCloudData(question,intervalStart, intervalEnd,checkAdditionalInfo, tags));
-         }         
+            return PartialView(GetTagCloudData(question, intervalStart, intervalEnd, checkAdditionalInfo, tags));
+         }
          return null;
       }
 
@@ -484,9 +549,10 @@ namespace smsSurvery.Surveryer.Controllers
             processedTags = processedTags.Union(processTag(tags[i])).ToList();
          }
          tags = processedTags.Select(x => x.Name).ToArray();
-         var surveyResults = (from s in survey.SurveyResult where ((tags.Length == 0 ? true : tags.Intersect(s.Tags.Select(tag => tag.Name)).Any()) && intervalStart <= s.DateRan && s.DateRan <= intervalEnd)
-                  group s by s.PercentageComplete into g 
-                  select new { PercentageComplete = g.Key, Count = g.Count() }).OrderBy(i => i.PercentageComplete);         
+         var surveyResults = (from s in survey.SurveyResult
+                              where ((tags.Length == 0 ? true : tags.Intersect(s.Tags.Select(tag => tag.Name)).Any()) && intervalStart <= s.DateRan && s.DateRan <= intervalEnd)
+                              group s by s.PercentageComplete into g
+                              select new { PercentageComplete = g.Key, Count = g.Count() }).OrderBy(i => i.PercentageComplete);
          int totalNumberOfSentSurveys = 0;
          int totalNumberOfQuestions = survey.QuestionSet.Count();
          int nrOfSurveysFullyAnswered = 0;
@@ -506,7 +572,7 @@ namespace smsSurvery.Surveryer.Controllers
               new RepDataColumn[] {
                 new RepDataColumn("17", STRING_COLUMN_TYPE, "Type"),
                 new RepDataColumn("18", STRING_COLUMN_TYPE, "Value") },
-                 pieChartContent);         
+                 pieChartContent);
          List<RepDataRow> tableData = new List<RepDataRow>()
             {
                new RepDataRow(new RepDataRowCell[] {
@@ -518,7 +584,7 @@ namespace smsSurvery.Surveryer.Controllers
                 new RepDataColumn(nrOfSurveysFullyAnswered.ToString(), STRING_COLUMN_TYPE, "Number of surveys fully answered") },
                tableData);
          var dataToSendBack = new { pie = pieChartSource, table = tableChartSource };
-         return Json(dataToSendBack, JsonRequestBehavior.AllowGet);         
+         return Json(dataToSendBack, JsonRequestBehavior.AllowGet);
       }
 
       [HttpGet]
@@ -533,13 +599,13 @@ namespace smsSurvery.Surveryer.Controllers
           * surveys coming via direct access (no location tags attached)
           * surveys coming via a location (indicated by the attached location tag)
           */
-         var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();            
+         var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
          Dictionary<Tags, int> results = new Dictionary<Tags, int>();
-               
-        var locationTags = (from tag in user.Company.Tags
-                                 select
-                                    (from ct in tag.TagTypes where (ct.Type == "Location") select tag)).SelectMany(x=>x);
-        var receivedViaLocation = 0;
+
+         var locationTags = (from tag in user.Company.Tags
+                             select
+                                (from ct in tag.TagTypes where (ct.Type == "Location") select tag)).SelectMany(x => x);
+         var receivedViaLocation = 0;
          foreach (var tag in locationTags)
          {
             var res = tag.SurveyResultSet.Where(s => s.SurveyPlanId == surveyTemplateId &&
@@ -554,7 +620,7 @@ namespace smsSurvery.Surveryer.Controllers
                              );
          var totalNrOfSurveys = surveyResults.Count();
          var noLocationTag = new Tags() { Name = "Not location specific", Id = -1 };
-         results.Add(noLocationTag, totalNrOfSurveys - receivedViaLocation);              
+         results.Add(noLocationTag, totalNrOfSurveys - receivedViaLocation);
 
          List<RepDataRow> tableData = new List<RepDataRow>();
          List<RepDataRow> pieChartContent = new List<RepDataRow>();
@@ -571,26 +637,26 @@ namespace smsSurvery.Surveryer.Controllers
             tableData.Add(trow);
 
             pieChartContent.Add(trow);
-		      
-         }         
-           RepChartData tableChartSource = new RepChartData(
-               new RepDataColumn[] {
+
+         }
+         RepChartData tableChartSource = new RepChartData(
+             new RepDataColumn[] {
                 new RepDataColumn("17", STRING_COLUMN_TYPE, "Location"),
                 new RepDataColumn("18", STRING_COLUMN_TYPE, "Number of surveys") },
-                  tableData);
-           RepChartData pieChartSource = new RepChartData(
-                     new RepDataColumn[] {
+                tableData);
+         RepChartData pieChartSource = new RepChartData(
+                   new RepDataColumn[] {
                 new RepDataColumn("17", STRING_COLUMN_TYPE, "Type"),
                 new RepDataColumn("18", NUMBER_COLUMN_TYPE, "Value") },
-                        pieChartContent);    
+                      pieChartContent);
 
-           var dataToSendBack = new { pie = pieChartSource, table = tableChartSource };
-           return Json(dataToSendBack, JsonRequestBehavior.AllowGet);
+         var dataToSendBack = new { pie = pieChartSource, table = tableChartSource };
+         return Json(dataToSendBack, JsonRequestBehavior.AllowGet);
       }
 
       [HttpGet]
       public void GetActivityReport(int surveyTemplateId, String iIntervalStart, String iIntervalEnd, String[] tags = null)
-      {       
+      {
          var surveyTemplate = db.SurveyTemplateSet.Find(surveyTemplateId);
          if (surveyTemplate != null)
          {
@@ -598,7 +664,7 @@ namespace smsSurvery.Surveryer.Controllers
             DateTime intervalEnd = DateTime.ParseExact(iIntervalEnd, cDateFormat, CultureInfo.InvariantCulture);
 
             var connectedUser = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-            
+
             var allResponses = (from sr in surveyTemplate.SurveyResult
                                 where sr.DateRan >= intervalStart && sr.DateRan <= intervalEnd
                                 select
@@ -624,7 +690,7 @@ namespace smsSurvery.Surveryer.Controllers
               "Date",
               "May use personal info"          
            };
-            
+
             for (int i = 0; i < header.Count(); i++)
             {
 
@@ -638,22 +704,22 @@ namespace smsSurvery.Surveryer.Controllers
             while (qEnum.MoveNext())
             {
                ws.Cells[1, counter].Value = qEnum.Current.Text;
-               ws.Cells[1,counter,1,counter+2].Merge = true;
+               ws.Cells[1, counter, 1, counter + 2].Merge = true;
                counter += 3;
-               
+
             }
             var rowQuestions = 2;
             var nrOfQuestions = surveyTemplate.QuestionSet.Count();
             counter = cQuestionStartColumn;
             for (int i = 0; i < nrOfQuestions; i++)
-            {             
+            {
                ws.Cells[rowQuestions, counter].Value = "Answer";
                counter += 1;
                ws.Cells[rowQuestions, counter].Value = "Human friendly answer";
                counter += 1;
                ws.Cells[rowQuestions, counter].Value = "Additional info";
                counter += 1;
-            }           
+            }
             //DA the questions are 
             var questionIDs = new Dictionary<int, Question>();
             foreach (var q in surveyTemplate.QuestionSet)
@@ -668,9 +734,9 @@ namespace smsSurvery.Surveryer.Controllers
                ws.Cells[row, 3].Value = dataRow.CustomerEmail;
                ws.Cells[row, 4].Value = dataRow.CustomerTelephone;
                ws.Cells[row, 5].Value = dataRow.DateRan.ToString();
-               ws.Cells[row, 6].Value = dataRow.CanUsePersonalInfo;      
-               var responseEnum = dataRow.Questions.GetEnumerator();              
-              
+               ws.Cells[row, 6].Value = dataRow.CanUsePersonalInfo;
+               var responseEnum = dataRow.Questions.GetEnumerator();
+
                counter = cQuestionStartColumn;
                while (responseEnum.MoveNext())
                {
@@ -681,16 +747,16 @@ namespace smsSurvery.Surveryer.Controllers
                   ws.Cells[row, counter].Value = responseEnum.Current.AdditionalInfo;
                   counter += 1;
 
-               }             
+               }
                row++;
             }
-           
+
             pck.SaveAs(Response.OutputStream);
             Response.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
             Response.AddHeader("content-disposition", String.Format("attachment;  filename=raw_export_responses_survey_{0}.xlsx", surveyTemplateId));
          }
       }
-       
+
 
       protected override void Dispose(bool disposing)
       {
@@ -705,7 +771,7 @@ namespace smsSurvery.Surveryer.Controllers
          public HashSet<string> ValidOptions { get; set; }
          public Dictionary<string, int> AnswersPerValidOption { get; set; }
       }
-      
+
       public class TagCloud
       {
          public int EventsCount { get; set; }
@@ -740,32 +806,32 @@ namespace smsSurvery.Surveryer.Controllers
 
 namespace smsSurvery.Surveryer.Extensions
 {
-public static class HtmlHelperExtension
-{
-   public static string TagCloud(this HtmlHelper helper, smsSurvery.Surveryer.Controllers.ReportsController.TagCloud tagCloud, bool checkAdditionalInfo)
+   public static class HtmlHelperExtension
    {
-      //We build an unordered list where each word points to it's category
-      var output = new StringBuilder();
-      if (checkAdditionalInfo)
+      public static string TagCloud(this HtmlHelper helper, smsSurvery.Surveryer.Controllers.ReportsController.TagCloud tagCloud, bool checkAdditionalInfo)
       {
-         output.AppendFormat(@"<ul class=""cloud"" id=""textCloudSectionAdditionalInfo{0}"">", tagCloud.QuestionId);
-      }
-      else
-      {
-         output.AppendFormat(@"<ul class=""cloud"" id=""textCloudSection{0}"">", tagCloud.QuestionId);
-      }
+         //We build an unordered list where each word points to it's category
+         var output = new StringBuilder();
+         if (checkAdditionalInfo)
+         {
+            output.AppendFormat(@"<ul class=""cloud"" id=""textCloudSectionAdditionalInfo{0}"">", tagCloud.QuestionId);
+         }
+         else
+         {
+            output.AppendFormat(@"<ul class=""cloud"" id=""textCloudSection{0}"">", tagCloud.QuestionId);
+         }
 
-      foreach (smsSurvery.Surveryer.WordCloud.IWord tag in tagCloud.MenuTags)
-      {
-         output.Append("<li>");
-         output.AppendFormat(@"<a href=""/Answer/GetMessagesWithStem?questionId={0}&stem={1}&checkAdditionalInfo={4}"" target=""_blank"" class=""tag{2}"" title=""{3} occurrences""> {1}",
-                             tagCloud.QuestionId, tag.Text, tagCloud.GetRankForTag(tag), tag.Occurrences,checkAdditionalInfo);
-         output.Append("</a>");
-         output.Append("</li>");
-      }
-      output.Append("</ul>");
+         foreach (smsSurvery.Surveryer.WordCloud.IWord tag in tagCloud.MenuTags)
+         {
+            output.Append("<li>");
+            output.AppendFormat(@"<a href=""/Answer/GetMessagesWithStem?questionId={0}&stem={1}&checkAdditionalInfo={4}"" target=""_blank"" class=""tag{2}"" title=""{3} occurrences""> {1}",
+                                tagCloud.QuestionId, tag.Text, tagCloud.GetRankForTag(tag), tag.Occurrences, checkAdditionalInfo);
+            output.Append("</a>");
+            output.Append("</li>");
+         }
+         output.Append("</ul>");
 
-      return output.ToString();
+         return output.ToString();
+      }
    }
-}
 }

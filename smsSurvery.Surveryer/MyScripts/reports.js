@@ -3,6 +3,7 @@ window.report = window.report || {};
 window.report.repOverviewPiecharts = {};
 window.report.repPieCharts = {};
 window.app.piedata = {};
+window.app.bardata = {};
 window.app.yesnopiedata = {};
 window.app.overviewPieData = {};
 window.app.tags = [];
@@ -76,6 +77,64 @@ window.app.displayReportsForRatingQ = function (questionId, qType) {
       }
    });
    //for rating question we should also show an word cloud for Additional Info
+};
+
+window.app.displayReportForManyFromManyQ = function (questionId) {
+   var chartId = '#barChart_div' + questionId;
+   var chartElem = $(chartId);
+   var barchart = new google.visualization.ComboChart(chartElem[0]);
+   google.visualization.events.addListener(barchart, 'select', function (e) {
+      var sel = barchart.getSelection();
+      var selectedValue = window.app.bardata[questionId].getColumnId(sel[0].column);
+      var url = "/Answer/GetManyFromManyResultsWithOnePredefinedAnswer?questionId=" + questionId + "&answer=" + selectedValue;
+      var win = window.open(url, "_blank");
+      win.focus();
+   });
+   //show the loading indicator in the space of the chart
+   var loadingIndicatorId = "#loadingIndicator" + questionId;
+   var loadingIndicator = $(loadingIndicatorId);
+   var candidateHeight = chartElem.outerHeight();
+   candidateHeight = candidateHeight != 0 ? candidateHeight + "px" : "200px";
+   loadingIndicator.height(candidateHeight);
+   var graphsContainer = $("#graphsContainer" + questionId);
+   graphsContainer.height(candidateHeight);
+   loadingIndicator.width(chartElem.outerWidth());
+   loadingIndicator.css("line-height", candidateHeight);
+   loadingIndicator.show();
+
+   $.ajax({
+      data: {
+         questionId: questionId,
+         iIntervalStart: window.app.dateHelper.transformStartDate(window.app.startDate),
+         iIntervalEnd: window.app.dateHelper.transformEndDate(window.app.endDate),
+         tags: window.app.tags
+      },
+      traditional: true,
+      url: "/Reports/GetReportForManyFromManyQuestion",
+      dataType: "json",
+      async: true,
+      success: function (jsonData) {
+         var options = {
+            backgroundColor: '#F5F8FA',
+            'width': 'auto',
+            vAxis: {
+               title: "Percentage from total answers",
+               format: '##,##%',
+               baseline: 0
+            },
+            hAxis: { title: "" },
+            seriesType: "bars",
+            animation: {
+               duration: 2000,
+               easing: 'out'
+            }
+         };
+         var bardata = new google.visualization.DataTable(jsonData);
+         window.app.bardata[questionId] = bardata;
+         loadingIndicator.hide();
+         barchart.draw(bardata, options);
+      }
+   });
 };
 
 window.app.displayReportForRatingAdditionalInfo = function (questionId) {
@@ -197,6 +256,8 @@ window.app.runrunrun = function () {
          window.app.displayReportsForRatingQ($(this).attr('qid'), $(this).attr('qtype'));
       } else if ($(this).attr('qtype') === "FreeText") {
          window.app.displayReportsForFreeTextQ($(this).attr('qid'));
+      } else if ($(this).attr('qtype') === "SelectManyFromMany") {
+         window.app.displayReportForManyFromManyQ($(this).attr('qid'));
       }
    });
 }
