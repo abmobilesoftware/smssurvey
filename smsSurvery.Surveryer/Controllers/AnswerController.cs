@@ -493,7 +493,7 @@ namespace smsSurvery.Surveryer.Controllers
             case ReportsController.cFreeTextTypeQuestion:
                //DA see tests for expected answer
                var callForFreeTextQuestion = GlobalResources.Global.SmsQuestionFreeTextSuffix;
-               return prefix + q.Text + System.Environment.NewLine + callForFreeTextQuestion;
+               return prefix + q.Text + System.Environment.NewLine + callForFreeTextQuestion;               
             case ReportsController.cNumericTypeQuestion:
                try
                {
@@ -512,7 +512,7 @@ namespace smsSurvery.Surveryer.Controllers
                   //most probably ValidAnswers and ValidAnswerDetails were not aligned
                   logger.Error(String.Format("ValidAnswers and ValidAnswerDetails not aligned for question {0}", q.Id), ex);
                   return prefix + q.Text;
-               }
+               }               
             case ReportsController.cRatingsTypeQuestion:
                {
                   /*
@@ -553,7 +553,6 @@ namespace smsSurvery.Surveryer.Controllers
                 */
                return prefix + q.Text + System.Environment.NewLine + GlobalResources.Global.SmsQuestionYesNoSuffixTemplate;
             case ReportsController.cSelectOneFromManyTypeQuestion:
-            case ReportsController.cSelectManyFromManyTypeQuestion:
                {
                   var validAnswer = q.ValidAnswers.Split(';');
                   var validAnswerDetails = q.ValidAnswersDetails.Split(';');
@@ -562,9 +561,22 @@ namespace smsSurvery.Surveryer.Controllers
                   {
                      pairs.Add(String.Format(GlobalResources.Global.SmsQuestionSelectOneFromManyMemberSuffixTemplate, validAnswer[i], validAnswerDetails[i]));
                   }
-                  string suffix = GlobalResources.Global.SmsQuestionSelectOneFromManySuffixTemplate + System.Environment.NewLine + String.Join(System.Environment.NewLine, pairs);
+                  string suffix = GlobalResources.Global.SmsQuestionSelectOneFromManySuffixTemplate + System.Environment.NewLine + " " + String.Join(System.Environment.NewLine, pairs);
                   return prefix + q.Text + System.Environment.NewLine + suffix;
-               }
+               }               
+            case ReportsController.cSelectManyFromManyTypeQuestion:
+               {
+                  //We are aiming at: Reply by responding with the selected options, separated by comma (e.g. 1,2,4):
+                  var validAnswer = q.ValidAnswers.Split(';');
+                  var validAnswerDetails = q.ValidAnswersDetails.Split(';');
+                  List<string> pairs = new List<string>();
+                  for (int i = 0; i < validAnswer.Length; i++)
+                  {
+                     pairs.Add(String.Format(GlobalResources.Global.SmsQuestionSelectManyFromManyMemberSuffixTemplate, validAnswer[i], validAnswerDetails[i]));
+                  }
+                  string suffix = GlobalResources.Global.SmsQuestionSelectManyFromManySuffixTemplate + System.Environment.NewLine + " " + String.Join(System.Environment.NewLine, pairs);
+                  return prefix + q.Text + System.Environment.NewLine + suffix;
+               }               
             default:
                return prefix + q.Text;
          }

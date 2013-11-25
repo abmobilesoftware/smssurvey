@@ -281,4 +281,10 @@
   <data name="alertCauseSelectedOption" xml:space="preserve">
     <value>Option '{0}' detected</value>
   </data>
+  <data name="SmsQuestionSelectManyFromManyMemberSuffixTemplate" xml:space="preserve">
+    <value>{0} for {1}</value>
+  </data>
+  <data name="SmsQuestionSelectManyFromManySuffixTemplate" xml:space="preserve">
+    <value>Reply by responding with the selected options, separated by comma (e.g. 1,2,4):</value>
+  </data>
 </root>

@@ -495,6 +495,24 @@ namespace smsSurvery.Surveryer.GlobalResources {
         /// <summary>
         ///   Looks up a localized string similar to {0} for {1}.
         /// </summary>
+        public static string SmsQuestionSelectManyFromManyMemberSuffixTemplate {
+            get {
+                return ResourceManager.GetString("SmsQuestionSelectManyFromManyMemberSuffixTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reply by responding with the selected options, separated by comma (e.g. 1,2,4):.
+        /// </summary>
+        public static string SmsQuestionSelectManyFromManySuffixTemplate {
+            get {
+                return ResourceManager.GetString("SmsQuestionSelectManyFromManySuffixTemplate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} for {1}.
+        /// </summary>
         public static string SmsQuestionSelectOneFromManyMemberSuffixTemplate {
             get {
                 return ResourceManager.GetString("SmsQuestionSelectOneFromManyMemberSuffixTemplate", resourceCulture);
