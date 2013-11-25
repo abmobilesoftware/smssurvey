@@ -38,7 +38,8 @@ window.app.displayComparisonReportsForQuestion = function (questionId) {
             vAxis: {
                title: "Percentage of answers",
                format: '##,##%',
-               baseline: 0
+               baseline: 0,
+               maxValue: 100
             },
             hAxis: { title: "" },
             seriesType: "bars",
