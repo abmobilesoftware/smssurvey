@@ -18,7 +18,8 @@ SurveyModals.AnswersModalView = Backbone.View.extend({
       this.dom = {
          $ANSWERS_TABLE: $(".answers-table", this.$el),
          $ANSWERS_NOTIFICATIONS: $(".answers-notifications", this.$el),
-         $ALERT_BOX: $(".alert", this.$el)
+         $ALERT_BOX: $(".alert", this.$el),
+         $ADD_ANSWER_BTN: $(".add-answer-btn", this.$el)
       };
       this.model.on(this.model.events.VALIDATE, this.validationResult)
       this.model.on(this.model.events.UPDATE_VIEW, this.render);
@@ -31,6 +32,11 @@ SurveyModals.AnswersModalView = Backbone.View.extend({
             var answerView = new SurveyModals.AnswerView({ model: answer });
             this.dom.$ANSWERS_TABLE.append(answerView.render());
          }, this);
+         if (this.model.getAnswers().length < 9) {
+            this.dom.$ADD_ANSWER_BTN.show();
+         } else {
+            this.dom.$ADD_ANSWER_BTN.hide();
+         }
       } else {
          this.dom.$ANSWERS_TABLE.append(this.template());
       }
