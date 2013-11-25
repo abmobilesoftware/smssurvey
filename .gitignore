@@ -18,3 +18,4 @@ obj/
 bin/
 Thumbs.db
 *.suo
+TestResults/*

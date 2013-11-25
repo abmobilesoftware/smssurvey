@@ -228,6 +228,7 @@ namespace smsSurvery.Surveryer.Controllers
 
                int currentQuestionPosition = runningSurvey.Result.Count + 1;
                currentQuestion = runningSurvey.CurrentQuestion;
+               //For select 1 from Many and Many from Many, sanitize the answer
                //TODO DA - sanity check - what to do if the user answered twice to the same question?
                //Answer- update the already existing answer
                if (currentQuestionPosition > currentQuestion.Order)
@@ -237,7 +238,15 @@ namespace smsSurvery.Surveryer.Controllers
                   var resultToUpdate = runningSurvey.Result.Where(r => r.Question.Order == currentQuestionPosition).FirstOrDefault();
                   if (resultToUpdate != null)
                   {
-                     resultToUpdate.Answer = text;
+                     if (currentQuestion.Type == ReportsController.cSelectManyFromManyTypeQuestion)
+                     {
+                        resultToUpdate.Answer = Sanitizer.Sanitize(text);
+                     }
+                     else
+                     {
+                        resultToUpdate.Answer = text;
+                     }
+                     
                      db.SaveChanges();
                      receivedMultipleAnswersToSameQuestion = true;
                   }
@@ -247,7 +256,16 @@ namespace smsSurvery.Surveryer.Controllers
                   //compute the completed percentage - based on the total number of questions and the received answers
                   double newPercentageCompleted = (double)currentQuestion.Order / numberOfQuestionsInSurvey;
                   runningSurvey.PercentageComplete = newPercentageCompleted;
-                  var res = new Result() { Answer = text, Question = currentQuestion, DateSubmitted = DateTime.UtcNow, SubmittedViaSMS = true };
+                  string answerToUse = null;
+                  if (currentQuestion.Type == ReportsController.cSelectManyFromManyTypeQuestion)
+                  {
+                     answerToUse = Sanitizer.Sanitize(text);
+                  }
+                  else
+                  {
+                     answerToUse = text;
+                  }
+                  var res = new Result() { Answer = answerToUse, Question = currentQuestion, DateSubmitted = DateTime.UtcNow, SubmittedViaSMS = true };
                   runningSurvey.Result.Add(res);
                   db.SaveChanges();
                }
@@ -561,7 +579,7 @@ namespace smsSurvery.Surveryer.Controllers
                   {
                      pairs.Add(String.Format(GlobalResources.Global.SmsQuestionSelectOneFromManyMemberSuffixTemplate, validAnswer[i], validAnswerDetails[i]));
                   }
-                  string suffix = GlobalResources.Global.SmsQuestionSelectOneFromManySuffixTemplate + System.Environment.NewLine + " " + String.Join(System.Environment.NewLine, pairs);
+                  string suffix = GlobalResources.Global.SmsQuestionSelectOneFromManySuffixTemplate + System.Environment.NewLine  + String.Join(System.Environment.NewLine, pairs);
                   return prefix + q.Text + System.Environment.NewLine + suffix;
                }               
             case ReportsController.cSelectManyFromManyTypeQuestion:
@@ -574,7 +592,7 @@ namespace smsSurvery.Surveryer.Controllers
                   {
                      pairs.Add(String.Format(GlobalResources.Global.SmsQuestionSelectManyFromManyMemberSuffixTemplate, validAnswer[i], validAnswerDetails[i]));
                   }
-                  string suffix = GlobalResources.Global.SmsQuestionSelectManyFromManySuffixTemplate + System.Environment.NewLine + " " + String.Join(System.Environment.NewLine, pairs);
+                  string suffix = GlobalResources.Global.SmsQuestionSelectManyFromManySuffixTemplate + System.Environment.NewLine  + String.Join(System.Environment.NewLine, pairs);
                   return prefix + q.Text + System.Environment.NewLine + suffix;
                }               
             default:
