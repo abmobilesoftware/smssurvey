@@ -335,6 +335,10 @@ table.answers-table {
    margin-bottom: 8px;
 }
 
+div.answers-body {
+      max-height:330px;
+   }
+
 /* NUMERIC SCALE */
 .numeric-entry {
    float: left;

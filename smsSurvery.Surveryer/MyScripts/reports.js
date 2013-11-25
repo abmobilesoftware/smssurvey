@@ -120,7 +120,8 @@ window.app.displayReportForManyFromManyQ = function (questionId) {
             vAxis: {
                title: "Percentage from total answers",
                format: '##,##%',
-               baseline: 0
+               baseline: 0,
+               maxValue: 100
             },
             hAxis: { title: "" },
             seriesType: "bars",

@@ -446,7 +446,7 @@ namespace smsSurvery.Surveryer.Controllers
                {
                   percentage = Math.Round(((double)nrOfAnswerPerOption) * 100 / nrOfTotalValidAnswers, 2);
                }
-               rowContent.Add(new RepDataRowCell(percentage, percentage.ToString() + "%"));               
+               rowContent.Add(new RepDataRowCell(percentage, percentage.ToString() + "% / " + nrOfAnswerPerOption + " answers"));               
             }
             rows.Add(new RepDataRow(rowContent));            
             RepChartData chartSource = new RepChartData(headerContent, rows.ToArray());
