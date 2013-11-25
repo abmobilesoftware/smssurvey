@@ -410,14 +410,20 @@ namespace smsSurvery.Surveryer.Controllers
       }
 
       [HttpGet]
-      public JsonResult GetReportForManyFromManyQuestion(int questionID, String iIntervalStart, String iIntervalEnd)
+      public JsonResult GetReportForManyFromManyQuestion(int questionID, String iIntervalStart, String iIntervalEnd, string[] tags)
       {
          //TODO check if tags are location tags
          DateTime intervalStart = DateTime.ParseExact(iIntervalStart, cDateFormat, CultureInfo.InvariantCulture);
          DateTime intervalEnd = DateTime.ParseExact(iIntervalEnd, cDateFormat, CultureInfo.InvariantCulture);
 
          var headerContent = new List<RepDataColumn>();
-
+         tags = tags ?? new string[0];
+         List<Tags> processedTags = new List<Tags>();
+         for (var i = 0; i < tags.Count(); ++i)
+         {
+            processedTags = processedTags.Union(processTag(tags[i])).ToList();
+         }
+         tags = processedTags.Select(x => x.Name).ToArray();
          var question = db.QuestionSet.Find(questionID);
          if (question != null &&
             (question.Type == ReportsController.cSelectManyFromManyTypeQuestion))
@@ -433,7 +439,7 @@ namespace smsSurvery.Surveryer.Controllers
                headerContent.Add(new RepDataColumn(valuesDef[i], NUMBER_COLUMN_TYPE, optionDef[i]));
             }           
             QuestionSurveyResults qRes = GenerateResultForFiniteAnswersQuestion(question,
-                  intervalStart, intervalEnd, null);
+                  intervalStart, intervalEnd, tags);
             List<RepDataRow> rows = new List<RepDataRow>();            
             var nrOfTotalValidAnswers = qRes.TotalNumberOfValidAnswers;
             var rowContent = new List<RepDataRowCell>();
