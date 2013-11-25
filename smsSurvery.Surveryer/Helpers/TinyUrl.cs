@@ -22,6 +22,8 @@ namespace smsSurvery.Surveryer.Helpers
       public static string GetTinyUrl(string url)
       {
          // Request tiny URL via bit.ly API
+         try
+         {
          XmlDocument doc = new XmlDocument();
          doc.Load(String.Format("http://api.bit.ly/v3/shorten?login={0}&apiKey={1}&longUrl={2}&format=xml",
              _apiLogin, _apiKey, UrlEncode(url)));
@@ -34,7 +36,14 @@ namespace smsSurvery.Surveryer.Helpers
                 status_code, status_txt));
 
          // Return tiny URL
-         return ReadValue(doc, "/response/data/url");
+         
+            return ReadValue(doc, "/response/data/url");
+         }
+         catch (Exception ex)
+         {
+            //DA Most probably there was an issue with the bit.ly
+            return url;
+         }
       }
 
       protected static string ReadValue(XmlDocument doc, string xpath)

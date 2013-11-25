@@ -281,4 +281,10 @@
   <data name="alertCauseSelectedOption" xml:space="preserve">
     <value>Opțiunea {0} detectată</value>
   </data>
+  <data name="SmsQuestionSelectManyFromManyMemberSuffixTemplate" xml:space="preserve">
+    <value>{0} pentru {1}</value>
+  </data>
+  <data name="SmsQuestionSelectManyFromManySuffixTemplate" xml:space="preserve">
+    <value>Raspundeti cu optiunile selectate, separate prin virgula (e.g. 1,2,4):</value>
+  </data>
 </root>
