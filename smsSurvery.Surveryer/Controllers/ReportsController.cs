@@ -522,17 +522,14 @@ namespace smsSurvery.Surveryer.Controllers
          DateTime intervalStart = DateTime.ParseExact(iIntervalStart, cDateFormat, CultureInfo.InvariantCulture);
          DateTime intervalEnd = DateTime.ParseExact(iIntervalEnd, cDateFormat, CultureInfo.InvariantCulture);
          Question question = db.QuestionSet.Find(questionId);
-         tags = tags ?? new string[0];
-         List<Tags> processedTags = new List<Tags>();
-         for (var i = 0; i < tags.Count(); ++i)
-         {
-            processedTags = processedTags.Union(processTag(tags[i])).ToList();
-         }
-         tags = processedTags.Select(x => x.Name).ToArray();
+         
          if (question != null && (question.Type == ReportsController.cFreeTextTypeQuestion || question.Type == ReportsController.cRatingsTypeQuestion
             || question.Type == ReportsController.cNumericTypeQuestion))
          {
             ViewBag.CheckAdditionalInfo = checkAdditionalInfo;
+            ViewBag.IntervalStart = intervalStart;
+            ViewBag.IntervalEnd = intervalEnd;
+            ViewBag.Tags = tags;
             return PartialView(GetTagCloudData(question, intervalStart, intervalEnd, checkAdditionalInfo, tags));
          }
          return null;
@@ -814,8 +811,32 @@ namespace smsSurvery.Surveryer.Extensions
 {
    public static class HtmlHelperExtension
    {
-      public static string TagCloud(this HtmlHelper helper, smsSurvery.Surveryer.Controllers.ReportsController.TagCloud tagCloud, bool checkAdditionalInfo)
+      private const String cDateFormat = "yyyy-MM-dd H:mm:ss";
+      public static string TagCloud(this HtmlHelper helper, smsSurvery.Surveryer.Controllers.ReportsController.TagCloud tagCloud, bool checkAdditionalInfo,
+         DateTime iIntervalStart, DateTime iIntervalEnd, string[] tags)
       {
+         string intervalStart = iIntervalStart.ToString(cDateFormat);
+         string intervalEnd = iIntervalEnd.ToString(cDateFormat);
+         string tagsString = "";
+         if (tags != null)
+         {
+            if (tags.Length > 1)
+            {
+               tagsString = tags.Aggregate((x, y) => x + "," + y);
+            }
+            else
+            {
+               if (tags.Length == 1)
+               {
+                  tagsString = tags[0];
+               }
+               else
+               {
+                  tagsString = "";
+               }
+            }
+         }
+         
          //We build an unordered list where each word points to it's category
          var output = new StringBuilder();
          if (checkAdditionalInfo)
@@ -830,8 +851,8 @@ namespace smsSurvery.Surveryer.Extensions
          foreach (smsSurvery.Surveryer.WordCloud.IWord tag in tagCloud.MenuTags)
          {
             output.Append("<li>");
-            output.AppendFormat(@"<a href=""/Answer/GetMessagesWithStem?questionId={0}&stem={1}&checkAdditionalInfo={4}"" target=""_blank"" class=""tag{2}"" title=""{3} occurrences""> {1}",
-                                tagCloud.QuestionId, tag.Text, tagCloud.GetRankForTag(tag), tag.Occurrences, checkAdditionalInfo);
+            output.AppendFormat(@"<a href=""/Answer/GetMessagesWithStem?questionId={0}&stem={1}&checkAdditionalInfo={4}&iIntervalStart={5}&iIntervalEnd={6}&tags={7}"" target=""_blank"" class=""tag{2}"" title=""{3} occurrences""> {1}",
+                                tagCloud.QuestionId, tag.Text, tagCloud.GetRankForTag(tag), tag.Occurrences, checkAdditionalInfo, intervalStart, intervalEnd, tagsString);
             output.Append("</a>");
             output.Append("</li>");
          }

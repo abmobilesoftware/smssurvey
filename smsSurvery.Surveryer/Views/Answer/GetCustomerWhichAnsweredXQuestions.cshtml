@@ -1,5 +1,20 @@
 ﻿@model IEnumerable<smsSurvey.dbInterface.SurveyResult>
 
+@using MvcPaging;
+@using smsSurvey.dbInterface
+
+@{
+   IPagedList<SurveyResult> pagingDetails = ViewBag.pagingDetails;
+   RouteValueDictionary r = new RouteValueDictionary();
+   r.Add("surveyId", Request["surveyId"]);
+   r.Add("nrOfAnsweredQuestions", Request["nrOfAnsweredQuestions"]);
+   r.Add("iIntervalStart", Request["iIntervalStart"]);
+   r.Add("iIntervalEnd", Request["iIntervalEnd"]);
+   r.Add("tags", Request["tags"]);
+}
+
+@Html.Pager(pagingDetails.PageSize, pagingDetails.PageNumber, pagingDetails.TotalItemCount, r)
+
 @{
     ViewBag.Title = "Messages with certain response";
 }

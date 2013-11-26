@@ -15,6 +15,7 @@ using smsSurvery.Surveryer.WordCloud;
 using MvcPaging;
 using System.Text.RegularExpressions;
 using smsSurvery.Surveryer.Helpers;
+using System.Globalization;
 
 namespace smsSurvery.Surveryer.Controllers
 {
@@ -24,21 +25,49 @@ namespace smsSurvery.Surveryer.Controllers
       //private const string cNumberFromWhichToSendSMS = "40371700012";
       private smsSurveyEntities db = new smsSurveyEntities();
       private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
+      private const String cDateFormat = "yyyy-MM-dd H:mm:ss";
 
       [HttpGet]
       [Authorize]
-      public ActionResult GetMessagesWithOnePredefinedAnswer(int questionId, int answer, int page = 1)
+      public ActionResult GetMessagesWithOnePredefinedAnswer(int questionId, int answer, string iIntervalStart, 
+         string iIntervalEnd, string tags, int page = 1)
       {
+         DateTime intervalStart = DateTime.ParseExact(iIntervalStart, cDateFormat, CultureInfo.InvariantCulture);
+         DateTime intervalEnd = DateTime.ParseExact(iIntervalEnd, cDateFormat, CultureInfo.InvariantCulture);
+
          int currentPageIndex = page - 1;
          int NUMBER_OF_RESULTS_PER_PAGE = 10;
          string answerAsString = answer.ToString();
+
+         string[] tagsArray;
+         tagsArray = String.IsNullOrEmpty(tags) ? new string[0] : tags.Split(',');
+         List<Tags> processedTags = new List<Tags>();
+         for (var i = 0; i < tagsArray.Count(); ++i)
+         {
+            processedTags = processedTags.Union(processTag(tagsArray[i])).ToList();
+         }
+         tagsArray = processedTags.Select(x => x.Name).ToArray();
          //for the given survey (if allowed access) show messages with given stem           
          List<FreeTextAnswer> messages = new List<FreeTextAnswer>();
-         var allResults = db.ResultSet.Where(x => x.Question.Id == questionId && (
-             x.Question.Type == ReportsController.cRatingsTypeQuestion || x.Question.Type == ReportsController.cYesNoTypeQuestion
-             || x.Question.Type == ReportsController.cSelectOneFromManyTypeQuestion || x.Question.Type == ReportsController.cNumericTypeQuestion)
-             && x.Answer == answerAsString).
-                OrderByDescending(x => x.DateSubmitted);
+         IEnumerable<Result> allResults = null;
+         if (tags.Length == 0)
+         {
+            allResults = db.ResultSet.Where(x => x.Question.Id == questionId && (
+                x.Question.Type == ReportsController.cRatingsTypeQuestion || x.Question.Type == ReportsController.cYesNoTypeQuestion
+                || x.Question.Type == ReportsController.cSelectOneFromManyTypeQuestion || x.Question.Type == ReportsController.cNumericTypeQuestion)
+                && x.Answer == answerAsString && x.DateSubmitted >= intervalStart &&
+                 x.DateSubmitted <= intervalEnd).
+                   OrderByDescending(x => x.DateSubmitted);
+         }
+         else
+         {
+            allResults = db.ResultSet.Where(x => x.Question.Id == questionId && (
+                x.Question.Type == ReportsController.cRatingsTypeQuestion || x.Question.Type == ReportsController.cYesNoTypeQuestion
+                || x.Question.Type == ReportsController.cSelectOneFromManyTypeQuestion || x.Question.Type == ReportsController.cNumericTypeQuestion)
+                && x.Answer == answerAsString && x.DateSubmitted >= intervalStart &&
+                 x.DateSubmitted <= intervalEnd && tagsArray.Intersect(x.SurveyResult.Tags.Select(tag => tag.Name)).Any()).
+                   OrderByDescending(x => x.DateSubmitted);
+         }
          var results = allResults.Skip((page - 1) * NUMBER_OF_RESULTS_PER_PAGE).Take(NUMBER_OF_RESULTS_PER_PAGE);
          foreach (var result in results)
          {
@@ -58,17 +87,40 @@ namespace smsSurvery.Surveryer.Controllers
 
       [HttpGet]
       [Authorize]
-      public ActionResult GetManyFromManyResultsWithOnePredefinedAnswer(int questionId, int answer, int page = 1)
+      public ActionResult GetManyFromManyResultsWithOnePredefinedAnswer(int questionId, string iIntervalStart, 
+         string iIntervalEnd, string tags, int answer, int page = 1)
       {
+         DateTime intervalStart = DateTime.ParseExact(iIntervalStart, cDateFormat, CultureInfo.InvariantCulture);
+         DateTime intervalEnd = DateTime.ParseExact(iIntervalEnd, cDateFormat, CultureInfo.InvariantCulture);
+
          int currentPageIndex = page - 1;
          int NUMBER_OF_RESULTS_PER_PAGE = 10;
          string answerAsString = answer.ToString();
+         string[] tagsArray;
+         tagsArray = String.IsNullOrEmpty(tags) ? new string[0] : tags.Split(',');
+         List<Tags> processedTags = new List<Tags>();
+         for (var i = 0; i < tagsArray.Count(); ++i)
+         {
+            processedTags = processedTags.Union(processTag(tagsArray[i])).ToList();
+         }
+         tagsArray = processedTags.Select(x => x.Name).ToArray();
          //for the given survey (if allowed access) show messages with given stem           
          List<FreeTextAnswer> messages = new List<FreeTextAnswer>();
-         var allResults = db.ResultSet.Where(x => x.Question.Id == questionId && 
-              x.Question.Type == ReportsController.cSelectManyFromManyTypeQuestion).
-                OrderByDescending(x => x.DateSubmitted);
-        
+         IEnumerable<Result> allResults = null;
+         if (tags.Length == 0)
+         {
+             allResults = db.ResultSet.Where(x => x.Question.Id == questionId &&
+                 x.Question.Type == ReportsController.cSelectManyFromManyTypeQuestion && x.DateSubmitted >= intervalStart &&
+                 x.DateSubmitted <= intervalEnd).
+                   OrderByDescending(x => x.DateSubmitted);
+         }
+         else
+         {
+            allResults = db.ResultSet.Where(x => x.Question.Id == questionId &&
+                 x.Question.Type == ReportsController.cSelectManyFromManyTypeQuestion && x.DateSubmitted >= intervalStart &&
+                 x.DateSubmitted <= intervalEnd && tagsArray.Intersect(x.SurveyResult.Tags.Select(tag => tag.Name)).Any()).
+                   OrderByDescending(x => x.DateSubmitted);
+         }
          foreach (var result in allResults)
          {
             var answers = result.Answer.Split(';');
@@ -79,7 +131,7 @@ namespace smsSurvery.Surveryer.Controllers
             }
          }
          var results = messages.Skip((page - 1) * NUMBER_OF_RESULTS_PER_PAGE).Take(NUMBER_OF_RESULTS_PER_PAGE);
-         var question = allResults.First().Question;
+         var question = allResults.FirstOrDefault().Question;
          IPagedList<FreeTextAnswer> pagingDetails = new PagedList<FreeTextAnswer>(messages,
              currentPageIndex, NUMBER_OF_RESULTS_PER_PAGE, messages.Count());
          //DA get the human friendly version (from answer details)
@@ -93,34 +145,86 @@ namespace smsSurvery.Surveryer.Controllers
 
       [HttpGet]
       [Authorize]
-      public ActionResult GetCustomerWhichAnsweredXQuestions(int surveyId, double nrOfAnsweredQuestions)
+      public ActionResult GetCustomerWhichAnsweredXQuestions(int surveyId, double nrOfAnsweredQuestions,
+         String iIntervalStart, String iIntervalEnd, string tags, int page = 1)
       {
-         SurveyTemplate sp = db.SurveyTemplateSet.Find(surveyId);
+         int currentPageIndex = page - 1;
+         int NUMBER_OF_RESULTS_PER_PAGE = 10;
+
+         DateTime intervalStart = DateTime.ParseExact(iIntervalStart, cDateFormat, CultureInfo.InvariantCulture);
+         DateTime intervalEnd = DateTime.ParseExact(iIntervalEnd, cDateFormat, CultureInfo.InvariantCulture);
+         
+         SurveyTemplate sp = db.SurveyTemplateSet.Find(surveyId);                         
+         var tagsArray = String.IsNullOrEmpty(tags) ? new string[0] : tags.Split(',');
+         
+         List<Tags> processedTags = new List<Tags>();
+         for (var i = 0; i < tagsArray.Count(); ++i)
+         {
+            processedTags = processedTags.Union(processTag(tagsArray[i])).ToList();
+         }
+         tagsArray = processedTags.Select(x => x.Name).ToArray();
          if (sp != null)
          {
             var totalNrOfQuestions = sp.QuestionSet.Count();
             var percentageCompleted = (double)nrOfAnsweredQuestions / totalNrOfQuestions;
-
-            var sResult = sp.SurveyResult.Where(sr => Math.Abs(sr.PercentageComplete - percentageCompleted) <= 0.01).OrderByDescending(sr => sr.DateRan);
+            IEnumerable<SurveyResult> sResult = null;
+            if (tagsArray.Length == 0)
+            {
+               sResult = sp.SurveyResult.Where(sr => Math.Abs(sr.PercentageComplete - percentageCompleted) <= 0.01 && 
+                  sr.DateRan >= intervalStart && sr.DateRan <= intervalEnd).OrderByDescending(sr => sr.DateRan);
+            }
+            else
+            {
+               sResult = sp.SurveyResult.Where(sr => Math.Abs(sr.PercentageComplete - percentageCompleted) <= 0.01 &&
+                  sr.DateRan >= intervalStart && sr.DateRan <= intervalEnd && tagsArray.Intersect(sr.Tags.Select(tag => tag.Name)).Any()
+                  ).OrderByDescending(sr => sr.DateRan);
+            }
+            var results = sResult.Skip((page - 1) * NUMBER_OF_RESULTS_PER_PAGE).Take(NUMBER_OF_RESULTS_PER_PAGE);
+            IPagedList<SurveyResult> pagingDetails = new PagedList<SurveyResult>(sResult,
+             currentPageIndex, NUMBER_OF_RESULTS_PER_PAGE, sResult.Count());
             @ViewBag.ReportTitle = String.Format("Surveys with {0} out of {1} answers", nrOfAnsweredQuestions, totalNrOfQuestions);
-            return View(sResult);
+            ViewBag.pagingDetails = pagingDetails;
+            return View(results);
          }
          return View();
       }
 
       [HttpGet]
       [Authorize]
-      public ActionResult GetMessagesWithStem(int questionId, string stem, bool checkAdditionalInfo, int page = 1)
+      public ActionResult GetMessagesWithStem(int questionId, string iIntervalStart,
+         string iIntervalEnd, string tags, string stem, bool checkAdditionalInfo, int page = 1)
       {
+         DateTime intervalStart = DateTime.ParseExact(iIntervalStart, cDateFormat, CultureInfo.InvariantCulture);
+         DateTime intervalEnd = DateTime.ParseExact(iIntervalEnd, cDateFormat, CultureInfo.InvariantCulture);
+
          int currentPageIndex = page - 1;
          int NUMBER_OF_RESULTS_PER_PAGE = 10;
+
+         
+         var tagsArray = String.IsNullOrEmpty(tags) ? new string[0] : tags.Split(',');
+         List<Tags> processedTags = new List<Tags>();
+         for (var i = 0; i < tagsArray.Count(); ++i)
+         {
+            processedTags = processedTags.Union(processTag(tagsArray[i])).ToList();
+         }
+         tagsArray = processedTags.Select(x => x.Name).ToArray();
          //for the given survey (if allowed access) show messages with given stem
+         IEnumerable<Result> allResults = null;
          Question question = db.QuestionSet.Find(questionId);
          if (question != null && (question.Type == ReportsController.cFreeTextTypeQuestion ||
             question.Type == ReportsController.cRatingsTypeQuestion || question.Type == ReportsController.cNumericTypeQuestion))
          {
             List<FreeTextAnswer> messages = new List<FreeTextAnswer>();
-            var allResults = db.ResultSet.Where(r => r.QuestionId == questionId).OrderByDescending(x=>x.DateSubmitted);
+            if (tagsArray.Length == 0)
+            {
+               allResults = db.ResultSet.Where(r => r.QuestionId == questionId && r.DateSubmitted >= intervalStart &&
+                  r.DateSubmitted <= intervalEnd).OrderByDescending(x => x.DateSubmitted);
+            }
+            else
+            {
+               allResults = db.ResultSet.Where(r => r.QuestionId == questionId && r.DateSubmitted >= intervalStart &&
+                  r.DateSubmitted<=intervalEnd && tagsArray.Intersect(r.SurveyResult.Tags.Select(tag => tag.Name)).Any()).OrderByDescending(x => x.DateSubmitted);
+            }
             //DA get the stemmer
             Language lg = Language.AnyTxt;
             string surveyLanguage = question.SurveyTemplateSet.DefaultLanguage;
@@ -631,6 +735,57 @@ namespace smsSurvery.Surveryer.Controllers
       {
          db.Dispose();
          base.Dispose(disposing);
+      }
+
+      // Duplicate code from ReportsController
+      public List<Tags> processTag(string tagName)
+      {
+         if (tagName.StartsWith(GlobalResources.Global.LocationLabel))
+         {
+            // +2 because we want to remove also ":_", ex: Location: Cluj => Cluj
+            tagName = tagName.Remove(0, GlobalResources.Global.LocationLabel.Length + 2);
+         }
+         else if (tagName.StartsWith(GlobalResources.Global.RegionLabel))
+         {
+            tagName = tagName.Remove(0, GlobalResources.Global.RegionLabel.Length + 2);
+         }
+         var dbTagResult = from t in db.Tags where t.Name.Equals(tagName) select t;
+         if (dbTagResult.Count() > 0)
+         {
+            var dbTag = new List<Tags>();
+            dbTag.Add(dbTagResult.FirstOrDefault());
+            return getLocationsInARegion(dbTag);
+         }
+         else
+         {
+            return null;
+         }
+      }
+
+      public List<Tags> getLocationsInARegion(List<Tags> subRegions)
+      {
+         if (subRegions.Count() == 0)
+         {
+            return new List<Tags>();
+         }
+         else
+         {
+            List<Tags> regions = new List<Tags>();
+            List<Tags> locations = new List<Tags>();
+            for (var i = 0; i < subRegions.Count(); ++i)
+            {
+               if (subRegions.ElementAt(i).TagTypes.FirstOrDefault().Type.Equals("Location"))
+               {
+                  locations.Add(subRegions.ElementAt(i));
+               }
+               else if (subRegions.ElementAt(i).TagTypes.FirstOrDefault().Type.Equals("Region"))
+               {
+                  regions = regions.Union(subRegions.ElementAt(i).Locations.ToList()).ToList();
+               }
+            }
+            List<Tags> result = locations.Union(getLocationsInARegion(regions)).ToList();
+            return result;
+         }
       }
    }
 }

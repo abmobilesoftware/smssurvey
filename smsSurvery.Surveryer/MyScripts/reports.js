@@ -19,7 +19,9 @@ window.app.displayReportsForRatingQ = function (questionId, qType) {
       google.visualization.events.addListener(pieChart, 'select', function (e) {
          var sel = pieChart.getSelection();
          var selectedValue = window.app.piedata[questionId].getValue(sel[0].row, 0);
-         var url = "/Answer/GetMessagesWithOnePredefinedAnswer?questionId=" + questionId + "&answer=" + selectedValue;
+         var url = "/Answer/GetMessagesWithOnePredefinedAnswer?questionId=" + questionId + "&answer=" + selectedValue +
+         "&iIntervalStart=" + window.app.dateHelper.transformStartDate(window.app.startDate) + "&iIntervalEnd=" + window.app.dateHelper.transformEndDate(window.app.endDate)
+         + "&tags=" + window.app.tags;
          var win = window.open(url, "_blank");
          win.focus();
       });
@@ -86,7 +88,9 @@ window.app.displayReportForManyFromManyQ = function (questionId) {
    google.visualization.events.addListener(barchart, 'select', function (e) {
       var sel = barchart.getSelection();
       var selectedValue = window.app.bardata[questionId].getColumnId(sel[0].column);
-      var url = "/Answer/GetManyFromManyResultsWithOnePredefinedAnswer?questionId=" + questionId + "&answer=" + selectedValue;
+      var url = "/Answer/GetManyFromManyResultsWithOnePredefinedAnswer?questionId=" + questionId + "&answer=" + selectedValue +
+         "&iIntervalStart=" + window.app.dateHelper.transformStartDate(window.app.startDate) + "&iIntervalEnd=" + window.app.dateHelper.transformEndDate(window.app.endDate)
+         + "&tags=" +  window.app.tags;
       var win = window.open(url, "_blank");
       win.focus();
    });
@@ -195,7 +199,9 @@ window.app.displayReportOverview = function (surveyTemplateId) {
       google.visualization.events.addListener(pieChart, 'select', function (e) {
          var sel = pieChart.getSelection();
          var selectedValue = window.app.overviewPieData[surveyTemplateId].getValue(sel[0].row, 0);
-         var url = "/Answer/GetCustomerWhichAnsweredXQuestions?surveyId=" + surveyTemplateId + "&nrOfAnsweredQuestions=" + selectedValue;
+         var url = "/Answer/GetCustomerWhichAnsweredXQuestions?surveyId=" + surveyTemplateId + "&nrOfAnsweredQuestions=" + selectedValue +
+         "&iIntervalStart=" + window.app.dateHelper.transformStartDate(window.app.startDate) + "&iIntervalEnd=" + window.app.dateHelper.transformEndDate(window.app.endDate)
+         + "&tags=" + window.app.tags;
          var win = window.open(url, "_blank");
          win.focus();
       });
