@@ -75,6 +75,14 @@ var Timer = (function () {
 		$("#slider-modal").modal("show");
 		$("#slider-modal").css("visibility", "visible");
 		$('.carousel').carousel();	
+		
+		$(".carousel-inner .item .slider-img").each(function( index ) {
+			if ($(document).height() > $(this).height()) { 
+				$(this).parents(".item").addClass("displayBlock");
+				$(this).parents(".item").css("margin-top", ($(window).height() - $(this).height())/2 + 'px');
+	        	$(this).parents(".item").removeClass("displayBlock");
+	        }
+	    });
 	};
 	innerClass.hideSlider = function() {
 		$("#slider-modal").modal("hide");

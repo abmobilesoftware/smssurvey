@@ -141,7 +141,7 @@ SurveyElements.Loader = Backbone.View.extend({
 	},
 	showLoader: function() {
 		$('#loading-modal').modal("show");
-		$("#loading-modal").css("visibility", "visible");
+		$("#loading-modal").css("visibility", "visible");		
 	},
 	hideLoader: function() {
 		$('#loading-modal').modal("hide");

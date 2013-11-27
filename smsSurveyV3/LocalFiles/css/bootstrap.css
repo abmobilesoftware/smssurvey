@@ -6000,7 +6000,7 @@ a.badge:focus {
 .carousel-inner > .active,
 .carousel-inner > .next,
 .carousel-inner > .prev {
-  display: block;
+  display: inline-block;
 }
 
 .carousel-inner > .active {

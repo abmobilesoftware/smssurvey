@@ -34,7 +34,7 @@ var TimerModal = (function () {
 		$('#timer-modal').css("visibility", "visible");
 		$(".time-remaining").html(restartInterval);
 		timer1 = setInterval(innerClass.countdown, 1000);
-		timerBtn = setInterval(innerClass.buttonBlink, 500);
+		timerBtn = setInterval(innerClass.buttonBlink, 500);		
 	};
 	innerClass.hideModal = function() {
 		clearInterval(timer1);
