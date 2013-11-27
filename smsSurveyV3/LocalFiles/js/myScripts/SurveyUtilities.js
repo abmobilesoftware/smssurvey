@@ -74,15 +74,19 @@ var Timer = (function () {
 	innerClass.showSlider = function() {
 		$("#slider-modal").modal("show");
 		$("#slider-modal").css("visibility", "visible");
-		$('.carousel').carousel();	
-		
+				
+		maxHeight = -1;
 		$(".carousel-inner .item .slider-img").each(function( index ) {
+			if ($(this).height() > maxHeight) maxHeight = $(this).height();
 			if ($(document).height() > $(this).height()) { 
 				$(this).parents(".item").addClass("displayBlock");
 				$(this).parents(".item").css("margin-top", ($(window).height() - $(this).height())/2 + 'px');
 	        	$(this).parents(".item").removeClass("displayBlock");
 	        }
 	    });
+		$(".carousel-inner").css("height", maxHeight);
+		
+		$('.carousel').carousel();			
 	};
 	innerClass.hideSlider = function() {
 		$("#slider-modal").modal("hide");

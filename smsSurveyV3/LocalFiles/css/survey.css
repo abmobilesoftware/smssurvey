@@ -631,17 +631,13 @@ div.invalidAnswer div.answerArea {
 
 #slider-modal {
 	margin:0 auto;
-	position:relative;
+	position:fixed;
 	z-index:20000;
 	width:100%;
 	height:100%;
 	left:0;
 	top:0;
 	background: #000;		
-}
-
-.slider-img {
-	max-height:100%;		
 }
 
 #surveyUserInfo {

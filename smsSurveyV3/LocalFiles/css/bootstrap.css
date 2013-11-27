@@ -99,9 +99,9 @@ sub {
 }
 
 img {
-  width: auto\9;
+  /*width: auto\9;
   height: auto;
-  max-width: 100%;
+  max-width: 100%;*/
   vertical-align: middle;
   border: 0;
   -ms-interpolation-mode: bicubic;
@@ -6000,7 +6000,7 @@ a.badge:focus {
 .carousel-inner > .active,
 .carousel-inner > .next,
 .carousel-inner > .prev {
-  display: inline-block;
+  display: block;  
 }
 
 .carousel-inner > .active {
@@ -6016,6 +6016,8 @@ a.badge:focus {
 
 .carousel-inner > .next {
   left: 100%;
+  max-height: 100%;
+  overflow: visible;
 }
 
 .carousel-inner > .prev {
