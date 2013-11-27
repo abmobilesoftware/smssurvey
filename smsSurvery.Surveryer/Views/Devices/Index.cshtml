@@ -14,12 +14,12 @@
       <th>Friendly name</th>
       <th>Device Id</th>
       <th>Company name</th>
-      <th>Survey</th>
-      <th></th>      
+      <th>Choose survey</th>
+      <th>Remote commands</th>      
    </tr>
    @foreach (var item in Model)
    {
-      <tr>
+      <tr class="device-row" currentSurvey="@item.SurveyLink" deviceId="@item.DeviceId" newSurvey="">
          <td>
             @Html.DisplayFor(modelItem => item.Id)
          </td>
@@ -40,7 +40,7 @@
          <td>
             @Html.DisplayFor(modelItem => item.CompaniesName)
          </td>
-         <td>
+         <td class="surveys-list-cell">
             @{
                ICollection<SurveyTemplate> surveys = (ICollection<SurveyTemplate>) ViewBag.Surveys;
             }
@@ -60,7 +60,11 @@
          <td>
             <a href="#" class="refresh-survey" deviceId="@item.DeviceId">Refresh survey</a> |
             <a href="#" class="release-device" deviceId="@item.DeviceId">Release device</a>
-         </td>         
+         </td>  
+         <td class="save-discard-btns">
+            <button type="button" class="btn btn-primary save-device-btn" disabled="disabled">Save</button>
+            <button type="button" class="btn btn-primary hide discard-device-btn">Discard</button>
+         </td>       
       </tr>
    }
 </table>

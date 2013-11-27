@@ -35,7 +35,13 @@
 
    $(".survey-link-select").on("change", function () {
       var newLink = $(this).val();
-      var deviceId = $(this).attr("deviceId");
+      $(this).parents(".device-row").attr("newSurvey", newLink);
+      var $btnsGroup = $(this).parents(".device-row").children(".save-discard-btns");
+      var $saveBtn = $(".save-device-btn", $btnsGroup);
+      var $discardBtn = $(".discard-device-btn", $btnsGroup);
+      $discardBtn.show();
+      $saveBtn.removeAttr("disabled");
+      /*var deviceId = $(this).attr("deviceId");
       if (newLink != "") {
          $.ajax({
             url: "/Devices/SendLinkToDevice",
@@ -59,7 +65,49 @@
          });
       } else {
          alert("The new link cannot be empty... I think");
-      }
+      }*/
+   });
+
+   $(".save-device-btn").click(function() {
+      var $device = $(this).parents(".device-row");
+      var newSurvey = $device.attr("newSurvey");
+      var deviceId = $device.attr("deviceId");
+      var $discardBtn = $(this).parent().children(".discard-device-btn");
+      var $saveBtn = $(this);
+         $.ajax({
+            url: "/Devices/SendLinkToDevice",
+            type: "POST",
+            data: {
+               deviceId: deviceId,
+               link: newSurvey
+            },
+            success: function (response) {
+               $(".alert").hide();
+               if (response == "success") {
+                  $(".alert-success").html(cAlertSetSurveySuccess);
+                  $(".alert-success").show();
+                  $saveBtn.attr("disabled", "disabled");
+                  $discardBtn.hide();
+                  startBlinking();
+               } else {
+                  $(".alert-danger").html(cAlertCommandFailed);
+                  $(".alert-danger").show();
+                  startBlinking();
+               }
+            }
+         });      
+   });
+
+   $(".discard-device-btn").click(function () {
+      var $device = $(this).parents(".device-row");
+      var newSurvey = $device.attr("newSurvey");
+      var currentSurvey = $device.attr("currentSurvey");
+      var $surveyList = $device.children(".surveys-list-cell").children(".survey-link-select");
+      $surveyList.val(currentSurvey);
+      var $saveBtn = $(this).parent().children(".save-device-btn");
+      $saveBtn.attr("disabled", "disabled");
+      var $discardBtn = $(this);
+      $discardBtn.hide();
    });
 
    $(".refresh-survey").click(function (event) {
