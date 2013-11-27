@@ -77,7 +77,11 @@ namespace smsSurvery.Surveryer.Controllers
          var connectedUser = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
          if (connectedUser != null)
          {
+            UrlHelper u = new UrlHelper(this.ControllerContext.RequestContext);
+            var surveyPath = HttpContext.Request.Url.Scheme + "://" + HttpContext.Request.Url.Authority + u.Action("GetSurvey", "SurveyTemplate");
             var devices = connectedUser.Company.Device;
+            ViewBag.Surveys = connectedUser.SurveyTemplateSet;
+            ViewBag.SurveyPath = surveyPath;
             return View(devices);
          }
          else

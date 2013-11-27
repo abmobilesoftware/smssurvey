@@ -287,4 +287,13 @@
   <data name="SmsQuestionSelectManyFromManySuffixTemplate" xml:space="preserve">
     <value>Raspundeti cu optiunile selectate, separate prin virgula (e.g. 1,2,4):</value>
   </data>
+  <data name="DevicesCommandFailed" xml:space="preserve">
+    <value>Eroare! Comanda a esuat.</value>
+  </data>
+  <data name="DevicesRefreshSurvey" xml:space="preserve">
+    <value>Succes! Sondajul a fost reîmprospătat.</value>
+  </data>
+  <data name="DevicesSetSurveySuccess" xml:space="preserve">
+    <value>Succes! Sondajul a fost setat pe tabletă.</value>
+  </data>
 </root>

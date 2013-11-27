@@ -169,6 +169,33 @@ namespace smsSurvery.Surveryer.GlobalResources {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Error! Command failed..
+        /// </summary>
+        public static string DevicesCommandFailed {
+            get {
+                return ResourceManager.GetString("DevicesCommandFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Success! Survey was refreshed..
+        /// </summary>
+        public static string DevicesRefreshSurvey {
+            get {
+                return ResourceManager.GetString("DevicesRefreshSurvey", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Success! Survey set on tablet..
+        /// </summary>
+        public static string DevicesSetSurveySuccess {
+            get {
+                return ResourceManager.GetString("DevicesSetSurveySuccess", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to e.g. john@smith.com.
         /// </summary>
         public static string EmailPlaceholder {

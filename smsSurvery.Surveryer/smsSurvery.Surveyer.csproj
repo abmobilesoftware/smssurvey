@@ -297,6 +297,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\chosen\chosen-sprite.png" />
     <Content Include="Content\chosen\chosen.css" />
+    <Content Include="Content\devices.css" />
     <Content Include="Content\images\ajax-loader_vs1.gif" />
     <Content Include="Content\images\arrow_down_dblue_16.png" />
     <Content Include="Content\images\arrow_up_dblue_16.png" />

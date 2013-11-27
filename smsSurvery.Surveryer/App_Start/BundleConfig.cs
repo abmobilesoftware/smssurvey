@@ -19,6 +19,7 @@ namespace smsSurvery.Surveryer
                      "~/Scripts/googleFastButtons.js",
                      "~/Scripts/jquery.screwdefaultbuttonsV2.js"
                      ));
+         
          bundles.Add(new ScriptBundle("~/bundles/mobilesurvey").Include(                        
             "~/MyScripts/SurveyUtilities.js",          
             "~/MyScripts/SurveyElements.js",
@@ -88,7 +89,9 @@ namespace smsSurvery.Surveryer
             "~/Content/site.css",
             "~/Content/bootstrap.css",
             "~/Content/bootstrap-fileupload.css"));
-
+         bundles.Add(new StyleBundle("~/Content/devicesCSS").Include(
+            "~/Content/devices.css"
+            ));
          bundles.Add(new StyleBundle("~/bundles/SurveyTemplate").Include(
             "~/Content/SurveyTemplate/questionSet.css",            
             "~/Content/chosen/chosen.css"

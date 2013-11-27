@@ -1,0 +1,7 @@
+﻿.alert-invisible {
+   visibility:hidden;
+}
+
+.alert-visible {
+   visibility: visible;
+}

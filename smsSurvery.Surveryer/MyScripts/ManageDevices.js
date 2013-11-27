@@ -1,15 +1,41 @@
 ﻿(function () {
-   $("link-modal").modal();
-   $(".set-new-link-btn").click(function (event) {
-      event.preventDefault();
-      var deviceId = $(event.target).attr("deviceId");
-      $(".link-modal").modal("show");
-      $("#device-id-input").val(deviceId);
+   /* Translation */
+   var cAlertCommandFailed;
+   var cAlertSetSurveySuccess;
+   var cAlertRefreshSurveySuccess;
+   $(document).ready(function () {
+      cAlertCommandFailed = $("#alert-command-failed").val();
+      cAlertSetSurveySuccess = $("#alert-set-survey-success").val();
+      cAlertRefreshSurveySuccess = $("#alert-refresh-survey-success").val();
    });
 
-   $("#update-link-btn").click(function () {
-      var newLink = $("#link-input").val();
-      var deviceId = $("#device-id-input").val();
+   /* Alert blinking */
+   var noOfBlinks = 3;
+   var blinkTimer;
+   var cBlinkInterval = 500;
+
+   function startBlinking() {
+      noOfBlinks = 3;
+      blinkTimer = setInterval(blinking, cBlinkInterval);
+   }
+   function blinking() {
+      if (noOfBlinks > 0) {
+         if ($(".alert").hasClass("alert-visible")) {
+            $(".alert").removeClass("alert-visible");
+            $(".alert").addClass("alert-invisible");
+         } else {
+            $(".alert").addClass("alert-visible");
+            $(".alert").removeClass("alert-invisible");
+            noOfBlinks = noOfBlinks - 1;
+         }
+      } else {
+         clearInterval(blinkTimer);
+      }
+   }
+
+   $(".survey-link-select").on("change", function () {
+      var newLink = $(this).val();
+      var deviceId = $(this).attr("deviceId");
       if (newLink != "") {
          $.ajax({
             url: "/Devices/SendLinkToDevice",
@@ -19,10 +45,15 @@
                link: newLink
             },
             success: function (response) {
+               $(".alert").hide();
                if (response == "success") {
-                  location.reload();
+                  $(".alert-success").html(cAlertSetSurveySuccess);
+                  $(".alert-success").show();
+                  startBlinking();
                } else {
-                  alert(response);
+                  $(".alert-danger").html(cAlertCommandFailed);
+                  $(".alert-danger").show();
+                  startBlinking();
                }
             }
          });
@@ -41,7 +72,17 @@
             deviceId: deviceId           
          },
          success: function (response) {
-            alert(response);
+            var responseObject = JSON.parse(response);
+            $(".alert").hide();
+            if (responseObject.success == 1) {
+               $(".alert-success").html(cAlertRefreshSurveySuccess);
+               $(".alert-success").show();
+               startBlinking();
+            } else if (responseObject.failure == 1) {
+               $(".alert-danger").html(cAlertCommandFailed);
+               $(".alert-danger").show();
+               startBlinking();
+            }
          }
       });
    });

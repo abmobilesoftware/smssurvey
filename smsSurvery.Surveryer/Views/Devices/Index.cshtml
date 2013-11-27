@@ -1,15 +1,20 @@
 ﻿@model IEnumerable<smsSurvey.dbInterface.Device>
+
+@using smsSurvery.Surveryer.GlobalResources
+@using smsSurvey.dbInterface;
 @{
    ViewBag.Title = "Index";
 }
 <h2>Devices</h2>
+<div class="alert alert-success hide"></div>
+<div class="alert alert-danger hide"></div>
 <table class="table table-striped table-bordered table-hover">
    <tr>
       <th>Id</th>
       <th>Friendly name</th>
       <th>Device Id</th>
       <th>Company name</th>
-      <th>Survey link</th>
+      <th>Survey</th>
       <th></th>      
    </tr>
    @foreach (var item in Model)
@@ -36,30 +41,32 @@
             @Html.DisplayFor(modelItem => item.CompaniesName)
          </td>
          <td>
-            @if (item.SurveyLink != null) {               
-               <a href="@item.SurveyLink" target="_blank">Click to view survey</a>
-            } else {
-               <span>Default survey</span>  
+            @{
+               ICollection<SurveyTemplate> surveys = (ICollection<SurveyTemplate>) ViewBag.Surveys;
             }
-         </td>
+            <select class="survey-link-select" deviceId="@item.DeviceId">
+                   @{
+                     foreach (var survey in surveys) {                  
+                        var surveyPath = (string)ViewBag.SurveyPath + "/" + survey.Id;
+                        if (surveyPath.Equals(item.SurveyLink)) {                  
+                           <option value="@surveyPath" selected>@survey.Description</option>
+                        } else {
+                           <option value="@surveyPath">@survey.Description</option>
+                        }                    
+                     }     
+                  }                    
+            </select>            
+         </td>         
          <td>
-            <a href="#" class="set-new-link-btn" deviceId="@item.DeviceId">Set new link</a> | 
             <a href="#" class="refresh-survey" deviceId="@item.DeviceId">Refresh survey</a> |
             <a href="#" class="release-device" deviceId="@item.DeviceId">Release device</a>
          </td>         
       </tr>
    }
 </table>
-<div class="modal hide fade link-modal">
-   <div class="modal-header">
-      <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-      <h3>Setup new link</h3>
-   </div>
-   <div class="modal-body">
-      <input type="text" id="link-input" />
-      <input type="hidden" value="" id="device-id-input" />
-      <button class="btn btn-primary" id="update-link-btn" type="button">Update link</button>
-   </div>   
-</div>
+<input type="hidden" id="alert-set-survey-success" value="@Global.DevicesSetSurveySuccess" />
+<input type="hidden" id="alert-command-failed" value="@Global.DevicesCommandFailed" />
+<input type="hidden" id="alert-refresh-survey-success" value="@Global.DevicesRefreshSurvey" />
 @Scripts.Render("~/bundles/jquery")
 @Scripts.Render("~/bundles/devices")
+@Styles.Render("~/Content/devicesCSS")
