@@ -1,5 +1,5 @@
-﻿//var siteDomain = "http://demoloyaltyinsights.cloudapp.net";
-var siteDomain = "http://surveytest.txtfeedback.net";
+﻿var siteDomain = "http://demoloyaltyinsights.cloudapp.net";
+//var siteDomain = "http://surveytest.txtfeedback.net";
 
 var SurveyUtilities = SurveyUtilities || {};
 SurveyUtilities.Utilities = (function () {
