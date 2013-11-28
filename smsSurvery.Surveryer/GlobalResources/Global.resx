@@ -287,4 +287,13 @@
   <data name="SmsQuestionSelectManyFromManySuffixTemplate" xml:space="preserve">
     <value>Reply by responding with the selected options, separated by comma (e.g. 1,2,4):</value>
   </data>
+  <data name="DevicesCommandFailed" xml:space="preserve">
+    <value>Error! Command failed.</value>
+  </data>
+  <data name="DevicesRefreshSurvey" xml:space="preserve">
+    <value>Success! Survey was refreshed.</value>
+  </data>
+  <data name="DevicesSetSurveySuccess" xml:space="preserve">
+    <value>Success! Survey set on tablet.</value>
+  </data>
 </root>

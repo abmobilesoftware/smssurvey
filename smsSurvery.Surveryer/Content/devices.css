@@ -1,0 +1,11 @@
+﻿.alert-invisible {
+   visibility:hidden;
+}
+
+.alert-visible {
+   visibility: visible;
+}
+
+.save-discard-column {
+   width:140px;
+}
