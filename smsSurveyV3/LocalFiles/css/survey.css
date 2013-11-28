@@ -723,11 +723,11 @@ input[type=checkbox].css-checkbox+label.css-label-checkbox {
 }
 
 input[type=checkbox].css-checkbox:checked+label.css-label-checkbox {
-	background-position: 0 -36px;
+	background-position: 0 -37px;
 }
 
 .css-label-checkbox {
-	background-image: url(../images/checkbox_white.png);
+	background-image: url(../images/checkbox_orange.png);
 }
 
 .question-checkbox-text {
