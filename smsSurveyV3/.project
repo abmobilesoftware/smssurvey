@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>TabletSurveyV3</name>
+	<name>TxtFeedback Tablet Survey</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -24,7 +24,7 @@
 	</natures>
 	<filteredResources>
 		<filter>
-			<id>1380716957213</id>
+			<id>0</id>
 			<name></name>
 			<type>6</type>
 			<matcher>

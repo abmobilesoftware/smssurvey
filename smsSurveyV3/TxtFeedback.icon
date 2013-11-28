@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<icon>
+	<instance size="default" platform="Android" src="Icon_48px.svg" />
+	<instance size="36x36" platform="Android" src="Icon_36px.svg" />
+	<instance size="48x48" platform="Android" src="Icon_48px.svg" />
+	<instance size="72x72" platform="Android" src="Icon_72px.svg" />
+	<instance size="96x96" platform="Android" src="Icon_96px.svg" />
+	<instance size="114x114" platform="iOS" src="iPhoneRetina.svg" />
+	<instance size="57x57" platform="iOS" src="iPhone_Icon.svg" />
+	<instance size="144x144" platform="iOS" src="iPadRetina_Icon.svg" />
+	<instance size="72x72" platform="iOS" src="iPad_Icon.svg" />
+</icon>

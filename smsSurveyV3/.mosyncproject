@@ -8,9 +8,14 @@
 </filter>
 </criteria>
 <properties>
+<property key="android:package.name" value="com.mosync.app_TxtFeedbackTabletSurvey"/>
+<property key="build.prefs:additional.include.paths/Release" value=""/>
 <property key="build.prefs:additional.libraries" value="MAUtil.lib, NativeUI.lib, MAFS.lib, Wormhole.lib, yajl.lib, Notification.lib"/>
 <property key="build.prefs:additional.libraries/Debug" value="MAUtilD.lib, NativeUID.lib, MAFSD.lib, WormholeD.lib, yajlD.lib, NotificationD.lib"/>
+<property key="build.prefs:additional.library.paths/Release" value=""/>
 <property key="build.prefs:app.permissions" value="File\ Storage Internet\ Access Push\ Notifications Vibration"/>
+<property key="build.prefs:extra.link.sw/Release" value=""/>
+<property key="build.prefs:extra.res.sw/Release" value=""/>
 <property key="build.prefs:gcc.warnings/Debug" value="10"/>
 <property key="build.prefs:gcc.warnings/Release" value="10"/>
 <property key="build.prefs:memory.data/Debug" value="4096"/>
@@ -19,8 +24,14 @@
 <property key="build.prefs:memory.heap/Release" value="3072"/>
 <property key="build.prefs:memory.stack/Debug" value="512"/>
 <property key="build.prefs:memory.stack/Release" value="512"/>
+<property key="build.prefs:project.type" value=""/>
 <property key="com.mobilesorcery.sdk.html5.support" value="true"/>
+<property key="dependency.strategy" value="0"/>
+<property key="excludes/Release" value=""/>
 <property key="profile.mgr.type" value="0"/>
+<property key="symbian.uids:uid.s60v2uid" value="0x0a85cd5d"/>
+<property key="symbian.uids:uid.s60v3uid" value="0xefa86d27"/>
 <property key="template.id" value="project.wormhole.web"/>
+<property key="winmobilecs:guid" value="868b4d70-3a67-1031-80c7-8ff0089d2a4e"/>
 </properties>
 </project>
