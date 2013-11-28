@@ -1,4 +1,7 @@
-﻿var SurveyUtilities = SurveyUtilities || {};
+﻿//var siteDomain = "http://demoloyaltyinsights.cloudapp.net";
+var siteDomain = "http://surveytest.txtfeedback.net";
+
+var SurveyUtilities = SurveyUtilities || {};
 SurveyUtilities.Utilities = (function () {
 	var innerClass = {};
 	innerClass.generateUUID = function () {

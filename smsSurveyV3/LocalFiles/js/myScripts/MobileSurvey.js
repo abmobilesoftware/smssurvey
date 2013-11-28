@@ -454,7 +454,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 		$("#surname").val("");
 		$('#email').val("");
 		$('#telephone').val("");	
-		$("#personal-information-checkbox")[0].checked = true;
+		$("#personal-information-checkbox1")[0].checked = true;
 		this.sendBtn.setTitle($("#sendPersonalDetails", this.$el).val());
 		this.sendBtn.enable();
 		$('#surveyUserInfo').show();
@@ -623,9 +623,7 @@ MobileSurvey.ThankYouPageView = Backbone.View.extend({
 	makeSendPersonalInfoRequest: function(dataToSendObject, successCallback, errorCallback) {
 		var dataToSend = JSON.stringify(dataToSendObject);
 		$.ajax({
-			url: "http://demoloyaltyinsights.cloudapp.net/MobileSurvey/SaveRespondentInfo",
-			//url: "http://tablet.txtfeedback.net/MobileSurvey/SaveRespondentInfo",
-			//url: "http://surveytest.txtfeedback.net/MobileSurvey/SaveRespondentInfo",
+			url: siteDomain + "/MobileSurvey/SaveRespondentInfo",			
 			data: dataToSend,
 			type: 'post',
 			cache: false,
@@ -871,9 +869,7 @@ MobileSurvey.SurveyView = Backbone.View.extend({
 	makeSaveRequest: function(sendDataObject, successCallback, errorCallback) {
 		var sendData = JSON.stringify(sendDataObject);
 		$.ajax({
-			//url: "http://surveytest.txtfeedback.net/MobileSurvey/SaveSurvey",
-			//url: "http://tablet.txtfeedback.net/MobileSurvey/SaveSurvey",
-			url: "http://demoloyaltyinsights.cloudapp.net/MobileSurvey/SaveSurvey",
+			url: siteDomain + "/MobileSurvey/SaveSurvey",
 			data: sendData,
 			crossDomain: true,
 			type: 'post',

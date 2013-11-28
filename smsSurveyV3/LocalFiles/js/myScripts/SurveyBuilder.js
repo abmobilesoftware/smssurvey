@@ -189,12 +189,8 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
       this.questionSetModel = new Question.QuestionSetModel();
    },
    urlByMethod: {
-      "read": "http://demoloyaltyinsights.cloudapp.net/MobileSurvey/ActiveSurveyAsJson?company=TestAbMobile&location=TestTableta",
-      "update": "http://demoloyaltyinsights.cloudapp.net/SurveyTemplate/SaveSurvey"
-	  //    "read": "http://tablet.txtfeedback.net/MobileSurvey/ActiveSurveyAsJson?company=TestAbMobile&location=TestTableta",
-	    //  "update": "http://tablet.txtfeedback.net/SurveyTemplate/SaveSurvey"
-          //"read": "http://surveytest.txtfeedback.net/MobileSurvey/ActiveSurveyAsJson?company=TestAbMobile&location=TestTableta",
-          //"update": "http://surveytest.txtfeedback.net/SurveyTemplate/SaveSurvey"
+      "read": siteDomain + "/MobileSurvey/ActiveSurveyAsJson?company=TestAbMobile&location=TestTableta",
+      "update": siteDomain + "/SurveyTemplate/SaveSurvey"	  
    },
    idAttribute: "Id",
    updateThankYouMessage: function (thankYouMessage) {

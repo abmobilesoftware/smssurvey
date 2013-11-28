@@ -29,9 +29,15 @@
          
          <%
          } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_MANY_FROM_MANY) { 
+         %>
+            <div class="checkbox-area">
+         <%
             _.each(Answers, function(answer, index) {  %>                     
-               <input type="checkbox" id="m-a-<%= answer.AnswerIdentifier %>" class="css-checkbox" value="<%= answer.AnswerIdentifier %>" />
-         <label for="m-a-<%= answer.AnswerIdentifier %>" name="multiple-answers-label" class="css-label"><%=answer.AnswerLabel %></label>
+               <div class="checkbox-item">
+                  <input type="checkbox" class="css-checkbox" value="<%= answer.AnswerIdentifier %>" id="m-a-<%= answer.AnswerIdentifier %>-<%= Id %>" />
+                  <label for="m-a-<%= answer.AnswerIdentifier %>-<%= Id %>" class="css-label-checkbox checkbox-text"></label>
+                  <label for="m-a-<%= answer.AnswerIdentifier %>-<%= Id %>" class="question-checkbox-text"><%=answer.AnswerLabel %> </label>
+               </div>
          <% });
          } else if (Type == SurveyUtilities.Utilities.CONSTANTS_QUESTION.TYPE_SELECT_ONE_FROM_MANY) {
          %>     
@@ -135,9 +141,9 @@
                   </div>
                   <div id="checkbox-wrapper">
                   <% if (ShowCheckbox) { %>
-                        <input type="checkbox" class="css-checkbox" id="personal-information-checkbox" checked />
-                        <label for="personal-information-checkbox" class="css-label-checkbox" id="checkbox-text"></label>
-                        <label for="personal-information-checkbox" class="" id="real-checkbox-text"><%= CheckboxText %> </label>
+                        <input type="checkbox" class="css-checkbox1" id="personal-information-checkbox1" checked />
+                        <label for="personal-information-checkbox1" class="css-label-checkbox1" id="checkbox-text1"></label>
+                        <label for="personal-information-checkbox1" id="real-checkbox-text1"><%= CheckboxText %> </label>
                   <% } %>
                   </div>
                </div>
