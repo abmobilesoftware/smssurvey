@@ -9,13 +9,13 @@
 </criteria>
 <properties>
 <property key="android:package.name" value="com.mosync.app_TxtFeedbackTabletSurvey"/>
-<property key="android:version.number" value="3"/>
+<property key="android:version.number" value="4"/>
 <property key="build.prefs:additional.include.paths/Release" value=""/>
 <property key="build.prefs:additional.libraries" value="MAUtil.lib, NativeUI.lib, MAFS.lib, Wormhole.lib, yajl.lib, Notification.lib"/>
 <property key="build.prefs:additional.libraries/Debug" value="MAUtilD.lib, NativeUID.lib, MAFSD.lib, WormholeD.lib, yajlD.lib, NotificationD.lib"/>
 <property key="build.prefs:additional.library.paths/Release" value=""/>
 <property key="build.prefs:app.permissions" value="File\ Storage Internet\ Access Push\ Notifications Vibration"/>
-<property key="build.prefs:app.version/Release" value="1.1"/>
+<property key="build.prefs:app.version/Release" value="1.2"/>
 <property key="build.prefs:extra.link.sw/Release" value=""/>
 <property key="build.prefs:extra.res.sw/Release" value=""/>
 <property key="build.prefs:gcc.warnings/Debug" value="10"/>
