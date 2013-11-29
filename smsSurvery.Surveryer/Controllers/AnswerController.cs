@@ -50,7 +50,7 @@ namespace smsSurvery.Surveryer.Controllers
          //for the given survey (if allowed access) show messages with given stem           
          List<FreeTextAnswer> messages = new List<FreeTextAnswer>();
          IEnumerable<Result> allResults = null;
-         if (tags.Length == 0)
+         if (tagsArray.Length == 0)
          {
             allResults = db.ResultSet.Where(x => x.Question.Id == questionId && (
                 x.Question.Type == ReportsController.cRatingsTypeQuestion || x.Question.Type == ReportsController.cYesNoTypeQuestion
@@ -107,7 +107,7 @@ namespace smsSurvery.Surveryer.Controllers
          //for the given survey (if allowed access) show messages with given stem           
          List<FreeTextAnswer> messages = new List<FreeTextAnswer>();
          IEnumerable<Result> allResults = null;
-         if (tags.Length == 0)
+         if (tagsArray.Length == 0)
          {
              allResults = db.ResultSet.Where(x => x.Question.Id == questionId &&
                  x.Question.Type == ReportsController.cSelectManyFromManyTypeQuestion && x.DateSubmitted >= intervalStart &&
@@ -140,7 +140,7 @@ namespace smsSurvery.Surveryer.Controllers
          @ViewBag.Answer = humanFriendlyAnswers[index];
          @ViewBag.QuestionText = question.Text;
          ViewBag.pagingDetails = pagingDetails;
-         return View("GetMessagesWithOnePredefinedAnswer", messages.ToList());
+         return View("GetMessagesWithOnePredefinedAnswer", results.ToList());
       }
 
       [HttpGet]
