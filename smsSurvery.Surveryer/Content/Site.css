@@ -914,7 +914,7 @@ text-align: center;
 }
 
 #table-scroll {
-  height:400px;
+  height:auto;
   overflow:auto;  
   margin-top:20px;
 }
@@ -924,7 +924,7 @@ text-align: center;
 }
 
 #phonenumbers {
-   width: 330px;
+   /*width: 330px;*/
    text-align: left;
 }
 

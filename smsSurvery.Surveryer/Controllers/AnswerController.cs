@@ -29,7 +29,7 @@ namespace smsSurvery.Surveryer.Controllers
 
       [HttpGet]
       [Authorize]
-      public ActionResult GetMessagesWithOnePredefinedAnswer(int questionId, int answer, string iIntervalStart, 
+      public ActionResult GetMessagesWithOnePredefinedAnswer(int questionId, int answer, string iIntervalStart,
          string iIntervalEnd, string tags, int page = 1)
       {
          DateTime intervalStart = DateTime.ParseExact(iIntervalStart, cDateFormat, CultureInfo.InvariantCulture);
@@ -82,12 +82,12 @@ namespace smsSurvery.Surveryer.Controllers
          @ViewBag.Answer = humanFriendlyAnswers[index];
          @ViewBag.QuestionText = question.Text;
          ViewBag.pagingDetails = pagingDetails;
-         return View(messages.ToList());         
+         return View(messages.ToList());
       }
 
       [HttpGet]
       [Authorize]
-      public ActionResult GetManyFromManyResultsWithOnePredefinedAnswer(int questionId, string iIntervalStart, 
+      public ActionResult GetManyFromManyResultsWithOnePredefinedAnswer(int questionId, string iIntervalStart,
          string iIntervalEnd, string tags, int answer, int page = 1)
       {
          DateTime intervalStart = DateTime.ParseExact(iIntervalStart, cDateFormat, CultureInfo.InvariantCulture);
@@ -109,10 +109,10 @@ namespace smsSurvery.Surveryer.Controllers
          IEnumerable<Result> allResults = null;
          if (tagsArray.Length == 0)
          {
-             allResults = db.ResultSet.Where(x => x.Question.Id == questionId &&
-                 x.Question.Type == ReportsController.cSelectManyFromManyTypeQuestion && x.DateSubmitted >= intervalStart &&
-                 x.DateSubmitted <= intervalEnd).
-                   OrderByDescending(x => x.DateSubmitted);
+            allResults = db.ResultSet.Where(x => x.Question.Id == questionId &&
+                x.Question.Type == ReportsController.cSelectManyFromManyTypeQuestion && x.DateSubmitted >= intervalStart &&
+                x.DateSubmitted <= intervalEnd).
+                  OrderByDescending(x => x.DateSubmitted);
          }
          else
          {
@@ -153,10 +153,10 @@ namespace smsSurvery.Surveryer.Controllers
 
          DateTime intervalStart = DateTime.ParseExact(iIntervalStart, cDateFormat, CultureInfo.InvariantCulture);
          DateTime intervalEnd = DateTime.ParseExact(iIntervalEnd, cDateFormat, CultureInfo.InvariantCulture);
-         
-         SurveyTemplate sp = db.SurveyTemplateSet.Find(surveyId);                         
+
+         SurveyTemplate sp = db.SurveyTemplateSet.Find(surveyId);
          var tagsArray = String.IsNullOrEmpty(tags) ? new string[0] : tags.Split(',');
-         
+
          List<Tags> processedTags = new List<Tags>();
          for (var i = 0; i < tagsArray.Count(); ++i)
          {
@@ -170,7 +170,7 @@ namespace smsSurvery.Surveryer.Controllers
             IEnumerable<SurveyResult> sResult = null;
             if (tagsArray.Length == 0)
             {
-               sResult = sp.SurveyResult.Where(sr => Math.Abs(sr.PercentageComplete - percentageCompleted) <= 0.01 && 
+               sResult = sp.SurveyResult.Where(sr => Math.Abs(sr.PercentageComplete - percentageCompleted) <= 0.01 &&
                   sr.DateRan >= intervalStart && sr.DateRan <= intervalEnd).OrderByDescending(sr => sr.DateRan);
             }
             else
@@ -200,7 +200,7 @@ namespace smsSurvery.Surveryer.Controllers
          int currentPageIndex = page - 1;
          int NUMBER_OF_RESULTS_PER_PAGE = 10;
 
-         
+
          var tagsArray = String.IsNullOrEmpty(tags) ? new string[0] : tags.Split(',');
          List<Tags> processedTags = new List<Tags>();
          for (var i = 0; i < tagsArray.Count(); ++i)
@@ -223,7 +223,7 @@ namespace smsSurvery.Surveryer.Controllers
             else
             {
                allResults = db.ResultSet.Where(r => r.QuestionId == questionId && r.DateSubmitted >= intervalStart &&
-                  r.DateSubmitted<=intervalEnd && tagsArray.Intersect(r.SurveyResult.Tags.Select(tag => tag.Name)).Any()).OrderByDescending(x => x.DateSubmitted);
+                  r.DateSubmitted <= intervalEnd && tagsArray.Intersect(r.SurveyResult.Tags.Select(tag => tag.Name)).Any()).OrderByDescending(x => x.DateSubmitted);
             }
             //DA get the stemmer
             Language lg = Language.AnyTxt;
@@ -350,7 +350,7 @@ namespace smsSurvery.Surveryer.Controllers
                      {
                         resultToUpdate.Answer = text;
                      }
-                     
+
                      db.SaveChanges();
                      receivedMultipleAnswersToSameQuestion = true;
                   }
@@ -585,6 +585,33 @@ namespace smsSurvery.Surveryer.Controllers
          }
       }
 
+      public MessageStatus SendSmsToCustomer(
+        string numberToSendFrom,
+        string customerPhoneNumber,
+        string smsText,
+        smsSurveyEntities db)
+      {
+         var customer = db.CustomerSet.Find(customerPhoneNumber);
+         if (customer == null)
+         {
+            customer = new Customer() { PhoneNumber = customerPhoneNumber, Name = customerPhoneNumber, Surname = customerPhoneNumber };
+            db.CustomerSet.Add(customer);
+            db.SaveChanges();
+         }
+
+         var message = new MessagesSet()
+         {
+            Customer = customer,
+            To = customerPhoneNumber,
+            Text = smsText,
+            TimeSent = DateTime.Now
+         };
+         db.MessagesSet.Add(message);
+         db.SaveChanges();        
+
+         return SendSmsToNumber(message, numberToSendFrom, db);
+      }
+
       private static MessageStatus SendQuestionToCustomer(Customer c, string numberToSendFrom, Question q, int totalNumberOfQuestions, bool isFirstQuestion, smsSurveyEntities db, string introMessage = "")
       {
          logger.DebugFormat("question id: {0}, to customer: {1}, from number: {2}", q.Id, c.PhoneNumber, numberToSendFrom);
@@ -594,6 +621,20 @@ namespace smsSurvery.Surveryer.Controllers
          string smsText = PrepareSMSTextForQuestion(q, totalNumberOfQuestions, isFirstQuestion, introMessage);
 
          var result = smsinterface.SendMessage(numberToSendFrom, c.PhoneNumber, smsText);
+         return result;
+      }
+
+      private static MessageStatus SendSmsToNumber(MessagesSet m, string numberToSendFrom, smsSurveyEntities db)
+      {
+         logger.DebugFormat("to customer: {0}, from number: {1}", m.Customer.PhoneNumber, numberToSendFrom);
+
+         var smsinterface = SmsInterfaceFactory.GetCompatelSmsInterface();
+         //DA before we send the SMS question we must prepare it - add the expected answers to it
+         var result = smsinterface.SendMessage(numberToSendFrom, m.Customer.PhoneNumber, m.Text);
+         m.ExternalID = result.ExternalID;
+         m.Price = result.Price;
+         m.TimeSent = result.DateSent;
+         db.SaveChanges();
          return result;
       }
 
@@ -615,7 +656,7 @@ namespace smsSurvery.Surveryer.Controllers
             case ReportsController.cFreeTextTypeQuestion:
                //DA see tests for expected answer
                var callForFreeTextQuestion = GlobalResources.Global.SmsQuestionFreeTextSuffix;
-               return prefix + q.Text + System.Environment.NewLine + callForFreeTextQuestion;               
+               return prefix + q.Text + System.Environment.NewLine + callForFreeTextQuestion;
             case ReportsController.cNumericTypeQuestion:
                try
                {
@@ -634,7 +675,7 @@ namespace smsSurvery.Surveryer.Controllers
                   //most probably ValidAnswers and ValidAnswerDetails were not aligned
                   logger.Error(String.Format("ValidAnswers and ValidAnswerDetails not aligned for question {0}", q.Id), ex);
                   return prefix + q.Text;
-               }               
+               }
             case ReportsController.cRatingsTypeQuestion:
                {
                   /*
@@ -683,9 +724,9 @@ namespace smsSurvery.Surveryer.Controllers
                   {
                      pairs.Add(String.Format(GlobalResources.Global.SmsQuestionSelectOneFromManyMemberSuffixTemplate, validAnswer[i], validAnswerDetails[i]));
                   }
-                  string suffix = GlobalResources.Global.SmsQuestionSelectOneFromManySuffixTemplate + System.Environment.NewLine  + String.Join(System.Environment.NewLine, pairs);
+                  string suffix = GlobalResources.Global.SmsQuestionSelectOneFromManySuffixTemplate + System.Environment.NewLine + String.Join(System.Environment.NewLine, pairs);
                   return prefix + q.Text + System.Environment.NewLine + suffix;
-               }               
+               }
             case ReportsController.cSelectManyFromManyTypeQuestion:
                {
                   //We are aiming at: Reply by responding with the selected options, separated by comma (e.g. 1,2,4):
@@ -696,9 +737,9 @@ namespace smsSurvery.Surveryer.Controllers
                   {
                      pairs.Add(String.Format(GlobalResources.Global.SmsQuestionSelectManyFromManyMemberSuffixTemplate, validAnswer[i], validAnswerDetails[i]));
                   }
-                  string suffix = GlobalResources.Global.SmsQuestionSelectManyFromManySuffixTemplate + System.Environment.NewLine  + String.Join(System.Environment.NewLine, pairs);
+                  string suffix = GlobalResources.Global.SmsQuestionSelectManyFromManySuffixTemplate + System.Environment.NewLine + String.Join(System.Environment.NewLine, pairs);
                   return prefix + q.Text + System.Environment.NewLine + suffix;
-               }               
+               }
             default:
                return prefix + q.Text;
          }

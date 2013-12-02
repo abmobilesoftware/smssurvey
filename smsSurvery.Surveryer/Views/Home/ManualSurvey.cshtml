@@ -1,190 +1,322 @@
 ﻿@model smsSurvery.Surveryer.Controllers.ManualSurvey
 
 @{
-    ViewBag.Title = "Send survey manually";
+   ViewBag.Title = "Send survey manually";
 }
 
 <h2>Start manual survey</h2>
 
 <h5>Add tags that you want to associate to your survey</h5>
 <div id="tagContainer">
-       <input name="filterTag" id="filterTag" type="text"/>
- </div>
-<div id="left">
-   <h3>Add users</h3>
-  @using (Html.BeginForm("ManualSurvey", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
-  {
-      @Html.AntiForgeryToken()
-      @Html.Hidden("selectedSurveyId", (int)  @ViewBag.DefaultSelectionForSurveyId);
-      <input class="btn " type="file" id="cvsFile" name="cvsFile" />
-      <input class="btn btn-info"  type="submit" name="btnImport" value="Import CVS" />
-  }
-   
-   <p>or</p>
-   <label>Add customer phone number (numbers must start with the country prefix)</label> 
-   <input type="text" id="newphonenr"/>
-   <button id="add" class="btn btn-info"> Add</button> 
-   <div id="table-scroll">
-    <table id="phonenumbers">
-       <thead>
-          <th>
-             Phone number
-          </th>
-          <th>
-             Actions
-          </th>
-       </thead>
-       @if (ViewBag.PhoneNumbers != null) {
-       foreach (var phNr in ViewBag.PhoneNumbers)
-       {
-          <tr type="phnr">
-              <td type="nr">@phNr</td>
-             <td><button class="remove btn btn-danger btn-small"> Remove</button></td>
+   <input name="filterTag" id="filterTag" type="text" />
+</div>
 
-          </tr>
-       }
-       }
-    </table>
-    </div>
+<div id="run-action">
+   <button id="run" class="btn btn-primary">Run</button>
+</div>
+<div class="alert alert-danger hide"></div>
+<div class="alert alert-success hide"></div>
+<div id="action-1">
+   <h3><strong>1. Choose your action</strong></h3>
+   <ul class="nav nav-tabs" id="action-tabs">
+      <li><a href="#sms-tab" class="sms-link" data-toggle="tab">Quick SMS</a></li>
+      <li><a href="#survey-tab" class="survey-link" data-toggle="tab">Survey</a></li>
+   </ul>
+
+   <div class="tab-content tab-choose-action">
+      <div class="tab-pane active" id="sms-tab">
+         <div id="quickSms">
+            <textarea id="sms-message-textarea" placeholder="Insert SMS text here..."></textarea>
+         </div>
+      </div>
+      <div class="tab-pane" id="survey-tab">
+         <table>
+            <thead>
+               <th>Survey to run</th>
+               <th>Choose the survey language</th>
+               <th>Survey type</th>
+            </thead>
+            <tr>
+               <td>
+                  @Html.DropDownList("ID", "Choose a survey")
+               </td>
+               <td>
+                  @Html.DropDownList("Language", new SelectList(new List<SelectListItem>() { new SelectListItem() { Text = "English", Value = "en-US" }, new SelectListItem() { Text = "Romanian", Value = "ro-RO" } }, "Value", "Text"))
+               </td>
+               <td>
+                  @Html.DropDownList("SurveyType", new SelectList(new List<SelectListItem>() { new SelectListItem() { Text = "Mobile survey", Value = "mobile" }, new SelectListItem() { Text = "Full SMS survey", Value = "sms" } }, "Value", "Text"))
+               </td>
+            </tr>
+         </table>
+         <div><span id="runSurveyResult"></span></div>
+      </div>
+   </div>
+</div>
+
+<div id="action-2">
+   <h3><strong>2. Add contacts</strong></h3>
+   <div id="add-contacts">
+      @using (Html.BeginForm("ManualSurvey", "Home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+      {
+         @Html.AntiForgeryToken()
+         @Html.Hidden("selectedSurveyId", (int)@ViewBag.DefaultSelectionForSurveyId);
+         <p>Import bulk</p>
+         <input class="btn " type="file" id="cvsFile" name="cvsFile" />
+         <input class="btn btn-info" type="submit" name="btnImport" value="Import CVS" />
+      }
+
+      <p>or</p>
+      <label>Add customer phone number (numbers must start with the country prefix)</label>
+      <input type="text" id="newphonenr" placeholder="Ex: 40758526698" />
+      <button id="add" class="btn btn-info">Add</button>
+   </div>
+   <div id="table-scroll">
+      <table class="table table-striped" id="phonenumbers">
+         <thead>
+            <th>Phone number
+            </th>
+            <th>Actions
+            </th>
+         </thead>
+         @if (ViewBag.PhoneNumbers != null)
+         {
+            foreach (var phNr in ViewBag.PhoneNumbers)
+            {
+            <tr type="phnr">
+               <td type="nr">@phNr</td>
+               <td>
+                  <button class="remove btn btn-danger btn-small">Remove</button></td>
+
+            </tr>
+            }
+         }
+      </table>
+   </div>
+   <div class="clear"></div>
 </div>
 <div if="userList"></div>
-<div id="right" >
-    <h3>Select Survey</h3>
-   <fieldset>      
-      <div>
-         @Html.LabelFor(model => model.SelectedSurveyID)
-      </div>
-      <div>
-         @Html.DropDownList("ID", "Choose a survey")      
-      </div>
-      <div>
-        <label> Choose the survey language</label>
-      </div>
-       <div>
-         @Html.DropDownList("Language", new SelectList(new List<SelectListItem>() {  new SelectListItem(){Text ="English", Value="en-US"}, new SelectListItem() {Text="Romanian",Value="ro-RO"} },"Value", "Text"))
-      </div>
-    
-      <label>Survey type</label> 
-      <div>
-         @Html.DropDownList("SurveyType", new SelectList(new List<SelectListItem>() {  new SelectListItem(){Text ="Mobile survey", Value="mobile"}, new SelectListItem() {Text="Full SMS survey",Value="sms"} },"Value", "Text"))
-      </div>
-                
-      <p>
-          <button id="run" class="btn btn-primary"> Run</button> 
-      </p>
-   </fieldset>   
-   <div><span id="runSurveyResult"></span></div>
-</div>
+
 
 @section css{
-    @Styles.Render("~/Content/custom")
-   }
+   @Styles.Render("~/Content/custom")
+   @Styles.Render("~/Content/manual-survey")
+}
 @section Scripts {
-    @Scripts.Render("~/bundles/referencescripts")
-<script>
-   $(function () {
-      var self = this;
+   @Scripts.Render("~/bundles/referencescripts")
+   <script>
+      $(function () {
+         var self = this;
 
-      $('#add').click(function () {
-         var newtelno = $("#newphonenr").val();
-         if (newtelno !== "") {
-            //test the phone number to be added
-            var regex = /^\d+$/;
-            if (regex.test(newtelno)) {               
-               var elem = '<tr type="phnr"> <td type="nr">' + newtelno + '</td><td><button class="remove btn btn-danger btn-small"> Remove</button></td></tr>';
-               $('#phonenumbers tr:last').after(elem);
+         var sendSms = true;
+         /* Tabs */
+         $("#action-tabs .sms-link").click(function (e) {
+            e.preventDefault();
+            $(this).tab("show");
+            sendSms = true;
+         });
+         $("#action-tabs .survey-link").click(function (e) {
+            e.preventDefault();
+            $(this).tab("show");
+            sendSms = false;
+         });
+         $('#action-tabs a:first').tab('show');
+         
+         /* MB Alert blinking - used also in managedDevices, style in devices.css & manual-survey
+         TODO: Condense
+         */
+         var noOfBlinks = 3;
+         var blinkTimer;
+         var cBlinkInterval = 500;
+
+         function startBlinking() {
+            noOfBlinks = 3;
+            blinkTimer = setInterval(blinking, cBlinkInterval);
+         }
+         function blinking() {
+            if (noOfBlinks > 0) {
+               if ($(".alert").hasClass("alert-visible")) {
+                  $(".alert").removeClass("alert-visible");
+                  $(".alert").addClass("alert-invisible");
+               } else {
+                  $(".alert").addClass("alert-visible");
+                  $(".alert").removeClass("alert-invisible");
+                  noOfBlinks = noOfBlinks - 1;
+               }
             } else {
-               alert("only digits are allowed");
+               clearInterval(blinkTimer);
             }
+         }
+         /* End alert blinking */
 
-            $("#newphonenr").val("");
+         var showDangerAlert = function (dangerText) {
+            $(".alert").hide();
+            $(".alert-danger").html(dangerText);
+            $(".alert-danger").show();
+            startBlinking();
          }
-      });
-      //DA when the remove button is clicked, remove the set phone number
-      $('table').on('click', '.remove', function (event) {
-         var trow = $(event.target).parents('tr')[0];
-         trow.remove();         
-      });
 
-      $('#ID').change(function () {
-         var newVal = $(this).val();
-         $('#selectedSurveyId').val(newVal);
-      });
+         var showSuccessAlert = function (successText) {
+            $(".alert").hide();
+            $(".alert-success").html(successText);
+            $(".alert-success").show();
+            startBlinking();
+         }
 
-      $('#run').click(function () {
-         //we should have a survey selected
-         var selSurveyId = $('#ID').find(":selected").attr('value');
-         if (selSurveyId === "") {
-            //display message that you should select a survey
-            alert("Please select a survey to run");
-            return;
+         var disableRunButton = function () {
+            $("#run").attr("disabled", "disabled");
+            $("#run").html("Running...");
          }
-         //we should have at least 1 phone number
-         var phonenumbers = $('tr[type=phnr] td[type=nr]');
-         if (phonenumbers.length === 0) {            
-            //display message that we should have at least 1 number
-            alert("Please add at least 1 phone number");
-            return;
+
+         var enableRunButton = function () {
+            $("#run").removeAttr("disabled");
+            $("#run").html("Run");
          }
-         //we should have a surveyLanguage
-         var surveyLanguage = $('#Language').find(":selected").attr('value');
-         if (surveyLanguage === "") {
-            //display message that you should select a survey
-            alert("Please select a survey language");
-            return;
-         }
-         var numbers = new Array();
-         $.each(phonenumbers, function (index, value) {
-            numbers.push(value.textContent);
+
+         $('#add').click(function () {
+            var newtelno = $("#newphonenr").val();
+            if (newtelno !== "") {
+               //test the phone number to be added
+               var regex = /^\d+$/;
+               if (regex.test(newtelno)) {
+                  var elem = '<tr type="phnr"> <td type="nr">' + newtelno + '</td><td><button class="remove btn btn-danger btn-small"> Remove</button></td></tr>';
+                  $('#phonenumbers tr:last').after(elem);
+               } else {
+                  showDangerAlert("only digits are allowed");
+               }
+
+               $("#newphonenr").val("");
+            }
          });
-         var tags = new Array();
-         var delimiter = ',';
-         tags = $("#filterTag").val().split(delimiter);
-         //if there are no tags the split will return [""] and this will be sent to the server
-         //we guard against this
-         if ("" === tags[0]) {
-            tags = [];
-         }
+         //DA when the remove button is clicked, remove the set phone number
+         $('table').on('click', '.remove', function (event) {
+            var trow = $(event.target).parents('tr')[0];
+            trow.remove();
+         });
 
-         var surveyType = $('#SurveyType').find(":selected").attr('value');
-         var sendMobile = surveyType === "sms" ? false : true;
-         $.ajax({
-            data: {
-               surveyid: selSurveyId,
-               customerNumbers: numbers,
-               sendMobile: sendMobile,
-               tags: tags,
-               surveyLanguage: surveyLanguage
+         $('#ID').change(function () {
+            var newVal = $(this).val();
+            $('#selectedSurveyId').val(newVal);
+         });
+
+         $('#run').click(function () {
+            if (sendSms) {
+               var smsText = $("#sms-message-textarea").val();
+               if (smsText == "") {
+                  showDangerAlert("Please enter the text of the sms");
+                  return;
+               }
+               var phonenumbers = $('tr[type=phnr] td[type=nr]');
+               if (phonenumbers.length === 0) {
+                  //display message that we should have at least 1 number
+                  showDangerAlert("Please add at least 1 phone number");
+                  return;
+               }
+               var numbers = new Array();
+               $.each(phonenumbers, function (index, value) {
+                  numbers.push(value.textContent);
+               });
+               disableRunButton();
+               
+               $.ajax({
+                  data: {
+                     customerNumbers: numbers,
+                     smsText: smsText                     
+                  },
+                  url: "/Home/SendSmsForNumbers",
+                  traditional: true,
+                  async: true,
+                  cache: false,
+                  success: function (data) {
+                     //$("#runSurveyResult").html(data);
+                     $("#sms-message-textarea").val("");
+                     enableRunButton();
+                     showSuccessAlert(data);
+                  }
+               });
+            } else {
+               //we should have a survey selected
+               var selSurveyId = $('#ID').find(":selected").attr('value');
+               if (selSurveyId === "") {
+                  //display message that you should select a survey
+                  showDangerAlert("Please select a survey to run");
+                  return;
+               }
+               //we should have at least 1 phone number
+               var phonenumbers = $('tr[type=phnr] td[type=nr]');
+               if (phonenumbers.length === 0) {
+                  //display message that we should have at least 1 number
+                  showDangerAlert("Please add at least 1 phone number");
+                  return;
+               }
+               //we should have a surveyLanguage
+               var surveyLanguage = $('#Language').find(":selected").attr('value');
+               if (surveyLanguage === "") {
+                  //display message that you should select a survey
+                  showDangerAlert("Please select a survey language");
+                  return;
+               }
+               var numbers = new Array();
+               $.each(phonenumbers, function (index, value) {
+                  numbers.push(value.textContent);
+               });
+               var tags = new Array();
+               var delimiter = ',';
+               tags = $("#filterTag").val().split(delimiter);
+               //if there are no tags the split will return [""] and this will be sent to the server
+               //we guard against this
+               if ("" === tags[0]) {
+                  tags = [];
+               }
+
+               disableRunButton();
+               var surveyType = $('#SurveyType').find(":selected").attr('value');
+               var sendMobile = surveyType === "sms" ? false : true;
+               $.ajax({
+                  data: {
+                     surveyid: selSurveyId,
+                     customerNumbers: numbers,
+                     sendMobile: sendMobile,
+                     tags: tags,
+                     surveyLanguage: surveyLanguage
+                  },
+                  url: "/Home/RunSurveyForNumbers",
+                  traditional: true,
+                  async: true,
+                  cache: false,
+                  success: function (data) {
+                     //$("#runSurveyResult").html(data);
+                     enableRunButton();
+                     showSuccessAlert(data);
+                  }
+               });
+            }
+         });
+
+         $("#filterTag").tagsInput({
+            'height': '22px',
+            'width': 'auto',
+            'autocomplete_url': "/Home/FindMatchingTags",
+            'onAddTag': function (tagValue) {
             },
-            url: "/Home/RunSurveyForNumbers",
-            traditional: true,
-            async: true,
-            cache: false,
-            success: function (data) {
-               $("#runSurveyResult").html(data);
+            'onRemoveTag': function (tagValue) {
+            },
+            'defaultText': 'add tag here',
+            'placeholder': 'add tag here',
+            'interactive': true,
+            'placeholderColor': '#666666',
+            'minChars': 3,
+            'maxChars': 10,
+            'autocomplete': {
+               autoFocus: true,
+               minLength: 1
             }
          });
+
+         $('#myTab a').click(function (e) {
+            e.preventDefault()
+            $(this).tab('show')
+         })
+
       });
-      
-      $("#filterTag").tagsInput({
-         'height': '22px',
-         'width': 'auto',
-         'autocomplete_url': "/Home/FindMatchingTags",
-         'onAddTag': function (tagValue) {                       
-         },
-         'onRemoveTag': function (tagValue) {            
-         },
-         'defaultText': 'add tag here',
-         'placeholder': 'add tag here',
-         'interactive': true,
-         'placeholderColor': '#666666',
-         'minChars': 3,
-         'maxChars': 10,
-         'autocomplete': {            
-            autoFocus: true,
-            minLength: 1
-         }
-      });
-   });
-</script>
- }
+   </script>
+}

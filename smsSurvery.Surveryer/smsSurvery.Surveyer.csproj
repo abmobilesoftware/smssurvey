@@ -343,6 +343,7 @@
     <Content Include="Content\images\screwDefaultButtons\checkboxSmall_Blue.jpg" />
     <Content Include="Content\images\screwDefaultButtons\radio.jpg" />
     <Content Include="Content\images\screwDefaultButtons\radioSmall.jpg" />
+    <Content Include="Content\manual-survey.css" />
     <Content Include="Content\survey.css" />
     <Content Include="Content\SurveyResult\SurveyResult.css" />
     <Content Include="Content\SurveyTemplate\questionSet.css" />

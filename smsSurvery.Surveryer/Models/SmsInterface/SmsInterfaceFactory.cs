@@ -21,6 +21,12 @@ namespace smsSurvery.Surveryer.Models.SmsInterface
                return null;               
          }
       }
+
+      public static IExternalSmsRepository GetCompatelSmsInterface()
+      {
+         return new CompatelSmsRepository();         
+      }
+
       private SmsInterfaceFactory()
       {
 

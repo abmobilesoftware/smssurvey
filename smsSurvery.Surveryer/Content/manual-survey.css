@@ -1,0 +1,62 @@
+﻿#sms-message-textarea {
+   width: 95%;
+}
+
+#run {
+   font-size:22px;
+   padding:11px; 
+   width:30%;
+}
+
+#run-action {
+   text-align: right;
+}
+
+#sms-tab {
+   text-align:center;
+}
+
+#action-1, #action-2 {
+   border: 1px solid #ccc;
+   padding: 2px 10px 10px;
+   margin-bottom:10px;
+}
+
+.tab-choose-action {
+   height: 85px;
+   padding-top:23px;
+   padding-left: 10px;
+   padding-right: 10px;
+   border-radius: 0 0 5px 5px;
+   border-bottom: 1px solid #ddd;
+   border-right: 1px solid #ddd;
+   border-left: 1px solid #ddd;
+   background: #fff;
+}
+
+#run-action {
+   margin-bottom:10px;
+}
+#action-tabs {
+   margin-bottom:0;
+}
+
+#add-contacts {
+   float:left;
+   width:50%;
+}
+
+#table-scroll {
+   float:left;
+   width:50%;
+   background: #fff;
+   border-radius:5px;
+}
+
+.alert-invisible {
+   visibility:hidden;
+}
+
+.alert-visible {
+   visibility: visible;
+}

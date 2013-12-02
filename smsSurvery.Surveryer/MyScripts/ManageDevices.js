@@ -40,32 +40,7 @@
       var $saveBtn = $(".save-device-btn", $btnsGroup);
       var $discardBtn = $(".discard-device-btn", $btnsGroup);
       $discardBtn.show();
-      $saveBtn.removeAttr("disabled");
-      /*var deviceId = $(this).attr("deviceId");
-      if (newLink != "") {
-         $.ajax({
-            url: "/Devices/SendLinkToDevice",
-            type: "POST",
-            data: {
-               deviceId: deviceId,
-               link: newLink
-            },
-            success: function (response) {
-               $(".alert").hide();
-               if (response == "success") {
-                  $(".alert-success").html(cAlertSetSurveySuccess);
-                  $(".alert-success").show();
-                  startBlinking();
-               } else {
-                  $(".alert-danger").html(cAlertCommandFailed);
-                  $(".alert-danger").show();
-                  startBlinking();
-               }
-            }
-         });
-      } else {
-         alert("The new link cannot be empty... I think");
-      }*/
+      $saveBtn.removeAttr("disabled");      
    });
 
    $(".save-device-btn").click(function() {

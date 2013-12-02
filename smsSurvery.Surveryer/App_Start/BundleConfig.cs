@@ -110,7 +110,9 @@ namespace smsSurvery.Surveryer
          bundles.Add(new StyleBundle("~/Content/custom").Include(     
             "~/Content/jquery-ui-1.8.23.custom.css",
             "~/Content/jquery.tagsinput.css"));
-
+         bundles.Add(new StyleBundle("~/Content/manual-survey").Include(
+            "~/Content/manual-survey.css"
+            ));
          bundles.Add(new StyleBundle("~/Content/themes/base/css").Include(
                      "~/Content/themes/base/jquery.ui.core.css",
                      "~/Content/themes/base/jquery.ui.resizable.css",

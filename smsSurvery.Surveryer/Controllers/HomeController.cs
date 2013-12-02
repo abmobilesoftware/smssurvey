@@ -10,7 +10,7 @@ using smsSurvery.Surveryer.Utilities;
 
 namespace smsSurvery.Surveryer.Controllers
 {
-  
+
 
    public class ManualSurvey
    {
@@ -20,7 +20,7 @@ namespace smsSurvery.Surveryer.Controllers
       public IEnumerable<Customer> Customers { get; set; }
    }
 
-   [Authorize]   
+   [Authorize]
    public class HomeController : Controller
    {
       protected class CsvCustomer
@@ -41,14 +41,14 @@ namespace smsSurvery.Surveryer.Controllers
          ViewBag.Message = "Are you ready for our newest, ground-breaking product?";
          var currentSurveys = db.SurveyTemplateSet.Where(s => s.IsRunning).FirstOrDefault();
          if (currentSurveys != null)
-         {            
+         {
             db.Entry(currentSurveys).Collection(s => s.QuestionSet).Load();
          }
          ViewBag.CurrentSurvey = currentSurveys;
-         ViewBag.SurveyQuestions = currentSurveys.QuestionSet.OrderBy(q=>q.Order);
+         ViewBag.SurveyQuestions = currentSurveys.QuestionSet.OrderBy(q => q.Order);
          return View();
       }
-   
+
       [Authorize]
       public ActionResult MyHome()
       {
@@ -62,8 +62,8 @@ namespace smsSurvery.Surveryer.Controllers
             db.Entry(currentSurveys).Collection(s => s.QuestionSet).Load();
             ViewBag.CurrentSurvey = currentSurveys;
             ViewBag.SurveyQuestions = currentSurveys.QuestionSet.OrderBy(q => q.Order);
-         }        
-         return View();         
+         }
+         return View();
       }
 
       [Authorize]
@@ -78,11 +78,11 @@ namespace smsSurvery.Surveryer.Controllers
          ViewBag.DefaultSelectionForSurveyId = 0;
          return View(manSurvey);
       }
-      
+
       [Authorize]
       [HttpPost]
       public ActionResult ManualSurvey(int selectedSurveyId)
-      {        
+      {
          //the file is in Request.Files
          var postedFile = Request.Files["cvsFile"];
          if (!String.IsNullOrEmpty(postedFile.FileName))
@@ -110,11 +110,11 @@ namespace smsSurvery.Surveryer.Controllers
 
       [HttpGet]
       public JsonResult FindMatchingTags(string term)
-      {         
+      {
          try
          {
             var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-            var candidateTags = user.Company.Tags.Where(t => t.Name.IndexOf(term, StringComparison.InvariantCultureIgnoreCase) != -1).Select(t=>t.Name);
+            var candidateTags = user.Company.Tags.Where(t => t.Name.IndexOf(term, StringComparison.InvariantCultureIgnoreCase) != -1).Select(t => t.Name);
             return Json(candidateTags, JsonRequestBehavior.AllowGet);
          }
          catch (Exception ex)
@@ -137,23 +137,24 @@ namespace smsSurvery.Surveryer.Controllers
          {
             logger.Error("Demo error", ex);
             logger.Fatal("musai");
-            
+
          }
          return null;
       }
 
       [Authorize]
-      public JsonResult RunSurveyForNumbers(int surveyid, string[] customerNumbers,bool sendMobile, string[] tags = null, string surveyLanguage="")
-      {         
+      public JsonResult RunSurveyForNumbers(int surveyid, string[] customerNumbers, bool sendMobile, string[] tags = null, string surveyLanguage = "")
+      {
          var userName = User.Identity.Name;
-         var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();         
+         var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
          //some sanity checks should be required, but later
          var surveyToRun = db.SurveyTemplateSet.Find(surveyid);
          var selectedTags = tags != null ? tags : new string[0];
          var answersController = new AnswerController();
          answersController.ControllerContext = this.ControllerContext;
          surveyLanguage = String.IsNullOrEmpty(surveyLanguage) ? surveyToRun.DefaultLanguage : surveyLanguage;
-         if(surveyToRun != null) {
+         if (surveyToRun != null)
+         {
             foreach (var nr in customerNumbers)
             {
                var cleanNumber = Utilities.Utilities.CleanUpPhoneNumber(nr);
@@ -164,14 +165,31 @@ namespace smsSurvery.Surveryer.Controllers
       }
 
       [Authorize]
+      public JsonResult SendSmsForNumbers(string[] customerNumbers, string smsText)
+      {
+         var userName = User.Identity.Name;
+         var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+
+         var answersController = new AnswerController();
+         answersController.ControllerContext = this.ControllerContext;
+         foreach (var nr in customerNumbers)
+         {
+            var cleanNumber = Utilities.Utilities.CleanUpPhoneNumber(nr);
+            answersController.SendSmsToCustomer(user.DefaultTelNo, cleanNumber, smsText, db);
+         }
+
+         return Json("Sms sent successfully", JsonRequestBehavior.AllowGet);
+      }
+
+      [Authorize]
       public JsonResult UserForSurvey()
       {
          List<Customer> customers = new List<Customer>();
-         var c = new Customer() { PhoneNumber = "40751569435", Name="40751569435", Surname="40751569435" };
+         var c = new Customer() { PhoneNumber = "40751569435", Name = "40751569435", Surname = "40751569435" };
          customers.Add(c);
          return Json(customers, JsonRequestBehavior.AllowGet);
       }
-     
+
 
       public ActionResult About()
       {
@@ -188,7 +206,7 @@ namespace smsSurvery.Surveryer.Controllers
 
       protected override void Dispose(bool disposing)
       {
-         db.Dispose();         
+         db.Dispose();
          base.Dispose(disposing);
       }
    }
