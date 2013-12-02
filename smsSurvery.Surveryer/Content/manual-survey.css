@@ -23,7 +23,7 @@
 }
 
 .tab-choose-action {
-   height: 85px;
+   height: 120px;
    padding-top:23px;
    padding-left: 10px;
    padding-right: 10px;
@@ -59,4 +59,19 @@
 
 .alert-visible {
    visibility: visible;
+}
+
+.facts-sms td {
+   text-align:left;
+   padding-left:15px;
+   padding-right:15px;
+   min-width: 95px;
+}
+
+.facts-sms {
+   float:right;
+}
+
+#facts-sms-wrapper {
+   text-align:right;
 }

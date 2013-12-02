@@ -27,6 +27,16 @@
       <div class="tab-pane active" id="sms-tab">
          <div id="quickSms">
             <textarea id="sms-message-textarea" placeholder="Insert SMS text here..."></textarea>
+            <div id="facts-sms-wrapper">
+               <table class="facts-sms">
+                  <tr>
+               <td><strong>Nr of characters</strong></td><td id="noOfCharacters"></td>
+                 </tr>
+                  <tr>
+               <td><strong>Nr of sms</strong></td><td id="noOfSms"></td>
+                 </tr>
+               </table>
+            </div>
          </div>
       </div>
       <div class="tab-pane" id="survey-tab">
@@ -198,6 +208,33 @@
             $('#selectedSurveyId').val(newVal);
          });
 
+         function isDoubleByte(str) {
+            for (var i = 0, n = str.length; i < n; i++) {
+               if (str.charCodeAt(i) > 255) { return true; }
+            }
+            return false;
+         }
+
+         // initialize
+         function resetSmsTextArea() {
+            $("#sms-message-textarea").val("");
+            $("#noOfCharacters").html("0");
+            $("#noOfSms").html("0 sms");
+         }         
+
+         resetSmsTextArea();
+         $("#sms-message-textarea").on("keyup", function (event) {
+            var smsText = $("#sms-message-textarea").val();
+            $("#noOfCharacters").html(smsText.length);
+            var nrOfSms = smsText.length / 160;
+            var isUnicode = false;
+            if (isDoubleByte(smsText)) {
+               nrOfSms = smsText.length / 70;
+               isUnicode = true;
+            }
+            $("#noOfSms").html(Math.ceil(nrOfSms) + " sms" + (isUnicode ? "(unicode)" : ""));
+         });
+
          $('#run').click(function () {
             if (sendSms) {
                var smsText = $("#sms-message-textarea").val();
@@ -230,6 +267,7 @@
                      //$("#runSurveyResult").html(data);
                      $("#sms-message-textarea").val("");
                      enableRunButton();
+                     resetSmsTextArea();
                      showSuccessAlert(data);
                   }
                });

@@ -599,12 +599,14 @@ namespace smsSurvery.Surveryer.Controllers
             db.SaveChanges();
          }
 
+         var isUnicode = Utilities.Utilities.ContainsUnicodeCharacter(smsText);
          var message = new MessagesSet()
          {
             Customer = customer,
             To = customerPhoneNumber,
             Text = smsText,
-            TimeSent = DateTime.Now
+            TimeSent = DateTime.Now,
+            NrOfSms = isUnicode ? (int)Math.Ceiling(smsText.Length / (double)70) : (int)Math.Ceiling(smsText.Length / (double)160)
          };
          db.MessagesSet.Add(message);
          db.SaveChanges();        

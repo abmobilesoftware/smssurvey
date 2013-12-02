@@ -7,6 +7,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using smsSurvery.Surveryer.Utilities;
+using System.Threading;
 
 namespace smsSurvery.Surveryer.Controllers
 {
@@ -172,10 +173,16 @@ namespace smsSurvery.Surveryer.Controllers
 
          var answersController = new AnswerController();
          answersController.ControllerContext = this.ControllerContext;
+         var noOfSmsSent = 0;
          foreach (var nr in customerNumbers)
          {
             var cleanNumber = Utilities.Utilities.CleanUpPhoneNumber(nr);
             answersController.SendSmsToCustomer(user.DefaultTelNo, cleanNumber, smsText, db);
+            ++noOfSmsSent;
+            if (noOfSmsSent % 10 == 0)
+            {
+               Thread.Sleep(1000);
+            }
          }
 
          return Json("Sms sent successfully", JsonRequestBehavior.AllowGet);

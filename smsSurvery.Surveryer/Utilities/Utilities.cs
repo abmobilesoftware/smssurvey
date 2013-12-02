@@ -41,5 +41,13 @@ namespace smsSurvery.Surveryer.Utilities
          string responseString = new StreamReader(response.GetResponseStream()).ReadToEnd();
          return responseString;
       }
+
+      public static bool ContainsUnicodeCharacter(string input)
+      {
+         //This will detect for extended ASCII. If you only detect for the true ASCII character range (up to 127), then you could potentially get false positives for extended ASCII characters which does not denote Unicode
+         //http://blog.platformular.com/2012/03/07/determine-a-string-contains-unicode-character-c/
+         const int MaxAnsiCode = 255;
+         return input.Any(c => c > MaxAnsiCode);
+      }
    }
 }
