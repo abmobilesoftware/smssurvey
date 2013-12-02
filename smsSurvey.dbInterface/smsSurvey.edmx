@@ -10,6 +10,7 @@
           <EntitySet Name="Companies" EntityType="smsSurveyModel.Store.Companies" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="CustomerSet" EntityType="smsSurveyModel.Store.CustomerSet" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="DeviceSet" EntityType="smsSurveyModel.Store.DeviceSet" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="MessagesSet" EntityType="smsSurveyModel.Store.MessagesSet" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="QuestionAlertSet" EntityType="smsSurveyModel.Store.QuestionAlertSet" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="QuestionSet" EntityType="smsSurveyModel.Store.QuestionSet" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="ResultSet" EntityType="smsSurveyModel.Store.ResultSet" store:Type="Tables" Schema="dbo" />
@@ -34,6 +35,10 @@
           <AssociationSet Name="FK_CompanyTag" Association="smsSurveyModel.Store.FK_CompanyTag">
             <End Role="Companies" EntitySet="Companies" />
             <End Role="Tags" EntitySet="Tags" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CustomerMessagesSet" Association="smsSurveyModel.Store.FK_CustomerMessagesSet">
+            <End Role="CustomerSet" EntitySet="CustomerSet" />
+            <End Role="MessagesSet" EntitySet="MessagesSet" />
           </AssociationSet>
           <AssociationSet Name="FK_CustomerSurveyResult" Association="smsSurveyModel.Store.FK_CustomerSurveyResult">
             <End Role="CustomerSet" EntitySet="CustomerSet" />
@@ -175,6 +180,19 @@
           <Property Name="CompaniesName" Type="nvarchar" Nullable="false" MaxLength="50" />
           <Property Name="SurveyLink" Type="nvarchar(max)" />
           <Property Name="FriendlyName" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="MessagesSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="To" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Text" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="NrOfSms" Type="int" />
+          <Property Name="TimeSent" Type="datetime" Nullable="false" />
+          <Property Name="ExternalID" Type="nvarchar(max)" />
+          <Property Name="Price" Type="nvarchar(max)" />
+          <Property Name="CustomerPhoneNumber" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="QuestionAlertSet">
           <Key>
@@ -382,6 +400,18 @@
             </Principal>
             <Dependent Role="Tags">
               <PropertyRef Name="CompanyName" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CustomerMessagesSet">
+          <End Role="CustomerSet" Type="smsSurveyModel.Store.CustomerSet" Multiplicity="0..1" />
+          <End Role="MessagesSet" Type="smsSurveyModel.Store.MessagesSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerSet">
+              <PropertyRef Name="PhoneNumber" />
+            </Principal>
+            <Dependent Role="MessagesSet">
+              <PropertyRef Name="CustomerPhoneNumber" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -782,6 +812,11 @@
             <End Role="TabletSettings" EntitySet="TabletSettingsSet" />
             <End Role="Companies" EntitySet="Companies" />
           </AssociationSet>
+          <EntitySet Name="MessagesSet" EntityType="smsSurveyModel.MessagesSet" />
+          <AssociationSet Name="CustomerMessagesSet" Association="smsSurveyModel.CustomerMessagesSet">
+            <End Role="Customer" EntitySet="CustomerSet" />
+            <End Role="MessagesSet" EntitySet="MessagesSet" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="Question">
           <Key>
@@ -838,6 +873,7 @@
           <Property Type="Int32" Name="SurveyPlan_Id" />
           <NavigationProperty Name="RunningSurvey" Relationship="smsSurveyModel.FK_RunningSurvey" FromRole="Customer" ToRole="SurveyPlan" />
           <Property Type="String" Name="Email" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="MessagesSet" Relationship="smsSurveyModel.CustomerMessagesSet" FromRole="Customer" ToRole="MessagesSet" />
         </EntityType>
         <EntityType Name="SurveyResult">
           <Key>
@@ -1219,6 +1255,32 @@
           <End Type="smsSurveyModel.TabletSettings" Role="TabletSettings" Multiplicity="0..1" />
           <End Type="smsSurveyModel.Companies" Role="Companies" Multiplicity="0..1" />
         </Association>
+        <EntityType Name="MessagesSet">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Type="Int32" Name="Id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="To" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Text" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="Int32" Name="NrOfSms" />
+          <Property Type="DateTime" Name="TimeSent" Nullable="false" Precision="3" />
+          <Property Type="String" Name="ExternalID" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Type="String" Name="Price" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Customer" Relationship="smsSurveyModel.CustomerMessagesSet" FromRole="MessagesSet" ToRole="Customer" />
+          <Property Type="String" Name="CustomerPhoneNumber" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+        </EntityType>
+        <Association Name="CustomerMessagesSet">
+          <End Type="smsSurveyModel.Customer" Role="Customer" Multiplicity="1" />
+          <End Type="smsSurveyModel.MessagesSet" Role="MessagesSet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="PhoneNumber" />
+            </Principal>
+            <Dependent Role="MessagesSet">
+              <PropertyRef Name="CustomerPhoneNumber" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1228,21 +1290,21 @@
     <EntitySetMapping Name="QuestionSet">
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.Question)">
         <MappingFragment StoreEntitySet="QuestionSet">
-          <ScalarProperty Name="Required" ColumnName="Required" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="Text" ColumnName="Text" />
           <ScalarProperty Name="Order" ColumnName="Order" />
           <ScalarProperty Name="Type" ColumnName="Type" />
           <ScalarProperty Name="ValidAnswers" ColumnName="ValidAnswers" />
           <ScalarProperty Name="ValidAnswersDetails" ColumnName="ValidAnswersDetails" />
           <ScalarProperty Name="SurveyPlan_Id" ColumnName="SurveyPlan_Id" />
+          <ScalarProperty Name="Required" ColumnName="Required" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
     <EntitySetMapping Name="CustomerSet">
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.Customer)">
         <MappingFragment StoreEntitySet="CustomerSet">
-                <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
+          <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="Surname" ColumnName="Surname" />
           <ScalarProperty Name="SurveyInProgress" ColumnName="SurveyInProgress" />
@@ -1254,8 +1316,6 @@
     <EntitySetMapping Name="SurveyResultSet">
       <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.SurveyResult)">
         <MappingFragment StoreEntitySet="SurveyResultSet">
-                <ScalarProperty Name="PartialResults" ColumnName="PartialResults" />
-                <ScalarProperty Name="IAccept" ColumnName="IAccept" />
                 <ScalarProperty Name="Terminated" ColumnName="Complete" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
           <ScalarProperty Name="DateRan" ColumnName="DateRan" />
@@ -1264,6 +1324,8 @@
           <ScalarProperty Name="CurrentQuestion_Id" ColumnName="CurrentQuestion_Id" />
           <ScalarProperty Name="PercentageComplete" ColumnName="PercentageComplete" />
           <ScalarProperty Name="LanguageChosenForSurvey" ColumnName="LanguageChosenForSurvey" />
+          <ScalarProperty Name="IAccept" ColumnName="IAccept" />
+          <ScalarProperty Name="PartialResults" ColumnName="PartialResults" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -1402,6 +1464,20 @@
           <ScalarProperty Name="SliderImage1" ColumnName="SliderImage1" />
           <ScalarProperty Name="SliderImage2" ColumnName="SliderImage2" />
           <ScalarProperty Name="SliderImage3" ColumnName="SliderImage3" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="MessagesSet">
+      <EntityTypeMapping TypeName="IsTypeOf(smsSurveyModel.MessagesSet)">
+        <MappingFragment StoreEntitySet="MessagesSet">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="To" ColumnName="To" />
+          <ScalarProperty Name="Text" ColumnName="Text" />
+          <ScalarProperty Name="TimeSent" ColumnName="TimeSent" />
+          <ScalarProperty Name="NrOfSms" ColumnName="NrOfSms" />
+          <ScalarProperty Name="ExternalID" ColumnName="ExternalID" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="CustomerPhoneNumber" ColumnName="CustomerPhoneNumber" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>

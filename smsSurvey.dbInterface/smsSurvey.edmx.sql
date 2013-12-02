@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, and Azure
 -- --------------------------------------------------
--- Date Created: 10/30/2013 12:47:19
+-- Date Created: 11/29/2013 16:56:01
 -- Generated from EDMX file: D:\Work\Txtfeedback\Repository Git\smsSurvey\smssurvey\smsSurvey.dbInterface\smsSurvey.edmx
 -- --------------------------------------------------
 
@@ -173,7 +173,8 @@ CREATE TABLE [dbo].[QuestionSet] (
     [Type] nvarchar(50)  NOT NULL,
     [ValidAnswers] nvarchar(1000)  NULL,
     [ValidAnswersDetails] nvarchar(1000)  NULL,
-    [SurveyPlan_Id] int  NOT NULL
+    [SurveyPlan_Id] int  NOT NULL,
+    [Required] bit  NOT NULL
 );
 GO
 
@@ -187,7 +188,10 @@ CREATE TABLE [dbo].[SurveyTemplateSet] (
     [IsRunning] bit  NOT NULL,
     [Provider] nvarchar(50)  NOT NULL,
     [IntroMessage] nvarchar(160)  NOT NULL,
-    [DefaultLanguage] nvarchar(10)  NOT NULL
+    [DefaultLanguage] nvarchar(10)  NOT NULL,
+    [Title] nvarchar(100)  NOT NULL,
+    [ShowCheckbox] bit  NOT NULL,
+    [CheckboxText] nvarchar(300)  NULL
 );
 GO
 
@@ -211,7 +215,9 @@ CREATE TABLE [dbo].[SurveyResultSet] (
     [CurrentQuestion_Id] int  NULL,
     [PercentageComplete] float  NOT NULL,
     [LanguageChosenForSurvey] nvarchar(10)  NULL,
-    [Terminated] bit  NOT NULL
+    [Terminated] bit  NOT NULL,
+    [IAccept] bit  NOT NULL,
+    [PartialResults] bit  NOT NULL
 );
 GO
 

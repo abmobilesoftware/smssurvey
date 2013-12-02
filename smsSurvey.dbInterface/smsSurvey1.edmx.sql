@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, and Azure
 -- --------------------------------------------------
--- Date Created: 10/22/2013 16:20:15
+-- Date Created: 11/29/2013 17:04:20
 -- Generated from EDMX file: D:\Work\Txtfeedback\Repository Git\smsSurvey\smssurvey\smsSurvey.dbInterface\smsSurvey.edmx
 -- --------------------------------------------------
 
@@ -173,7 +173,8 @@ CREATE TABLE [dbo].[QuestionSet] (
     [Type] nvarchar(50)  NOT NULL,
     [ValidAnswers] nvarchar(1000)  NULL,
     [ValidAnswersDetails] nvarchar(1000)  NULL,
-    [SurveyPlan_Id] int  NOT NULL
+    [SurveyPlan_Id] int  NOT NULL,
+    [Required] bit  NOT NULL
 );
 GO
 
@@ -187,7 +188,10 @@ CREATE TABLE [dbo].[SurveyTemplateSet] (
     [IsRunning] bit  NOT NULL,
     [Provider] nvarchar(50)  NOT NULL,
     [IntroMessage] nvarchar(160)  NOT NULL,
-    [DefaultLanguage] nvarchar(10)  NOT NULL
+    [DefaultLanguage] nvarchar(10)  NOT NULL,
+    [Title] nvarchar(100)  NOT NULL,
+    [ShowCheckbox] bit  NOT NULL,
+    [CheckboxText] nvarchar(300)  NULL
 );
 GO
 
@@ -211,7 +215,9 @@ CREATE TABLE [dbo].[SurveyResultSet] (
     [CurrentQuestion_Id] int  NULL,
     [PercentageComplete] float  NOT NULL,
     [LanguageChosenForSurvey] nvarchar(10)  NULL,
-    [Terminated] bit  NOT NULL
+    [Terminated] bit  NOT NULL,
+    [IAccept] bit  NOT NULL,
+    [PartialResults] bit  NOT NULL
 );
 GO
 
@@ -281,6 +287,7 @@ CREATE TABLE [dbo].[Companies] (
     [Bank] nvarchar(50)  NULL,
     [BankAccount] nvarchar(70)  NULL,
     [MobileLogoUrl] nvarchar(500)  NULL,
+    [Mobile64LogoUrl] nvarchar(max)  NULL,
     [TabletSettings_Id] int  NULL
 );
 GO
@@ -338,6 +345,18 @@ CREATE TABLE [dbo].[TabletSettingsSet] (
     [SliderImage1] nvarchar(max)  NULL,
     [SliderImage2] nvarchar(max)  NULL,
     [SliderImage3] nvarchar(max)  NULL
+);
+GO
+
+-- Creating table 'MessagesSet'
+CREATE TABLE [dbo].[MessagesSet] (
+    [Id] int IDENTITY(1,1) NOT NULL,
+    [To] nvarchar(max)  NOT NULL,
+    [Text] nvarchar(max)  NOT NULL,
+    [NrOfSms] int  NOT NULL,
+    [TimeSent] datetime  NOT NULL,
+    [ExternalID] nvarchar(max)  NOT NULL,
+    [Price] nvarchar(max)  NOT NULL
 );
 GO
 
@@ -477,6 +496,12 @@ GO
 -- Creating primary key on [Id] in table 'TabletSettingsSet'
 ALTER TABLE [dbo].[TabletSettingsSet]
 ADD CONSTRAINT [PK_TabletSettingsSet]
+    PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id] in table 'MessagesSet'
+ALTER TABLE [dbo].[MessagesSet]
+ADD CONSTRAINT [PK_MessagesSet]
     PRIMARY KEY CLUSTERED ([Id] ASC);
 GO
 

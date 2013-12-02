@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, and Azure
 -- --------------------------------------------------
--- Date Created: 11/04/2013 14:47:47
+-- Date Created: 11/29/2013 17:25:42
 -- Generated from EDMX file: D:\Work\Txtfeedback\Repository Git\smsSurvey\smssurvey\smsSurvey.dbInterface\smsSurvey.edmx
 -- --------------------------------------------------
 
@@ -109,6 +109,9 @@ GO
 IF OBJECT_ID(N'[dbo].[DeviceSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[DeviceSet];
 GO
+IF OBJECT_ID(N'[smsSurveyModelStoreContainer].[MessagesSet]', 'U') IS NOT NULL
+    DROP TABLE [smsSurveyModelStoreContainer].[MessagesSet];
+GO
 IF OBJECT_ID(N'[dbo].[QuestionAlertSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[QuestionAlertSet];
 GO
@@ -173,7 +176,8 @@ CREATE TABLE [dbo].[QuestionSet] (
     [Type] nvarchar(50)  NOT NULL,
     [ValidAnswers] nvarchar(1000)  NULL,
     [ValidAnswersDetails] nvarchar(1000)  NULL,
-    [SurveyPlan_Id] int  NOT NULL
+    [SurveyPlan_Id] int  NOT NULL,
+    [Required] bit  NOT NULL
 );
 GO
 
@@ -190,7 +194,7 @@ CREATE TABLE [dbo].[SurveyTemplateSet] (
     [DefaultLanguage] nvarchar(10)  NOT NULL,
     [Title] nvarchar(100)  NOT NULL,
     [ShowCheckbox] bit  NOT NULL,
-    [CheckboxText] nvarchar(max)  NULL
+    [CheckboxText] nvarchar(300)  NULL
 );
 GO
 
@@ -214,7 +218,9 @@ CREATE TABLE [dbo].[SurveyResultSet] (
     [CurrentQuestion_Id] int  NULL,
     [PercentageComplete] float  NOT NULL,
     [LanguageChosenForSurvey] nvarchar(10)  NULL,
-    [Terminated] bit  NOT NULL
+    [Terminated] bit  NOT NULL,
+    [IAccept] bit  NOT NULL,
+    [PartialResults] bit  NOT NULL
 );
 GO
 
@@ -342,6 +348,19 @@ CREATE TABLE [dbo].[TabletSettingsSet] (
     [SliderImage1] nvarchar(max)  NULL,
     [SliderImage2] nvarchar(max)  NULL,
     [SliderImage3] nvarchar(max)  NULL
+);
+GO
+
+-- Creating table 'MessagesSet'
+CREATE TABLE [dbo].[MessagesSet] (
+    [Id] int IDENTITY(1,1) NOT NULL,
+    [To] nvarchar(max)  NOT NULL,
+    [Text] nvarchar(max)  NOT NULL,
+    [NrOfSms] int  NULL,
+    [TimeSent] datetime  NOT NULL,
+    [ExternalID] nvarchar(max)  NULL,
+    [Price] nvarchar(max)  NULL,
+    [CustomerPhoneNumber] nvarchar(50)  NOT NULL
 );
 GO
 
@@ -482,6 +501,12 @@ GO
 ALTER TABLE [dbo].[TabletSettingsSet]
 ADD CONSTRAINT [PK_TabletSettingsSet]
     PRIMARY KEY CLUSTERED ([Id] ASC);
+GO
+
+-- Creating primary key on [Id], [To], [Text], [TimeSent] in table 'MessagesSet'
+ALTER TABLE [dbo].[MessagesSet]
+ADD CONSTRAINT [PK_MessagesSet]
+    PRIMARY KEY CLUSTERED ([Id], [To], [Text], [TimeSent] ASC);
 GO
 
 -- Creating primary key on [webpages_Roles_RoleId], [UserProfile_UserId] in table 'webpages_UsersInRoles'
@@ -836,6 +861,20 @@ ADD CONSTRAINT [FK_TabletSettingsCompanies]
 CREATE INDEX [IX_FK_TabletSettingsCompanies]
 ON [dbo].[Companies]
     ([TabletSettings_Id]);
+GO
+
+-- Creating foreign key on [CustomerPhoneNumber] in table 'MessagesSet'
+ALTER TABLE [dbo].[MessagesSet]
+ADD CONSTRAINT [FK_CustomerMessagesSet]
+    FOREIGN KEY ([CustomerPhoneNumber])
+    REFERENCES [dbo].[CustomerSet]
+        ([PhoneNumber])
+    ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+-- Creating non-clustered index for FOREIGN KEY 'FK_CustomerMessagesSet'
+CREATE INDEX [IX_FK_CustomerMessagesSet]
+ON [dbo].[MessagesSet]
+    ([CustomerPhoneNumber]);
 GO
 
 -- --------------------------------------------------

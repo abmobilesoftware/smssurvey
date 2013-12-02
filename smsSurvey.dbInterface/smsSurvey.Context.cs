@@ -41,5 +41,6 @@ namespace smsSurvey.dbInterface
         public DbSet<QuestionAlertSet> QuestionAlertSet { get; set; }
         public DbSet<Device> DeviceSet { get; set; }
         public DbSet<TabletSettings> TabletSettingsSet { get; set; }
+        public DbSet<MessagesSet> MessagesSet { get; set; }
     }
 }

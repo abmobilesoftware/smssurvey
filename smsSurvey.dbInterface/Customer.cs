@@ -17,6 +17,7 @@ namespace smsSurvey.dbInterface
         public Customer()
         {
             this.SurveyResult = new HashSet<SurveyResult>();
+            this.MessagesSet = new HashSet<MessagesSet>();
         }
     
         public string PhoneNumber { get; set; }
@@ -28,5 +29,6 @@ namespace smsSurvey.dbInterface
     
         public virtual ICollection<SurveyResult> SurveyResult { get; set; }
         public virtual SurveyTemplate RunningSurvey { get; set; }
+        public virtual ICollection<MessagesSet> MessagesSet { get; set; }
     }
 }
