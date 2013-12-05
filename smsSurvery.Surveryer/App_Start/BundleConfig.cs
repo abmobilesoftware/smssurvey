@@ -12,7 +12,7 @@ namespace smsSurvery.Surveryer
          bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                      "~/Scripts/jquery-{version}.js",
                      "~/Scripts/jquery-ui-1.10.3.js",
-                     "~/Scripts/bootstrap.js",
+                     "~/Scripts/bootstrap.v3.js",
                      "~/Scripts/underscore.js",
                      "~/Scripts/backbone.js",
                      "~/Scripts/chosen.jquery.js",

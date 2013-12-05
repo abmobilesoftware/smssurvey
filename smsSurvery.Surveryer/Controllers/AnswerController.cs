@@ -628,15 +628,16 @@ namespace smsSurvery.Surveryer.Controllers
 
       private static MessageStatus SendSmsToNumber(MessagesSet m, string numberToSendFrom, smsSurveyEntities db)
       {
-         logger.DebugFormat("to customer: {0}, from number: {1}", m.Customer.PhoneNumber, numberToSendFrom);
-
          var smsinterface = SmsInterfaceFactory.GetCompatelSmsInterface();
          //DA before we send the SMS question we must prepare it - add the expected answers to it
          var result = smsinterface.SendMessage(numberToSendFrom, m.Customer.PhoneNumber, m.Text);
          m.ExternalID = result.ExternalID;
          m.Price = result.Price;
          m.TimeSent = result.DateSent;
-         db.SaveChanges();
+         var status = result.MessageSent ? "SUCCESS" : "FAILED";
+         logger.DebugFormat("{5} send sms to customer: {0}, from number: {1}, externalID: {2}, wasSent: {3}, time: {4}", m.Customer.PhoneNumber, numberToSendFrom,
+            result.ExternalID, result.MessageSent.ToString(), result.DateSent.ToString(), status);
+         db.SaveChanges();         
          return result;
       }
 

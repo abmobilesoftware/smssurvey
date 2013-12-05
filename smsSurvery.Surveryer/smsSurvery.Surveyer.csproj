@@ -242,6 +242,13 @@
     <Compile Include="Controllers\ReportsController.cs" />
     <Compile Include="Controllers\SurveyTemplateController.cs" />
     <Compile Include="Controllers\TestController.cs" />
+    <Compile Include="DisplayProgress\Index.aspx.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DisplayProgress\Index.aspx.designer.cs">
+      <DependentUpon>Index.aspx</DependentUpon>
+    </Compile>
     <Compile Include="GlobalResources\Global.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -287,6 +294,10 @@
     <Compile Include="Utilities\Sanitizer.cs" />
     <Compile Include="Utilities\Utilities.cs" />
     <Compile Include="Utilities\ViewExtensionMethods.cs" />
+    <Compile Include="Views\Home\SendQuickSms.ascx.cs">
+      <DependentUpon>SendQuickSms.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="WordCloud\ByLanguageFactory.cs" />
     <Compile Include="WordCloud\CommonBlacklist.cs" />
     <Compile Include="WordCloud\Blacklist\CommonWords.cs" />
@@ -294,7 +305,9 @@
     <Content Include="App_Readme\Elmah.SqlServer.txt" />
     <Content Include="App_Readme\Elmah.txt" />
     <Content Include="Content\bootstrap-fileupload.css" />
+    <Content Include="Content\bootstrap-theme.v3.css" />
     <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.v3.css" />
     <Content Include="Content\chosen\chosen-sprite.png" />
     <Content Include="Content\chosen\chosen.css" />
     <Content Include="Content\devices.css" />
@@ -350,11 +363,13 @@
     <Content Include="Content\tablet\bootstrap.css" />
     <Content Include="Content\tablet\survey.css" />
     <Content Include="Content\WordCloud.css" />
+    <Content Include="DisplayProgress\Index.aspx" />
     <Content Include="Images\down_arrow_select.jpg" />
     <Content Include="Images\sprites.gif" />
     <Content Include="MyScripts\DateHelper.js" />
     <Content Include="MyScripts\ManageDevices.js" />
     <Content Include="MyScripts\PerLocationReports.js" />
+    <Content Include="Scripts\bootstrap.v3.js" />
     <Content Include="Scripts\GoogleFastButtons.js" />
     <Content Include="MyScripts\Locations.js" />
     <Content Include="MyScripts\MobileSurvey.js" />
@@ -384,6 +399,7 @@
     <Content Include="Scripts\jquery.tagsinput.js" />
     <Content Include="MyScripts\reports.js" />
     <Content Include="Scripts\underscore.js" />
+    <Content Include="Views\Home\SendQuickSms.ascx" />
     <Content Include="WordCloud\CustomBlacklist.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

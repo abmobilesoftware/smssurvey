@@ -22,6 +22,10 @@
    margin-bottom:10px;
 }
 
+#action-1 {
+   margin-top:15px;
+}
+
 .tab-choose-action {
    height: 120px;
    padding-top:23px;
@@ -51,6 +55,8 @@
    width:50%;
    background: #fff;
    border-radius:5px;
+   max-height:300px;
+   overflow-y: auto;
 }
 
 .alert-invisible {
@@ -74,4 +80,31 @@
 
 #facts-sms-wrapper {
    text-align:right;
+}
+
+#progress-log {
+   height:auto; 
+   width:100%;
+   text-align:center;  
+}
+
+#progress-table-wrapper {
+   overflow-y:auto;
+   max-height:300px;
+   margin-top:3px;
+   margin-bottom:10px;
+}
+
+.displayBlock {
+   display: block;
+}
+
+#expand-log-btn-wrapper {
+   text-align:right;
+   margin-top:-13px;
+}
+
+.deliveryFailed {
+   background: #D9534F;
+   color: white;
 }

@@ -31,7 +31,8 @@ namespace smsSurvery.Surveryer.Models.SmsInterface
       }
 
       public MessageStatus SendMessage(string from, string to, string message)
-      {        
+      {   
+         /*
          Configuration configuration = new Configuration(username, password);
 
          // Initialize SMSClient using the Configuration object
@@ -53,6 +54,17 @@ namespace smsSurvery.Surveryer.Models.SmsInterface
             logger.Error("Could not send Compatel message", ex);
             return null;
          }
+          */
+         var randomGenerator = new Random();
+         var randomNumber = randomGenerator.Next(1000);
+         var sentFailed = true;
+         if (randomNumber < 300)
+         {
+            sentFailed = false;
+         }
+         MessageStatus result = new MessageStatus() { Status = "sent", MessageSent = sentFailed, Price = "0.003" , ExternalID = "794541ga4dsa64", DateSent = DateTime.Now };
+            
+         return result;
       }
    }
 }

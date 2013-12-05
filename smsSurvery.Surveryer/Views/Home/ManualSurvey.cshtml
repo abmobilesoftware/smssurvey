@@ -12,8 +12,37 @@
 </div>
 
 <div id="run-action">
-   <button id="run" class="btn btn-primary">Run</button>
+   <form id="run-action-form" action="/DisplayProgress/Index.aspx" method="post" target="progress-iframe">
+      <input type="hidden" id="phone-numbers-input" name="customerNumbers"/>
+      <input type="hidden" id="sms-text-input" name="smsText" />
+      <button type="button" id="run" class="btn btn-primary">Run</button>
+   </form>
 </div>
+
+<div id="progress-section" class="hide">
+   <div class="progress">
+     <div class="progress-bar progress-bar-success" style="width: 35%">
+       <span class="sr-only sr-only-success">35% Complete (success)</span>
+     </div>  
+     <div class="progress-bar progress-bar-danger" style="width: 10%">
+       <span class="sr-only sr-only-danger">10% Complete (danger)</span>
+     </div>
+   </div>
+   <div id="expand-log-btn-wrapper">
+      <button type="button" class="btn btn-danger" id="expand-log-btn">Expand failed log</button>
+   </div>
+   <div id="progress-table-wrapper" class="hide">
+      <table id="progress-log">
+         <thead>
+            <tr>
+               <th>Client phone number</th>
+               <th>Delivery status</th>
+             </tr>
+         </thead>
+      </table>
+   </div>
+</div>
+
 <div class="alert alert-danger hide"></div>
 <div class="alert alert-success hide"></div>
 <div id="action-1">
@@ -114,9 +143,125 @@
 @section Scripts {
    @Scripts.Render("~/bundles/referencescripts")
    <script>
-      $(function () {
-         var self = this;
+      /* MB Alert blinking - used also in managedDevices, style in devices.css & manual-survey
+         TODO: Condense
+         */
+      var noOfBlinks = 3;
+      var blinkTimer;
+      var cBlinkInterval = 500;
 
+      function startBlinking() {
+         noOfBlinks = 3;
+         blinkTimer = setInterval(blinking, cBlinkInterval);
+      }
+      function blinking() {
+         if (noOfBlinks > 0) {
+            if ($(".alert").hasClass("alert-visible")) {
+               $(".alert").removeClass("alert-visible");
+               $(".alert").addClass("alert-invisible");
+            } else {
+               $(".alert").addClass("alert-visible");
+               $(".alert").removeClass("alert-invisible");
+               noOfBlinks = noOfBlinks - 1;
+            }
+         } else {
+            clearInterval(blinkTimer);
+         }
+      }
+      /* End alert blinking */
+
+      /* Display alerts */
+      var showDangerAlert = function (dangerText) {
+         $(".alert").hide();
+         $(".alert-danger").html(dangerText);
+         $(".alert-danger").show();
+         startBlinking();
+      }
+
+      var showSuccessAlert = function (successText) {
+         $(".alert").hide();
+         $(".alert-success").html(successText);
+         $(".alert-success").show();
+         startBlinking();
+      }
+
+      /* Enable disable button */
+      var disableRunButton = function () {
+         $("#run").attr("disabled", "disabled");
+         $("#run").html("Running...");
+      }
+
+      var enableRunButton = function () {
+         $("#run").removeAttr("disabled");
+         $("#run").html("Run");
+      }
+
+      // initialize
+      function resetSmsTextArea() {
+         $("#sms-message-textarea").val("");
+         $("#noOfCharacters").html("0");
+         $("#noOfSms").html("0 sms");
+      }
+
+      function BeginProcess() {
+         // Create an iframe.
+         var iframe = document.createElement("iframe");
+         iframe.name = "progress-iframe";
+
+         // Make the iframe invisible.
+         iframe.style.display = "none";
+
+         // Add the iframe to the DOM.  The process
+         //  will begin execution at this point.
+         document.body.appendChild(iframe);
+      }
+
+      function UpdateProgress(PercentSuccess, PercentFailed, ToNumber, MessageStatus) {
+         $("#progress-section").removeClass("hide");
+         var textSuccess = "Success: " + PercentSuccess + "%";
+         var textFailed = "Failed: " + PercentFailed + "%";
+         $(".progress-bar-success").css("width", PercentSuccess + "%");
+         $(".progress-bar-danger").css("width", PercentFailed + "%");
+
+         if (PercentSuccess > 20) {
+            $(".sr-only-success").html(textSuccess);
+         } else {
+            $(".sr-only-success").html("");
+         }
+         if (PercentFailed > 20) {
+            $(".sr-only-danger").html(textFailed);
+         } else {
+            $(".sr-only-danger").html("");
+         }
+
+         if (!MessageStatus) {
+            var messageStatusAsString = MessageStatus ? "success" : "failed";
+            var newRow = "<tr><td>" + ToNumber + "</td><td class='deliveryFailed'>" + messageStatusAsString + "</td></tr>";
+            $("#progress-log").append(newRow);
+         }
+      }
+
+      function UpdateFinish() {
+         enableRunButton();
+         resetSmsTextArea();
+         showSuccessAlert("Operation completed");
+      }
+
+      $(function () {
+         $("#expand-log-btn").click(function (event) {
+            event.preventDefault();
+            if ($("#progress-table-wrapper").hasClass("hide")) {
+               $("#progress-table-wrapper").removeClass("hide");
+               $("#progress-table-wrapper").show();
+            } else {
+               $("#progress-table-wrapper").addClass("hide");
+               $("#progress-table-wrapper").hide();
+            }
+            
+         });
+
+         var self = this;
+         BeginProcess();
          var sendSms = true;
          /* Tabs */
          $("#action-tabs .sms-link").click(function (e) {
@@ -130,57 +275,6 @@
             sendSms = false;
          });
          $('#action-tabs a:first').tab('show');
-         
-         /* MB Alert blinking - used also in managedDevices, style in devices.css & manual-survey
-         TODO: Condense
-         */
-         var noOfBlinks = 3;
-         var blinkTimer;
-         var cBlinkInterval = 500;
-
-         function startBlinking() {
-            noOfBlinks = 3;
-            blinkTimer = setInterval(blinking, cBlinkInterval);
-         }
-         function blinking() {
-            if (noOfBlinks > 0) {
-               if ($(".alert").hasClass("alert-visible")) {
-                  $(".alert").removeClass("alert-visible");
-                  $(".alert").addClass("alert-invisible");
-               } else {
-                  $(".alert").addClass("alert-visible");
-                  $(".alert").removeClass("alert-invisible");
-                  noOfBlinks = noOfBlinks - 1;
-               }
-            } else {
-               clearInterval(blinkTimer);
-            }
-         }
-         /* End alert blinking */
-
-         var showDangerAlert = function (dangerText) {
-            $(".alert").hide();
-            $(".alert-danger").html(dangerText);
-            $(".alert-danger").show();
-            startBlinking();
-         }
-
-         var showSuccessAlert = function (successText) {
-            $(".alert").hide();
-            $(".alert-success").html(successText);
-            $(".alert-success").show();
-            startBlinking();
-         }
-
-         var disableRunButton = function () {
-            $("#run").attr("disabled", "disabled");
-            $("#run").html("Running...");
-         }
-
-         var enableRunButton = function () {
-            $("#run").removeAttr("disabled");
-            $("#run").html("Run");
-         }
 
          $('#add').click(function () {
             var newtelno = $("#newphonenr").val();
@@ -215,14 +309,9 @@
             return false;
          }
 
-         // initialize
-         function resetSmsTextArea() {
-            $("#sms-message-textarea").val("");
-            $("#noOfCharacters").html("0");
-            $("#noOfSms").html("0 sms");
-         }         
-
          resetSmsTextArea();
+         enableRunButton();
+
          $("#sms-message-textarea").on("keyup", function (event) {
             var smsText = $("#sms-message-textarea").val();
             $("#noOfCharacters").html(smsText.length);
@@ -253,8 +342,11 @@
                   numbers.push(value.textContent);
                });
                disableRunButton();
-               
-               $.ajax({
+               $(".alert").hide();
+               $("#phone-numbers-input").val(numbers.join(","));
+               $("#sms-text-input").val(smsText);
+               $("#run-action-form").submit();
+               /*$.ajax({
                   data: {
                      customerNumbers: numbers,
                      smsText: smsText                     
@@ -270,7 +362,7 @@
                      resetSmsTextArea();
                      showSuccessAlert(data);
                   }
-               });
+               });*/
             } else {
                //we should have a survey selected
                var selSurveyId = $('#ID').find(":selected").attr('value');
@@ -353,8 +445,7 @@
          $('#myTab a').click(function (e) {
             e.preventDefault()
             $(this).tab('show')
-         })
-
+         })       
       });
    </script>
 }
