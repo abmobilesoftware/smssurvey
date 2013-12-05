@@ -55,8 +55,7 @@
    width:50%;
    background: #fff;
    border-radius:5px;
-   max-height:300px;
-   overflow-y: auto;
+   height:263px;   
 }
 
 .alert-invisible {
@@ -107,4 +106,18 @@
 .deliveryFailed {
    background: #D9534F;
    color: white;
+}
+
+.page-link-active {
+   background: #eee;
+   padding:5px;
+}
+
+#phonenumbers-pagination {
+   padding-left: 10px;
+}
+
+.page-link {
+   border: 1px solid #eee;
+   padding:5px 10px;
 }

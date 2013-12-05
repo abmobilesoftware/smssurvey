@@ -294,10 +294,6 @@
     <Compile Include="Utilities\Sanitizer.cs" />
     <Compile Include="Utilities\Utilities.cs" />
     <Compile Include="Utilities\ViewExtensionMethods.cs" />
-    <Compile Include="Views\Home\SendQuickSms.ascx.cs">
-      <DependentUpon>SendQuickSms.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
     <Compile Include="WordCloud\ByLanguageFactory.cs" />
     <Compile Include="WordCloud\CommonBlacklist.cs" />
     <Compile Include="WordCloud\Blacklist\CommonWords.cs" />
@@ -399,7 +395,6 @@
     <Content Include="Scripts\jquery.tagsinput.js" />
     <Content Include="MyScripts\reports.js" />
     <Content Include="Scripts\underscore.js" />
-    <Content Include="Views\Home\SendQuickSms.ascx" />
     <Content Include="WordCloud\CustomBlacklist.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

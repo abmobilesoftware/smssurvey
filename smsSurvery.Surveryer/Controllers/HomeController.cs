@@ -82,7 +82,7 @@ namespace smsSurvery.Surveryer.Controllers
 
       [Authorize]
       [HttpPost]
-      public ActionResult ManualSurvey(int selectedSurveyId)
+      public ActionResult ManualSurvey(int selectedSurveyId, string quickSmsText="")
       {
          //the file is in Request.Files
          var postedFile = Request.Files["cvsFile"];
@@ -91,7 +91,11 @@ namespace smsSurvery.Surveryer.Controllers
             //var fileContent = new StreamReader(postedFile.InputStream).ReadToEnd();
             var csv = new CsvReader(new StreamReader(postedFile.InputStream));
             var customers = csv.GetRecords<CsvCustomer>();
-            ViewBag.PhoneNumbers = customers.Select(x => x.Telephone).ToList();
+            var phoneNumbers = customers.Select(x => x.Telephone).ToList();
+            ViewBag.PhoneNumbers = phoneNumbers;
+            var phoneNumbersAsString = String.Join(",", phoneNumbers);
+            phoneNumbersAsString = "\"" + phoneNumbersAsString + "\"";
+            ViewBag.PhoneNumbersAsString = phoneNumbersAsString;
          }
          var user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
          ViewBag.Surveys = user.SurveyTemplateSet;
@@ -106,6 +110,7 @@ namespace smsSurvery.Surveryer.Controllers
             ViewBag.ID = new SelectList(user.SurveyTemplateSet.ToList(), "Id", "Description", selectedSurveyId);
          }
          ViewBag.DefaultSelectionForSurveyId = selectedSurveyId;
+         ViewBag.QuickSmsText = quickSmsText;
          return View("ManualSurvey", manSurvey);
       }
 

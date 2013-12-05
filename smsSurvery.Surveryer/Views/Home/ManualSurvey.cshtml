@@ -19,6 +19,9 @@
    </form>
 </div>
 
+<div class="alert alert-danger hide"></div>
+<div class="alert alert-success hide"></div>
+
 <div id="progress-section" class="hide">
    <div class="progress">
      <div class="progress-bar progress-bar-success" style="width: 35%">
@@ -43,8 +46,6 @@
    </div>
 </div>
 
-<div class="alert alert-danger hide"></div>
-<div class="alert alert-success hide"></div>
 <div id="action-1">
    <h3><strong>1. Choose your action</strong></h3>
    <ul class="nav nav-tabs" id="action-tabs">
@@ -100,6 +101,7 @@
          @Html.AntiForgeryToken()
          @Html.Hidden("selectedSurveyId", (int)@ViewBag.DefaultSelectionForSurveyId);
          <p>Import bulk</p>
+         <input type="hidden" id="quick-sms-text-input" name="quickSmsText" />
          <input class="btn " type="file" id="cvsFile" name="cvsFile" />
          <input class="btn btn-info" type="submit" name="btnImport" value="Import CVS" />
       }
@@ -116,24 +118,16 @@
             </th>
             <th>Actions
             </th>
-         </thead>
-         @if (ViewBag.PhoneNumbers != null)
-         {
-            foreach (var phNr in ViewBag.PhoneNumbers)
-            {
-            <tr type="phnr">
-               <td type="nr">@phNr</td>
-               <td>
-                  <button class="remove btn btn-danger btn-small">Remove</button></td>
-
-            </tr>
-            }
-         }
+         </thead>         
       </table>
+      <div id="phonenumbers-pagination">
+
+      </div>
    </div>
    <div class="clear"></div>
 </div>
 <div if="userList"></div>
+
 
 
 @section css{
@@ -143,17 +137,28 @@
 @section Scripts {
    @Scripts.Render("~/bundles/referencescripts")
    <script>
+
+      
       /* MB Alert blinking - used also in managedDevices, style in devices.css & manual-survey
          TODO: Condense
          */
       var noOfBlinks = 3;
       var blinkTimer;
       var cBlinkInterval = 500;
+      
+      /* Paging, define variables */
+      var cNumberOfEntriesPerPage = 5;
+      var currentPage = 0;
+      var displayPageFunctionWrapper;
+      var phoneNumbersArray = @Html.Raw(Json.Encode(ViewBag.PhoneNumbers))              
 
+         
       function startBlinking() {
          noOfBlinks = 3;
          blinkTimer = setInterval(blinking, cBlinkInterval);
       }
+
+      var quickSmsTextPersistent = @Html.Raw(Json.Encode(ViewBag.QuickSmsText))
       function blinking() {
          if (noOfBlinks > 0) {
             if ($(".alert").hasClass("alert-visible")) {
@@ -196,11 +201,32 @@
          $("#run").html("Run");
       }
 
+      function isDoubleByte(str) {
+         for (var i = 0, n = str.length; i < n; i++) {
+            if (str.charCodeAt(i) > 255) { return true; }
+         }
+         return false;
+      }
+
+      function computeNoOfSms(smsText) {
+         var nrOfSms = smsText.length / 160;
+         if (isDoubleByte(smsText)) {
+            nrOfSms = smsText.length / 70;
+         }
+         return Math.ceil(nrOfSms);
+      }
+
       // initialize
       function resetSmsTextArea() {
          $("#sms-message-textarea").val("");
          $("#noOfCharacters").html("0");
          $("#noOfSms").html("0 sms");
+      }
+
+      function persistSmsText() {
+         $("#sms-message-textarea").val(quickSmsTextPersistent);
+         $("#noOfCharacters").html(quickSmsTextPersistent.length);
+         $("#noOfSms").html(computeNoOfSms(quickSmsTextPersistent) + " sms");
       }
 
       function BeginProcess() {
@@ -217,6 +243,8 @@
       }
 
       function UpdateProgress(PercentSuccess, PercentFailed, ToNumber, MessageStatus) {
+         PercentSuccess = Math.round(PercentSuccess * 100) / 100;
+         PercentFailed = Math.round(PercentFailed * 100) / 100;
          $("#progress-section").removeClass("hide");
          var textSuccess = "Success: " + PercentSuccess + "%";
          var textFailed = "Failed: " + PercentFailed + "%";
@@ -276,14 +304,68 @@
          });
          $('#action-tabs a:first').tab('show');
 
+         function displayPage(pageNo) {
+            $('#phonenumbers').empty();
+            $("#phonenumbers-pagination").empty();
+            for (var i = pageNo * cNumberOfEntriesPerPage; i < pageNo * cNumberOfEntriesPerPage + cNumberOfEntriesPerPage; ++i) {
+               var elem = '<tr type="phnr"> <td type="nr">' + phoneNumbersArray[i] + '</td><td><button class="remove btn btn-danger btn-small"> Remove</button></td></tr>';
+               $('#phonenumbers').append(elem);
+            }
+            var numberOfPages = Math.ceil(phoneNumbersArray.length / cNumberOfEntriesPerPage);
+
+            if ((currentPage - 5) > 0) {
+               $("#phonenumbers-pagination").append("<span class='more-entries'>...</span>");
+            }
+            for (var i = (currentPage - 5) > 0 ?  (currentPage - 5) : 0; i < (((currentPage + 5) > numberOfPages) ? numberOfPages : (currentPage + 5)); i++) {
+               if (i == currentPage) {
+                  var pageLink = '<a href="#" class="page-link page-link-active" pageNo="' + i + '">' + (i + 1) + '</a>';
+                  $("#phonenumbers-pagination").append(pageLink);
+               } else {
+                  var pageLink = '<a href="#" class="page-link" pageNo="' + i + '">' + (i + 1) + '</a>';
+                  $("#phonenumbers-pagination").append(pageLink);
+               }
+            }
+            if ((currentPage + 5) < phoneNumbersArray.length) {
+               $("#phonenumbers-pagination").append("<span class='more-entries'>...</span>");
+            }
+            //displayPageFunctionWrapper = this;
+
+            $(".page-link").off();
+            $(".page-link").on("click", function (event) {
+               event.preventDefault();
+               var pageNumber = $(this).attr("pageNo");
+               currentPage = parseInt(pageNumber);
+               displayPage(pageNumber);
+            });
+         }
+
+         if (phoneNumbersArray != null) {
+            if (phoneNumbersArray.length > cNumberOfEntriesPerPage) {
+               displayPage(currentPage);
+            }
+         }
+
          $('#add').click(function () {
             var newtelno = $("#newphonenr").val();
             if (newtelno !== "") {
+               
                //test the phone number to be added
                var regex = /^\d+$/;
                if (regex.test(newtelno)) {
+                  if (phoneNumbersArray != null) {
+                     phoneNumbersArray.splice(currentPage*cNumberOfEntriesPerPage, 0, newtelno);
+                  } else {
+                     phoneNumbersArray = [];
+                     phoneNumbersArray.push(newtelno);
+                  }
+
+                  if (phoneNumbersArray.length > cNumberOfEntriesPerPage) {
+                     displayPage(currentPage);
+                  }
+
+                  /*
                   var elem = '<tr type="phnr"> <td type="nr">' + newtelno + '</td><td><button class="remove btn btn-danger btn-small"> Remove</button></td></tr>';
-                  $('#phonenumbers tr:last').after(elem);
+                  $('#phonenumbers tr:last').after(elem);*/
                } else {
                   showDangerAlert("only digits are allowed");
                }
@@ -294,7 +376,19 @@
          //DA when the remove button is clicked, remove the set phone number
          $('table').on('click', '.remove', function (event) {
             var trow = $(event.target).parents('tr')[0];
-            trow.remove();
+            var phoneNumberToBeDeleted = $(trow).children("td")[0].innerHTML;
+            var k = -1;
+            for (var i = currentPage * cNumberOfEntriesPerPage ;
+               i < currentPage * cNumberOfEntriesPerPage + cNumberOfEntriesPerPage; ++i) {
+               if (phoneNumbersArray[i] == phoneNumberToBeDeleted) {
+                  k = i;
+                  break;
+               }
+            }
+            phoneNumbersArray.splice(k, 1);
+            if (phoneNumbersArray.length > cNumberOfEntriesPerPage) {
+               displayPage(currentPage);
+            }                        
          });
 
          $('#ID').change(function () {
@@ -309,19 +403,16 @@
             return false;
          }
 
-         resetSmsTextArea();
+         persistSmsText();
          enableRunButton();
 
          $("#sms-message-textarea").on("keyup", function (event) {
             var smsText = $("#sms-message-textarea").val();
             $("#noOfCharacters").html(smsText.length);
-            var nrOfSms = smsText.length / 160;
-            var isUnicode = false;
-            if (isDoubleByte(smsText)) {
-               nrOfSms = smsText.length / 70;
-               isUnicode = true;
-            }
-            $("#noOfSms").html(Math.ceil(nrOfSms) + " sms" + (isUnicode ? "(unicode)" : ""));
+            var noOfSms = computeNoOfSms(smsText);
+
+            $("#quick-sms-text-input").val(smsText);
+            $("#noOfSms").html(nrOfSms + " sms" + (isUnicode ? "(unicode)" : ""));
          });
 
          $('#run').click(function () {
@@ -331,19 +422,15 @@
                   showDangerAlert("Please enter the text of the sms");
                   return;
                }
-               var phonenumbers = $('tr[type=phnr] td[type=nr]');
-               if (phonenumbers.length === 0) {
+               if (phoneNumbersArray.length === 0) {
                   //display message that we should have at least 1 number
                   showDangerAlert("Please add at least 1 phone number");
                   return;
                }
-               var numbers = new Array();
-               $.each(phonenumbers, function (index, value) {
-                  numbers.push(value.textContent);
-               });
+               
                disableRunButton();
                $(".alert").hide();
-               $("#phone-numbers-input").val(numbers.join(","));
+               $("#phone-numbers-input").val(phoneNumbersArray.join(","));
                $("#sms-text-input").val(smsText);
                $("#run-action-form").submit();
                /*$.ajax({
