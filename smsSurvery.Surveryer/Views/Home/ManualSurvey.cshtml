@@ -147,7 +147,7 @@
       var cBlinkInterval = 500;
       
       /* Paging, define variables */
-      var cNumberOfEntriesPerPage = 5;
+      var cNumberOfEntriesPerPage = 10;
       var currentPage = 0;
       var displayPageFunctionWrapper;
       var phoneNumbersArray = @Html.Raw(Json.Encode(ViewBag.PhoneNumbers))              
@@ -308,15 +308,18 @@
             $('#phonenumbers').empty();
             $("#phonenumbers-pagination").empty();
             for (var i = pageNo * cNumberOfEntriesPerPage; i < pageNo * cNumberOfEntriesPerPage + cNumberOfEntriesPerPage; ++i) {
-               var elem = '<tr type="phnr"> <td type="nr">' + phoneNumbersArray[i] + '</td><td><button class="remove btn btn-danger btn-small"> Remove</button></td></tr>';
-               $('#phonenumbers').append(elem);
+               if (phoneNumbersArray[i] != undefined) {
+                  var elem = '<tr type="phnr"> <td type="nr">' + phoneNumbersArray[i] + '</td><td><button class="remove btn btn-danger btn-small"> Remove</button></td></tr>';
+                  $('#phonenumbers').append(elem);
+               }
             }
             var numberOfPages = Math.ceil(phoneNumbersArray.length / cNumberOfEntriesPerPage);
 
-            if ((currentPage - 5) > 0) {
-               $("#phonenumbers-pagination").append("<span class='more-entries'>...</span>");
+            if ((currentPage - 4) > 0) {
+               var pageLink = '<a href="#" class="page-link" pageNo="0">First</a>';
+               $("#phonenumbers-pagination").append(pageLink);
             }
-            for (var i = (currentPage - 5) > 0 ?  (currentPage - 5) : 0; i < (((currentPage + 5) > numberOfPages) ? numberOfPages : (currentPage + 5)); i++) {
+            for (var i = (currentPage - 4) > 0 ?  (currentPage - 4) : 0; i < (((currentPage + 4) > numberOfPages) ? numberOfPages : (currentPage + 4)); i++) {
                if (i == currentPage) {
                   var pageLink = '<a href="#" class="page-link page-link-active" pageNo="' + i + '">' + (i + 1) + '</a>';
                   $("#phonenumbers-pagination").append(pageLink);
@@ -325,8 +328,9 @@
                   $("#phonenumbers-pagination").append(pageLink);
                }
             }
-            if ((currentPage + 5) < phoneNumbersArray.length) {
-               $("#phonenumbers-pagination").append("<span class='more-entries'>...</span>");
+            if ((currentPage + 4) < phoneNumbersArray.length) {
+               var pageLink = '<a href="#" class="page-link" pageNo="' + (numberOfPages - 1) + '">Last</a>';
+               $("#phonenumbers-pagination").append(pageLink);
             }
             //displayPageFunctionWrapper = this;
 
