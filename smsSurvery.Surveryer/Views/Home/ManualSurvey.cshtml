@@ -12,9 +12,7 @@
 </div>
 
 <div id="run-action">
-   <form id="run-action-form" action="/DisplayProgress/Index.aspx" method="post" target="progress-iframe">
-      <input type="hidden" id="phone-numbers-input" name="customerNumbers"/>
-      <input type="hidden" id="sms-text-input" name="smsText" />
+   <form id="run-action-form" action="" method="post" target="progress-iframe">
       <button type="button" id="run" class="btn btn-primary">Run</button>
    </form>
 </div>
@@ -112,13 +110,8 @@
       <button id="add" class="btn btn-info">Add</button>
    </div>
    <div id="table-scroll">
-      <table class="table table-striped" id="phonenumbers">
-         <thead>
-            <th>Phone number
-            </th>
-            <th>Actions
-            </th>
-         </thead>         
+      <h4 class="contact-list">Contact list</h4>
+      <table class="table table-striped" id="phonenumbers">               
       </table>
       <div id="phonenumbers-pagination">
 
@@ -224,9 +217,14 @@
       }
 
       function persistSmsText() {
+         quickSmsTextPersistent = quickSmsTextPersistent == null ? "" : quickSmsTextPersistent;
          $("#sms-message-textarea").val(quickSmsTextPersistent);
          $("#noOfCharacters").html(quickSmsTextPersistent.length);
          $("#noOfSms").html(computeNoOfSms(quickSmsTextPersistent) + " sms");
+      }
+
+      function generateHiddenElement(id, name, value) {
+         return "<input type='hidden' id='" + id + "' name='" + name + "' value='" + value + "'/>";
       }
 
       function BeginProcess() {
@@ -246,6 +244,7 @@
          PercentSuccess = Math.round(PercentSuccess * 100) / 100;
          PercentFailed = Math.round(PercentFailed * 100) / 100;
          $("#progress-section").removeClass("hide");
+         $("#progress-section").show();
          var textSuccess = "Success: " + PercentSuccess + "%";
          var textFailed = "Failed: " + PercentFailed + "%";
          $(".progress-bar-success").css("width", PercentSuccess + "%");
@@ -363,9 +362,9 @@
                      phoneNumbersArray.push(newtelno);
                   }
 
-                  if (phoneNumbersArray.length > cNumberOfEntriesPerPage) {
-                     displayPage(currentPage);
-                  }
+                  
+                  displayPage(currentPage);
+                  
 
                   /*
                   var elem = '<tr type="phnr"> <td type="nr">' + newtelno + '</td><td><button class="remove btn btn-danger btn-small"> Remove</button></td></tr>';
@@ -390,9 +389,8 @@
                }
             }
             phoneNumbersArray.splice(k, 1);
-            if (phoneNumbersArray.length > cNumberOfEntriesPerPage) {
-               displayPage(currentPage);
-            }                        
+            displayPage(currentPage);
+                                    
          });
 
          $('#ID').change(function () {
@@ -414,9 +412,9 @@
             var smsText = $("#sms-message-textarea").val();
             $("#noOfCharacters").html(smsText.length);
             var noOfSms = computeNoOfSms(smsText);
-
+            var isUnicode = isDoubleByte(smsText);
             $("#quick-sms-text-input").val(smsText);
-            $("#noOfSms").html(nrOfSms + " sms" + (isUnicode ? "(unicode)" : ""));
+            $("#noOfSms").html(noOfSms + " sms" + (isUnicode ? "(unicode)" : ""));
          });
 
          $('#run').click(function () {
@@ -426,7 +424,7 @@
                   showDangerAlert("Please enter the text of the sms");
                   return;
                }
-               if (phoneNumbersArray.length === 0) {
+               if (phoneNumbersArray== null || phoneNumbersArray.length === 0) {
                   //display message that we should have at least 1 number
                   showDangerAlert("Please add at least 1 phone number");
                   return;
@@ -434,26 +432,14 @@
                
                disableRunButton();
                $(".alert").hide();
-               $("#phone-numbers-input").val(phoneNumbersArray.join(","));
-               $("#sms-text-input").val(smsText);
+               $("#progress-section").hide();
+                              
+               $("#run-action-form").get(0).setAttribute("action", "/DisplayProgress/Index.aspx");
+               $("#run-action-form").remove("input[type='hidden']");
+               $("#run-action-form").append(generateHiddenElement("phone-numbers-input", "customerNumbers", phoneNumbersArray.join(",")));
+               $("#run-action-form").append(generateHiddenElement("sms-text-input", "smsText", smsText));               
                $("#run-action-form").submit();
-               /*$.ajax({
-                  data: {
-                     customerNumbers: numbers,
-                     smsText: smsText                     
-                  },
-                  url: "/Home/SendSmsForNumbers",
-                  traditional: true,
-                  async: true,
-                  cache: false,
-                  success: function (data) {
-                     //$("#runSurveyResult").html(data);
-                     $("#sms-message-textarea").val("");
-                     enableRunButton();
-                     resetSmsTextArea();
-                     showSuccessAlert(data);
-                  }
-               });*/
+              
             } else {
                //we should have a survey selected
                var selSurveyId = $('#ID').find(":selected").attr('value');
@@ -463,8 +449,7 @@
                   return;
                }
                //we should have at least 1 phone number
-               var phonenumbers = $('tr[type=phnr] td[type=nr]');
-               if (phonenumbers.length === 0) {
+               if (phoneNumbersArray == null || phoneNumbersArray.length === 0) {
                   //display message that we should have at least 1 number
                   showDangerAlert("Please add at least 1 phone number");
                   return;
@@ -475,11 +460,7 @@
                   //display message that you should select a survey
                   showDangerAlert("Please select a survey language");
                   return;
-               }
-               var numbers = new Array();
-               $.each(phonenumbers, function (index, value) {
-                  numbers.push(value.textContent);
-               });
+               }               
                var tags = new Array();
                var delimiter = ',';
                tags = $("#filterTag").val().split(delimiter);
@@ -488,28 +469,21 @@
                if ("" === tags[0]) {
                   tags = [];
                }
-
-               disableRunButton();
                var surveyType = $('#SurveyType').find(":selected").attr('value');
                var sendMobile = surveyType === "sms" ? false : true;
-               $.ajax({
-                  data: {
-                     surveyid: selSurveyId,
-                     customerNumbers: numbers,
-                     sendMobile: sendMobile,
-                     tags: tags,
-                     surveyLanguage: surveyLanguage
-                  },
-                  url: "/Home/RunSurveyForNumbers",
-                  traditional: true,
-                  async: true,
-                  cache: false,
-                  success: function (data) {
-                     //$("#runSurveyResult").html(data);
-                     enableRunButton();
-                     showSuccessAlert(data);
-                  }
-               });
+
+               disableRunButton();
+               $(".alert").hide();
+               $("#progress-section").hide();
+
+               $("#run-action-form").get(0).setAttribute("action", "/DisplayProgress/SendSurvey.aspx");
+               $("#run-action-form").remove("input[type='hidden']");
+               $("#run-action-form").append(generateHiddenElement("survey-id-input", "surveyid", selSurveyId));
+               $("#run-action-form").append(generateHiddenElement("customer-numbers-input", "customerNumbersSurvey", phoneNumbersArray.join(",")));
+               $("#run-action-form").append(generateHiddenElement("send-mobile-input", "sendMobile", sendMobile));
+               $("#run-action-form").append(generateHiddenElement("tags-input", "tags", tags.join(",")));
+               $("#run-action-form").append(generateHiddenElement("survey-language-input", "surveyLanguage", surveyLanguage));
+               $("#run-action-form").submit();               
             }
          });
 

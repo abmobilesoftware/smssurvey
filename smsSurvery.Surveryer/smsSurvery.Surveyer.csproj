@@ -249,6 +249,13 @@
     <Compile Include="DisplayProgress\Index.aspx.designer.cs">
       <DependentUpon>Index.aspx</DependentUpon>
     </Compile>
+    <Compile Include="DisplayProgress\SendSurvey.aspx.cs">
+      <DependentUpon>SendSurvey.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="DisplayProgress\SendSurvey.aspx.designer.cs">
+      <DependentUpon>SendSurvey.aspx</DependentUpon>
+    </Compile>
     <Compile Include="GlobalResources\Global.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -360,6 +367,7 @@
     <Content Include="Content\tablet\survey.css" />
     <Content Include="Content\WordCloud.css" />
     <Content Include="DisplayProgress\Index.aspx" />
+    <Content Include="DisplayProgress\SendSurvey.aspx" />
     <Content Include="Images\down_arrow_select.jpg" />
     <Content Include="Images\sprites.gif" />
     <Content Include="MyScripts\DateHelper.js" />

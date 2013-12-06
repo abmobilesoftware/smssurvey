@@ -16,6 +16,7 @@ using MvcPaging;
 using System.Text.RegularExpressions;
 using smsSurvery.Surveryer.Helpers;
 using System.Globalization;
+using System.Web.Routing;
 
 namespace smsSurvery.Surveryer.Controllers
 {
@@ -446,7 +447,7 @@ namespace smsSurvery.Surveryer.Controllers
             //TODO DA sanity check - only one active survey at a time          
             if (surveyToRun != null)
             {
-               StartSmsSurveyInternal(numberToSendFrom, customerPhoneNumber, surveyToRun, user, false, tags, "en-US", db);
+               StartSmsSurveyInternal(numberToSendFrom, customerPhoneNumber, surveyToRun, user, false, tags, "en-US", HttpContext.Request.RequestContext, db);
             }
          }
       }
@@ -490,7 +491,7 @@ namespace smsSurvery.Surveryer.Controllers
                if (surveyToRun != null)
                {
                   tags = tags != null ? tags : new string[0];
-                  StartSmsSurveyInternal(dbUser.DefaultTelNo, customerPhoneNumber, surveyToRun, dbUser, !isSMS, tags, surveyToRun.DefaultLanguage, db);
+                  StartSmsSurveyInternal(dbUser.DefaultTelNo, customerPhoneNumber, surveyToRun, dbUser, !isSMS, tags, surveyToRun.DefaultLanguage, HttpContext.Request.RequestContext, db);
                   return Json("Success", JsonRequestBehavior.AllowGet);
                }
                else
@@ -520,6 +521,7 @@ namespace smsSurvery.Surveryer.Controllers
          bool sendMobile,
          string[] tags,
          string surveyLanguage,
+         RequestContext rc,
          smsSurveyEntities db)
       {
          //DA choose the appropriate language for the survey
@@ -564,7 +566,7 @@ namespace smsSurvery.Surveryer.Controllers
                db.SaveChanges();
                if (sendMobile)
                {
-                  return SendMobileSurveyToCustomer(customer, numberToSendFrom, newSurvey);
+                  return SendMobileSurveyToCustomer(customer, numberToSendFrom, newSurvey, rc);
                }
                else
                {
@@ -748,11 +750,11 @@ namespace smsSurvery.Surveryer.Controllers
          }
       }
 
-      private MessageStatus SendMobileSurveyToCustomer(Customer c, string numberToSendFrom, SurveyResult surveyResult)
+      private MessageStatus SendMobileSurveyToCustomer(Customer c, string numberToSendFrom, SurveyResult surveyResult, RequestContext rc)
       {
          var prefix = surveyResult.SurveyTemplate.IntroMessage + System.Environment.NewLine + System.Environment.NewLine;
          var smsinterface = SmsInterfaceFactory.GetSmsInterfaceForSurveyTemplate(surveyResult.SurveyTemplate);
-         string mobileSurveyLocation = GetTargetedMobileSurveyLocation(surveyResult, this.ControllerContext.RequestContext);
+         string mobileSurveyLocation = GetTargetedMobileSurveyLocation(surveyResult, rc);
 
          string text = String.Format(GlobalResources.Global.SmsMobileSurveyTemplate, mobileSurveyLocation);
          var result = smsinterface.SendMessage(numberToSendFrom, c.PhoneNumber, prefix + text);
@@ -763,7 +765,7 @@ namespace smsSurvery.Surveryer.Controllers
       private string GetTargetedMobileSurveyLocation(SurveyResult surveyResult, System.Web.Routing.RequestContext rc)
       {
          UrlHelper u = new UrlHelper(rc);
-         string mobileSurveyLocation = HttpContext.Request.Url.Scheme + "://" + HttpContext.Request.Url.Authority + u.Action("Fill", "MobileSurvey", new { id = surveyResult.Id });
+         string mobileSurveyLocation = rc.HttpContext.Request.Url.Scheme + "://" + rc.HttpContext.Request.Url.Authority + u.Action("Fill", "MobileSurvey", new { id = surveyResult.Id });
          return TinyUrl.GetTinyUrl(mobileSurveyLocation);
       }
 

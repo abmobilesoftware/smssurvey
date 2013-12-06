@@ -55,7 +55,7 @@
    width:50%;
    background: #fff;
    border-radius:5px;
-   height:473px;   
+   height:515px;   
 }
 
 .alert-invisible {
@@ -123,5 +123,9 @@
 }
 
 #phonenumbers {
-   height: 424px;
+   max-height: 424px;
+}
+
+.contact-list {
+   padding: 0 10px;
 }
