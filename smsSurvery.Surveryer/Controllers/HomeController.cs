@@ -27,8 +27,8 @@ namespace smsSurvery.Surveryer.Controllers
       protected class CsvCustomer
       {
          public string Telephone { get; set; }
-         public string Name { get; set; }
-         public string Surname { get; set; }
+         /*public string Name { get; set; }
+         public string Surname { get; set; }*/
       }
 
       private static readonly log4net.ILog logger = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
