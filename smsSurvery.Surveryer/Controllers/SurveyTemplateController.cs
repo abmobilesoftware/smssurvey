@@ -210,13 +210,44 @@ namespace smsSurvery.Surveryer.Controllers
          var postedFile = Request.Files[0];
         // var postedFileStream = new StreamReader(postedFile.InputStream);
 
-         CloudBlockBlob blockBlob = container.GetBlockBlobReference(postedFile.FileName);
+         CloudBlockBlob logoBlob = container.GetBlockBlobReference(postedFile.FileName);
 
-         blockBlob.UploadFromStream(postedFile.InputStream);
-         var url = blockBlob.Uri;
-        UserProfile user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
-         user.Company.MobileLogoUrl = blockBlob.Uri.ToString();
+         logoBlob.UploadFromStream(postedFile.InputStream);
+
+         var url = logoBlob.Uri;
+         UserProfile user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+         user.Company.MobileLogoUrl = logoBlob.Uri.ToString();
+         
+         CloudBlockBlob logo64Blob = container.GetBlockBlobReference(postedFile.FileName + "64");
+         var base64imageString = CustomImageToBase64(postedFile.InputStream, Path.GetFileNameWithoutExtension(postedFile.FileName), Path.GetExtension(postedFile.FileName).Substring(1));
+         logo64Blob.UploadText(base64imageString);
+         user.Company.Mobile64LogoUrl = logo64Blob.Uri.ToString();
+
          db.SaveChanges();
+      }
+
+      public static byte[] ReadFully(Stream input)
+      {
+         byte[] buffer = new byte[16 * 1024];
+         using (MemoryStream ms = new MemoryStream())
+         {
+            int read;
+            while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
+            {
+               ms.Write(buffer, 0, read);
+            }
+            return ms.ToArray();
+         }
+      }
+
+      private string CustomImageToBase64(Stream input, string imageName,string extension)
+      {
+         input.Seek(0, System.IO.SeekOrigin.Begin);
+         byte[] imageBytes = ReadFully(input);
+
+         // Convert byte[] to Base64 String
+         string base64String = Convert.ToBase64String(imageBytes);
+         return String.Format("txtfeedbackImages{0}('data:image/{1};base64,{2}')", imageName, extension, base64String);
       }
 
       [HttpPost]

@@ -240,6 +240,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       }
    },
    updateLogo: function (imageFile, surveyTemplateID) {
+      var self = this;
       if (imageFile != "") {
          var form = new FormData();
          form.append("logo", imageFile);
@@ -248,6 +249,8 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
          var xhr = new XMLHttpRequest();
          xhr.onload = function () {
             console.log("Upload complete.");
+            //make sure that we don't save the logo every time
+            self.model.set("NewLogoFile", "");
          };
          xhr.open("post", "/SurveyTemplate/SaveImage", true);
          xhr.send(form);
