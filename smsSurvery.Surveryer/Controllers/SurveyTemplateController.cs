@@ -10,6 +10,10 @@ using smsSurvery.Surveryer.ClientModels;
 using System.Data.Entity.Validation;
 using System.Text;
 using MvcPaging;
+using System.IO;
+using Microsoft.WindowsAzure.Storage;
+using System.Configuration;
+using Microsoft.WindowsAzure.Storage.Blob;
 
 namespace smsSurvery.Surveryer.Controllers
 {
@@ -188,6 +192,31 @@ namespace smsSurvery.Surveryer.Controllers
             return Json("can't retrieve survey", JsonRequestBehavior.AllowGet);
          }
 
+      }
+      [HttpPost]
+      public void SaveImage(int surveyTemplateId)
+      {
+         /* get the upload file from user
+          * upload it to azure
+          * create the 64
+          * now make the survey logo point to the azure blob size
+          */ 
+         CloudStorageAccount storageAccount = CloudStorageAccount.Parse(ConfigurationManager.AppSettings["StorageConnectionString"]);
+         CloudBlobClient blobClient = storageAccount.CreateCloudBlobClient();
+         // Retrieve reference to a previously created container.
+         CloudBlobContainer container = blobClient.GetContainerReference("logos");
+
+         // Retrieve reference to a blob named "myblob".
+         var postedFile = Request.Files[0];
+        // var postedFileStream = new StreamReader(postedFile.InputStream);
+
+         CloudBlockBlob blockBlob = container.GetBlockBlobReference(postedFile.FileName);
+
+         blockBlob.UploadFromStream(postedFile.InputStream);
+         var url = blockBlob.Uri;
+        UserProfile user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
+         user.Company.MobileLogoUrl = blockBlob.Uri.ToString();
+         db.SaveChanges();
       }
 
       [HttpPost]

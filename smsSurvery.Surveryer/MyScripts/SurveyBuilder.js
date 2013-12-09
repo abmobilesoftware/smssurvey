@@ -1,5 +1,7 @@
 ﻿var SurveyBuilder = SurveyBuilder || {};
 
+
+
 SurveyBuilder.SurveyView = Backbone.View.extend({
    events: {
       "click .edit-survey": "editSurveyInfo",
@@ -11,8 +13,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       "click .save-btn": "saveSurvey",
       "click .languageSelect": "updateSurveyLanguage",
       "click .close-survey-notifications": "closeSurveyNotifications",
-      "change #personal-info-checkbox": "updateShowCheckbox"
-
+      "change #personal-info-checkbox": "updateShowCheckbox"            
    },
    initialize: function () {
       var self = this;
@@ -20,7 +21,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
          "updateThankYouMessage", "saveSurvey", "confirmPageLeaving",
          "validationResult", "updateSaveButton", "updateIntroMessage",
          "updateSurveyLanguage", "closeSurveyNotifications", "updateTitle",
-         "updateShowCheckbox", "updateCheckboxText");
+         "updateShowCheckbox", "updateCheckboxText", "logoChanged");
       this.template = _.template($("#survey-info-template").html());
       this.dom = {
          $SURVEY_INFO: $("#survey-info", this.$el),
@@ -50,6 +51,8 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
    },
    render: function () {
       this.dom.$SURVEY_INFO.html(this.template(this.model.toJSON()));
+      //DA react to image change events
+      $(".fileinput").on("change.bs.fileinput", this.logoChanged);
       this.dom.$EDIT_SURVEY_INFO = $(".edit-survey", this.$el);
       this.dom.$INFO_TABLE = $(".survey-info-data", this.$el);
       this.dom.$SURVEY_INFO_TITLE_TEXT = $(".survey-info-title-text", this.$el);
@@ -101,6 +104,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       this.model.updateSurveyLanguage(newSurveyLanguage);
    },
    saveSurvey: function (event) {
+      var self = this;
       event.preventDefault();
       if (this.model.validateSurvey()) {
          var self = this;
@@ -119,6 +123,8 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
                      self.dom.$ALERT_BOX.removeClass("alert-success");
                      self.dom.$ALERT_BOX.addClass("alert-error");
                   } else {
+                     //everything went ok so far, attempt to save the logo
+                     self.updateLogo(self.model.get("NewLogoFile"),response.Id);
                      self.dom.$NOTIFICATION.text("Changes saved successfully.");
                      self.dom.$ALERT_BOX.removeClass("alert-error");
                      self.dom.$ALERT_BOX.addClass("alert-success");
@@ -183,6 +189,69 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
    },
    closeSurveyNotifications: function () {
       this.dom.$ALERT_BOX.hide();
+   },
+   logoChanged: function (event, imageFile) {
+      var self = this;
+      self.dom.$ALERT_BOX.hide();
+      self.model.set("NewLogoFile", "");
+      if (imageFile != undefined) {
+         //based on how fileUpload works we only receive a valid imageFile if we are dealing with a (gif|png|jpe?g)
+         var image = new Image();
+         //we load the image and run some test on its width and height
+         image.src = imageFile.result;
+         image.onload = function () {
+            var imgWidth = this.width;
+            var h = this.height;        
+            //the width should be less than 150px
+            if (imgWidth > 150) {
+               var widthErrorMessage = "Width is too large. The logo should be 150px * 45px or less. Logo will not be modified";
+               self.dom.$NOTIFICATION.text(widthErrorMessage);
+               self.dom.$ALERT_BOX.removeClass("alert-success");
+               self.dom.$ALERT_BOX.addClass("alert-error");
+               self.dom.$ALERT_BOX.show();
+               self.dom.$SAVE_SURVEY_BTN.prop('disabled', true);
+               self.dom.$SAVE_SURVEY_BTN.addClass("disabled");
+               return;
+            }
+            //and the height should be less than 45px
+            if (h > 45) {
+               var heightErrorMessage = "Height is too large. The logo should be 150px * 45px or less. Logo will not be modified";
+               self.dom.$NOTIFICATION.text(heightErrorMessage);
+               self.dom.$ALERT_BOX.removeClass("alert-success");
+               self.dom.$ALERT_BOX.addClass("alert-error");
+               self.dom.$SAVE_SURVEY_BTN.prop('disabled', true);
+               self.dom.$SAVE_SURVEY_BTN.addClass("disabled");
+               self.dom.$ALERT_BOX.show();
+               return;
+            }
+            //if we got here then the new logo can be used
+            self.model.set("NewLogoFile",imageFile);
+         };                 
+      }
+      else {
+         //we are not dealing with a image file
+         var imageErrorMessage = "A logo should be a 150px * 45px image file - gif, png or jpeg. Logo will not be modified";
+         self.dom.$NOTIFICATION.text(imageErrorMessage);
+         self.dom.$ALERT_BOX.removeClass("alert-success");
+         self.dom.$ALERT_BOX.addClass("alert-error");
+         self.dom.$SAVE_SURVEY_BTN.prop('disabled', true);
+         self.dom.$SAVE_SURVEY_BTN.addClass("disabled");
+         self.dom.$ALERT_BOX.show();
+      }
+   },
+   updateLogo: function (imageFile, surveyTemplateID) {
+      if (imageFile != "") {
+         var form = new FormData();
+         form.append("logo", imageFile);
+         form.append("surveyTemplateId", surveyTemplateID);
+         // send via XHR - look ma, no headers being set!
+         var xhr = new XMLHttpRequest();
+         xhr.onload = function () {
+            console.log("Upload complete.");
+         };
+         xhr.open("post", "/SurveyTemplate/SaveImage", true);
+         xhr.send(form);
+      }
    }
 });
 
@@ -211,6 +280,7 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
       MobileWebsiteLocation: "",
       DefaultLanguage: "",
       LogoLink: "",
+      NewLogoFile: "",
       ShowCheckbox: false,
       CheckboxText: ""
    },
@@ -218,7 +288,7 @@ SurveyBuilder.SurveyModel = Backbone.Model.extend({
       _.bindAll(this, "attributeChanged", "modelSynced", "updateSurveyLanguage");
       var attributeChangedEvent = SurveyUtilities.Utilities.GLOBAL_EVENTS.ATTRIBUTE_CHANGED;
       this.on("change:Description change:Title change:ThankYouMessage change:IntroMessage change:DefaultLanguage " + 
-         "change: ShowCheckbox change:CheckboxText", this.attributeChanged);
+         "change: ShowCheckbox change:CheckboxText change:NewLogoFile", this.attributeChanged);
 
       this.on("sync", this.modelSynced);
       Backbone.on(attributeChangedEvent, this.attributeChanged);
