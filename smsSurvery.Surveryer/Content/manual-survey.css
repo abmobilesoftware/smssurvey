@@ -117,10 +117,11 @@
    padding-left: 10px;
 }
 
-.page-link {
+.page-link, .suspension-link {
    border: 1px solid #eee;
-   padding:5px 10px;
+   padding:5px 9px;
 }
+
 
 #phonenumbers {
    max-height: 424px;

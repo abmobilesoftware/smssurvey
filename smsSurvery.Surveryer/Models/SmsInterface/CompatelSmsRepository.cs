@@ -55,7 +55,7 @@ namespace smsSurvery.Surveryer.Models.SmsInterface
             return null;
          }
          
-         /*Simulator 
+         /* Simulator 
          var randomGenerator = new Random();
          var randomNumber = randomGenerator.Next(1000);
          var sentFailed = true;
@@ -65,8 +65,8 @@ namespace smsSurvery.Surveryer.Models.SmsInterface
          }
          MessageStatus result = new MessageStatus() { Status = "sent", MessageSent = sentFailed, Price = "0.003" , ExternalID = "794541ga4dsa64", DateSent = DateTime.Now };
             
-         return result;*/
-         
+         return result;
+         */
       }
    }
 }

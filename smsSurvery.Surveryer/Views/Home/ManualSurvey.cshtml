@@ -317,6 +317,8 @@
             if ((currentPage - 4) > 0) {
                var pageLink = '<a href="#" class="page-link" pageNo="0">First</a>';
                $("#phonenumbers-pagination").append(pageLink);
+               var suspensionMarks = '<span class="suspension-link" pageNo="0">...</span>';
+               $("#phonenumbers-pagination").append(suspensionMarks);
             }
             for (var i = (currentPage - 4) > 0 ?  (currentPage - 4) : 0; i < (((currentPage + 4) > numberOfPages) ? numberOfPages : (currentPage + 4)); i++) {
                if (i == currentPage) {
@@ -328,8 +330,10 @@
                }
             }
             if ((currentPage + 4) < phoneNumbersArray.length) {
+               var suspensionMarks = '<span class="suspension-link" pageNo="0">...</span>';
+               $("#phonenumbers-pagination").append(suspensionMarks);
                var pageLink = '<a href="#" class="page-link" pageNo="' + (numberOfPages - 1) + '">Last</a>';
-               $("#phonenumbers-pagination").append(pageLink);
+               $("#phonenumbers-pagination").append(pageLink);               
             }
             //displayPageFunctionWrapper = this;
 
@@ -435,7 +439,7 @@
                $("#progress-section").hide();
                               
                $("#run-action-form").get(0).setAttribute("action", "/DisplayProgress/Index.aspx");
-               $("#run-action-form").remove("input[type='hidden']");
+               $("input[type='hidden']", $("#run-action-form")).remove();
                $("#run-action-form").append(generateHiddenElement("phone-numbers-input", "customerNumbers", phoneNumbersArray.join(",")));
                $("#run-action-form").append(generateHiddenElement("sms-text-input", "smsText", smsText));               
                $("#run-action-form").submit();
@@ -477,7 +481,7 @@
                $("#progress-section").hide();
 
                $("#run-action-form").get(0).setAttribute("action", "/DisplayProgress/SendSurvey.aspx");
-               $("#run-action-form").remove("input[type='hidden']");
+               $("input[type='hidden']", $("#run-action-form")).remove();
                $("#run-action-form").append(generateHiddenElement("survey-id-input", "surveyid", selSurveyId));
                $("#run-action-form").append(generateHiddenElement("customer-numbers-input", "customerNumbersSurvey", phoneNumbersArray.join(",")));
                $("#run-action-form").append(generateHiddenElement("send-mobile-input", "sendMobile", sendMobile));
