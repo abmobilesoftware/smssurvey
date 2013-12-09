@@ -55,7 +55,7 @@
    width:50%;
    background: #fff;
    border-radius:5px;
-   height:263px;   
+   height:515px;   
 }
 
 .alert-invisible {
@@ -120,4 +120,12 @@
 .page-link {
    border: 1px solid #eee;
    padding:5px 10px;
+}
+
+#phonenumbers {
+   max-height: 424px;
+}
+
+.contact-list {
+   padding: 0 10px;
 }

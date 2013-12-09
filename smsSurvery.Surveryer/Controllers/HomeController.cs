@@ -164,7 +164,7 @@ namespace smsSurvery.Surveryer.Controllers
             foreach (var nr in customerNumbers)
             {
                var cleanNumber = Utilities.Utilities.CleanUpPhoneNumber(nr);
-               answersController.StartSmsSurveyInternal(user.DefaultTelNo, cleanNumber, surveyToRun, user, sendMobile, selectedTags, surveyLanguage, db);
+               answersController.StartSmsSurveyInternal(user.DefaultTelNo, cleanNumber, surveyToRun, user, sendMobile, selectedTags, surveyLanguage, HttpContext.Request.RequestContext, db);
             }
          }
          return Json("Survey started successfully", JsonRequestBehavior.AllowGet);

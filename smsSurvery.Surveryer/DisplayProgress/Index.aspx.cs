@@ -40,7 +40,6 @@ namespace smsSurvery.Surveryer.DisplayProgress
          {
             var cleanNumber = Utilities.Utilities.CleanUpPhoneNumber(nr);
             var smsSentStatus = answersController.SendSmsToCustomer(user.DefaultTelNo, cleanNumber, smsText, db);
-            Thread.Sleep(200);
             if (smsSentStatus.MessageSent)
             {
                ++noOfSmsSentSuccess;
@@ -57,7 +56,7 @@ namespace smsSurvery.Surveryer.DisplayProgress
             var percentageFailed = noOfSmsSentFailed / (double)customerNumbers.Length * 100;
             UpdateProgress(percentageSuccess, percentageFailed, nr, smsSentStatus.MessageSent);
             var percentageOverall = (noOfSmsSentSuccess + noOfSmsSentFailed) / (double)customerNumbers.Length * 100;
-            if ((int)percentageOverall > 95)
+            if ((int)percentageOverall > 98)
             {
                UpdateFinish();
             }
