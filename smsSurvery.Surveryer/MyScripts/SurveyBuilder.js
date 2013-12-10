@@ -228,7 +228,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
       }
       else {
          //we are not dealing with a image file
-         var imageErrorMessage = "A logo should be a 150px * 45px image file - gif, png or jpeg. Logo will not be modified";
+         var imageErrorMessage = "Not a valid image file. A logo should be a 150px * 45px image file - gif, png or jpeg. (Logo will not be modified)";
          self.dom.$NOTIFICATION.text(imageErrorMessage);
          self.dom.$ALERT_BOX.removeClass("alert-success");
          self.dom.$ALERT_BOX.addClass("alert-error");
