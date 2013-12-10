@@ -1,7 +1,5 @@
 ﻿var SurveyBuilder = SurveyBuilder || {};
 
-
-
 SurveyBuilder.SurveyView = Backbone.View.extend({
    events: {
       "click .edit-survey": "editSurveyInfo",
@@ -250,7 +248,7 @@ SurveyBuilder.SurveyView = Backbone.View.extend({
          xhr.onload = function () {
             console.log("Upload complete.");
             //make sure that we don't save the logo every time
-            self.model.set("NewLogoFile", "");
+            self.model.set({ NewLogoFile: "" }, { silent: true });
          };
          xhr.open("post", "/SurveyTemplate/SaveImage", true);
          xhr.send(form);
