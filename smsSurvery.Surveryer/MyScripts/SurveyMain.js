@@ -19,7 +19,8 @@
       EndDate: "17/7/2013",
       IsRunning: false,
       DisplayInfoTable: displayInfoTable,
-      DefaultLanguage: "en-US"
+      DefaultLanguage: "en-US",
+      NewLogoFile: ""
    });
    var survey = new SurveyBuilder.SurveyView({
       el: $("#survey"),

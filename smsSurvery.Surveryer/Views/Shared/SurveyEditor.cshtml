@@ -390,17 +390,16 @@
       <tr>
          <td>Logo</td>
          <td>
-            @* <img class="logo" src="<%= LogoLink %>"/>
-            <button class="btn btn-primary change-logo" type="button">Change survey logo</button>*@
-            <div class="fileupload fileupload-new" data-provides="fileupload">
-               <div class="fileupload-new thumbnail" style="width: 150; max-width:150; height: 50; max-height:150">
+           
+            <div class="fileinput fileinput-exists" data-provides="fileinput">
+              @* <input type="hidden" value="" name="">*@
+               <div class="fileinput-preview thumbnail"  data-trigger="fileinput" style="width: 150px; max-width:150px; height: 45px; max-height: 45px">
                   <img class="logo" src="<%= LogoLink %>"/>
                </div>
-               <div class="fileupload-preview fileupload-exists thumbnail" style="width: 150; max-width:150; height: 50; max-height:150"></div>
                <div>                  
                    <span class="btn btn-file">
-                      <span class="fileupload-new">Change</span>                      
-                      <span class="fileupload-exists">Change</span>
+                      @*<span class="fileinput-new">Change</span>   *@                   
+                      <span class="fileinput-exists">Change</span>
                       <input type="file" />
                    </span>      
                </div>
