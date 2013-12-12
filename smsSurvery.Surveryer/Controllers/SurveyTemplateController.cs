@@ -260,7 +260,7 @@ namespace smsSurvery.Surveryer.Controllers
          {
             UserProfile user = db.UserProfile.Where(u => u.UserName == User.Identity.Name).FirstOrDefault();
             SurveyTemplate surveyTemplate = null;
-            bool performedAllOpertions = true;
+            bool performedAllOperations = true;
             List<String> saveDetails = new List<string>();
             if (clientSurveyTemplate.Id >= 0)
             {
@@ -300,7 +300,7 @@ namespace smsSurvery.Surveryer.Controllers
                            }
                            else
                            {
-                              performedAllOpertions = false;
+                              performedAllOperations = false;
                               saveDetails.Add(String.Format("Could not delete question {0} as we still have surveys in progress. Refresh (F5) to see what was saved", q.Order));
                            }
                            
@@ -470,7 +470,7 @@ namespace smsSurvery.Surveryer.Controllers
                   logger.Error(ex);
                }
                var mobileWebsiteLocation = GetAnonymousMobileSurveyLocation(surveyTemplate, this.ControllerContext.RequestContext);
-               if (!performedAllOpertions)
+               if (!performedAllOperations)
                {
                   //we could not save all the changes so we notify the user about this
                   var details = String.Join("\n", saveDetails);
@@ -572,7 +572,7 @@ namespace smsSurvery.Surveryer.Controllers
                   return Json(new smsSurvery.Surveryer.Models.RequestResult("error", "save", sb.ToString()), JsonRequestBehavior.AllowGet);
                }
                var mobileWebsiteLocation = GetAnonymousMobileSurveyLocation(surveyTemplate, this.ControllerContext.RequestContext);
-               if (!performedAllOpertions)
+               if (!performedAllOperations)
                {
                   //we could not save all the changes so we notify the user about this
                   var details =String.Join("\n",saveDetails);
