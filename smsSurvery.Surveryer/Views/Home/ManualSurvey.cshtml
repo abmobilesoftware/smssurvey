@@ -308,7 +308,7 @@
             $("#phonenumbers-pagination").empty();
             for (var i = pageNo * cNumberOfEntriesPerPage; i < pageNo * cNumberOfEntriesPerPage + cNumberOfEntriesPerPage; ++i) {
                if (phoneNumbersArray[i] != undefined) {
-                  var elem = '<tr type="phnr"> <td type="nr">' + phoneNumbersArray[i] + '</td><td><button class="remove btn btn-danger btn-small"> Remove</button></td></tr>';
+                  var elem = '<tr type="phnr"> <td type="nr">' + phoneNumbersArray[i] + '</td><td class="remove-btn-td"><button class="remove btn btn-danger btn-small"> Remove</button></td></tr>';
                   $('#phonenumbers').append(elem);
                }
             }
@@ -329,7 +329,7 @@
                   $("#phonenumbers-pagination").append(pageLink);
                }
             }
-            if ((currentPage + 4) < phoneNumbersArray.length) {
+            if ((currentPage + 4) < numberOfPages) {
                var suspensionMarks = '<span class="suspension-link" pageNo="0">...</span>';
                $("#phonenumbers-pagination").append(suspensionMarks);
                var pageLink = '<a href="#" class="page-link" pageNo="' + (numberOfPages - 1) + '">Last</a>';
@@ -346,10 +346,8 @@
             });
          }
 
-         if (phoneNumbersArray != null) {
-            if (phoneNumbersArray.length > cNumberOfEntriesPerPage) {
-               displayPage(currentPage);
-            }
+         if (phoneNumbersArray != null) {            
+               displayPage(currentPage);            
          }
 
          $('#add').click(function () {
