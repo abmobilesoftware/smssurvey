@@ -430,7 +430,7 @@ Question.QuestionSetView = Backbone.View.extend({
             this.dom.$QUESTION_SET_CONTENT.append(questionView.render());
          }, this);
          this.dom.$QUESTION_SET_CONTENT.sortable({ axis: "y", handle: ".grip", cursor: "move" });
-         if (questionSetModels.length < 5) {
+         if (questionSetModels.length < 8) {
             this.dom.$ADD_QUESTION_GROUP.show();
          } else {
             this.dom.$ADD_QUESTION_GROUP.hide();
